@@ -65,6 +65,24 @@ void Game::start() {
     // TODO: Move this out of the loop to prevent unnecessary if checks that will never be true except in turn 1.
     if(m_turnNumber == 1)
         firstTurnSetup();
+    else
+    {
+        // Switch the current player:
+        /*
+         *  TODO: This should logically happen before we enter the DRAW_PHASE
+         *        but we still aren't drawing the card so its okay for now.
+         */
+        m_currentPlayer == 1 ? m_currentPlayer = 2 : m_currentPlayer = 1;
+        std::cout << "The current player is " << this->m_currentPlayer << std::endl;
+
+        // TODO: m_currentPlayer should probably be a Player object to prevent unnecessary ifs and elses like this:
+        /*
+         * if(m_currentPlayer == 1)
+         *  m_p1.draw
+         * else m_p2.draw
+         * /
+    }
+
 
 
     // After the cards are dealt, the draw phase ends and the main phase 1 begins:
