@@ -37,7 +37,9 @@ int Game::randomGenerator(const int limit) {
 int Game::decideWhoPlaysFirst() { return randomGenerator(2); }
 
 void Game::firstTurnSetup() {
-  if (m_first == 1) {
+  // The game decides who will play first:
+  m_currentPlayer = decideWhoPlaysFirst();
+  if (m_currentPlayer == 1) {
     m_p1.drawCards(6);
     m_p2.drawCards(5);
   } else {
@@ -53,28 +55,42 @@ void Game::start() {
 
   // Variable declarations/initializations:
   m_turnNumber = 1;
-  GamePhases gamePhase;  // The are unused variable warnings for now because the implementation is not complete.
+  GamePhases gamePhase;  // FIXME: There are unused variable warnings for now because the implementation is not complete.
 
   while (true) {
-    // The game decides who will play first:
-    m_first = decideWhoPlaysFirst();
-    std::cout << "The first player is " << m_first << std::endl;
-
     // Draw Phase begins:
     gamePhase = GamePhases::DRAW_PHASE;
 
-    // In firstTurnSetup we give cards to the players:
+    // In firstTurnSetup we give cards to both players:
     // TODO: Move this out of the loop to prevent unnecessary if checks that will never be true except in turn 1.
     if(m_turnNumber == 1)
         firstTurnSetup();
 
-    // ...
 
     // After the cards are dealt, the draw phase ends and the main phase 1 begins:
     gamePhase = GamePhases::MAIN_PHASE1;
-
     // ...
 
+
+    // The battle phase is optional.
+    // Placeholder pseudo-code for event listening:
+    /*
+     * if BP button was clicked                     // TODO
+     * then gamePhase = GamePhases::BATTLE_PHASE;
+     * ...
+    */
+
+
+    // We (optionally) enter the MP2 only if there was a battle phase.
+    if (gamePhase == GamePhases::BATTLE_PHASE /* && the MP2 button was clicked */) // TODO
+    {
+        gamePhase = GamePhases::MAIN_PHASE2;
+        // ...
+    }
+
+    // The end phase begins
+    gamePhase = GamePhases::END_PHASE;
+    // ...
 
     m_turnNumber++;
 
@@ -83,7 +99,7 @@ void Game::start() {
      *  checkLifePoints function will be implemented as the way to end the game.
      */
     std::cin >> x;
-    std::cout << m_turnNumber << std::endl;
+
   }
   std::cout << "The game has ended." << std::endl;
 }

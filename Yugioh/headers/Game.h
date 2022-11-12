@@ -16,7 +16,7 @@ public:
 private:
   Player m_p1;
   Player m_p2;
-  int m_first;  // The number of the player who plays first // TODO: Maybe m_current instead of m_first for reusability
+  int m_currentPlayer;
   int m_turnNumber;
 
   // Private member functions:
