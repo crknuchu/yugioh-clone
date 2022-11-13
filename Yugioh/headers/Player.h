@@ -15,8 +15,12 @@ public:
 
 
   // Public member functions:
-  std::string getName();
+  std::string getName() const;
   void drawCards(int n);
+
+
+  // Operators:
+  bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
 
 private:
   std::string m_name;

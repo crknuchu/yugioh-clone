@@ -2,7 +2,7 @@
 #include <iostream>
 #include <random>
 
-Game::Game(Player p1, Player p2) : m_p1(p1), m_p2(p2) {}
+Game::Game(Player p1, Player p2) : m_player1(p1), m_player2(p2) {}
 Game::Game() {}
 Game::~Game() {}
 
@@ -14,7 +14,7 @@ enum class GamePhases {
   END_PHASE
 };
 
-int Game::randomGenerator(const int limit) {
+int Game::randomGenerator(const int limit) const {
   /*
    * Uniformly-distributed integer random number
    * generator that produces non-deterministic
@@ -34,18 +34,38 @@ int Game::randomGenerator(const int limit) {
   return dis(gen);
 }
 
-int Game::decideWhoPlaysFirst() { return randomGenerator(2); }
+int Game::decideWhoPlaysFirst() const { return randomGenerator(2); }
+
+void Game::switchPlayers() {
+    Player tmp = *m_pCurrentPlayer;
+    *m_pCurrentPlayer = *m_pOtherPlayer;
+    *m_pOtherPlayer = tmp;
+}
+
+
 
 void Game::firstTurnSetup() {
   // The game decides who will play first:
-  m_currentPlayer = decideWhoPlaysFirst();
-  if (m_currentPlayer == 1) {
-    m_p1.drawCards(6);
-    m_p2.drawCards(5);
-  } else {
-    m_p2.drawCards(6);
-    m_p1.drawCards(5);
+  if (decideWhoPlaysFirst() == 1)
+  {
+      m_pCurrentPlayer = &m_player1;
+      m_pOtherPlayer = &m_player2;
   }
+  else
+  {
+      m_pCurrentPlayer = &m_player2;
+      m_pOtherPlayer = &m_player1;
+  }
+
+  std::cout << "The first one to play is " << m_pCurrentPlayer->getName() << std::endl;
+
+  // The first one gets 6 cards:
+  m_pCurrentPlayer->drawCards(6);
+
+  // The other one gets 5 cards
+  // Without m_pOtherPlayer:  *m_pCurrentPlayer == m_player1 ? m_player2.drawCards(5) : m_player1.drawCards(5);
+  // With m_pOtherPlayer:
+  m_pOtherPlayer->drawCards(5);
 }
 
 void Game::start() {
@@ -57,7 +77,8 @@ void Game::start() {
   m_turnNumber = 1;
   GamePhases gamePhase;  // FIXME: There are unused variable warnings for now because the implementation is not complete.
 
-  while (true) {
+  while (true)
+  {
     // Draw Phase begins:
     gamePhase = GamePhases::DRAW_PHASE;
 
@@ -70,17 +91,11 @@ void Game::start() {
         // Switch the current player:
         /*
          *  TODO: This should logically happen before we enter the DRAW_PHASE
-         *        but we still aren't drawing the card so its okay for now.
+         *        but we are doing it before we draw the card so its okay (for now).
          */
-        m_currentPlayer == 1 ? m_currentPlayer = 2 : m_currentPlayer = 1;
-        std::cout << "The current player is " << this->m_currentPlayer << std::endl;
 
-        // TODO: m_currentPlayer should probably be a Player object to prevent unnecessary ifs and elses like this:
-        /*
-         * if(m_currentPlayer == 1)
-         *  m_p1.draw
-         * else m_p2.draw
-         * /
+        switchPlayers();
+        std::cout << "The current player is " << m_pCurrentPlayer->getName() << std::endl;
     }
 
 

@@ -14,15 +14,18 @@ public:
   void start();
 
 private:
-  Player m_p1;
-  Player m_p2;
-  int m_currentPlayer;
+  Player m_player1;
+  Player m_player2;
+  Player *m_pCurrentPlayer;
+  Player *m_pOtherPlayer;
+
   int m_turnNumber;
 
   // Private member functions:
-  int randomGenerator(const int limit);
-  int decideWhoPlaysFirst();
+  int randomGenerator(const int limit) const;
+  int decideWhoPlaysFirst() const;
   void firstTurnSetup();
+  void switchPlayers();
 };
 
 
