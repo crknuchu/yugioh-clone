@@ -73,34 +73,42 @@ void Game::start() {
 
   int x; // Needed for now for the cin at the end of our while loop, will be removed when checkLifePoints is implemented.
 
-  // Variable declarations/initializations:
+  // First turn is special (there is no battle phase and main phase 2):
+  GamePhases gamePhase = GamePhases::DRAW_PHASE;
   m_turnNumber = 1;
-  GamePhases gamePhase;  // FIXME: There are unused variable warnings for now because the implementation is not complete.
+  firstTurnSetup();
+  gamePhase = GamePhases::MAIN_PHASE1;
+
+  /*
+   *  Placeholder for the first turn's loop.
+   *  Since the player action mechanisms are still not implemented (TODO),
+   *  for now we only have a while loop that instantly finishes.
+   */
+  while(gamePhase != GamePhases::END_PHASE)
+  {
+    /*
+     *  Here the firstPlayer will play his MainPhase1 in the first turn.
+     *  For now, we still don't have playMP1() implemented.
+     */
+
+     gamePhase = GamePhases::END_PHASE;
+  }
+
+  m_turnNumber++;
 
   while (true)
   {
+    switchPlayers();
+    std::cout << "The current player is " << m_pCurrentPlayer->getName() << "." << std::endl;
     // Draw Phase begins:
     gamePhase = GamePhases::DRAW_PHASE;
 
-    // In firstTurnSetup we give cards to both players:
-    // TODO: Move this out of the loop to prevent unnecessary if checks that will never be true except in turn 1.
-    if(m_turnNumber == 1)
-        firstTurnSetup();
-    else
-    {
-        // Switch the current player:
-        /*
-         *  TODO: This should logically happen before we enter the DRAW_PHASE
-         *        but we are doing it before we draw the card so its okay (for now).
-         */
-
-        switchPlayers();
-        std::cout << "The current player is " << m_pCurrentPlayer->getName() << std::endl;
-    }
+    // The current player draws a card (this is not optional).
+    m_pCurrentPlayer->drawCards(1);
 
 
 
-    // After the cards are dealt, the draw phase ends and the main phase 1 begins:
+    // The draw phase ends and the main phase 1 begins (this is not optional).
     gamePhase = GamePhases::MAIN_PHASE1;
     // ...
 
@@ -114,14 +122,15 @@ void Game::start() {
     */
 
 
-    // We (optionally) enter the MP2 only if there was a battle phase.
-    if (gamePhase == GamePhases::BATTLE_PHASE /* && the MP2 button was clicked */) // TODO
+    /* We (optionally) enter the MP2 only if there was a battle phase
+     * and the MP2 button was clicked (TODO) */
+    if (gamePhase == GamePhases::BATTLE_PHASE)
     {
         gamePhase = GamePhases::MAIN_PHASE2;
         // ...
     }
 
-    // The end phase begins
+    // The end phase begins if the EP button was clicked (TODO):
     gamePhase = GamePhases::END_PHASE;
     // ...
 
