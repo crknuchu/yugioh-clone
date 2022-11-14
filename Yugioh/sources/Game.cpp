@@ -8,6 +8,7 @@ Game::~Game() {}
 
 enum class GamePhases {
   DRAW_PHASE,
+  STANDBY_PHASE,
   MAIN_PHASE1,
   BATTLE_PHASE,
   MAIN_PHASE2,
@@ -77,6 +78,10 @@ void Game::start() {
   GamePhases gamePhase = GamePhases::DRAW_PHASE;
   m_turnNumber = 1;
   firstTurnSetup();
+
+  gamePhase = GamePhases::STANDBY_PHASE;
+  // ...
+
   gamePhase = GamePhases::MAIN_PHASE1;
 
   /*
@@ -107,8 +112,11 @@ void Game::start() {
     m_pCurrentPlayer->drawCards(1);
 
 
+    // The draw phase ends and the standby phase begins (this is not optional).
+    gamePhase = GamePhases::STANDBY_PHASE;
+    // ...
 
-    // The draw phase ends and the main phase 1 begins (this is not optional).
+    // The standby phase ends and the main phase 1 begins (this is not optional).
     gamePhase = GamePhases::MAIN_PHASE1;
     // ...
 
