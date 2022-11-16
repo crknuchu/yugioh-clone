@@ -4,4 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-        main.cpp
+    sources/main.cpp
+
+HEADERS += \
+    headers/CardList.h
