@@ -3,6 +3,9 @@
 
 #include <string>
 #include <vector>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsItem>
+#include <QGraphicsSceneHoverEvent>
 
 
 enum class CardType
@@ -20,11 +23,11 @@ enum class CardPlace
     Table
 };
 
-class Card
+class Card:public QGraphicsPixmapItem
 {
 public:
 
-    Card(const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription);
+    Card(const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription,QGraphicsItem *parent = 0);
 
     virtual ~Card();
 
@@ -39,6 +42,15 @@ public:
 
     virtual void setCard();
 
+    void menuPopUp(QGraphicsSceneHoverEvent *event);
+    void mousePressEvent(QGraphicsSceneMouseEvent*event);
+    void setName(std::string name);
+    float getHeight();
+    float getWidth();
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+
 
 protected:
     std::string CardName;
@@ -50,6 +62,10 @@ protected:
 
 
 private:
+    std::string cardName = "";
+    std::string owner = "";
+    float height;
+    float width;
 
 };
 

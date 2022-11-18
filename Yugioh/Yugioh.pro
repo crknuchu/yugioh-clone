@@ -1,7 +1,8 @@
 TEMPLATE = app
 CONFIG += console c++17
-CONFIG -= app_bundle
-CONFIG -= qt
+
+QT += \
+        widgets
 
 SOURCES += \
         sources/Card.cpp \
@@ -19,4 +20,7 @@ HEADERS += \
     headers/Trapcard.h \
     headers/Game.h \
     headers/Player.h
+
+RESOURCES += \
+        resources.qrc
 
