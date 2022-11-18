@@ -5,8 +5,10 @@ CONFIG -= qt
 
 SOURCES += \
     sources/Deck.cpp \
+    sources/Hand.cpp \
     sources/main.cpp
 
 HEADERS += \
     headers/CardList.h \
-    headers/Deck.h
+    headers/Deck.h \
+    headers/Hand.h
