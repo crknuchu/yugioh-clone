@@ -1,4 +1,4 @@
-#ifdef CARDLIST_H
+#ifndef CARDLIST_H
 #define CARDLIST_H
 
 #include <vector>
@@ -6,10 +6,10 @@
 
 class CardList {
 public:
-    CardList();
-    ~CardList();
+    virtual ~CardList() = default;
 protected:
-    vector<Card> m_cardList;
-}
+    CardList(vector<Card> &cardList);
+    vector<Card *> m_cardList;
+};
 
 #endif

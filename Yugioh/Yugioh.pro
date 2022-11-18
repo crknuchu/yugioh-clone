@@ -4,7 +4,9 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
+    sources/Deck.cpp \
     sources/main.cpp
 
 HEADERS += \
-    headers/CardList.h
+    headers/CardList.h \
+    headers/Deck.h
