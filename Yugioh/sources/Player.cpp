@@ -5,22 +5,22 @@
 #include <istream>
 
 
-std::string Player::get_player_name(){
-    return this->name;
+std::string Player::getPlayerName() const{
+    return this->m_name;
 }
 
-unsigned Player::get_player_points(){
-    return this->points;
+unsigned Player::getPlayerPoints(){
+    return this->m_points;
 }
 
-void Player::drawCards(int n) {
+void Player::drawCards(unsigned int numOfCards) {
 
-  std::cout << "The player " << this->getName() << " gets " << n << " cards." << std::endl;
+  std::cout << "The player " << this->getPlayerName() << " gets " << numOfCards << " cards." << std::endl;
 }
 
 // Operator overloads:
 bool Player::operator==(const Player &other) const {
-    return this->getName() == other.getName();
+    return this->getPlayerName() == other.getPlayerName();
 }
 
 // std::istream &operator>>(std::istream &in, Player &p){
@@ -30,5 +30,5 @@ bool Player::operator==(const Player &other) const {
 // }
 
 std::ostream &operator<<(std::ostream &out, Player &p){
-    return out << "Player name: " << p.get_player_name() << ", points " << p.get_player_points()<<std::endl; 
+    return out << "Player name: " << p.getPlayerName() << ", points " << p.getPlayerPoints()<<std::endl;
 }

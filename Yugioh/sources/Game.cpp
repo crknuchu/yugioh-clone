@@ -58,7 +58,7 @@ void Game::firstTurnSetup() {
       m_pOtherPlayer = &m_player1;
   }
 
-  std::cout << "The first one to play is " << m_pCurrentPlayer->getName() << std::endl;
+  std::cout << "The first one to play is " << m_pCurrentPlayer->getPlayerName() << std::endl;
 
   // The first one gets 6 cards:
   m_pCurrentPlayer->drawCards(6);
@@ -104,7 +104,7 @@ void Game::start() {
   while (true)
   {
     switchPlayers();
-    std::cout << "The current player is " << m_pCurrentPlayer->getName() << "." << std::endl;
+    std::cout << "The current player is " << m_pCurrentPlayer->getPlayerName() << "." << std::endl;
     // Draw Phase begins:
     gamePhase = GamePhases::DRAW_PHASE;
 

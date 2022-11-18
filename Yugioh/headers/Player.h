@@ -12,7 +12,7 @@ public:
   ~Player() {
 
   };
-  Player(std::string player_name, int points = 4000) : name(player_name), points(points){};
+  Player(std::string playerName, int points = 4000) : m_name(playerName), m_points(points){};
 
   //TODO 
   //implement deck
@@ -23,16 +23,16 @@ public:
   //implement graveyard
 
 
-  void drawCards(int n);
+  void drawCards(unsigned int numOfCards);
 
-  std::string get_player_name();
-  unsigned get_player_points();
+  std::string getPlayerName() const;
+  unsigned getPlayerPoints();
 
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
 
 private:
-    std::string name;
-    unsigned points;
+    std::string m_name;
+    unsigned m_points;
 };
 
 // std::istream &operator>>(std::istream &in, Player &p);
