@@ -26,7 +26,7 @@ HEADERS += \
     headers/CardList.h \
     headers/Deck.h \
     headers/Graveyard.h \
-    headers/Hand.h
+    headers/Hand.h \
     headers/Player.h
 
 RESOURCES += \

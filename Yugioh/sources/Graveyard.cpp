@@ -3,31 +3,27 @@
 #include <algorithm>
 #include <optional>
 
-Graveyard::Graveyard(std::vector<Card> &initialGraveyard)
+Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
     :CardList(initialGraveyard)
 {
     for(auto x : m_cardList) {
-        std::cout << x.name() << " ";
+        std::cout << x->getCardName() << " ";
     }
 }
 
-void Graveyard::sendToGraveyard(const Card &card) {
-    m_cardList.push_back(card);
+void Graveyard::sendToGraveyard(Card &card) {
+    m_cardList.push_back(&card);
 }
 
-std::vector<Card> Graveyard::getGraveyard() const{
+std::vector<Card*> Graveyard::getGraveyard() const{
     return m_cardList;
 }
 
-std::optional<Card> Graveyard::removeFromGraveyard(const Card &card)
+Card* Graveyard::removeFromGraveyard(Card &card)
 {
-   std::vector<Card>::iterator it = std::find(m_cardList.begin(), m_cardList.end(), card);
-   if(it == m_cardList.end())
-       return {};
-    std::cout << m_cardList.front().name();
+   auto it = std::find(m_cardList.begin(), m_cardList.end(), &card);
     m_cardList.erase(it);
-    std::cout << m_cardList.front().name();
-    return card;
+    return &card;
 }
 
 

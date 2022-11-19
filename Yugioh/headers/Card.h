@@ -42,6 +42,8 @@ public:
 
     virtual void setCard();
 
+    bool operator==(const Card &card) const;
+
     void menuPopUp(QGraphicsSceneHoverEvent *event);
     void mousePressEvent(QGraphicsSceneMouseEvent*event);
     void setName(std::string name);

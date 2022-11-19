@@ -10,7 +10,6 @@ Monstercard.o
 Player.o
 Spellcard.o
 Trapcard.o
-Yugioh
 main.o
 qrc_resources.cpp
 qrc_resources.o

@@ -59,6 +59,11 @@ void Card::setCard()
 
 }
 
+bool Card::operator==(const Card &other) const
+{
+    return this->getCardName() == other.getCardName();
+}
+
 void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
     if(event->button() == Qt::LeftButton){
         // std::cout<<"left"<<std::endl;

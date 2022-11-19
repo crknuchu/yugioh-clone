@@ -4,19 +4,19 @@
 #include <algorithm>
 #include <random>
 
-Deck::Deck(const std::string &pathToDeck, std::vector<Card> &deck)
+Deck::Deck(const std::string &pathToDeck, std::vector<Card*> &deck)
     :CardList(deck){
     for(auto x : m_cardList){
-        std::cout << x.name() << " ";
+        std::cout << x->getCardName() << " ";
     }
 }
 
-std::vector<Card> Deck::getDeck() const{
+std::vector<Card*> Deck::getDeck() const{
     return m_cardList;
 }
 
-std::vector<Card> Deck::draw(int numberOfCards) {
-    std::vector<Card> cards;
+std::vector<Card*> Deck::draw(int numberOfCards) {
+    std::vector<Card*> cards;
     for(int i = 0; i < numberOfCards; i++){
         cards.push_back(m_cardList.front());
         m_cardList.erase(m_cardList.begin());
