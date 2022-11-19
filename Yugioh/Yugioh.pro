@@ -11,6 +11,10 @@ SOURCES += \
         sources/Trapcard.cpp \
         sources/main.cpp \
         sources/Game.cpp \
+        sources/CardList.cpp \
+        sources/Deck.cpp \
+        sources/Graveyard.cpp \
+        sources/Hand.cpp \
         sources/Player.cpp 
 
 HEADERS += \
@@ -19,8 +23,13 @@ HEADERS += \
     headers/Spellcard.h \
     headers/Trapcard.h \
     headers/Game.h \
+    headers/CardList.h \
+    headers/Deck.h \
+    headers/Graveyard.h \
+    headers/Hand.h
     headers/Player.h
 
 RESOURCES += \
         resources.qrc
+
 
