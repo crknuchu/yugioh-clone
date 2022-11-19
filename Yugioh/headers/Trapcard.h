@@ -3,28 +3,23 @@
 
 #include "headers/Card.h"
 
-
 enum class TrapType
 {
-    NormalTrap,
-    ContinuousTrap,
-    CounterTraps,
-    EquipTrap,
-    FieldTrap,
-
+    NORMAL_TRAP,
+    CONTINUOUS_TRAP,
+    COUNTER_TRAP,
 };
-
 
 class TrapCard : public Card
 {
 public:
 
-    TrapCard(TrapType Ttype, const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription);
+    TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
     virtual void setCard();
-    TrapType getTtype() const;
+    TrapType getType() const;
 
 protected:
-    TrapType Ttype;
+    TrapType type;
 };
 
 #endif // TRAPCARD_H

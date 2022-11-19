@@ -5,26 +5,26 @@
 
 enum class SpellType
 {
-    NormalSpells,
-    ContinuousSpells,
-    EquipSpells,
-    QuickPlaySpells,
-    FieldSpells,
-    RitualSpells
+    NORMAL_SPELL,
+    CONTINUOUS_SPELL,
+    EQUIP_SPELL,
+    QUICK_SPELL,
+    FIELD_SPELL,
+    RITUAL_SPELL
 };
 
 class SpellCard : public Card
 {
 public:
-    SpellCard(SpellType Stype, const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription);
+    SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
 
     virtual void setCard();
-    SpellType getStype() const;
+    SpellType getType() const;
 
 
 
 protected:
-    SpellType Stype;
+    SpellType type;
 
 };
 

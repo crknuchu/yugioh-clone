@@ -3,71 +3,71 @@
 
 #include "headers/Card.h"
 
-enum class MonsterType
+enum class MonsterKind
 {
-    NormalMonster,
-    EffectMonster,
-    RitualMonster,
-    FusionMonster,
-    XYZMonster,
-    PendulumMonster,
-    LinkMonster,
-    MonsterToken
+    NORMAL_MONSTER,
+    EFFECT_MONSTER,
+    RITUAL_MONSTER,
+    FUSION_MONSTER,
+    XYZ_MONSTER,
+    PENDULUM_MONSTER,
+    LINK_MONSTER,
+    TOKEN_MONSTER
 };
 
-enum class MonsterKind{
-    Aqua,
-    Beast,
-    BeastWarrior,
-    CreatorGod,
-    Dinosaur,
-    DivineBeast,
-    Dragon,
-    Fairy,
-    Fiend,
-    Fish,
-    Insect,
-    Machine,
-    Plant,
-    Psychic,
-    Reptile,
-    Rock,
-    Spellcaster,
-    Warrior,
-    WingedBeast
-
+enum class MonsterType{
+    AQUA,
+    BEAST,
+    BEAST_WARRIOR,
+    CREATOR_GOD,
+    DINOSAUR,
+    DIVINE_BEAST,
+    DRAGON,
+    FAIRY,
+    FIEND,
+    FISH,
+    INSECT,
+    MACHINE,
+    PLANT,
+    PSYCHIC,
+    REPTILE,
+    ROCK,
+    SPELLCASTER,
+    WARRIOR,
+    WINGED_BEAST
 };
 
-enum class Attribute
+enum class MonsterAttribute
 {
-    Light,
-    Dark
+    DARK,
+    DIVINE,
+    EARTH,
+    FIRE,
+    LIGHT,
+    WATER,
+    WIND
 };
 
 
 class MonsterCard : public Card
 {
 public:
-    MonsterCard(int attackPoints, int defensePoints, MonsterType tip,MonsterKind kind, Attribute atribute, int level, const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription);
-
+    // TODO: Maybe change the order of arguments (for example, name should be the first argument)
+    MonsterCard(int attackPoints, int defensePoints, MonsterType type, MonsterKind kind, MonsterAttribute attribute, int level, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
     virtual void setCard();
 
     int getAttackPoints() const;
-
     int getDefensePoints() const;
-
-    MonsterType getTip() const;
-
-    Attribute getAtribut() const;
-
+    MonsterType getType() const;
+    MonsterAttribute getAttribute() const;
     int getLevel() const;
 
 protected:
     int attackPoints;
     int defensePoints;
-    MonsterType tip;
+    MonsterType type;
     MonsterKind kind;
-    Attribute atribute;
+    MonsterAttribute attribute;
     int level;
 };
 

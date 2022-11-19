@@ -8,35 +8,33 @@
 #include <QGraphicsSceneHoverEvent>
 
 
-enum class CardType
+enum class CardType // TODO: Maybe CardType should be changed to something else because of naming conflicts with Monstercard's CardType?
 {
-    MonsterCard,
-    SpellCard,
-    TrapCard
+    MONSTER_CARD,
+    SPELL_CARD,
+    TRAP_CARD
 };
 
-enum class CardPlace
+enum class CardLocation
 {
-    Hand,
-    Deck,
-    Grave,
-    Table
+    HAND,
+    DECK,
+    GRAVEYARD,
+    FIELD
 };
 
 class Card:public QGraphicsPixmapItem
 {
 public:
 
-    Card(const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription,QGraphicsItem *parent = 0);
-
     virtual ~Card();
 
     const std::string &getCardName() const;
 
-    std::string getCType() const;
+    std::string getCardType() const;    // TODO: Maybe return CardType instead of string?
 
-    CardPlace getCPlace() const;
-    void setCPlace(CardPlace newCPlace);
+    CardLocation getCardLocation() const;
+    void setCardLocation(CardLocation newCardLocation);
 
     const std::string &getCardDescription() const;
 
@@ -55,16 +53,19 @@ public:
 
 
 protected:
-    std::string CardName;
-    CardType CType;
-    CardPlace CPlace;
-    std::string CardDescription;
-    //CardImage
+    // Constructor is protected in order to restrict call to it to Card's child classes.
+    Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsItem *parent = 0);
+    std::string cardName;
+    CardType cardType;
+    CardLocation cardLocation;
+    std::string cardDescription;
+    //cardImage
 
 
 
 private:
-    std::string cardName = "";
+//    std::string cardName = "";
+    // TODO: Remove this
     std::string owner = "";
     float height;
     float width;

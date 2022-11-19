@@ -1,12 +1,12 @@
 #include "headers/Monstercard.h"
 
-MonsterCard::MonsterCard(int attackPoints, int defensePoints, MonsterType tip,MonsterKind kind, Attribute atribut, int level, const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription)
-    : Card(CardName, CType, CPlace, CardDescription)
+MonsterCard::MonsterCard(int attackPoints, int defensePoints, MonsterType type, MonsterKind kind, MonsterAttribute attribute, int level, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription)
+    : Card(cardName, cardType, cardLocation, cardDescription)
     ,attackPoints(attackPoints)
     ,defensePoints(defensePoints)
-    ,tip(tip)
+    ,type(type)
     ,kind(kind)
-    ,atribute(atribut)
+    ,attribute(attribute)
     ,level(level)
 {}
 
@@ -14,7 +14,6 @@ void MonsterCard::setCard()
 {
 
 }
-
 
 int MonsterCard::getAttackPoints() const
 {
@@ -26,14 +25,14 @@ int MonsterCard::getDefensePoints() const
     return defensePoints;
 }
 
-MonsterType MonsterCard::getTip() const
+MonsterType MonsterCard::getType() const
 {
-    return tip;
+    return type;
 }
 
-Attribute MonsterCard::getAtribut() const
+MonsterAttribute MonsterCard::getAttribute() const
 {
-    return atribute;
+    return attribute;
 }
 
 int MonsterCard::getLevel() const

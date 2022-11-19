@@ -6,8 +6,8 @@
 
 Deck::Deck(const std::string &pathToDeck, std::vector<Card*> &deck)
     :CardList(deck){
-    for(auto x : m_cardList){
-        std::cout << x->getCardName() << " ";
+    for(auto card : m_cardList){
+        std::cout << card->getCardName() << " ";
     }
 }
 
