@@ -12,24 +12,16 @@ public:
   ~Player() {
 
   };
-  Player(std::string playerName, int points = 4000) : m_name(playerName), m_points(points){};
+  Player(std::string playerName, int points = 8000) : m_name(playerName), m_points(points){};
 
-  //TODO 
-  //implement deck
-
-
-  //implement hand cards
-
-  //implement graveyard
-
-
+  Card &pickCardFromHand();
   void drawCards(unsigned int numOfCards);
-
+  void attackOpponent(MonsterCard a, Player &opponent);
   std::string getPlayerName() const;
   unsigned getPlayerPoints();
-
+  void setPoints(unsigned points);
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
-
+  int checkOpponentGround(const Player &opponent) const;
 private:
     std::string m_name;
     unsigned m_points;
