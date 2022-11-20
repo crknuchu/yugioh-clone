@@ -5,10 +5,6 @@ TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType
     ,type(type)
 {}
 
-void TrapCard::setCard()
-{
-
-}
 
 TrapType TrapCard::getType() const
 {
