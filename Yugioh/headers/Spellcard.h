@@ -18,7 +18,8 @@ class SpellCard : public Card
 public:
     SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
 
-    virtual void setCard();
+
+
     SpellType getType() const;
 
 

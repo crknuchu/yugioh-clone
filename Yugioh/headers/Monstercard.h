@@ -52,9 +52,11 @@ enum class MonsterAttribute
 class MonsterCard : public Card
 {
 public:
-    // TODO: Maybe change the order of arguments (for example, name should be the first argument)
-    MonsterCard(int attackPoints, int defensePoints, MonsterType type, MonsterKind kind, MonsterAttribute attribute, int level, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
-    virtual void setCard();
+
+    MonsterCard( const std::string &cardName,int attackPoints, int defensePoints, int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
+    virtual ~MonsterCard();
+
+
 
     int getAttackPoints() const;
     int getDefensePoints() const;

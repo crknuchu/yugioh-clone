@@ -17,12 +17,9 @@ int main(int argc,char **argv)
   //game->show(); this is to turn on the graphics, need to decide if we use Game as pointer
 
 
-//MonsterCard::MonsterCard(int attackPoints, int defensePoints, MonsterType tip,MonsterKind kind,
-//  Attribute atribut, int level, const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription)
 
-  MonsterCard card(3000, 2500,
-                   MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
-                   8, "Sibirski Plavac", CardType::MONSTER_CARD, CardLocation::HAND, "Placeholder Description"
+  MonsterCard card("Sibirski Plavac",3000, 2500,8,
+                   MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,  CardType::MONSTER_CARD, CardLocation::HAND, "Placeholder Description"
                    );
   std::cout << card << std::endl;
 

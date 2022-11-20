@@ -15,7 +15,8 @@ class TrapCard : public Card
 public:
 
     TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
-    virtual void setCard();
+
+
     TrapType getType() const;
 
 protected:

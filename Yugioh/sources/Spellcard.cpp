@@ -7,10 +7,7 @@ SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardT
     ,type(type)
 {}
 
-void SpellCard::setCard()
-{
 
-}
 
 SpellType SpellCard::getType() const
 {
