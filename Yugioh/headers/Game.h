@@ -4,6 +4,15 @@
 #include "Player.h"
 #include <QGraphicsView>
 
+enum class GamePhases {
+  DRAW_PHASE,
+  STANDBY_PHASE,
+  MAIN_PHASE1,
+  BATTLE_PHASE,
+  MAIN_PHASE2,
+  END_PHASE
+};
+
 class Game: public QGraphicsView
 {
 public:
@@ -22,13 +31,16 @@ private:
   Player *m_pCurrentPlayer;
   Player *m_pOtherPlayer;
 
-  int m_turnNumber;
+  int m_currentTurn;
+  GamePhases m_currentGamePhase;
 
   // Private member functions:
   int randomGenerator(const int limit) const;
   int decideWhoPlaysFirst() const;
   void firstTurnSetup();
+  void playFirstTurn();
   void switchPlayers();
+  void playTurn();
 };
 
 
