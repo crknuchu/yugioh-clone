@@ -1,6 +1,6 @@
 #include "headers/Game.h"
 #include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
-//#include "headers/Card.h"
+#include "headers/Monstercard.h"
 
 #include <iostream>
 #include <random>
@@ -16,46 +16,55 @@ Game::Game(Player p1, Player p2, QWidget *parent)
       m_player2(p2)
 
 {
+    /*
+     *  !! FIXME: For some reason, uic (Qt Ui Compiler) is not run automatically on Build,
+     *            so any additions to the .ui file must be compiled manually
+     *            by using uic mainwindow.ui -o ui_mainwindow.h
+     */
+
     ui->setupUi(this);
 
     // Setup connections:
     setupConnections();
 
-    /*
-     *  By using ui_mainwindow.h, we hopefully don't need to create the QGraphicsScene ourselves and hardcode it,
-     *  since its done automatically in the mainwindow.ui file that is changed through Design tab.
-     */
+    // Create the scene:
+    scene = new QGraphicsScene(this);
 
+    ui->graphicsView->setScene(scene);
 
-    // TODO: Do this with ui->scene_object_name:
-
-    //    scene = new QGraphicsScene(this);
-
-    //    scene->setSceneRect(0,0,800,600); //make the scene not hardcoded
-
-    //    setScene(scene);
+    ui->graphicsView->setSceneRect(0,0,800,600); // Make the scene not hardcoded
 
     //    setFixedSize(800,600);
-    //    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //    setWindowTitle("Yu-Gi-Oh!");
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setWindowTitle("Yu-Gi-Oh!"); // This compiles even without ui->graphicsView
 
 
-    //creating items
-    // Card *c = new Card();
-    // c->setName("karta1");
-    // Card *c1 = new Card();
-    // c1->setName("karta2");
+    // Creating items
+    // TODO: Should monstercard1 be a pointer or not?
+     MonsterCard* monsterCard1 = new MonsterCard(3000, 2500, MonsterType::DRAGON,
+                                                 MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
+                                                 8, "Sibirski Plavac", CardType::MONSTER_CARD,
+                                                 CardLocation::HAND, "Opis"
+                                                 );
+     monsterCard1->setName("monsterCard1");
 
-    // //adding items
-    // scene->addItem(c);
-    // scene->addItem(c1);
-    // c->setPos(0, scene->height() - c->getHeight());
+     scene->addItem(monsterCard1);
+
+     // FIXME:Maybe this doesn't work because getHeight() returns height which is a private field of Card class so MonsterCard can't see it?
+        // monsterCard1->setPos(0, scene->height() - monsterCard1->getHeight());
+
+     // TODO: Make setting position not hardcoded:
+     monsterCard1->setPos(0, 450);
+
 }
 
 Game::Game() {}
 Game::~Game() {
     delete ui;
+    delete scene; // TODO: Check other memory deallocations too.
+    // delete monsterCard1; // We can't free this here because it lives only in the constructor. !!
+    // !! FIXME: Where do we free it then? Should it be initialized in the constructor or not?
 }
 
 int Game::randomGenerator(const int limit) const {
@@ -220,6 +229,8 @@ void Game::setupConnections() {
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::btnBattlePhaseClicked);
     connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::btnMainPhase2Clicked);
     connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::btnEndPhaseClicked);
+
+
 }
 
 // Slots:
@@ -240,6 +251,13 @@ void Game::btnEndPhaseClicked()
 {
     std::cout << "End phase button clicked" << std::endl;
     m_currentGamePhase = GamePhases::END_PHASE;
+
+    /*
+     *  FIXME: This breaks the program, probably because we didn't call firstTurnSetup() yet,
+     *  so m_pCurrentPlayer and m_pOtherPlayer have undefined values and can't be switched, leading to a SEGFAULT.
+     */
+    // In the end phase, we switch the players:
+    //    switchPlayers();
 }
 
 

@@ -14,12 +14,22 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <widget class="QGraphicsView" name="graphicsView">
+    <property name="geometry">
+     <rect>
+      <x>205</x>
+      <y>1</y>
+      <width>1041</width>
+      <height>801</height>
+     </rect>
+    </property>
+   </widget>
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>160</width>
+      <x>1</x>
+      <y>1</y>
+      <width>201</width>
       <height>801</height>
      </rect>
     </property>
@@ -46,16 +56,6 @@
       </widget>
      </item>
     </layout>
-   </widget>
-   <widget class="QGraphicsView" name="graphicsView">
-    <property name="geometry">
-     <rect>
-      <x>155</x>
-      <y>-9</y>
-      <width>1111</width>
-      <height>811</height>
-     </rect>
-    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

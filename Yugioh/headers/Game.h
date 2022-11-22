@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "Player.h"
+#include <QGraphicsScene>
 #include <QMainWindow>
 
 namespace Ui {
@@ -31,7 +32,7 @@ public:
 
 private:
   Ui::MainWindow *ui;
-//  QGraphicsScene *scene;
+  QGraphicsScene *scene;
 
   Player m_player1;
   Player m_player2;
