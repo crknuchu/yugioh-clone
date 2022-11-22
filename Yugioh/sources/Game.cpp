@@ -30,8 +30,6 @@ Game::Game(Player p1, Player p2) : m_player1(p1), m_player2(p2) {
 Game::Game() {}
 Game::~Game() {}
 
-
-
 int Game::randomGenerator(const int limit) const {
   /*
    * Uniformly-distributed integer random number
@@ -162,7 +160,6 @@ void Game::playTurn() {
 }
 
 
-
 void Game::start() {
   std::cout << "The game has started." << std::endl;
 
@@ -175,7 +172,6 @@ void Game::start() {
   playFirstTurn();
   m_currentTurn++;
 
-
   // Other turns are all the same structure-wise practically:
   while (true)
   {
@@ -186,7 +182,12 @@ void Game::start() {
      *  checkLifePoints function will be implemented as the way to end the game.
      */
     std::cin >> tmpBlockLoop;
-
   }
   std::cout << "The game has ended." << std::endl;
 }
+
+// Slots:
+
+
+
+
