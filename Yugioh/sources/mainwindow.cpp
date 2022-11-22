@@ -21,6 +21,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::setupConnections() {
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &MainWindow::btnBattlePhaseClicked);
+    connect(ui->btnMainPhase2, &QPushButton::clicked, this, &MainWindow::btnMainPhase2Clicked);
+    connect(ui->btnEndPhase, &QPushButton::clicked, this, &MainWindow::btnEndPhaseClicked);
 }
 
 
