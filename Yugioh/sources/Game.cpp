@@ -17,27 +17,28 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 
 {
     ui->setupUi(this);
+
+    // Setup connections:
     setupConnections();
 
-/*
- *  By using ui_mainwindow.h, we don't need to create the QGraphicsScene ourselves and hardcode it,
- *  since its done automatically in the mainwindow.ui file that is changed through Design tab.
- */
+    /*
+     *  By using ui_mainwindow.h, we hopefully don't need to create the QGraphicsScene ourselves and hardcode it,
+     *  since its done automatically in the mainwindow.ui file that is changed through Design tab.
+     */
 
 
-    // TODO: Do this with ui->scene_object_name
-//    scene = new QGraphicsScene(this);
+    // TODO: Do this with ui->scene_object_name:
 
-//    scene->setSceneRect(0,0,800,600); //make the scene not hardcoded
+    //    scene = new QGraphicsScene(this);
 
-//    setScene(scene);
+    //    scene->setSceneRect(0,0,800,600); //make the scene not hardcoded
 
-//    setFixedSize(800,600);
-//    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    setWindowTitle("Yu-Gi-Oh!");
+    //    setScene(scene);
 
-
+    //    setFixedSize(800,600);
+    //    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //    setWindowTitle("Yu-Gi-Oh!");
 
 
     //creating items
