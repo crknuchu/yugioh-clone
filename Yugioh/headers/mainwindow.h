@@ -3,7 +3,6 @@
 
 #include <utility>
 #include <QMainWindow>
-#include <QLineEdit>
 
 namespace Ui {
 class MainWindow;
@@ -16,8 +15,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
-    // TODO: Should this be in mainwindow.h?
 
 private:
     Ui::MainWindow *ui;

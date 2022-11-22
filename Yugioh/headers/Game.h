@@ -2,7 +2,12 @@
 #define GAME_H
 
 #include "Player.h"
-#include <QGraphicsView>
+#include <QMainWindow>
+
+namespace Ui {
+    class MainWindow;
+}
+
 
 enum class GamePhases {
   DRAW_PHASE,
@@ -13,26 +18,27 @@ enum class GamePhases {
   END_PHASE
 };
 
-class Game: public QGraphicsView
+class Game: public QMainWindow
 {
+    Q_OBJECT
+
 public:
   Game();
-  Game(Player p1, Player p2);
+  Game(Player p1, Player p2, QWidget *parent = nullptr);  // Why is parent's type QWidget and not QMainWindow?
   ~Game();
-
   // Public member functions:
   void start();
 
 private:
-  QGraphicsScene *scene;
+  Ui::MainWindow *ui;
+//  QGraphicsScene *scene;
 
   Player m_player1;
   Player m_player2;
   Player *m_pCurrentPlayer;
   Player *m_pOtherPlayer;
-
-  int m_currentTurn;
   GamePhases m_currentGamePhase;
+  int m_currentTurn;
 
   // Private member functions:
   int randomGenerator(const int limit) const;
@@ -41,6 +47,17 @@ private:
   void playFirstTurn();
   void switchPlayers();
   void playTurn();
+
+
+// QT related stuff:
+  void setupConnections();
+
+private slots:
+    void btnBattlePhaseClicked();
+    void btnMainPhase2Clicked();
+    void btnEndPhaseClicked();
+
+
 };
 
 

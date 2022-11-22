@@ -1,20 +1,44 @@
 #include "headers/Game.h"
+#include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
+//#include "headers/Card.h"
+
 #include <iostream>
 #include <random>
 #include <QGraphicsScene>
-//#include "headers/Card.h"
 
-Game::Game(Player p1, Player p2) : m_player1(p1), m_player2(p2) {
-    scene = new QGraphicsScene(this);
 
-    scene->setSceneRect(0,0,800,600); //make the scene not hardcoded
+// QMainWindow != Ui::MainWindow
 
-    setScene(scene);
+Game::Game(Player p1, Player p2, QWidget *parent)
+    : QMainWindow(parent),
+      ui(new Ui::MainWindow),
+      m_player1(p1),
+      m_player2(p2)
 
-    setFixedSize(800,600);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setWindowTitle("Yu-Gi-Oh!");
+{
+    ui->setupUi(this);
+    setupConnections();
+
+/*
+ *  By using ui_mainwindow.h, we don't need to create the QGraphicsScene ourselves and hardcode it,
+ *  since its done automatically in the mainwindow.ui file that is changed through Design tab.
+ */
+
+
+    // TODO: Do this with ui->scene_object_name
+//    scene = new QGraphicsScene(this);
+
+//    scene->setSceneRect(0,0,800,600); //make the scene not hardcoded
+
+//    setScene(scene);
+
+//    setFixedSize(800,600);
+//    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//    setWindowTitle("Yu-Gi-Oh!");
+
+
+
 
     //creating items
     // Card *c = new Card();
@@ -27,8 +51,11 @@ Game::Game(Player p1, Player p2) : m_player1(p1), m_player2(p2) {
     // scene->addItem(c1);
     // c->setPos(0, scene->height() - c->getHeight());
 }
+
 Game::Game() {}
-Game::~Game() {}
+Game::~Game() {
+    delete ui;
+}
 
 int Game::randomGenerator(const int limit) const {
   /*
@@ -186,7 +213,33 @@ void Game::start() {
   std::cout << "The game has ended." << std::endl;
 }
 
+
+// QT related stuff:
+void Game::setupConnections() {
+    connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::btnBattlePhaseClicked);
+    connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::btnMainPhase2Clicked);
+    connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::btnEndPhaseClicked);
+}
+
 // Slots:
+void Game::btnBattlePhaseClicked()
+{
+    std::cout << "Battle phase button clicked" << std::endl;
+    m_currentGamePhase = GamePhases::BATTLE_PHASE;
+//    std::cout << "m_currentGamePhase: " << m_currentGamePhase << std::endl;
+}
+
+void Game::btnMainPhase2Clicked()
+{
+    std::cout << "Main phase 2 button clicked" << std::endl;
+    m_currentGamePhase = GamePhases::MAIN_PHASE2;
+}
+
+void Game::btnEndPhaseClicked()
+{
+    std::cout << "End phase button clicked" << std::endl;
+    m_currentGamePhase = GamePhases::END_PHASE;
+}
 
 
 
