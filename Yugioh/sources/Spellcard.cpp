@@ -2,9 +2,9 @@
 #include "headers/Card.h"
 
 
-SpellCard::SpellCard(SpellType Stype, const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription)
-    : Card(CardName, CType, CPlace, CardDescription)
-    ,Stype(Stype)
+SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription)
+    : Card(cardName, cardType, cardLocation, cardDescription)
+    ,type(type)
 {}
 
 void SpellCard::setCard()
@@ -12,7 +12,7 @@ void SpellCard::setCard()
 
 }
 
-SpellType SpellCard::getStype() const
+SpellType SpellCard::getType() const
 {
-    return Stype;
+    return type;
 }

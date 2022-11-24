@@ -1,8 +1,8 @@
 #include "headers/Trapcard.h"
 
-TrapCard::TrapCard(TrapType Ttype, const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription)
-    : Card(CardName, CType, CPlace, CardDescription)
-    ,Ttype(Ttype)
+TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription)
+    : Card(cardName, cardType, cardLocation, cardDescription)
+    ,type(type)
 {}
 
 void TrapCard::setCard()
@@ -10,7 +10,7 @@ void TrapCard::setCard()
 
 }
 
-TrapType TrapCard::getTtype() const
+TrapType TrapCard::getType() const
 {
-    return Ttype;
+    return type;
 }

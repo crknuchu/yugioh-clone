@@ -2,8 +2,9 @@
 #define GAME_H
 
 #include "Player.h"
+#include <QGraphicsView>
 
-class Game
+class Game: public QGraphicsView
 {
 public:
   Game();
@@ -14,6 +15,8 @@ public:
   void start();
 
 private:
+  QGraphicsScene *scene;
+
   Player m_player1;
   Player m_player2;
   Player *m_pCurrentPlayer;

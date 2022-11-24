@@ -4,12 +4,19 @@
 #include <iostream>
 
 
-Card::Card(const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription)
-    :CardName(CardName)
-    ,CType(CType)
-    ,CPlace(CPlace)
-    ,CardDescription(CardDescription)
-{}
+Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsItem *parent)
+    :cardName(cardName)
+    ,cardType(cardType)
+    ,cardLocation(cardLocation)
+    ,cardDescription(cardDescription)
+{
+    QPixmap pixmap(":/resources/blue_eyes.jpg");
+    pixmap = pixmap.scaled(QSize(200,150),Qt::KeepAspectRatio); //pixmap size needs to not be hardcoded
+    height = pixmap.height();
+    width = pixmap.width();
+    setPixmap(pixmap);
+    setAcceptHoverEvents(true);
+}
 
 Card::~Card()
 {
@@ -17,34 +24,34 @@ Card::~Card()
 
 const std::string &Card::getCardName() const
 {
-    return CardName;
+    return cardName;
 }
 
-std::string Card::getCType() const
+std::string Card::getCardType() const
 {
-    switch (CType) {
-    case CardType::MonsterCard:
+    switch (cardType) {
+    case CardType::MONSTER_CARD:
         return "MonsterCard";
-    case CardType::TrapCard :
+    case CardType::TRAP_CARD :
         return "TrapCard";
     default:
         return "SpellCard";
     }
 }
 
-CardPlace Card::getCPlace() const
+CardLocation Card::getCardLocation() const
 {
-    return CPlace;
+    return cardLocation;
 }
 
-void Card::setCPlace(CardPlace newCPlace)
+void Card::setCardLocation(CardLocation newCardLocation)
 {
-    CPlace = newCPlace;
+    cardLocation = newCardLocation;
 }
 
 const std::string &Card::getCardDescription() const
 {
-    return CardDescription;
+    return cardDescription;
 }
 
 void Card::setCard()
@@ -52,6 +59,49 @@ void Card::setCard()
 
 }
 
+bool Card::operator==(const Card &other) const
+{
+    return this->getCardName() == other.getCardName();
+}
+
+void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
+    if(event->button() == Qt::LeftButton){
+        // std::cout<<"left"<<std::endl;
+    }
+}
+
+void Card::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
+
+    // if(event->type() == QEvent::HoverEnter){
+    // std::cout<<"enter"<<std::endl;
+    menuPopUp(event);
+}
+
+void Card::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){
+    std::cout<<"leave"<<std::endl;
+}
+
+void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
+    //std::cout<<"move"<<std::endl;
+}
+
+void Card::menuPopUp(QGraphicsSceneHoverEvent *event){
+    std::cout<<"menu pops up"<<std::endl;
+}
+
+void Card::setName(std::string name){
+    cardName = name;
+}
+
+float Card::getHeight(){
+    return height;
+}
+
+float Card::getWidth(){
+    return width;
+}
+
+
 std::ostream &operator<<(std::ostream &out, Card &c){
-    return out << "Card name: " << c.getCardName() << ", card type: " << c.getCType()  << std::endl;
+    return out << "Card name: " << c.getCardName() << ", card type: " << c.getCardType()  << std::endl;
 }
