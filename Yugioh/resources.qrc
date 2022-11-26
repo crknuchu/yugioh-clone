@@ -2,5 +2,6 @@
 <qresource>
     <file>resources/card_back.jpg</file>
     <file>resources/blue_eyes.jpg</file>
+    <file>resources/field2.png</file>
 </qresource>
 </RCC>

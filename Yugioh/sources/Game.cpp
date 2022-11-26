@@ -57,6 +57,15 @@ Game::Game(Player p1, Player p2, QWidget *parent)
      // TODO: Make setting position not hardcoded:
      monsterCard1->setPos(0, 450);
 
+
+
+     QPixmap background(":/resources/field2.png");
+//     background = background.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+//     QPalette palette;
+//     palette.setBrush(QPalette::Window, background);
+     QBrush brush(QPalette::Window, background);
+     ui->graphicsView->setBackgroundBrush(brush);
+
 }
 
 Game::Game() {}
