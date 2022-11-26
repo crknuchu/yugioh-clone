@@ -1,0 +1,20 @@
+Quick description: Playing game with opponent
+
+Actors: Two players
+
+Basic stream:
+	1. The player selected play game button
+	2. Choose which player will play first move
+	3. First player draw card
+		3.1 Put new card into hand 
+	4. Decide to activate spell/trap card if possible
+	5. Summon new card from hand, put it on the table
+	6. Attack opponent if player decided to
+		6.1 If opponet has once or more card on the table, player has to attack that cards first
+		6.2 If opponent doesnt have any card on the table, player attack him and do damage as same as card has
+			6.2.1 After attack, if opponent doesn't have any lp, game immediately ends, player wins. Next step is 10 
+	7. Summon new card if played want to
+	8. Finish his move, opponent is next player
+	9. New current player do same steps from 1-8. 
+	10. Save game if player wants that
+
