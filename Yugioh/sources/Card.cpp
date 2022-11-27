@@ -36,13 +36,15 @@ std::string Card::getCardLocationString() const
 {
     switch (cardLocation) {
     case CardLocation::HAND:
-        return "Hand";
+        return "hand";
     case CardLocation::DECK :
-        return "Deck";
+        return "deck";
     case CardLocation::GRAVEYARD:
-        return "Graveyard";
+        return "graveyard";
+    case CardLocation::FIELD:
+        return "fiels";
     default:
-        return "Field";
+        return "error:unsupported card location";
     }
 }
 
@@ -55,11 +57,13 @@ std::string Card::getCardTypeString() const
 {
     switch (cardType) {
     case CardType::MONSTER_CARD:
-        return "MonsterCard";
+        return "monster card";
     case CardType::TRAP_CARD :
-        return "TrapCard";
+        return "trap card";
+    case CardType::SPELL_CARD :
+        return "spell card";
     default:
-        return "SpellCard";
+        return "error: unsupported card type";
     }
 }
 

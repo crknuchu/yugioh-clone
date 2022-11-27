@@ -20,8 +20,8 @@ public:
 
 
 
-    SpellType getType() const;
-
+    SpellType getSpellType() const;
+    std:: string getSpellTypeString()const;
 
 
 protected:

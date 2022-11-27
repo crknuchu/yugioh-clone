@@ -6,7 +6,7 @@ MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defe
     ,attackPoints(attackPoints)
     ,defensePoints(defensePoints)
     ,type(type)
-    ,kind(kind)
+    ,monsterKind(kind)
     ,attribute(attribute)
     ,level(level)
     ,active(active)
@@ -28,16 +28,115 @@ int MonsterCard::getDefensePoints() const
     return defensePoints;
 }
 
-MonsterType MonsterCard::getType() const
+MonsterKind MonsterCard::getMonsterKind() const
+{
+    return monsterKind;
+}
+
+std::string MonsterCard::getMonsterKindString() const
+{
+    switch (monsterKind) {
+    case MonsterKind::NORMAL_MONSTER:
+        return "normal monster";
+    case MonsterKind::EFFECT_MONSTER :
+        return "effect monster";
+    case MonsterKind::RITUAL_MONSTER:
+        return "ritual monster";
+    case MonsterKind::FUSION_MONSTER:
+        return "fusion monster";
+    case MonsterKind::XYZ_MONSTER:
+        return "xyz monster";
+    case MonsterKind::PENDULUM_MONSTER:
+        return "pendulum monster";
+    case MonsterKind::LINK_MONSTER:
+        return "link monster";
+    case MonsterKind::TOKEN_MONSTER:
+        return "token monster";
+    default:
+        return "error:unknown monster kind";
+    }
+}
+
+
+MonsterType MonsterCard::getMonsterType() const
 {
     return type;
 }
+
+
+std::string MonsterCard::getMonsterTypeString() const
+{
+    switch (type) {
+    case MonsterType::AQUA:
+        return "aqua";
+    case MonsterType::BEAST :
+        return "beast";
+    case MonsterType::BEAST_WARRIOR:
+        return "beast warrior";
+    case MonsterType::CREATOR_GOD:
+        return "creator god";
+    case MonsterType::DINOSAUR:
+        return "dinosaur";
+    case MonsterType::DIVINE_BEAST:
+        return "divine beast";
+    case MonsterType::DRAGON:
+        return "dragon";
+    case MonsterType::FAIRY:
+        return "fairy";
+    case MonsterType::FIEND:
+        return "fiend";
+    case MonsterType::FISH:
+        return "fish";
+    case MonsterType::INSECT:
+        return "insect";
+    case MonsterType::MACHINE:
+        return "machine";
+    case MonsterType::PLANT:
+        return "plant";
+    case MonsterType::PSYCHIC:
+        return "psychic";
+    case MonsterType::REPTILE:
+        return "reptile";
+    case MonsterType::ROCK:
+        return "rock";
+    case MonsterType::SPELLCASTER:
+        return "spell caster";
+    case MonsterType::WARRIOR:
+        return "warrior";
+    case MonsterType::WINGED_BEAST:
+        return "winged beast";
+    default:
+        return "error:unknown monster type";
+    }
+}
+
 
 MonsterAttribute MonsterCard::getAttribute() const
 {
     return attribute;
 }
 
+std::string MonsterCard::getAttributeString() const
+{
+    switch (attribute) {
+    case MonsterAttribute::DARK:
+        return "dark";
+    case MonsterAttribute::DIVINE :
+        return "divine";
+    case MonsterAttribute::EARTH:
+        return "earth";
+    case MonsterAttribute::FIRE:
+        return "fire";
+    case MonsterAttribute::LIGHT:
+        return "light";
+    case MonsterAttribute::WATER:
+        return "water";
+    case MonsterAttribute::WIND:
+        return "wind";
+    default:
+        return "error:unknown attribute";
+}
+}
 int MonsterCard::getLevel() const
 {
     return level;

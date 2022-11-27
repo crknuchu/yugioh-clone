@@ -17,10 +17,11 @@ public:
     TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
 
 
-    TrapType getType() const;
+    TrapType getTrapType() const;
+    std::string getTrapTypeString() const;
 
 protected:
-    TrapType type;
+    TrapType trapType;
 };
 
 #endif // TRAPCARD_H

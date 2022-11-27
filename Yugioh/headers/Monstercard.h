@@ -66,8 +66,12 @@ public:
 
     int getAttackPoints() const;
     int getDefensePoints() const;
-    MonsterType getType() const;
+    MonsterType getMonsterType() const;
+    std::string getMonsterTypeString() const;
+    MonsterKind getMonsterKind()const;
+    std::string getMonsterKindString()const;
     MonsterAttribute getAttribute() const;
+    std::string getAttributeString() const;
     int getLevel() const;
 
     void setAttackPoints(int newAttackPoints);
@@ -89,7 +93,7 @@ protected:
     int attackPoints;
     int defensePoints;
     MonsterType type;
-    MonsterKind kind;
+    MonsterKind monsterKind;
     MonsterAttribute attribute;
     int level;
     bool active;
