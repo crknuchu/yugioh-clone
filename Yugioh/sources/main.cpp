@@ -19,7 +19,7 @@ int main(int argc,char **argv)
 
 
   MonsterCard card("Sibirski Plavac",3000, 2500,8,
-                   MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,  CardType::MONSTER_CARD, CardLocation::HAND, "Placeholder Description"
+                   MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,false,Summon::NONE,  CardType::MONSTER_CARD, CardLocation::HAND, "Placeholder Description"
                    );
   std::cout << card << std::endl;
 
