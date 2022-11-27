@@ -40,9 +40,6 @@ public:
 
     std::string  getCardLocationString() const;
 
-
-
-
     void setCardLocation(CardLocation newCardLocation);
 
     const std::string &getCardDescription() const;
