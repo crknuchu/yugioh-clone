@@ -4,6 +4,16 @@
 #include "Player.h"
 #include <QGraphicsView>
 
+enum class GamePhase{
+
+  DRAW_PHASE,
+  STANDBY_PHASE,
+  MAIN_PHASE_1,
+  BATTLE_PHASE,
+  MAIN_PHASE_2,
+  END_PHASE
+};
+
 class Game: public QGraphicsView
 {
 public:
