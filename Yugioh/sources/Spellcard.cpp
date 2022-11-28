@@ -2,9 +2,10 @@
 #include "headers/Card.h"
 
 
-SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription)
+SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active)
     : Card(cardName, cardType, cardLocation, cardDescription)
     ,type(type)
+    ,active(active)
 {}
 
 
@@ -32,6 +33,11 @@ std::string SpellCard::getSpellTypeString() const
         default:
             return "error:unknown spell type";
         }
+}
+
+void SpellCard::activateSpell()
+{
+    this->active = true;
 }
 
 

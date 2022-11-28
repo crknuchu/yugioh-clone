@@ -14,14 +14,17 @@ class TrapCard : public Card
 {
 public:
 
-    TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
+    TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active = false);
 
 
     TrapType getTrapType() const;
     std::string getTrapTypeString() const;
 
+    void activateTrap();
+
 protected:
     TrapType trapType;
+    bool active;
 };
 
 #endif // TRAPCARD_H

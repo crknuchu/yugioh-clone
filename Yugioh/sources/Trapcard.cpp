@@ -1,8 +1,9 @@
 #include "headers/Trapcard.h"
 
-TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription)
+TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active)
     : Card(cardName, cardType, cardLocation, cardDescription)
     ,trapType(type)
+    ,active(active)
 {}
 
 
@@ -22,6 +23,11 @@ std::string TrapCard::getTrapTypeString() const
         return "counter trap";
     default:
         return "error:unknown trap type";
+    }
 }
+
+void TrapCard::activateTrap()
+{
+    this->active = true;
 }
 
