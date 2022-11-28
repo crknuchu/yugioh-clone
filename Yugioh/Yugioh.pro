@@ -15,7 +15,7 @@ SOURCES += \
         sources/Deck.cpp \
         sources/Graveyard.cpp \
         sources/Hand.cpp \
-        sources/Player.cpp 
+        sources/Player.cpp
 
 HEADERS += \
     headers/Card.h \
@@ -27,9 +27,13 @@ HEADERS += \
     headers/Deck.h \
     headers/Graveyard.h \
     headers/Hand.h \
-    headers/Player.h
+    headers/Player.h \
+    headers/ui_mainwindow.h
 
 RESOURCES += \
         resources.qrc
+
+FORMS += \
+    sources/mainwindow.ui
 
 
