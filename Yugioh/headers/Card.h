@@ -60,6 +60,7 @@ protected:
     CardLocation cardLocation;
     std::string cardDescription;
     //cardImage
+    CardMenu *cardMenu = new CardMenu(this);
 
 
 

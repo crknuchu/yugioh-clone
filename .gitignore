@@ -13,3 +13,11 @@ Trapcard.o
 main.o
 qrc_resources.cpp
 qrc_resources.o
+CardList.o
+CardMenu.o
+Deck.o
+Graveyard.o
+Hand.o
+moc_Game.cpp
+moc_Game.o
+moc_predefs.h

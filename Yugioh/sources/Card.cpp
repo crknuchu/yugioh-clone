@@ -1,7 +1,8 @@
 #include "headers/Card.h"
-#include<numeric>
-#include<iterator>
+#include <numeric>
+#include <iterator>
 #include <iostream>
+#include "headers/CardMenu.h"
 
 
 Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsItem *parent)
@@ -78,7 +79,8 @@ void Card::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
 }
 
 void Card::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){
-    std::cout<<"leave"<<std::endl;
+    // std::cout<<"leave"<<std::endl;
+    cardMenu->hide();
 }
 
 void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
@@ -86,7 +88,8 @@ void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
 }
 
 void Card::menuPopUp(QGraphicsSceneHoverEvent *event){
-    std::cout<<"menu pops up"<<std::endl;
+    // std::cout<<"menu pops up"<<std::endl;
+    cardMenu->show();
 }
 
 void Card::setName(std::string name){

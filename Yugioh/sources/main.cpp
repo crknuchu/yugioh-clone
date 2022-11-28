@@ -4,6 +4,7 @@
 #include "headers/Game.h"
 #include <iostream>
 #include <QApplication>
+#include "headers/CardMenu.h"
 
 int main(int argc,char **argv)
 {
@@ -13,7 +14,8 @@ int main(int argc,char **argv)
   Player player2("Milan");
 
   Game game(player1, player2);
-//  game.start();
+  game.show();
+  //  game.start();
   //game->show(); this is to turn on the graphics, need to decide if we use Game as pointer
 
 
@@ -24,7 +26,16 @@ int main(int argc,char **argv)
                    MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
                    8, "Sibirski Plavac", CardType::MONSTER_CARD, CardLocation::HAND, "Placeholder Description"
                    );
-  std::cout << card << std::endl;
+  // std::cout << card.getHeight() << std::endl;
+
+
+
+  CardMenu cardmenu(&card);
+  // cardmenu.setGeometry(0,0,card.getWidth(),card.getHeight());
+  // cardmenu.setGeometry(card.boundingRect());
+  // card.boundingRect();
+  // cardmenu.show();
+
 
   app.exec();
   return 0;
