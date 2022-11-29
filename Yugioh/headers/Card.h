@@ -58,6 +58,7 @@ public:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
 
+    CardMenu *cardMenu = new CardMenu(0,450);
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
@@ -68,7 +69,7 @@ protected:
     std::string cardDescription;
     //cardImage
     // CardMenu *cardMenu = new CardMenu(this);
-    CardMenu *cardMenu = new CardMenu();
+    
 
 
 

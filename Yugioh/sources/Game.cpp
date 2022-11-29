@@ -50,6 +50,9 @@ Game::Game(Player p1, Player p2, QWidget *parent)
      monsterCard1->setName("monsterCard1");
 
      scene->addItem(monsterCard1);
+     scene->addWidget(monsterCard1->cardMenu);
+     monsterCard1->cardMenu->move(0,450);
+     monsterCard1->cardMenu->hide();
 
      // FIXME:Maybe this doesn't work because getHeight() returns height which is a private field of Card class so MonsterCard can't see it?
         // monsterCard1->setPos(0, scene->height() - monsterCard1->getHeight());
@@ -64,7 +67,7 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 //     QPalette palette;
 //     palette.setBrush(QPalette::Window, background);
      QBrush brush(QPalette::Window, background);
-     ui->graphicsView->setBackgroundBrush(brush);
+    //  ui->graphicsView->setBackgroundBrush(brush);
 
 }
 

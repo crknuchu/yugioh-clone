@@ -101,7 +101,7 @@ void Card::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
 
 void Card::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){
     // std::cout<<"leave"<<std::endl;
-    // cardMenu->hide();
+    cardMenu->hide();
 }
 
 void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
@@ -110,7 +110,7 @@ void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
 
 void Card::menuPopUp(QGraphicsSceneHoverEvent *event){
     // std::cout<<"menu pops up"<<std::endl;
-    // cardMenu->show();
+    cardMenu->show();
 }
 
 void Card::setName(std::string name){

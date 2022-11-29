@@ -1,20 +1,26 @@
 #include "headers/CardMenu.h"
 #include <iostream>
+// #include "headers/Card.h"
 
 CardMenu::CardMenu()
 {
     // std::cout<<"test";
     setGeometry(0,0,150,0); //this needs to be the size of the card, not hardcoded and the location just above the card
+    setWindowFlags(Qt::FramelessWindowHint);
     layout->addWidget(activateButton);
     layout->addWidget(setButton);
-    show();
 }
 
-// CardMenu::CardMenu(auto *parent){
-//     //   setGeometry(0,0,parent->getWidth(),0);
-//     //   setWindowFlags(Qt::FramelessWindowHint);
-//     setGeometry(0,0,150,0);
-//     layout->addWidget(activateButton);
-//     layout->addWidget(setButton);
-//     //   show();
-// }
+CardMenu::CardMenu(int x, int y){
+    // setGeometry(0,0parent->getWidth(),0);
+    setGeometry(x,y,100,0);
+    setWindowFlags(Qt::FramelessWindowHint);
+    // setGeometry(0,0,150,0);
+    layout->addWidget(activateButton);
+    layout->addWidget(setButton);
+    //   show();
+}
+
+void CardMenu::setWidth(int width){
+    this->setWidth(width);
+}
