@@ -6,6 +6,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsItem>
 #include <QGraphicsSceneHoverEvent>
+#include "headers/CardMenu.h"
 
 
 enum class CardType
@@ -66,7 +67,8 @@ protected:
     CardLocation cardLocation;
     std::string cardDescription;
     //cardImage
-    CardMenu *cardMenu = new CardMenu(this);
+    // CardMenu *cardMenu = new CardMenu(this);
+    CardMenu *cardMenu = new CardMenu();
 
 
 
