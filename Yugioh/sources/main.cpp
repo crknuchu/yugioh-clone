@@ -3,47 +3,52 @@
 #include "headers/Spellcard.h"
 #include "headers/Player.h"
 #include "headers/Game.h"
+#include "headers/Hand.h"
+#include "headers/MonsterZone.h"
 #include <iostream>
 #include <QApplication>
 
 int main(int argc,char **argv)
 {
-   QApplication app(argc,argv);
+    QApplication app(argc,argv);
 
-  Player player1("Nikola");
-  Player player2("Milan");
+    Player player1("Nikola");
+    Player player2("Milan");
 
-  Game game(player1, player2);
-//  game.start();
-  //game->show(); this is to turn on the graphics, need to decide if we use Game as pointer
+    Game game(player1, player2);
+    //  game.start();
+    //game->show(); this is to turn on the graphics, need to decide if we use Game as pointer
 
 
-//MonsterCard::MonsterCard(int attackPoints, int defensePoints, MonsterType tip,MonsterKind kind,
-//  Attribute atribut, int level, const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription)
+    //MonsterCard::MonsterCard(int attackPoints, int defensePoints, MonsterType tip,MonsterKind kind,
+    //  Attribute atribut, int level, const std::string &CardName, CardType CType, CardPlace CPlace, const std::string &CardDescription)
 
-  MonsterCard card(3000, 2500,
+    MonsterCard card(3000, 2500,
                    MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
                    8, "Sibirski Plavac", CardType::MONSTER_CARD, CardLocation::HAND, "Placeholder Description"
                    );
-//  std::cout << card << std::endl;
 
-  SpellCard card2(SpellType::NORMAL_SPELL, "Dark Hole", CardType::SPELL_CARD, CardLocation::HAND, "Destroy all monsters on the field.");
+    MonsterCard card3(3000, 2500,
+                   MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
+                   8, "Blue-Eyes White Dragon", CardType::MONSTER_CARD, CardLocation::HAND, "Placeholder Description"
+                   );
+    //  std::cout << card << std::endl;
 
-  std::vector<MonsterCard*> monsterZone;
+    SpellCard card2(SpellType::NORMAL_SPELL, "Dark Hole", CardType::SPELL_CARD, CardLocation::HAND, "Destroy all monsters on the field.");
 
-//  monsterZone.insert(monsterZone.begin(), &card);
-//  monsterZone.insert(monsterZone.begin(), &card2);
-    MonsterCard* c = dynamic_cast<MonsterCard*>(&card);
-    MonsterCard* c1 = dynamic_cast<MonsterCard*>(&card2);
-    if(c){
-          monsterZone.insert(monsterZone.begin(), c);
-    }
-    if(c1)
-        monsterZone.insert(monsterZone.begin(), c1);
-//  if(typeid(card2).name())
-  for(auto x : monsterZone){
-      std::cout << *x << std::endl;
-  }
-  app.exec();
-  return 0;
+    Hand h = Hand();
+    h.addToHand(card);
+    h.addToHand(card3);
+
+    MonsterZone m = MonsterZone();
+    m.placeInMonsterZone(h.removeFromHand(card), 1);
+    m.placeInMonsterZone(h.removeFromHand(card3), 2);
+
+    std::cout << *m[0] << std::endl;
+    std::cout << *m[1] << std::endl;
+
+    m.removeFromMonsterZone(&card3);
+    std::cout << *m[0] << std::endl;
+    app.exec();
+    return 0;
 }

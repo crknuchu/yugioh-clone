@@ -7,6 +7,9 @@
 class MonsterZone {
 public:
     MonsterZone();
+    void placeInMonsterZone(Card* card, const int position);
+    MonsterCard* removeFromMonsterZone(MonsterCard* card);
+    MonsterCard* operator[](const int) const;
 private:
     std::vector<MonsterCard*> m_monsterZone;
 };
