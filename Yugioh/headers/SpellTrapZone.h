@@ -8,8 +8,11 @@
 class SpellTrapZone {
 public:
     SpellTrapZone();
+    void placeInSpellTrapZone(Card* card, const int position);
+    Card* removeFromSpellTrapZone(Card* card);
+    Card* operator[](const int) const;
 private:
-    std::vector<Card*> m_spellTrapzone;
+    std::vector<Card*> m_spellTrapZone;
 };
 
 #endif // SPELLTRAPZONE_H
