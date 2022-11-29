@@ -42,9 +42,9 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 
     // Creating items
     // TODO: Should monstercard1 be a pointer or not?
-     MonsterCard* monsterCard1 = new MonsterCard(3000, 2500, MonsterType::DRAGON,
+     MonsterCard* monsterCard1 = new MonsterCard("Sibirski Plavac",3000, 2500,4, MonsterType::DRAGON,
                                                  MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
-                                                 8, "Sibirski Plavac", CardType::MONSTER_CARD,
+                                                 true,Summon::SET,   CardType::MONSTER_CARD,
                                                  CardLocation::HAND, "Opis"
                                                  );
      monsterCard1->setName("monsterCard1");
