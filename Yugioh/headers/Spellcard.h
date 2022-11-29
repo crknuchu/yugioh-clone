@@ -16,15 +16,17 @@ enum class SpellType
 class SpellCard : public Card
 {
 public:
-    SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
-
-    virtual void setCard();
-    SpellType getType() const;
+    SpellCard(SpellType type,const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active = false);
 
 
+
+    SpellType getSpellType() const;
+    std:: string getSpellTypeString()const;
+    void activateSpell();
 
 protected:
     SpellType type;
+    bool active;
 
 };
 

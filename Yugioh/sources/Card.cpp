@@ -28,15 +28,24 @@ const std::string &Card::getCardName() const
     return cardName;
 }
 
-std::string Card::getCardType() const
+CardType Card::getCardType() const
 {
-    switch (cardType) {
-    case CardType::MONSTER_CARD:
-        return "MonsterCard";
-    case CardType::TRAP_CARD :
-        return "TrapCard";
+    return cardType;
+}
+
+std::string Card::getCardLocationString() const
+{
+    switch (cardLocation) {
+    case CardLocation::HAND:
+        return "hand";
+    case CardLocation::DECK :
+        return "deck";
+    case CardLocation::GRAVEYARD:
+        return "graveyard";
+    case CardLocation::FIELD:
+        return "fiels";
     default:
-        return "SpellCard";
+        return "error:unsupported card location";
     }
 }
 
@@ -44,6 +53,21 @@ CardLocation Card::getCardLocation() const
 {
     return cardLocation;
 }
+
+std::string Card::getCardTypeString() const
+{
+    switch (cardType) {
+    case CardType::MONSTER_CARD:
+        return "monster card";
+    case CardType::TRAP_CARD :
+        return "trap card";
+    case CardType::SPELL_CARD :
+        return "spell card";
+    default:
+        return "error: unsupported card type";
+    }
+}
+
 
 void Card::setCardLocation(CardLocation newCardLocation)
 {
@@ -55,10 +79,7 @@ const std::string &Card::getCardDescription() const
     return cardDescription;
 }
 
-void Card::setCard()
-{
 
-}
 
 bool Card::operator==(const Card &other) const
 {
@@ -106,5 +127,6 @@ float Card::getWidth(){
 
 
 std::ostream &operator<<(std::ostream &out, Card &c){
-    return out << "Card name: " << c.getCardName() << ", card type: " << c.getCardType()  << std::endl;
+    return out << "Card name: " << c.getCardName() << ", card type: " << c.getCardTypeString()
+               << ",card location: " << c.getCardLocationString() << ",card description: "<< c.getCardDescription() << std::endl;
 }

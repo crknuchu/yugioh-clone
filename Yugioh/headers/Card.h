@@ -8,7 +8,7 @@
 #include <QGraphicsSceneHoverEvent>
 
 
-enum class CardType // TODO: Maybe CardType should be changed to something else because of naming conflicts with Monstercard's CardType?
+enum class CardType
 {
     MONSTER_CARD,
     SPELL_CARD,
@@ -31,14 +31,20 @@ public:
 
     const std::string &getCardName() const;
 
-    std::string getCardType() const;    // TODO: Maybe return CardType instead of string?
+    std::string getCardTypeString() const;
+
+    CardType getCardType() const;
+
 
     CardLocation getCardLocation() const;
+
+    std::string  getCardLocationString() const;
+
     void setCardLocation(CardLocation newCardLocation);
 
     const std::string &getCardDescription() const;
 
-    virtual void setCard();
+    //virtual void placeCardOnField();
 
     bool operator==(const Card &card) const;
 
