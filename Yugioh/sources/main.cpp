@@ -1,5 +1,6 @@
 #include "headers/Card.h"
 #include "headers/Monstercard.h"
+#include "headers/Spellcard.h"
 #include "headers/Player.h"
 #include "headers/Game.h"
 #include <iostream>
@@ -24,8 +25,25 @@ int main(int argc,char **argv)
                    MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
                    8, "Sibirski Plavac", CardType::MONSTER_CARD, CardLocation::HAND, "Placeholder Description"
                    );
-  std::cout << card << std::endl;
+//  std::cout << card << std::endl;
 
+  SpellCard card2(SpellType::NORMAL_SPELL, "Dark Hole", CardType::SPELL_CARD, CardLocation::HAND, "Destroy all monsters on the field.");
+
+  std::vector<MonsterCard*> monsterZone;
+
+//  monsterZone.insert(monsterZone.begin(), &card);
+//  monsterZone.insert(monsterZone.begin(), &card2);
+    MonsterCard* c = dynamic_cast<MonsterCard*>(&card);
+    MonsterCard* c1 = dynamic_cast<MonsterCard*>(&card2);
+    if(c){
+          monsterZone.insert(monsterZone.begin(), c);
+    }
+    if(c1)
+        monsterZone.insert(monsterZone.begin(), c1);
+//  if(typeid(card2).name())
+  for(auto x : monsterZone){
+      std::cout << *x << std::endl;
+  }
   app.exec();
   return 0;
 }
