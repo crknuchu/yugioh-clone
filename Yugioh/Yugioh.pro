@@ -8,6 +8,7 @@ SOURCES += \
         sources/Card.cpp \
         sources/MonsterZone.cpp \
         sources/Monstercard.cpp \
+        sources/SpellTrapZone.cpp \
         sources/Spellcard.cpp \
         sources/Trapcard.cpp \
         sources/main.cpp \
@@ -22,6 +23,7 @@ HEADERS += \
     headers/Card.h \
     headers/MonsterZone.h \
     headers/Monstercard.h \
+    headers/SpellTrapZone.h \
     headers/Spellcard.h \
     headers/Trapcard.h \
     headers/Game.h \
