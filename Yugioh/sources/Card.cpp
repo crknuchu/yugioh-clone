@@ -17,6 +17,7 @@ Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLoca
     width = pixmap.width();
     setPixmap(pixmap);
     setAcceptHoverEvents(true);
+    cardMenu->hide();
 }
 
 Card::~Card()
@@ -86,32 +87,38 @@ bool Card::operator==(const Card &other) const
     return this->getCardName() == other.getCardName();
 }
 
-void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
-    if(event->button() == Qt::LeftButton){
-        // std::cout<<"left"<<std::endl;
-    }
-}
-
 void Card::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
 
-    // if(event->type() == QEvent::HoverEnter){
-    // std::cout<<"enter"<<std::endl;
-    menuPopUp(event);
 }
 
 void Card::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){
-    // std::cout<<"leave"<<std::endl;
-    cardMenu->hide();
+
 }
 
 void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
-    //std::cout<<"move"<<std::endl;
+
 }
 
-void Card::menuPopUp(QGraphicsSceneHoverEvent *event){
-    // std::cout<<"menu pops up"<<std::endl;
-    cardMenu->show();
+void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
+    if(cardMenu->visible == false){
+        cardMenu->show();
+        cardMenu->visible = true;
+    }
+    else{
+        cardMenu->hide();
+        cardMenu->visible = false;
+    }
 }
+
+void Card::move(float x,float y){
+    setPos(x,y); //we need to implement a unified move() function that moves the card and the menu at the same time
+    cardMenu->move(pos().x(),pos().y()-cardMenu->height());
+}
+
+// void Card::menuPopUp(QGraphicsSceneHoverEvent *event){
+//     // std::cout<<"menu pops up"<<std::endl;
+//     cardMenu->show();
+// }
 
 void Card::setName(std::string name){
     cardName = name;

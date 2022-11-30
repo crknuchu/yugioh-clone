@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QGraphicsSceneHoverEvent>
+#include <QEvent>
 // #include "headers/Card.h"
 
 class CardMenu: public QWidget
@@ -15,9 +17,11 @@ public:
     QPushButton *setButton = new QPushButton("Set");
     QVBoxLayout *layout = new QVBoxLayout(this);
 
+    void leaveEvent(QEvent *event);
+
     void setWidth(int width);
 
-
+    bool visible = false;
 
 protected:
    

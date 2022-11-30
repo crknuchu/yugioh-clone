@@ -1,5 +1,6 @@
 #include "headers/CardMenu.h"
 #include <iostream>
+#include <QGraphicsSceneHoverEvent>
 // #include "headers/Card.h"
 
 CardMenu::CardMenu()
@@ -13,7 +14,7 @@ CardMenu::CardMenu()
 
 CardMenu::CardMenu(int x, int y){
     // setGeometry(0,0parent->getWidth(),0);
-    setGeometry(x,y,100,0);
+    // setGeometry(x,y,100,0);
     setWindowFlags(Qt::FramelessWindowHint);
     // setGeometry(0,0,150,0);
     layout->addWidget(activateButton);
@@ -23,4 +24,8 @@ CardMenu::CardMenu(int x, int y){
 
 void CardMenu::setWidth(int width){
     this->setWidth(width);
+}
+
+void CardMenu::leaveEvent(QEvent *event){
+    hide();
 }

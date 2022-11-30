@@ -51,16 +51,11 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 
      scene->addItem(monsterCard1);
      scene->addWidget(monsterCard1->cardMenu);
-     monsterCard1->cardMenu->move(0,450);
-     monsterCard1->cardMenu->hide();
-
+     monsterCard1->move(300,300);
      // FIXME:Maybe this doesn't work because getHeight() returns height which is a private field of Card class so MonsterCard can't see it?
         // monsterCard1->setPos(0, scene->height() - monsterCard1->getHeight());
 
      // TODO: Make setting position not hardcoded:
-     monsterCard1->setPos(0, 450);
-
-
 
      QPixmap background(":/resources/field2.png");
 //     background = background.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);

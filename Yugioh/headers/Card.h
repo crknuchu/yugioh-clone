@@ -7,7 +7,9 @@
 #include <QGraphicsItem>
 #include <QGraphicsSceneHoverEvent>
 #include "headers/CardMenu.h"
-
+#include <QEvent>
+#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
 
 enum class CardType
 {
@@ -57,6 +59,8 @@ public:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+    // void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void move(float x,float y);
 
     CardMenu *cardMenu = new CardMenu(0,450);
 
