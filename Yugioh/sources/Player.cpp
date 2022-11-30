@@ -43,30 +43,9 @@ std::ostream &operator<<(std::ostream &out, Player &p){
     return out << "Player name: " << p.getPlayerName() << ", points " << p.getPlayerPoints()<<std::endl;
 }
 
-GamePhase Player::getGamePhase(const GamePhase &a) const{
-    
-    if (a == GamePhase::DRAW_PHASE){
-        return GamePhase::DRAW_PHASE;
-    }
-    if (a == GamePhase::STANDBY_PHASE){
-        return GamePhase::STANDBY_PHASE;
-    }
-    if (a == GamePhase::MAIN_PHASE_1){
-        return GamePhase::MAIN_PHASE_1;
-    }
-    if (a == GamePhase::BATTLE_PHASE){
-        return GamePhase::BATTLE_PHASE;
-    }
-    if (a == GamePhase::MAIN_PHASE_2){
-        return GamePhase::MAIN_PHASE_2;
-    }
-    else {
-        return GamePhase::END_PHASE;
-    }
-}
 
 
-Card &Player::putCardOnTheTable(Hand &hand, const GamePhase &phase){
+Card &Player::putCardOnTheTable(Hand &hand, Game &game){
 
     std::vector<Card *> tmp_hand = hand.getHand();
 
@@ -77,8 +56,8 @@ Card &Player::putCardOnTheTable(Hand &hand, const GamePhase &phase){
     }
 
     //need to implement mouse card pick event, now it just returns first card 
-    GamePhase tmpPhase = getGamePhase(phase);
-    if (tmpPhase == GamePhase::MAIN_PHASE_1 || tmpPhase == GamePhase::MAIN_PHASE_2){
+    GamePhases tmpPhase = game.getGamePhase();
+    if (tmpPhase == GamePhases::MAIN_PHASE1 || tmpPhase == GamePhases::MAIN_PHASE2){
         //TODO 
         //pickCard from hand, remove from it, and put on the table
 
@@ -94,9 +73,9 @@ int Player::checkOpponentGround(const Player &opponent) const {
     //implement ground.h ground.cpp
     return 0;
 }
-void Player::attackOpponent(const GamePhase &game, MonsterCard m, Player &opponent){
+void Player::attackOpponent(Game &game, MonsterCard m, Player &opponent){
 
-    if (getGamePhase(game) == GamePhase::BATTLE_PHASE){   
+    if (game.getGamePhase() == GamePhases::BATTLE_PHASE){   
         if (m.getCardType() == CardType::MONSTER_CARD){
             if (0 == checkOpponentGround(opponent)){
                 opponent.setPoints(m.getAttackPoints());

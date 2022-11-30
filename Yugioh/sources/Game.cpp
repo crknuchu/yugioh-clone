@@ -14,7 +14,7 @@ Game::Game(Player p1, Player p2) : m_player1(p1), m_player2(p2) {
     setFixedSize(800,600);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setWindowTitle("Yu-Gi-Oh!");
+    // setWindowTitle("Yu-Gi-Oh!");
 
     //creating items
     // Card *c = new Card();
@@ -30,14 +30,28 @@ Game::Game(Player p1, Player p2) : m_player1(p1), m_player2(p2) {
 Game::Game() {}
 Game::~Game() {}
 
-enum class GamePhases {
-  DRAW_PHASE,
-  STANDBY_PHASE,
-  MAIN_PHASE1,
-  BATTLE_PHASE,
-  MAIN_PHASE2,
-  END_PHASE
-};
+
+GamePhases Game::getGamePhase(){
+  GamePhases a;
+  if (a == GamePhases::DRAW_PHASE){
+        return GamePhases::DRAW_PHASE;
+    }
+    if (a == GamePhases::STANDBY_PHASE){
+        return GamePhases::STANDBY_PHASE;
+    }
+    if (a == GamePhases::MAIN_PHASE1){
+        return GamePhases::MAIN_PHASE1;
+    }
+    if (a == GamePhases::BATTLE_PHASE){
+        return GamePhases::BATTLE_PHASE;
+    }
+    if (a == GamePhases::MAIN_PHASE2){
+        return GamePhases::MAIN_PHASE2;
+    }
+    else {
+        return GamePhases::END_PHASE;
+    }
+}
 
 int Game::randomGenerator(const int limit) const {
   /*
@@ -99,28 +113,28 @@ void Game::start() {
   int x; // Needed for now for the cin at the end of our while loop, will be removed when checkLifePoints is implemented.
 
   // First turn is special (there is no battle phase and main phase 2):
-  GamePhases gamePhase = GamePhases::DRAW_PHASE;
+  GamePhases GamePhases = GamePhases::DRAW_PHASE;
   m_turnNumber = 1;
   firstTurnSetup();
 
-  gamePhase = GamePhases::STANDBY_PHASE;
+  GamePhases = GamePhases::STANDBY_PHASE;
   // ...
 
-  gamePhase = GamePhases::MAIN_PHASE1;
+  GamePhases = GamePhases::MAIN_PHASE1;
 
   /*
    *  Placeholder for the first turn's loop.
    *  Since the player action mechanisms are still not implemented (TODO),
    *  for now we only have a while loop that instantly finishes.
    */
-  while(gamePhase != GamePhases::END_PHASE)
+  while(GamePhases != GamePhases::END_PHASE)
   {
     /*
      *  Here the firstPlayer will play his MainPhase1 in the first turn.
      *  For now, we still don't have playMP1() implemented.
      */
 
-     gamePhase = GamePhases::END_PHASE;
+     GamePhases = GamePhases::END_PHASE;
   }
 
   m_turnNumber++;
@@ -130,18 +144,18 @@ void Game::start() {
     switchPlayers();
     std::cout << "The current player is " << m_pCurrentPlayer->getPlayerName() << "." << std::endl;
     // Draw Phase begins:
-    gamePhase = GamePhases::DRAW_PHASE;
+    GamePhases = GamePhases::DRAW_PHASE;
 
     // The current player draws a card (this is not optional).
     m_pCurrentPlayer->drawCards(1);
 
 
     // The draw phase ends and the standby phase begins (this is not optional).
-    gamePhase = GamePhases::STANDBY_PHASE;
+    GamePhases = GamePhases::STANDBY_PHASE;
     // ...
 
     // The standby phase ends and the main phase 1 begins (this is not optional).
-    gamePhase = GamePhases::MAIN_PHASE1;
+    GamePhases = GamePhases::MAIN_PHASE1;
     // ...
 
 
@@ -149,21 +163,21 @@ void Game::start() {
     // Placeholder pseudo-code for event listening:
     /*
      * if BP button was clicked                     // TODO
-     * then gamePhase = GamePhases::BATTLE_PHASE;
+     * then GamePhases = GamePhasess::BATTLE_PHASE;
      * ...
     */
 
 
     /* We (optionally) enter the MP2 only if there was a battle phase
      * and the MP2 button was clicked (TODO) */
-    if (gamePhase == GamePhases::BATTLE_PHASE)
+    if (GamePhases == GamePhases::BATTLE_PHASE)
     {
-        gamePhase = GamePhases::MAIN_PHASE2;
+        GamePhases = GamePhases::MAIN_PHASE2;
         // ...
     }
 
     // The end phase begins if the EP button was clicked (TODO):
-    gamePhase = GamePhases::END_PHASE;
+    GamePhases = GamePhases::END_PHASE;
     // ...
 
     m_turnNumber++;

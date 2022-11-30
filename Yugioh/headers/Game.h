@@ -1,16 +1,15 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include "Player.h"
 #include <QGraphicsView>
+#include "Player.h"
 
-enum class GamePhase{
-
+enum class GamePhases {
   DRAW_PHASE,
   STANDBY_PHASE,
-  MAIN_PHASE_1,
+  MAIN_PHASE1,
   BATTLE_PHASE,
-  MAIN_PHASE_2,
+  MAIN_PHASE2,
   END_PHASE
 };
 
@@ -23,6 +22,7 @@ public:
 
   // Public member functions:
   void start();
+  GamePhases getGamePhase();
 
 private:
   QGraphicsScene *scene;
