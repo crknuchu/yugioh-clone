@@ -6,7 +6,10 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsItem>
 #include <QGraphicsSceneHoverEvent>
-
+#include "headers/CardMenu.h"
+#include <QEvent>
+#include <QMouseEvent>
+#include <QGraphicsSceneMouseEvent>
 
 enum class CardType // TODO: Maybe CardType should be changed to something else because of naming conflicts with Monstercard's CardType?
 {
@@ -50,6 +53,8 @@ public:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+    // void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void move(float x,float y);
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
