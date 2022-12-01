@@ -4,7 +4,9 @@
 #include <QGraphicsScene>
 #include "headers/Card.h"
 
-Game::Game(Player p1, Player p2) : m_player1(p1), m_player2(p2) {
+Game::Game(Player p1, Player p2) {
+    m_player1 = &p1;
+    m_player2 = &p2;
     scene = new QGraphicsScene(this);
 
     scene->setSceneRect(0,0,800,600); //make the scene not hardcoded
@@ -87,13 +89,13 @@ void Game::firstTurnSetup() {
   // The game decides who will play first:
   if (decideWhoPlaysFirst() == 1)
   {
-      m_pCurrentPlayer = &m_player1;
-      m_pOtherPlayer = &m_player2;
+      m_pCurrentPlayer = m_player1;
+      m_pOtherPlayer = m_player2;
   }
   else
   {
-      m_pCurrentPlayer = &m_player2;
-      m_pOtherPlayer = &m_player1;
+      m_pCurrentPlayer = m_player2;
+      m_pOtherPlayer = m_player1;
   }
 
   std::cout << "The first one to play is " << m_pCurrentPlayer->getPlayerName() << std::endl;

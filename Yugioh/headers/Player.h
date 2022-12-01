@@ -5,8 +5,11 @@
 #include <iostream>
 #include <memory>
 #include "headers/Monstercard.h"
-#include "Game.h"
+#include "headers/Game.h"
 #include "Hand.h"
+
+class Game;
+
 class Player{ 
 
 public:

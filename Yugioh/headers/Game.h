@@ -4,6 +4,8 @@
 #include <QGraphicsView>
 #include "Player.h"
 
+class Player;
+
 enum class GamePhases {
   DRAW_PHASE,
   STANDBY_PHASE,
@@ -12,7 +14,6 @@ enum class GamePhases {
   MAIN_PHASE2,
   END_PHASE
 };
-
 class Game: public QGraphicsView
 {
 public:
@@ -27,8 +28,8 @@ public:
 private:
   QGraphicsScene *scene;
 
-  Player m_player1;
-  Player m_player2;
+  Player *m_player1;
+  Player *m_player2;
   Player *m_pCurrentPlayer;
   Player *m_pOtherPlayer;
 
