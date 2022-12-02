@@ -27,9 +27,12 @@ public:
   void setPoints(unsigned points);
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
   int checkOpponentGround(const Player &opponent) const;
+  void addMonsterCardOnTable(MonsterCard&);//activate this method whenever add new monsterCard on ground
+  std::vector<MonsterCard *> tableMonsterCards(const Player &opponent); //check vector size before attack
 private:
     std::string m_name;
     unsigned m_points;
+    std::vector<MonsterCard *> m_tableMonsterCards; //vector of monsterCards on the table, so i can check if opponent has any monsterCard on the table in order to attack him
 };
 
 // std::istream &operator>>(std::istream &in, Player &p);

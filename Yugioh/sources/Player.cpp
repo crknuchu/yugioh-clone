@@ -69,9 +69,7 @@ Card &Player::putCardOnTheTable(Hand &hand, Game &game){
 }
 
 int Player::checkOpponentGround(const Player &opponent) const {
-    //TODO
-    //implement ground.h ground.cpp
-    return 0;
+    return opponent.m_tableMonsterCards.size();
 }
 void Player::attackOpponent(Game &game, MonsterCard m, Player &opponent){
 
@@ -92,3 +90,19 @@ void Player::attackOpponent(Game &game, MonsterCard m, Player &opponent){
 
 }
 
+void Player::addMonsterCardOnTable(MonsterCard &card){
+
+    if (card.getCardType() == CardType::MONSTER_CARD){
+        this->m_tableMonsterCards.push_back(&card);
+        return;
+    }
+    else
+    {
+        throw "Not a monsterCard, cannot add to monsterCard vector\n";
+    }
+
+}
+
+std::vector<MonsterCard *> Player::tableMonsterCards(const Player &opponent){
+    return opponent.m_tableMonsterCards;
+}
