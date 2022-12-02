@@ -52,11 +52,13 @@ private:
 
 // QT related stuff:
   void setupConnections();
-
+  bool eventFilter(QObject *obj, QEvent *event) override;
 private slots:
     void btnBattlePhaseClicked();
     void btnMainPhase2Clicked();
     void btnEndPhaseClicked();
+    void windowResized();
+
 
 
 };

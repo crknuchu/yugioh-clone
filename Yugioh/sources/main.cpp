@@ -15,14 +15,8 @@ int main(int argc,char **argv)
   Player player2("Milan");
 
   Game game(player1, player2);
-  game.show();
 
-  // FIXME: This loop can't exist, because we need app.exec() (Qt's event loop)
-//  game.start();
-//    game.show(); //this is to turn on the graphics, need to decide if we use Game as pointer
-
-//  MainWindow w;
-//  w.show();
+  game.showFullScreen();
 
   return app.exec();
 }

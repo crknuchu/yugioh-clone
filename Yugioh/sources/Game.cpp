@@ -2,10 +2,11 @@
 #include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
 #include "headers/Monstercard.h"
 
+
 #include <iostream>
 #include <random>
 #include <QGraphicsScene>
-
+#include <QResizeEvent>
 
 // QMainWindow != Ui::MainWindow
 
@@ -66,14 +67,18 @@ Game::Game(Player p1, Player p2, QWidget *parent)
      QBrush brush(QPalette::Window, background);
      ui->graphicsView->setBackgroundBrush(brush);
 
+
+     this->installEventFilter(this);
+
+
 }
 
 Game::Game() {}
 Game::~Game() {
     delete ui;
     delete scene; // TODO: Check other memory deallocations too.
-    // delete monsterCard1; // We can't free this here because it lives only in the constructor. !!
-    // !! FIXME: Where do we free it then? Should it be initialized in the constructor or not?
+    // delete monsterCard1; // FIXME: We can't free this here because it lives only in the constructor. !!
+
 }
 
 int Game::randomGenerator(const int limit) const {
@@ -234,20 +239,42 @@ void Game::start() {
 
 
 // QT related stuff:
+
+
+
 void Game::setupConnections() {
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::btnBattlePhaseClicked);
     connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::btnMainPhase2Clicked);
     connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::btnEndPhaseClicked);
-
-
 }
+
+
+
+bool Game::eventFilter(QObject *obj, QEvent *event)
+{
+    if(event->type() == QEvent::Resize)
+    {
+        QResizeEvent *resizeEvent = static_cast<QResizeEvent *>(event);
+
+        qDebug("Old window:  %d / %d", resizeEvent->oldSize().width(), resizeEvent->oldSize().height()); // TODO: qDebug vs std::cout
+        qDebug("New window:  %d / %d", resizeEvent->size().width(), resizeEvent->size().height());
+        return true;
+    }
+    else {
+        return QObject::eventFilter(obj, event);
+    }
+}
+
+
+
 
 // Slots:
 void Game::btnBattlePhaseClicked()
 {
     std::cout << "Battle phase button clicked" << std::endl;
     m_currentGamePhase = GamePhases::BATTLE_PHASE;
-//    std::cout << "m_currentGamePhase: " << m_currentGamePhase << std::endl;
+
+    ui->labelGamePhase->setText("BATTLE PHASE");
 }
 
 void Game::btnMainPhase2Clicked()
@@ -267,6 +294,11 @@ void Game::btnEndPhaseClicked()
      */
     // In the end phase, we switch the players:
     //    switchPlayers();
+}
+
+void Game::windowResized()
+{
+    std::cout << "Window has been resized!" << std::endl;
 }
 
 
