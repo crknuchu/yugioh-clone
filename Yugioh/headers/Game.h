@@ -27,8 +27,8 @@ public:
 
 private:
   QGraphicsScene *scene;
-
-  Player *m_player1;
+  GamePhases m_phase;
+  Player *m_player1;  
   Player *m_player2;
   Player *m_pCurrentPlayer;
   Player *m_pOtherPlayer;

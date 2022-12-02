@@ -2,6 +2,7 @@
 #include <iostream>
 #include <random>
 #include <QGraphicsScene>
+#include "headers/Player.h"
 #include "headers/Card.h"
 
 Game::Game(Player p1, Player p2) {
@@ -34,20 +35,19 @@ Game::~Game() {}
 
 
 GamePhases Game::getGamePhase(){
-  GamePhases a;
-  if (a == GamePhases::DRAW_PHASE){
+  if (this->m_phase == GamePhases::DRAW_PHASE){
         return GamePhases::DRAW_PHASE;
     }
-    if (a == GamePhases::STANDBY_PHASE){
+    if (this->m_phase == GamePhases::STANDBY_PHASE){
         return GamePhases::STANDBY_PHASE;
     }
-    if (a == GamePhases::MAIN_PHASE1){
+    if (this->m_phase == GamePhases::MAIN_PHASE1){
         return GamePhases::MAIN_PHASE1;
     }
-    if (a == GamePhases::BATTLE_PHASE){
+    if (this->m_phase == GamePhases::BATTLE_PHASE){
         return GamePhases::BATTLE_PHASE;
     }
-    if (a == GamePhases::MAIN_PHASE2){
+    if (this->m_phase == GamePhases::MAIN_PHASE2){
         return GamePhases::MAIN_PHASE2;
     }
     else {
