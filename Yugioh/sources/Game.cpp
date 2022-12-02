@@ -68,6 +68,8 @@ Game::Game(Player p1, Player p2, QWidget *parent)
      ui->graphicsView->setBackgroundBrush(brush);
 
 
+     // With this, we will be notified of every resize event on MainWindow
+     // TODO:We can use new information about resolution to scale UI
      this->installEventFilter(this);
 
 
@@ -274,6 +276,7 @@ void Game::btnBattlePhaseClicked()
     std::cout << "Battle phase button clicked" << std::endl;
     m_currentGamePhase = GamePhases::BATTLE_PHASE;
 
+    // Set the label text to indicate that we are in the Battle Phase:
     ui->labelGamePhase->setText("BATTLE PHASE");
 }
 
@@ -281,12 +284,18 @@ void Game::btnMainPhase2Clicked()
 {
     std::cout << "Main phase 2 button clicked" << std::endl;
     m_currentGamePhase = GamePhases::MAIN_PHASE2;
+
+    // Set the label text to indicate that we are in the Main Phase 2:
+    ui->labelGamePhase->setText("MAIN PHASE 2");
 }
 
 void Game::btnEndPhaseClicked()
 {
     std::cout << "End phase button clicked" << std::endl;
     m_currentGamePhase = GamePhases::END_PHASE;
+
+    // Set the label text to indicate that we are in the End Phase:
+    ui->labelGamePhase->setText("END PHASE");
 
     /*
      *  FIXME: This breaks the program, probably because we didn't call firstTurnSetup() yet,
