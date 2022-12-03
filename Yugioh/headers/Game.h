@@ -4,6 +4,7 @@
 #include "Player.h"
 #include <QGraphicsScene>
 #include <QMainWindow>
+#include <QResizeEvent>
 
 namespace Ui {
     class MainWindow;
@@ -51,15 +52,21 @@ private:
 
 
 // QT related stuff:
+  int m_windowWidth;
+  int m_windowHeight;
+
   void setupConnections();
   bool eventFilter(QObject *obj, QEvent *event) override;
+
 private slots:
     void btnBattlePhaseClicked();
     void btnMainPhase2Clicked();
     void btnEndPhaseClicked();
-    void windowResized();
+    void onMainWindowResize(QResizeEvent *);
 
 
+signals:
+    void mainWindowResized(QResizeEvent *);
 
 };
 

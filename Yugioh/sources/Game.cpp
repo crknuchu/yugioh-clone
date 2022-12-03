@@ -6,7 +6,6 @@
 #include <iostream>
 #include <random>
 #include <QGraphicsScene>
-#include <QResizeEvent>
 
 // QMainWindow != Ui::MainWindow
 
@@ -28,12 +27,24 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     // Setup connections:
     setupConnections();
 
+
+
+    /* Install an event filter for Resize event
+       With this, we will be notified of every resize event on MainWindow
+       We can use this to get new resolution after showFullscreen, whereas
+       standard way of this->size() would return window size from the form designer,
+       and not after going fullscreen.
+       However, this only applies to this constructor (in other parts, this->size() can be used).
+    */
+    this->installEventFilter(this);
+
     // Create the scene:
     scene = new QGraphicsScene(this);
 
     ui->graphicsView->setScene(scene);
 
-    ui->graphicsView->setSceneRect(0,0,800,600); // Make the scene not hardcoded
+    ui->graphicsView->setSceneRect(0, 0, 800, 600); // TODO: Remove this from constructor
+
 
     //    setFixedSize(800,600);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -58,21 +69,12 @@ Game::Game(Player p1, Player p2, QWidget *parent)
      // TODO: Make setting position not hardcoded:
      monsterCard1->setPos(0, 450);
 
-
-
-     QPixmap background(":/resources/field2.png");
+//     QPixmap background(":/resources/field2.png");
 //     background = background.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 //     QPalette palette;
 //     palette.setBrush(QPalette::Window, background);
-     QBrush brush(QPalette::Window, background);
-     ui->graphicsView->setBackgroundBrush(brush);
-
-
-     // With this, we will be notified of every resize event on MainWindow
-     // TODO:We can use new information about resolution to scale UI
-     this->installEventFilter(this);
-
-
+//     QBrush brush(QPalette::Window, background);
+//     ui->graphicsView->setBackgroundBrush(brush);
 }
 
 Game::Game() {}
@@ -214,6 +216,7 @@ void Game::playTurn() {
 
 
 void Game::start() {
+
   std::cout << "The game has started." << std::endl;
 
   int tmpBlockLoop; // Needed for now for the cin at the end of our while loop, will be removed when checkLifePoints is implemented.
@@ -240,17 +243,17 @@ void Game::start() {
 }
 
 
+
 // QT related stuff:
-
-
-
 void Game::setupConnections() {
+    // MainWindow
+    connect(this, &Game::mainWindowResized, this, &Game::onMainWindowResize);
+
+    // Buttons
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::btnBattlePhaseClicked);
     connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::btnMainPhase2Clicked);
     connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::btnEndPhaseClicked);
 }
-
-
 
 bool Game::eventFilter(QObject *obj, QEvent *event)
 {
@@ -258,8 +261,10 @@ bool Game::eventFilter(QObject *obj, QEvent *event)
     {
         QResizeEvent *resizeEvent = static_cast<QResizeEvent *>(event);
 
-        qDebug("Old window:  %d / %d", resizeEvent->oldSize().width(), resizeEvent->oldSize().height()); // TODO: qDebug vs std::cout
-        qDebug("New window:  %d / %d", resizeEvent->size().width(), resizeEvent->size().height());
+        // We need to emit the signal here so that we can scale the UI AFTER we catch it
+        if (resizeEvent != nullptr)
+            emit mainWindowResized(resizeEvent);
+
         return true;
     }
     else {
@@ -305,9 +310,14 @@ void Game::btnEndPhaseClicked()
     //    switchPlayers();
 }
 
-void Game::windowResized()
+void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
     std::cout << "Window has been resized!" << std::endl;
+
+    // Set our private variables to the new size:
+    m_windowWidth = resizeEvent->size().width();
+    m_windowHeight = resizeEvent->size().height();
+    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
 }
 
 
