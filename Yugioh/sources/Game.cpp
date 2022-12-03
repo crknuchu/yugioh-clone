@@ -16,18 +16,10 @@ Game::Game(Player p1, Player p2, QWidget *parent)
       m_player2(p2)
 
 {
-    /*
-     *  !! FIXME: For some reason, uic (Qt Ui Compiler) is not run automatically on Build,
-     *            so any additions to the .ui file must be compiled manually
-     *            by using uic mainwindow.ui -o ui_mainwindow.h
-     */
-
     ui->setupUi(this);
 
     // Setup connections:
     setupConnections();
-
-
 
     /* Install an event filter for Resize event
        With this, we will be notified of every resize event on MainWindow
@@ -38,51 +30,15 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     */
     this->installEventFilter(this);
 
-    // Create the scene:
+    // Create a new scene:
     scene = new QGraphicsScene(this);
-
     ui->graphicsView->setScene(scene);
-
-    ui->graphicsView->setSceneRect(0, 0, 800, 600); // TODO: Remove this from constructor
-
-
-    //    setFixedSize(800,600);
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setWindowTitle("Yu-Gi-Oh!"); // This compiles even without ui->graphicsView
-
-
-    // Creating items
-    // TODO: Should monstercard1 be a pointer or not?
-     MonsterCard* monsterCard1 = new MonsterCard(3000, 2500, MonsterType::DRAGON,
-                                                 MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
-                                                 8, "Sibirski Plavac", CardType::MONSTER_CARD,
-                                                 CardLocation::HAND, "Opis"
-                                                 );
-     monsterCard1->setName("monsterCard1");
-
-     scene->addItem(monsterCard1);
-
-     // FIXME:Maybe this doesn't work because getHeight() returns height which is a private field of Card class so MonsterCard can't see it?
-        // monsterCard1->setPos(0, scene->height() - monsterCard1->getHeight());
-
-     // TODO: Make setting position not hardcoded:
-     monsterCard1->setPos(0, 450);
-
-//     QPixmap background(":/resources/field2.png");
-//     background = background.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-//     QPalette palette;
-//     palette.setBrush(QPalette::Window, background);
-//     QBrush brush(QPalette::Window, background);
-//     ui->graphicsView->setBackgroundBrush(brush);
 }
 
 Game::Game() {}
 Game::~Game() {
     delete ui;
-    delete scene; // TODO: Check other memory deallocations too.
-    // delete monsterCard1; // FIXME: We can't free this here because it lives only in the constructor. !!
-
+    delete scene;
 }
 
 int Game::randomGenerator(const int limit) const {
@@ -214,7 +170,6 @@ void Game::playTurn() {
     m_currentTurn++;
 }
 
-
 void Game::start() {
 
   std::cout << "The game has started." << std::endl;
@@ -273,8 +228,6 @@ bool Game::eventFilter(QObject *obj, QEvent *event)
 }
 
 
-
-
 // Slots:
 void Game::btnBattlePhaseClicked()
 {
@@ -314,10 +267,52 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
     std::cout << "Window has been resized!" << std::endl;
 
-    // Set our private variables to the new size:
+    // Set our private variables to the new window size:
     m_windowWidth = resizeEvent->size().width();
     m_windowHeight = resizeEvent->size().height();
+
+    // Check: Very rarely, this displays the same width/height as the old window?
     std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
+
+    ui->graphicsView->setWindowTitle("Yu-Gi-Oh!");
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    /* TODO:
+     *  This makes the scene display correctly next to the buttons,
+     *  but its probably only because qt is smart enough to figure out
+     *  that we don't want our scene to be rendered over our buttons.
+     *
+     *  Also, after doing this setFixedSize, scene()->width() will be shown as m_windowWidth,
+     *  even though graphically that isn't really true (because of the vertical layout for buttons)
+     */
+    ui->graphicsView->setFixedSize(m_windowWidth, m_windowHeight);
+    ui->graphicsView->scene()->setSceneRect(0, 0, m_windowWidth, m_windowHeight);
+    ui->graphicsView->fitInView(0, 0, m_windowWidth, m_windowHeight, Qt::KeepAspectRatio);
+
+
+    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
+
+
+    // FIXME: Memory leak.
+    // This is a placeholder, in future we won't initialize cards here probably.
+    MonsterCard* monsterCard1 = new MonsterCard(3000, 2500, MonsterType::DRAGON,
+                                                MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
+                                                8, "Sibirski Plavac", CardType::MONSTER_CARD,
+                                                CardLocation::HAND, "Opis"
+                                                );
+    monsterCard1->setName("monsterCard1");
+    monsterCard1->setPos(0, 350);
+    ui->graphicsView->scene()->addItem(monsterCard1);
+
+
+
+//    QPixmap background(":/resources/field2.png");
+//    background = background.scaled(m_windowWidth, m_windowHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+//    QPalette palette;
+//    palette.setBrush(QPalette::Window, background);
+//    QBrush brush(QPalette::Window, background);
+//    ui->graphicsView->setBackgroundBrush(brush);
 }
 
 

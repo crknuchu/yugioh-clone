@@ -12,7 +12,6 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGraphicsView>
-#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
@@ -29,7 +28,6 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QWidget *widget;
-    QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout;
     QSpacerItem *verticalSpacer_2;
     QLabel *labelGamePhase;
@@ -50,12 +48,9 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         widget = new QWidget(centralwidget);
         widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(1, 1, 1391, 701));
-        horizontalLayout = new QHBoxLayout(widget);
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        horizontalLayout->setContentsMargins(0, 0, 0, 0);
-        verticalLayout = new QVBoxLayout();
+        verticalLayout = new QVBoxLayout(widget);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setContentsMargins(0, 0, 0, 0);
         verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer_2);
@@ -84,14 +79,9 @@ public:
 
         verticalLayout->addWidget(btnEndPhase);
 
-
-        horizontalLayout->addLayout(verticalLayout);
-
-        graphicsView = new QGraphicsView(widget);
+        graphicsView = new QGraphicsView(centralwidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-
-        horizontalLayout->addWidget(graphicsView);
-
+        graphicsView->setGeometry(QRect(90, 2, 301, 201));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
