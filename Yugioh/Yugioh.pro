@@ -10,6 +10,7 @@ QT += \
         widgets
 
 SOURCES += \
+        sources/GameSettings.cpp \
         sources/mainmenu.cpp \
         sources/Card.cpp \
         sources/Monstercard.cpp \
@@ -25,6 +26,7 @@ SOURCES += \
         sources/CardMenu.cpp
 
 HEADERS += \
+    headers/GameSettings.h \
     headers/Card.h \
     headers/Monstercard.h \
     headers/Spellcard.h \
@@ -42,6 +44,7 @@ RESOURCES += \
         resources.qrc
 
 FORMS += \
+    sources/GameSettings.ui \
     sources/mainmenu.ui \
     sources/mainwindow.ui
 

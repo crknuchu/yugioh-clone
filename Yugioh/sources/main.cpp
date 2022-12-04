@@ -20,7 +20,6 @@ int main(int argc,char **argv)
 
   MainMenu m;
   m.show();
-
   // FIXME: This loop can't exist, because we need app.exec() (Qt's event loop)
 //  game.start();
 //    game.show(); //this is to turn on the graphics, need to decide if we use Game as pointer
