@@ -30,15 +30,15 @@ public:
     QWidget *centralwidget;
     QGraphicsView *graphicsView;
     QWidget *widget;
-    QVBoxLayout *verticalLayout;
+    QVBoxLayout *leftVerticalLayout;
+    QLabel *labelImage;
+    QTextBrowser *textBrowserEffect;
     QSpacerItem *verticalSpacer_2;
     QLabel *labelGamePhase;
     QSpacerItem *verticalSpacer;
     QPushButton *btnBattlePhase;
     QPushButton *btnMainPhase2;
     QPushButton *btnEndPhase;
-    QTextBrowser *textBrowserEffect;
-    QLabel *labelImage;
     QMenuBar *menubar;
     QStatusBar *statusbar;
 
@@ -51,46 +51,53 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         graphicsView = new QGraphicsView(centralwidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        graphicsView->setGeometry(QRect(310, 50, 1021, 461));
+        graphicsView->setGeometry(QRect(420, 0, 1211, 771));
         widget = new QWidget(centralwidget);
         widget->setObjectName(QString::fromUtf8("widget"));
-        verticalLayout = new QVBoxLayout(widget);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
+        widget->setGeometry(QRect(2, 2, 401, 761));
+        leftVerticalLayout = new QVBoxLayout(widget);
+        leftVerticalLayout->setObjectName(QString::fromUtf8("leftVerticalLayout"));
+        leftVerticalLayout->setContentsMargins(0, 0, 0, 0);
+        labelImage = new QLabel(widget);
+        labelImage->setObjectName(QString::fromUtf8("labelImage"));
+        labelImage->setEnabled(true);
+        labelImage->setMinimumSize(QSize(399, 300));
+
+        leftVerticalLayout->addWidget(labelImage);
+
+        textBrowserEffect = new QTextBrowser(widget);
+        textBrowserEffect->setObjectName(QString::fromUtf8("textBrowserEffect"));
+
+        leftVerticalLayout->addWidget(textBrowserEffect);
+
         verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        verticalLayout->addItem(verticalSpacer_2);
+        leftVerticalLayout->addItem(verticalSpacer_2);
 
         labelGamePhase = new QLabel(widget);
         labelGamePhase->setObjectName(QString::fromUtf8("labelGamePhase"));
 
-        verticalLayout->addWidget(labelGamePhase);
+        leftVerticalLayout->addWidget(labelGamePhase);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        verticalLayout->addItem(verticalSpacer);
+        leftVerticalLayout->addItem(verticalSpacer);
 
         btnBattlePhase = new QPushButton(widget);
         btnBattlePhase->setObjectName(QString::fromUtf8("btnBattlePhase"));
 
-        verticalLayout->addWidget(btnBattlePhase);
+        leftVerticalLayout->addWidget(btnBattlePhase);
 
         btnMainPhase2 = new QPushButton(widget);
         btnMainPhase2->setObjectName(QString::fromUtf8("btnMainPhase2"));
 
-        verticalLayout->addWidget(btnMainPhase2);
+        leftVerticalLayout->addWidget(btnMainPhase2);
 
         btnEndPhase = new QPushButton(widget);
         btnEndPhase->setObjectName(QString::fromUtf8("btnEndPhase"));
 
-        verticalLayout->addWidget(btnEndPhase);
+        leftVerticalLayout->addWidget(btnEndPhase);
 
-        textBrowserEffect = new QTextBrowser(centralwidget);
-        textBrowserEffect->setObjectName(QString::fromUtf8("textBrowserEffect"));
-        textBrowserEffect->setGeometry(QRect(140, 80, 159, 431));
-        labelImage = new QLabel(centralwidget);
-        labelImage->setObjectName(QString::fromUtf8("labelImage"));
-        labelImage->setGeometry(QRect(140, 50, 161, 31));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -108,10 +115,7 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
-        labelGamePhase->setText(QCoreApplication::translate("MainWindow", "GamePhase", nullptr));
-        btnBattlePhase->setText(QCoreApplication::translate("MainWindow", "Battle Phase", nullptr));
-        btnMainPhase2->setText(QCoreApplication::translate("MainWindow", "Main Phase 2", nullptr));
-        btnEndPhase->setText(QCoreApplication::translate("MainWindow", "End Phase", nullptr));
+        labelImage->setText(QCoreApplication::translate("MainWindow", "ImageLabel", nullptr));
         textBrowserEffect->setHtml(QCoreApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -121,7 +125,10 @@ public:
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Monster effect</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", nullptr));
-        labelImage->setText(QCoreApplication::translate("MainWindow", "ImageLabel", nullptr));
+        labelGamePhase->setText(QString());
+        btnBattlePhase->setText(QCoreApplication::translate("MainWindow", "Battle Phase", nullptr));
+        btnMainPhase2->setText(QCoreApplication::translate("MainWindow", "Main Phase 2", nullptr));
+        btnEndPhase->setText(QCoreApplication::translate("MainWindow", "End Phase", nullptr));
     } // retranslateUi
 
 };

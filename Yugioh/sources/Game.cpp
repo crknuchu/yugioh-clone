@@ -308,25 +308,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // Check: Very rarely, this displays the same width/height as the old window
     std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
 
-    ui->graphicsView->setWindowTitle("Yu-Gi-Oh!");
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    /* TODO:
-     *  This makes the scene display correctly next to the buttons,
-     *  but its probably only because qt is smart enough to figure out
-     *  that we don't want our scene to be rendered over our buttons.
-     *
-     *  Also, after doing this setFixedSize, scene()->width() will be shown as m_windowWidth,
-     *  even though graphically that isn't really true (because of the vertical layout for buttons)
-     */
-    ui->graphicsView->setFixedSize(m_windowWidth, m_windowHeight);
-    ui->graphicsView->scene()->setSceneRect(0, 0, m_windowWidth, m_windowHeight);
-
-    // TODO: Check if this is needed
-    ui->graphicsView->fitInView(0, 0, m_windowWidth, m_windowHeight, Qt::KeepAspectRatio);
-
-    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
 
 
     // FIXME: Memory leak.
@@ -337,31 +319,32 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                                                 CardLocation::HAND, "Opis"
                                                 );
 
-    MonsterCard* monsterCard2 = new MonsterCard(3000, 2500, MonsterType::DRAGON,
-                                                MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
-                                                8, "Sibirski Plavac", CardType::MONSTER_CARD,
-                                                CardLocation::HAND, "Opis"
-                                                );
-
     monsterCard1->setName("monsterCard1");
-    monsterCard2->setName("monsterCard2");
-
     monsterCard1->setPos(450, 450);
-
     ui->graphicsView->scene()->addItem(monsterCard1);
 
 
-    // WIP: Hover card info on the left
+
+
+    // WIP: UI components
+
+    // Game phase buttons and label:
+    ui->labelGamePhase->setAlignment(Qt::AlignCenter);
+
+
+    // Card info
     // TODO: Move this to onHover slot for QGraphicsPixmapItem hover event
     ui->labelImage->setAlignment(Qt::AlignCenter);
-    ui->labelImage->setBaseSize(200, 150); // This is the size of QGraphicsPixmapItem in Card.cpp, needs to be not hardcoded
+//    ui->labelImage->setMinimumSize(textBrowserWidth, 300);
+
+
+
 
     ui->textBrowserEffect->setText(
                 "This legendary dragon is a powerful engine of destruction. "
                 "Virtually invincible, very few have faced "
                 "this awesome creature and lived to tell the tale."
     );
-
 
     QPixmap pix;
     pix.load(":/resources/blue_eyes.jpg");
@@ -370,11 +353,44 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 
 
+    // GraphicsView and GraphicsScene adjustments:
+
+    ui->graphicsView->setWindowTitle("Yu-Gi-Oh!");
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+
+    // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
+
+    // TODO: Change leftVerticalLayout name to something normal
+    const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
+    const int leftVerticalLayoutHeight = ui->leftVerticalLayout->sizeHint().height();
+    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
+
+    /* TODO:
+     *  This makes the scene display correctly next to the buttons,
+     *  but its probably only because qt is smart enough to figure out
+     *  that we don't want our scene to be rendered over our buttons.
+     *
+     *  Also, after doing this setFixedSize, scene()->width() will be shown as m_windowWidth,
+     *  even though graphically that isn't really true (because of the vertical layout for buttons)
+     */
+    const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
+    ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
+    ui->graphicsView->scene()->setSceneRect(0, 0, viewAndSceneWidth, m_windowHeight);
+
+    // TODO: Check if this is needed
+    ui->graphicsView->fitInView(0, 0, viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
+
+    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
+
+
+
 
     // WIP: Background image
     // TODO: Find another image of the field
     QPixmap background(":/resources/field2.png");
-    background = background.scaled(this->size().width(), this->size().height() / 2, Qt::IgnoreAspectRatio);
+    background = background.scaled(viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
     QBrush brush(QPalette::Window, background);
     ui->graphicsView->setBackgroundBrush(brush);
 
