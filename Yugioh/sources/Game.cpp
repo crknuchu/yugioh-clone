@@ -2,13 +2,28 @@
 #include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
 #include "headers/Monstercard.h"
 
-
 #include <iostream>
 #include <random>
+#include <map>
+
 #include <QGraphicsScene>
+#include <QGraphicsLayout>
 
-// QMainWindow != Ui::MainWindow
 
+
+// Global variables:
+// TODO: Global or not
+const std::map<GamePhases, QString> gamePhaseToQString{
+    {GamePhases::DRAW_PHASE,        "DRAW PHASE"},
+    {GamePhases::STANDBY_PHASE,     "STANDBY PHASE"},
+    {GamePhases::MAIN_PHASE1,       "MAIN PHASE 1"},
+    {GamePhases::BATTLE_PHASE,      "BATTLE PHASE"},
+    {GamePhases::MAIN_PHASE2,       "MAIN PHASE 2"},
+    {GamePhases::END_PHASE,         "END PHASE"}
+};
+
+
+// Class definitions:
 Game::Game(Player p1, Player p2, QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
@@ -98,12 +113,16 @@ void Game::playFirstTurn() {
     std::cout << "Current turn: " << m_currentTurn << std::endl;
 
     m_currentGamePhase = GamePhases::DRAW_PHASE;
+    emit gamePhaseChanged(m_currentGamePhase);
+
     firstTurnSetup();
 
     m_currentGamePhase = GamePhases::STANDBY_PHASE;
+    emit gamePhaseChanged(m_currentGamePhase);
     // ...
 
     m_currentGamePhase = GamePhases::MAIN_PHASE1;
+    emit gamePhaseChanged(m_currentGamePhase);
 
     /*
      *  Placeholder for the first turn's loop.
@@ -118,6 +137,7 @@ void Game::playFirstTurn() {
        */
 
        m_currentGamePhase = GamePhases::END_PHASE;
+       emit gamePhaseChanged(m_currentGamePhase);
     }
     std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
 }
@@ -130,6 +150,7 @@ void Game::playTurn() {
 
     // Draw Phase begins:
     m_currentGamePhase = GamePhases::DRAW_PHASE;
+    emit gamePhaseChanged(m_currentGamePhase);
 
     // The current player draws a card (this is not optional).
     m_pCurrentPlayer->drawCards(1);
@@ -137,10 +158,12 @@ void Game::playTurn() {
 
     // The draw phase ends and the standby phase begins (this is not optional).
     m_currentGamePhase = GamePhases::STANDBY_PHASE;
+    emit gamePhaseChanged(m_currentGamePhase);
     // ...
 
     // The standby phase ends and the main phase 1 begins (this is not optional).
     m_currentGamePhase = GamePhases::MAIN_PHASE1;
+    emit gamePhaseChanged(m_currentGamePhase);
     // ...
 
 
@@ -201,13 +224,15 @@ void Game::start() {
 
 // QT related stuff:
 void Game::setupConnections() {
-    // MainWindow
+    // Game
     connect(this, &Game::mainWindowResized, this, &Game::onMainWindowResize);
+    connect(this, &Game::gamePhaseChanged, this, &Game::onGamePhaseChange);
 
     // Buttons
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::btnBattlePhaseClicked);
     connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::btnMainPhase2Clicked);
     connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::btnEndPhaseClicked);
+
 }
 
 bool Game::eventFilter(QObject *obj, QEvent *event)
@@ -234,8 +259,7 @@ void Game::btnBattlePhaseClicked()
     std::cout << "Battle phase button clicked" << std::endl;
     m_currentGamePhase = GamePhases::BATTLE_PHASE;
 
-    // Set the label text to indicate that we are in the Battle Phase:
-    ui->labelGamePhase->setText("BATTLE PHASE");
+    emit gamePhaseChanged(m_currentGamePhase);
 }
 
 void Game::btnMainPhase2Clicked()
@@ -243,8 +267,7 @@ void Game::btnMainPhase2Clicked()
     std::cout << "Main phase 2 button clicked" << std::endl;
     m_currentGamePhase = GamePhases::MAIN_PHASE2;
 
-    // Set the label text to indicate that we are in the Main Phase 2:
-    ui->labelGamePhase->setText("MAIN PHASE 2");
+    emit gamePhaseChanged(m_currentGamePhase);
 }
 
 void Game::btnEndPhaseClicked()
@@ -253,7 +276,7 @@ void Game::btnEndPhaseClicked()
     m_currentGamePhase = GamePhases::END_PHASE;
 
     // Set the label text to indicate that we are in the End Phase:
-    ui->labelGamePhase->setText("END PHASE");
+    emit gamePhaseChanged(m_currentGamePhase);
 
     /*
      *  FIXME: This breaks the program, probably because we didn't call firstTurnSetup() yet,
@@ -262,6 +285,17 @@ void Game::btnEndPhaseClicked()
     // In the end phase, we switch the players:
     //    switchPlayers();
 }
+
+void Game::onGamePhaseChange(const GamePhases &newGamePhase)
+{
+    // When game phase changes, we update label's text.
+    // We use at() instead of [] because [] is not const and our map is.
+    ui->labelGamePhase->setText(gamePhaseToQString.at(newGamePhase));
+}
+
+
+
+
 
 void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
@@ -288,6 +322,8 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
      */
     ui->graphicsView->setFixedSize(m_windowWidth, m_windowHeight);
     ui->graphicsView->scene()->setSceneRect(0, 0, m_windowWidth, m_windowHeight);
+
+    // TODO: Check if this is needed
     ui->graphicsView->fitInView(0, 0, m_windowWidth, m_windowHeight, Qt::KeepAspectRatio);
 
 
@@ -301,19 +337,47 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                                                 8, "Sibirski Plavac", CardType::MONSTER_CARD,
                                                 CardLocation::HAND, "Opis"
                                                 );
+
+    MonsterCard* monsterCard2 = new MonsterCard(3000, 2500, MonsterType::DRAGON,
+                                                MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
+                                                8, "Sibirski Plavac", CardType::MONSTER_CARD,
+                                                CardLocation::HAND, "Opis"
+                                                );
+
     monsterCard1->setName("monsterCard1");
-    monsterCard1->setPos(0, 350);
+    monsterCard2->setName("monsterCard2");
+
+
+
+//    monsterCard2->setFixedWidth(500);
+
+    monsterCard1->setPos(450, 450);
+
     ui->graphicsView->scene()->addItem(monsterCard1);
 
 
 
-//    QPixmap background(":/resources/field2.png");
-//    background = background.scaled(m_windowWidth, m_windowHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-//    QPalette palette;
-//    palette.setBrush(QPalette::Window, background);
-//    QBrush brush(QPalette::Window, background);
-//    ui->graphicsView->setBackgroundBrush(brush);
+    // WIP: Image label
+    // TODO: Move this to onHover slot
+    ui->imageLabel->setAlignment(Qt::AlignCenter);
+
+
+    QPixmap pix;
+    pix.load(":/resources/blue_eyes.jpg");
+    pix = pix.scaled(ui->imageLabel->size(), Qt::KeepAspectRatio);
+    ui->imageLabel->setPixmap(pix);
+
+
+
+
+    // WIP: Background image
+    // TODO: Find another image of the field
+    QPixmap background(":/resources/field2.png");
+    background = background.scaled(this->size().width(), this->size().height() / 2, Qt::IgnoreAspectRatio);
+    QBrush brush(QPalette::Window, background);
+    ui->graphicsView->setBackgroundBrush(brush);
 }
+
 
 
 

@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "Player.h"
+
 #include <QGraphicsScene>
 #include <QMainWindow>
 #include <QResizeEvent>
@@ -9,7 +10,6 @@
 namespace Ui {
     class MainWindow;
 }
-
 
 enum class GamePhases {
   DRAW_PHASE,
@@ -42,6 +42,7 @@ private:
   GamePhases m_currentGamePhase;
   int m_currentTurn;
 
+
   // Private member functions:
   int randomGenerator(const int limit) const;
   int decideWhoPlaysFirst() const;
@@ -63,10 +64,12 @@ private slots:
     void btnMainPhase2Clicked();
     void btnEndPhaseClicked();
     void onMainWindowResize(QResizeEvent *);
+    void onGamePhaseChange(const GamePhases &newGamePhase);
 
 
 signals:
     void mainWindowResized(QResizeEvent *);
+    void gamePhaseChanged(const GamePhases &newGamePhase);
 
 };
 

@@ -12,12 +12,14 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
+#include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -27,7 +29,8 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
-    QWidget *widget;
+    QWidget *horizontalLayoutWidget;
+    QHBoxLayout *horizontalLayout;
     QVBoxLayout *verticalLayout;
     QSpacerItem *verticalSpacer_2;
     QLabel *labelGamePhase;
@@ -35,6 +38,9 @@ public:
     QPushButton *btnBattlePhase;
     QPushButton *btnMainPhase2;
     QPushButton *btnEndPhase;
+    QVBoxLayout *verticalLayout_2;
+    QLabel *imageLabel;
+    QTextBrowser *textBrowser;
     QGraphicsView *graphicsView;
     QMenuBar *menubar;
     QStatusBar *statusbar;
@@ -46,16 +52,19 @@ public:
         MainWindow->resize(1629, 861);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        widget = new QWidget(centralwidget);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        verticalLayout = new QVBoxLayout(widget);
+        horizontalLayoutWidget = new QWidget(centralwidget);
+        horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
+        horizontalLayoutWidget->setGeometry(QRect(40, 50, 251, 751));
+        horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setContentsMargins(0, 0, 0, 0);
+        verticalLayout = new QVBoxLayout();
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
         verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer_2);
 
-        labelGamePhase = new QLabel(widget);
+        labelGamePhase = new QLabel(horizontalLayoutWidget);
         labelGamePhase->setObjectName(QString::fromUtf8("labelGamePhase"));
 
         verticalLayout->addWidget(labelGamePhase);
@@ -64,24 +73,42 @@ public:
 
         verticalLayout->addItem(verticalSpacer);
 
-        btnBattlePhase = new QPushButton(widget);
+        btnBattlePhase = new QPushButton(horizontalLayoutWidget);
         btnBattlePhase->setObjectName(QString::fromUtf8("btnBattlePhase"));
 
         verticalLayout->addWidget(btnBattlePhase);
 
-        btnMainPhase2 = new QPushButton(widget);
+        btnMainPhase2 = new QPushButton(horizontalLayoutWidget);
         btnMainPhase2->setObjectName(QString::fromUtf8("btnMainPhase2"));
 
         verticalLayout->addWidget(btnMainPhase2);
 
-        btnEndPhase = new QPushButton(widget);
+        btnEndPhase = new QPushButton(horizontalLayoutWidget);
         btnEndPhase->setObjectName(QString::fromUtf8("btnEndPhase"));
 
         verticalLayout->addWidget(btnEndPhase);
 
+
+        horizontalLayout->addLayout(verticalLayout);
+
+        verticalLayout_2 = new QVBoxLayout();
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        imageLabel = new QLabel(horizontalLayoutWidget);
+        imageLabel->setObjectName(QString::fromUtf8("imageLabel"));
+
+        verticalLayout_2->addWidget(imageLabel);
+
+        textBrowser = new QTextBrowser(horizontalLayoutWidget);
+        textBrowser->setObjectName(QString::fromUtf8("textBrowser"));
+
+        verticalLayout_2->addWidget(textBrowser);
+
+
+        horizontalLayout->addLayout(verticalLayout_2);
+
         graphicsView = new QGraphicsView(centralwidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        graphicsView->setGeometry(QRect(90, 2, 301, 201));
+        graphicsView->setGeometry(QRect(310, 50, 1021, 461));
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -99,10 +126,20 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
-        labelGamePhase->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
+        labelGamePhase->setText(QCoreApplication::translate("MainWindow", "GamePhase", nullptr));
         btnBattlePhase->setText(QCoreApplication::translate("MainWindow", "Battle Phase", nullptr));
         btnMainPhase2->setText(QCoreApplication::translate("MainWindow", "Main Phase 2", nullptr));
         btnEndPhase->setText(QCoreApplication::translate("MainWindow", "End Phase", nullptr));
+        imageLabel->setText(QCoreApplication::translate("MainWindow", "ImageLabel", nullptr));
+        textBrowser->setHtml(QCoreApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"hr { height: 1px; border-width: 0; }\n"
+"li.unchecked::marker { content: \"\\2610\"; }\n"
+"li.checked::marker { content: \"\\2612\"; }\n"
+"</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Monster effect</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", nullptr));
     } // retranslateUi
 
 };

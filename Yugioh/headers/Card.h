@@ -51,7 +51,6 @@ public:
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
 
-
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
     Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsItem *parent = 0);
