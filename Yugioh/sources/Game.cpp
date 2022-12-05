@@ -53,7 +53,6 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 
     // First turn setup at the beginning of the game:
     firstTurnSetup();
-
 }
 
 Game::Game() {}
@@ -119,76 +118,6 @@ void Game::firstTurnSetup() {
   // With m_pOtherPlayer:
   m_pOtherPlayer->drawCards(5);
 }
-
-void Game::playFirstTurn() {
-    m_currentTurn = 1;
-    std::cout << "Current turn: " << m_currentTurn << std::endl;
-
-    firstTurnSetup();
-
-    m_currentGamePhase = GamePhases::STANDBY_PHASE;
-    emit gamePhaseChanged(m_currentGamePhase);
-    // ...
-
-    m_currentGamePhase = GamePhases::MAIN_PHASE1;
-    emit gamePhaseChanged(m_currentGamePhase);
-
-    /*
-     *  Placeholder for the first turn's loop.
-     *  Since the player action mechanisms are still not implemented (TODO),
-     *  for now we only have a while loop that instantly finishes.
-     */
-    while(m_currentGamePhase != GamePhases::END_PHASE)
-    {
-      /*
-       *  Here the firstPlayer will play his MainPhase1 in the first turn.
-       *  For now, we still don't have playMP1() implemented.
-       */
-
-       m_currentGamePhase = GamePhases::END_PHASE;
-       emit gamePhaseChanged(m_currentGamePhase);
-    }
-    std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
-}
-
-
-// TODO: This will have to be decomposed and the things that are inside it will have to be called
-// either from constructor initialization or from inside of other slots
-void Game::playTurn() {
-
-
-
-
-}
-
-void Game::start() {
-
-  std::cout << "The game has started." << std::endl;
-
-  int tmpBlockLoop; // Needed for now for the cin at the end of our while loop, will be removed when checkLifePoints is implemented.
-
-  /*
-   *  First turn is special (there is no battle phase and main phase 2),
-   *  so it has its own function:
-   */
-  playFirstTurn();
-  m_currentTurn++;
-
-  // Other turns are all the same structure-wise practically:
-  while (true)
-  {
-    playTurn();
-
-    /*
-     *  For now, the game runs as an infinite loop (the cin is added as a blocking operation).
-     *  checkLifePoints function will be implemented as the way to end the game.
-     */
-    std::cin >> tmpBlockLoop;
-  }
-  std::cout << "The game has ended." << std::endl;
-}
-
-
 
 // QT related stuff:
 void Game::setupConnections() {
@@ -279,12 +208,15 @@ void Game::onTurnEnd() {
     // The current player draws a card (this is not optional).
     m_pCurrentPlayer->drawCards(1);
 
+
+
     // The draw phase ends and the standby phase begins (this is not optional).
     m_currentGamePhase = GamePhases::STANDBY_PHASE;
     emit gamePhaseChanged(m_currentGamePhase);
 
     /* ... Something may happen here due to effects (maybe we should call checkEffects()
      or something similar that will check if there are effects to be activated in SP */
+
 
 
     // The standby phase ends and the main phase 1 begins (this is not optional).
@@ -296,8 +228,7 @@ void Game::onTurnEnd() {
 
 
 
-    // TODO: Make MP2 button read-only unless Battle Phase button was clicked.
-    /* TODO: Currently when EndPhase is clicked, labelGamePhase is instantly Main Phase 1
+    /* FIXME: Currently when EndPhase is clicked, labelGamePhase is instantly Main Phase 1
              because its switched so fast that we can't see DP and SP. */
 
 }

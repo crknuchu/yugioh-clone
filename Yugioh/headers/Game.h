@@ -47,10 +47,7 @@ private:
   int randomGenerator(const int limit) const;
   int decideWhoPlaysFirst() const;
   void firstTurnSetup();
-  void playFirstTurn();
   void switchPlayers();
-  void playTurn();
-
 
 // QT related stuff:
   int m_windowWidth;
