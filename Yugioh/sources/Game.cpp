@@ -305,7 +305,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     m_windowWidth = resizeEvent->size().width();
     m_windowHeight = resizeEvent->size().height();
 
-    // Check: Very rarely, this displays the same width/height as the old window?
+    // Check: Very rarely, this displays the same width/height as the old window
     std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
 
     ui->graphicsView->setWindowTitle("Yu-Gi-Oh!");
@@ -325,7 +325,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
     // TODO: Check if this is needed
     ui->graphicsView->fitInView(0, 0, m_windowWidth, m_windowHeight, Qt::KeepAspectRatio);
-
 
     std::cout << "Scene width: " << ui->graphicsView->scene()->width();
 
@@ -352,15 +351,22 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     ui->graphicsView->scene()->addItem(monsterCard1);
 
 
-    // WIP: Image label
-    // TODO: Move this to onHover slot
-    ui->imageLabel->setAlignment(Qt::AlignCenter);
+    // WIP: Hover card info on the left
+    // TODO: Move this to onHover slot for QGraphicsPixmapItem hover event
+    ui->labelImage->setAlignment(Qt::AlignCenter);
+    ui->labelImage->setBaseSize(200, 150); // This is the size of QGraphicsPixmapItem in Card.cpp, needs to be not hardcoded
+
+    ui->textBrowserEffect->setText(
+                "This legendary dragon is a powerful engine of destruction. "
+                "Virtually invincible, very few have faced "
+                "this awesome creature and lived to tell the tale."
+    );
 
 
     QPixmap pix;
     pix.load(":/resources/blue_eyes.jpg");
-    pix = pix.scaled(ui->imageLabel->size(), Qt::KeepAspectRatio);
-    ui->imageLabel->setPixmap(pix);
+    pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
+    ui->labelImage->setPixmap(pix);
 
 
 
@@ -371,6 +377,17 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     background = background.scaled(this->size().width(), this->size().height() / 2, Qt::IgnoreAspectRatio);
     QBrush brush(QPalette::Window, background);
     ui->graphicsView->setBackgroundBrush(brush);
+
+
+
+    // TODO: Maybe this can be a "starting" point for our program
+    /* For example, we could call firstTurnSetup here ...
+     * Problem with that is that it would restart the game every time the main window gets resized.
+     * Solution ideas:
+     *  1) Flags
+     *  2) ?
+     */
+
 }
 
 
