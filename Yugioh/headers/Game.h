@@ -60,9 +60,9 @@ private:
   bool eventFilter(QObject *obj, QEvent *event) override;
 
 private slots:
-    void btnBattlePhaseClicked();
-    void btnMainPhase2Clicked();
-    void btnEndPhaseClicked();
+    void onBattlePhaseButtonClick();
+    void onMainPhase2ButtonClick();
+    void onEndPhaseButtonClick();
     void onMainWindowResize(QResizeEvent *);
     void onGamePhaseChange(const GamePhases &newGamePhase);
 

@@ -229,9 +229,9 @@ void Game::setupConnections() {
     connect(this, &Game::gamePhaseChanged, this, &Game::onGamePhaseChange);
 
     // Buttons
-    connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::btnBattlePhaseClicked);
-    connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::btnMainPhase2Clicked);
-    connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::btnEndPhaseClicked);
+    connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
+    connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::onMainPhase2ButtonClick);
+    connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::onEndPhaseButtonClick);
 
 }
 
@@ -254,7 +254,7 @@ bool Game::eventFilter(QObject *obj, QEvent *event)
 
 
 // Slots:
-void Game::btnBattlePhaseClicked()
+void Game::onBattlePhaseButtonClick()
 {
     std::cout << "Battle phase button clicked" << std::endl;
     m_currentGamePhase = GamePhases::BATTLE_PHASE;
@@ -262,7 +262,7 @@ void Game::btnBattlePhaseClicked()
     emit gamePhaseChanged(m_currentGamePhase);
 }
 
-void Game::btnMainPhase2Clicked()
+void Game::onMainPhase2ButtonClick()
 {
     std::cout << "Main phase 2 button clicked" << std::endl;
     m_currentGamePhase = GamePhases::MAIN_PHASE2;
@@ -270,7 +270,7 @@ void Game::btnMainPhase2Clicked()
     emit gamePhaseChanged(m_currentGamePhase);
 }
 
-void Game::btnEndPhaseClicked()
+void Game::onEndPhaseButtonClick()
 {
     std::cout << "End phase button clicked" << std::endl;
     m_currentGamePhase = GamePhases::END_PHASE;
@@ -347,14 +347,9 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     monsterCard1->setName("monsterCard1");
     monsterCard2->setName("monsterCard2");
 
-
-
-//    monsterCard2->setFixedWidth(500);
-
     monsterCard1->setPos(450, 450);
 
     ui->graphicsView->scene()->addItem(monsterCard1);
-
 
 
     // WIP: Image label
