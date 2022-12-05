@@ -4,8 +4,9 @@
 #include <iostream>
 
 
-Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsItem *parent)
-    :cardName(cardName)
+Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent)
+    : QGraphicsPixmapItem(parent)
+    ,cardName(cardName)
     ,cardType(cardType)
     ,cardLocation(cardLocation)
     ,cardDescription(cardDescription)

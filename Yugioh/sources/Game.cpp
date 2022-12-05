@@ -48,6 +48,12 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     // Create a new scene:
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
+
+
+
+    // First turn setup at the beginning of the game:
+    firstTurnSetup();
+
 }
 
 Game::Game() {}
@@ -82,6 +88,8 @@ void Game::switchPlayers() {
     Player tmp = *m_pCurrentPlayer;
     *m_pCurrentPlayer = *m_pOtherPlayer;
     *m_pOtherPlayer = tmp;
+
+    std::cout << "Current player is: " << *m_pCurrentPlayer << std::endl;
 }
 
 void Game::firstTurnSetup() {
@@ -99,6 +107,10 @@ void Game::firstTurnSetup() {
 
   std::cout << "The first one to play is " << m_pCurrentPlayer->getPlayerName() << std::endl;
 
+  m_currentTurn = 1;
+  m_currentGamePhase = GamePhases::DRAW_PHASE;
+  emit gamePhaseChanged(m_currentGamePhase);
+
   // The first one gets 6 cards:
   m_pCurrentPlayer->drawCards(6);
 
@@ -112,8 +124,7 @@ void Game::playFirstTurn() {
     m_currentTurn = 1;
     std::cout << "Current turn: " << m_currentTurn << std::endl;
 
-    m_currentGamePhase = GamePhases::DRAW_PHASE;
-    emit gamePhaseChanged(m_currentGamePhase);
+
 
     firstTurnSetup();
 
@@ -142,15 +153,13 @@ void Game::playFirstTurn() {
     std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
 }
 
+
+// TODO: This will have to be decomposed and the things that are inside it will have to be called
+// either from constructor initialization or from inside of other slots
 void Game::playTurn() {
-    std::cout << "Current turn: " << m_currentTurn << std::endl;
-    // The player switch:
-    switchPlayers();
-    std::cout << "Current player: " << m_pCurrentPlayer->getPlayerName() << std::endl;
 
     // Draw Phase begins:
-    m_currentGamePhase = GamePhases::DRAW_PHASE;
-    emit gamePhaseChanged(m_currentGamePhase);
+
 
     // The current player draws a card (this is not optional).
     m_pCurrentPlayer->drawCards(1);
@@ -227,6 +236,7 @@ void Game::setupConnections() {
     // Game
     connect(this, &Game::mainWindowResized, this, &Game::onMainWindowResize);
     connect(this, &Game::gamePhaseChanged, this, &Game::onGamePhaseChange);
+    connect(this, &Game::turnEnded, this, &Game::onTurnEnd);
 
     // Buttons
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
@@ -278,24 +288,55 @@ void Game::onEndPhaseButtonClick()
     // Set the label text to indicate that we are in the End Phase:
     emit gamePhaseChanged(m_currentGamePhase);
 
-    /*
-     *  FIXME: This breaks the program, probably because we didn't call firstTurnSetup() yet,
-     *  so m_pCurrentPlayer and m_pOtherPlayer have undefined values and can't be switched, leading to a SEGFAULT.
-     */
-    // In the end phase, we switch the players:
-    //    switchPlayers();
+    //... (something may happen here eventually)
+
+    // TODO: More work is needed here...
+    emit turnEnded();
+
 }
 
+
+// This is actually a slot that does things at the beginning of a new turn
+// so it could be called beginNewTurn or onNewTurn or something like that...
+void Game::onTurnEnd() {
+    // Switch the players:
+    switchPlayers();
+
+    // The draw phase begins (this is not optional).
+    m_currentGamePhase = GamePhases::DRAW_PHASE;
+    emit gamePhaseChanged(m_currentGamePhase);
+
+    // The current player draws a card (this is not optional).
+    m_pCurrentPlayer->drawCards(1);
+
+    // The draw phase ends and the standby phase begins (this is not optional).
+    m_currentGamePhase = GamePhases::STANDBY_PHASE;
+    emit gamePhaseChanged(m_currentGamePhase);
+
+    /* ... Something may happen here due to effects (maybe we should call checkEffects()
+     or something similar that will check if there are effects to be activated in SP */
+
+
+    // The standby phase ends and the main phase 1 begins (this is not optional).
+    m_currentGamePhase = GamePhases::MAIN_PHASE1;
+    emit gamePhaseChanged(m_currentGamePhase);
+
+    // checkEffects(MAINPHASE1)
+    // Main Phase 1 runs until user clicks one of the buttons.
+
+
+
+    // TODO: Make MP2 button read-only unless Battle Phase button was clicked.
+    /* TODO: Currently when EndPhase is clicked, labelGamePhase is instantly Main Phase 1
+             because its switched so fast that we can't see DP and SP. */
+
+}
 void Game::onGamePhaseChange(const GamePhases &newGamePhase)
 {
     // When game phase changes, we update label's text.
     // We use at() instead of [] because [] is not const and our map is.
     ui->labelGamePhase->setText(gamePhaseToQString.at(newGamePhase));
 }
-
-
-
-
 
 void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
@@ -307,8 +348,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
     // Check: Very rarely, this displays the same width/height as the old window
     std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
-
-
 
 
     // FIXME: Memory leak.
@@ -325,20 +364,14 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 
 
-
     // WIP: UI components
 
     // Game phase buttons and label:
     ui->labelGamePhase->setAlignment(Qt::AlignCenter);
 
-
     // Card info
     // TODO: Move this to onHover slot for QGraphicsPixmapItem hover event
     ui->labelImage->setAlignment(Qt::AlignCenter);
-//    ui->labelImage->setMinimumSize(textBrowserWidth, 300);
-
-
-
 
     ui->textBrowserEffect->setText(
                 "This legendary dragon is a powerful engine of destruction. "
@@ -352,13 +385,11 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     ui->labelImage->setPixmap(pix);
 
 
-
     // GraphicsView and GraphicsScene adjustments:
 
     ui->graphicsView->setWindowTitle("Yu-Gi-Oh!");
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
 
     // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
 

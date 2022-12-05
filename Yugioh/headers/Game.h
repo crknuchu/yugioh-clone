@@ -65,12 +65,13 @@ private slots:
     void onEndPhaseButtonClick();
     void onMainWindowResize(QResizeEvent *);
     void onGamePhaseChange(const GamePhases &newGamePhase);
+    void onTurnEnd();
 
 
 signals:
     void mainWindowResized(QResizeEvent *);
     void gamePhaseChanged(const GamePhases &newGamePhase);
-
+    void turnEnded();
 };
 
 
