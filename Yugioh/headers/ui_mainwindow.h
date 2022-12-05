@@ -29,7 +29,7 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QGraphicsView *graphicsView;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QVBoxLayout *leftVerticalLayout;
     QLabel *labelImage;
     QTextBrowser *textBrowserEffect;
@@ -52,20 +52,20 @@ public:
         graphicsView = new QGraphicsView(centralwidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
         graphicsView->setGeometry(QRect(420, 0, 1211, 771));
-        widget = new QWidget(centralwidget);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        widget->setGeometry(QRect(2, 2, 401, 761));
-        leftVerticalLayout = new QVBoxLayout(widget);
+        layoutWidget = new QWidget(centralwidget);
+        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+        layoutWidget->setGeometry(QRect(2, 2, 401, 761));
+        leftVerticalLayout = new QVBoxLayout(layoutWidget);
         leftVerticalLayout->setObjectName(QString::fromUtf8("leftVerticalLayout"));
         leftVerticalLayout->setContentsMargins(0, 0, 0, 0);
-        labelImage = new QLabel(widget);
+        labelImage = new QLabel(layoutWidget);
         labelImage->setObjectName(QString::fromUtf8("labelImage"));
         labelImage->setEnabled(true);
         labelImage->setMinimumSize(QSize(399, 300));
 
         leftVerticalLayout->addWidget(labelImage);
 
-        textBrowserEffect = new QTextBrowser(widget);
+        textBrowserEffect = new QTextBrowser(layoutWidget);
         textBrowserEffect->setObjectName(QString::fromUtf8("textBrowserEffect"));
 
         leftVerticalLayout->addWidget(textBrowserEffect);
@@ -74,7 +74,7 @@ public:
 
         leftVerticalLayout->addItem(verticalSpacer_2);
 
-        labelGamePhase = new QLabel(widget);
+        labelGamePhase = new QLabel(layoutWidget);
         labelGamePhase->setObjectName(QString::fromUtf8("labelGamePhase"));
 
         leftVerticalLayout->addWidget(labelGamePhase);
@@ -83,17 +83,18 @@ public:
 
         leftVerticalLayout->addItem(verticalSpacer);
 
-        btnBattlePhase = new QPushButton(widget);
+        btnBattlePhase = new QPushButton(layoutWidget);
         btnBattlePhase->setObjectName(QString::fromUtf8("btnBattlePhase"));
 
         leftVerticalLayout->addWidget(btnBattlePhase);
 
-        btnMainPhase2 = new QPushButton(widget);
+        btnMainPhase2 = new QPushButton(layoutWidget);
         btnMainPhase2->setObjectName(QString::fromUtf8("btnMainPhase2"));
+        btnMainPhase2->setEnabled(false);
 
         leftVerticalLayout->addWidget(btnMainPhase2);
 
-        btnEndPhase = new QPushButton(widget);
+        btnEndPhase = new QPushButton(layoutWidget);
         btnEndPhase->setObjectName(QString::fromUtf8("btnEndPhase"));
 
         leftVerticalLayout->addWidget(btnEndPhase);

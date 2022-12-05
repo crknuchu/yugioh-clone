@@ -12,7 +12,7 @@
 
 
 // Global variables:
-// TODO: Global or not
+// FIXME: non-POD static (map) warning
 const std::map<GamePhases, QString> gamePhaseToQString{
     {GamePhases::DRAW_PHASE,        "DRAW PHASE"},
     {GamePhases::STANDBY_PHASE,     "STANDBY PHASE"},
@@ -124,8 +124,6 @@ void Game::playFirstTurn() {
     m_currentTurn = 1;
     std::cout << "Current turn: " << m_currentTurn << std::endl;
 
-
-
     firstTurnSetup();
 
     m_currentGamePhase = GamePhases::STANDBY_PHASE;
@@ -158,48 +156,9 @@ void Game::playFirstTurn() {
 // either from constructor initialization or from inside of other slots
 void Game::playTurn() {
 
-    // Draw Phase begins:
 
 
-    // The current player draws a card (this is not optional).
-    m_pCurrentPlayer->drawCards(1);
 
-
-    // The draw phase ends and the standby phase begins (this is not optional).
-    m_currentGamePhase = GamePhases::STANDBY_PHASE;
-    emit gamePhaseChanged(m_currentGamePhase);
-    // ...
-
-    // The standby phase ends and the main phase 1 begins (this is not optional).
-    m_currentGamePhase = GamePhases::MAIN_PHASE1;
-    emit gamePhaseChanged(m_currentGamePhase);
-    // ...
-
-
-    // The battle phase is optional.
-    // Placeholder pseudo-code for event listening:
-    /*
-     * if BP button was clicked                     // TODO
-     * then m_currentGamePhase = GamePhases::BATTLE_PHASE;
-     * ...
-    */
-
-
-    /* We (optionally) enter the MP2 only if there was a battle phase
-     * and the MP2 button was clicked (TODO) */
-    if (m_currentGamePhase == GamePhases::BATTLE_PHASE)
-    {
-        m_currentGamePhase = GamePhases::MAIN_PHASE2;
-        // ...
-    }
-
-    // The end phase begins if the EP button was clicked (TODO):
-    m_currentGamePhase = GamePhases::END_PHASE;
-    // ...
-
-
-    std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
-    m_currentTurn++;
 }
 
 void Game::start() {
@@ -270,6 +229,10 @@ void Game::onBattlePhaseButtonClick()
     m_currentGamePhase = GamePhases::BATTLE_PHASE;
 
     emit gamePhaseChanged(m_currentGamePhase);
+
+    /* We enable Main Phase 2 button only if the BP button was clicked
+     * since there can't be MP2 if there was no BP previously */
+    ui->btnMainPhase2->setEnabled(true);
 }
 
 void Game::onMainPhase2ButtonClick()
@@ -291,6 +254,8 @@ void Game::onEndPhaseButtonClick()
     //... (something may happen here eventually)
 
     // TODO: More work is needed here...
+    std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
+    m_currentTurn++;
     emit turnEnded();
 
 }
@@ -299,6 +264,11 @@ void Game::onEndPhaseButtonClick()
 // This is actually a slot that does things at the beginning of a new turn
 // so it could be called beginNewTurn or onNewTurn or something like that...
 void Game::onTurnEnd() {
+    // Disable MP2 Button unless BP button was clicked
+    ui->btnMainPhase2->setEnabled(false);
+
+
+
     // Switch the players:
     switchPlayers();
 
@@ -340,14 +310,14 @@ void Game::onGamePhaseChange(const GamePhases &newGamePhase)
 
 void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
-    std::cout << "Window has been resized!" << std::endl;
+//    std::cout << "Window has been resized!" << std::endl;
 
     // Set our private variables to the new window size:
     m_windowWidth = resizeEvent->size().width();
     m_windowHeight = resizeEvent->size().height();
 
     // Check: Very rarely, this displays the same width/height as the old window
-    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
+//    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
 
 
     // FIXME: Memory leak.
