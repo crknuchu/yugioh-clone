@@ -15,7 +15,8 @@ SOURCES += \
         sources/Deck.cpp \
         sources/Graveyard.cpp \
         sources/Hand.cpp \
-        sources/Player.cpp
+        sources/Player.cpp \
+        sources/CardMenu.cpp
 
 HEADERS += \
     headers/Card.h \
@@ -28,7 +29,8 @@ HEADERS += \
     headers/Graveyard.h \
     headers/Hand.h \
     headers/Player.h \
-    headers/ui_mainwindow.h
+    headers/ui_mainwindow.h \
+    headers/CardMenu.h
 
 RESOURCES += \
         resources.qrc

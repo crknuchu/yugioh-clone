@@ -53,30 +53,6 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 
     // First turn setup at the beginning of the game:
     firstTurnSetup();
-    // Creating items
-    // TODO: Should monstercard1 be a pointer or not?
-      // MonsterCard* monsterCard1 = new MonsterCard("Sibirski Plavac",3000, 2500,4, MonsterType::DRAGON,
-      //                                            MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
-      //                                            true,Summon::SET,   CardType::MONSTER_CARD,
-      //                                            CardLocation::HAND, "Opis"
-      //                                            );
-//      monsterCard1->setName("monsterCard1");
-//
-//      scene->addItem(monsterCard1);
-//      scene->addWidget(monsterCard1->cardMenu);
-//      monsterCard1->move(300,300);
-//      // FIXME:Maybe this doesn't work because getHeight() returns height which is a private field of Card class so MonsterCard can't see it?
-//         // monsterCard1->setPos(0, scene->height() - monsterCard1->getHeight());
-//
-//      // TODO: Make setting position not hardcoded:
-//
-//      QPixmap background(":/resources/field2.png");
-// //     background = background.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-// //     QPalette palette;
-// //     palette.setBrush(QPalette::Window, background);
-//      QBrush brush(QPalette::Window, background);
-//     //  ui->graphicsView->setBackgroundBrush(brush);
-
 }
 
 Game::Game() {}
