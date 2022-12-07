@@ -120,7 +120,6 @@ void Game::firstTurnSetup() {
 }
 
 
-
 // QT related stuff:
 void Game::setupConnections() {
     // Game
@@ -135,10 +134,6 @@ void Game::setupConnections() {
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
     connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::onMainPhase2ButtonClick);
     connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::onEndPhaseButtonClick);
-
-
-
-
 }
 
 bool Game::eventFilter(QObject *obj, QEvent *event)
@@ -197,9 +192,16 @@ void Game::onEndPhaseButtonClick()
 
 }
 
+void Game::onGamePhaseChange(const GamePhases &newGamePhase)
+{
+    // When game phase changes, we update label's text.
+    // We use at() instead of [] because [] is not const and our map is.
+    ui->labelGamePhase->setText(gamePhaseToQString.at(newGamePhase));
+}
 
-// This is actually a slot that does things at the beginning of a new turn
-// so it could be called beginNewTurn or onNewTurn or something like that...
+
+/* This is actually a slot that does things at the beginning of a new turn
+   so it could be called beginNewTurn or onNewTurn or something like that...*/
 void Game::onTurnEnd() {
     // Disable MP2 Button unless BP button was clicked
     ui->btnMainPhase2->setEnabled(false);
@@ -242,14 +244,6 @@ void Game::onTurnEnd() {
 }
 
 
-
-void Game::onGamePhaseChange(const GamePhases &newGamePhase)
-{
-    // When game phase changes, we update label's text.
-    // We use at() instead of [] because [] is not const and our map is.
-    ui->labelGamePhase->setText(gamePhaseToQString.at(newGamePhase));
-}
-
 void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
 //    std::cout << "Window has been resized!" << std::endl;
@@ -263,7 +257,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 
     // FIXME: Memory leak.
-    // This is a placeholder, in future we won't initialize cards here !!!
+    // TODO: Move this elsewhere.
     MonsterCard* monsterCard1 = new MonsterCard(3000, 2500, MonsterType::DRAGON,
                                                 MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
                                                 8, "Sibirski Plavac", CardType::MONSTER_CARD,
@@ -283,7 +277,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // Game phase buttons and label:
     ui->labelGamePhase->setAlignment(Qt::AlignCenter);
 
-    // Card info
+    // Card info:
     // TODO: Move this to onHover slot for QGraphicsPixmapItem hover event
     ui->labelImage->setAlignment(Qt::AlignCenter);
 
@@ -308,7 +302,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // TODO: Change leftVerticalLayout name to something normal
     const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
     const int leftVerticalLayoutHeight = ui->leftVerticalLayout->sizeHint().height();
-    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
+//    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
 
     const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
     ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
@@ -317,7 +311,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // TODO: Check if this is needed
     ui->graphicsView->fitInView(0, 0, viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
 
-    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
+//    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
 
 
 
@@ -352,21 +346,27 @@ void Game::onCardAddedToScene(const Card * card)
     std::cout << "Card name: " << card->getCardName() << std::endl;
 
     // Now we need to connect the card's menu UI to our slots
-    connect(card->cardMenu->activateButton, &QPushButton::clicked, this, &Game::onActivateButtonClick);
-    connect(card->cardMenu->setButton, &QPushButton::clicked, this, &Game::onSetButtonClick);
-}
+    /* We use a lambda here because QT's clicked() signal only sends a bool value of true/false
+       This way, we can pass the card to our onActivateButtonClick slot */
+    connect(card->cardMenu->activateButton, &QPushButton::clicked, this, [this, card](){
+        onActivateButtonClick(card);
+    });
 
+    connect(card->cardMenu->setButton, &QPushButton::clicked, this, [this, card](){
+        onSetButtonClick(card);
+    });
+}
 
 
 // Slots for card menu UI
-void Game::onActivateButtonClick()
+void Game::onActivateButtonClick(const Card * card)
 {
-    std::cout << "Activate button clicked!" << std::endl;
+    std::cout << "Activate button clicked on card " << card->getCardName() << std::endl;
 }
 
-void Game::onSetButtonClick()
+void Game::onSetButtonClick(const Card * card)
 {
-    std::cout << "Set button clicked!" << std::endl;
+    std::cout << "Set button clicked on card " << card->getCardName() << std::endl;
 }
 
 

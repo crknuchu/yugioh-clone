@@ -77,8 +77,8 @@ private slots:
     void onCardAddedToScene(const Card *);
 
     // Slots for CardMenu signal handling
-    void onActivateButtonClick();
-    void onSetButtonClick();
+    void onActivateButtonClick(const Card *);
+    void onSetButtonClick(const Card *);
 
 signals:
     void mainWindowResized(QResizeEvent *);

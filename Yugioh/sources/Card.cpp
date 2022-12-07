@@ -71,7 +71,7 @@ void Card::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
 }
 
 void Card::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){
-    std::cout<<"leave"<<std::endl;
+//    std::cout<<"leave"<<std::endl;
 }
 
 void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
