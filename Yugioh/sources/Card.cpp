@@ -111,7 +111,6 @@ float Card::getWidth(){
     return width;
 }
 
-
 std::ostream &operator<<(std::ostream &out, Card &c){
     return out << "Card name: " << c.getCardName() << ", card type: " << c.getCardType()  << std::endl;
 }

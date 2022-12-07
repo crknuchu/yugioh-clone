@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include "Player.h"
+#include "Card.h"
 
 #include <QGraphicsScene>
 #include <QMainWindow>
@@ -56,6 +57,7 @@ private:
   void setupConnections();
   bool eventFilter(QObject *obj, QEvent *event) override;
 
+
 private slots:
     void onBattlePhaseButtonClick();
     void onMainPhase2ButtonClick();
@@ -65,10 +67,24 @@ private slots:
     void onTurnEnd();
 
 
+    /*
+     * This Card* will eventually be replaced with Player * probably,
+     * because in the future Game will only have info about Player,
+     * who will manage adding the card to the scene.
+     * For now, cards are added to the scene in Game.cpp for test purposes
+     * so this is a good enough placeholder until we change that.
+     */
+    void onCardAddedToScene(const Card *);
+
+    // Slots for CardMenu signal handling
+    void onActivateButtonClick();
+    void onSetButtonClick();
+
 signals:
     void mainWindowResized(QResizeEvent *);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
+    void cardAddedToScene(Card *);
 };
 
 

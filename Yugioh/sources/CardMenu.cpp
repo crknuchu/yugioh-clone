@@ -3,10 +3,11 @@
 #include <QGraphicsSceneHoverEvent>
 // #include "headers/Card.h"
 
+
 CardMenu::CardMenu()
 {
     // std::cout<<"test";
-    setGeometry(0,0,150,0); //this needs to be the size of the card, not hardcoded and the location just above the card
+    setGeometry(0, 0,150,0); //this needs to be the size of the card, not hardcoded and the location just above the card
     setWindowFlags(Qt::FramelessWindowHint);
     layout->addWidget(activateButton);
     layout->addWidget(setButton);
@@ -22,9 +23,10 @@ CardMenu::CardMenu(int x, int y){
     //   show();
 }
 
-void CardMenu::setWidth(int width){
-    this->setWidth(width);
-}
+
+//void CardMenu::setWidth(int width){
+//    this->setWidth(width);
+//}
 
 void CardMenu::leaveEvent(QEvent *event){
     hide();

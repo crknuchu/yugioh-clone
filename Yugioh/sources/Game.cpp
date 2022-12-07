@@ -119,6 +119,8 @@ void Game::firstTurnSetup() {
   m_pOtherPlayer->drawCards(5);
 }
 
+
+
 // QT related stuff:
 void Game::setupConnections() {
     // Game
@@ -126,10 +128,16 @@ void Game::setupConnections() {
     connect(this, &Game::gamePhaseChanged, this, &Game::onGamePhaseChange);
     connect(this, &Game::turnEnded, this, &Game::onTurnEnd);
 
+    // WIP
+    connect(this, &Game::cardAddedToScene, this, &Game::onCardAddedToScene);
+
     // Buttons
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
     connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::onMainPhase2ButtonClick);
     connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::onEndPhaseButtonClick);
+
+
+
 
 }
 
@@ -232,6 +240,9 @@ void Game::onTurnEnd() {
              because its switched so fast that we can't see DP and SP. */
 
 }
+
+
+
 void Game::onGamePhaseChange(const GamePhases &newGamePhase)
 {
     // When game phase changes, we update label's text.
@@ -252,18 +263,20 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 
     // FIXME: Memory leak.
-    // This is a placeholder, in future we won't initialize cards here probably.
+    // This is a placeholder, in future we won't initialize cards here !!!
     MonsterCard* monsterCard1 = new MonsterCard(3000, 2500, MonsterType::DRAGON,
                                                 MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
                                                 8, "Sibirski Plavac", CardType::MONSTER_CARD,
                                                 CardLocation::HAND, "Opis"
                                                 );
 
-    monsterCard1->setName("monsterCard1");
+//    monsterCard1->setName("monsterCard1");
     monsterCard1->setPos(450, 450);
     ui->graphicsView->scene()->addItem(monsterCard1);
 
 
+    // Notify the game that a card was added.
+    emit cardAddedToScene(monsterCard1);
 
     // WIP: UI components
 
@@ -287,26 +300,16 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 
     // GraphicsView and GraphicsScene adjustments:
-
     ui->graphicsView->setWindowTitle("Yu-Gi-Oh!");
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
-
     // TODO: Change leftVerticalLayout name to something normal
     const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
     const int leftVerticalLayoutHeight = ui->leftVerticalLayout->sizeHint().height();
     qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
 
-    /* TODO:
-     *  This makes the scene display correctly next to the buttons,
-     *  but its probably only because qt is smart enough to figure out
-     *  that we don't want our scene to be rendered over our buttons.
-     *
-     *  Also, after doing this setFixedSize, scene()->width() will be shown as m_windowWidth,
-     *  even though graphically that isn't really true (because of the vertical layout for buttons)
-     */
     const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
     ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
     ui->graphicsView->scene()->setSceneRect(0, 0, viewAndSceneWidth, m_windowHeight);
@@ -326,8 +329,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     QBrush brush(QPalette::Window, background);
     ui->graphicsView->setBackgroundBrush(brush);
 
-
-
     // TODO: Maybe this can be a "starting" point for our program
     /* For example, we could call firstTurnSetup here ...
      * Problem with that is that it would restart the game every time the main window gets resized.
@@ -338,7 +339,35 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 }
 
+void Game::onCardAddedToScene(const Card * card)
+{
+    // TODO: If exact subclass of Card is needed here eventually, we could check with:
+    /*
+     *      1) Dynamic cast
+     *      2) Make every card have a field which describes if its a monster, spell or a trap
+     *         and then static cast into that class
+     *      3) Templates?
+     */
+    std::cout << "A card was added to the scene!" << std::endl;
+    std::cout << "Card name: " << card->getCardName() << std::endl;
 
+    // Now we need to connect the card's menu UI to our slots
+    connect(card->cardMenu->activateButton, &QPushButton::clicked, this, &Game::onActivateButtonClick);
+    connect(card->cardMenu->setButton, &QPushButton::clicked, this, &Game::onSetButtonClick);
+}
+
+
+
+// Slots for card menu UI
+void Game::onActivateButtonClick()
+{
+    std::cout << "Activate button clicked!" << std::endl;
+}
+
+void Game::onSetButtonClick()
+{
+    std::cout << "Set button clicked!" << std::endl;
+}
 
 
 
