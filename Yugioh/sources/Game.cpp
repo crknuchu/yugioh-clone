@@ -6,10 +6,7 @@
 #include <iostream>
 #include <random>
 #include <map>
-
-
-
-
+#include <functional>
 
 #include <QGraphicsScene>
 #include <QGraphicsLayout>
@@ -380,8 +377,6 @@ void Game::onCardHover(Card * card)
 }
 
 
-#include <functional>
-
 // Slots for card menu UI
 void Game::onActivateButtonClick(const Card * card)
 {
@@ -392,12 +387,14 @@ void Game::onActivateButtonClick(const Card * card)
 
     // Activate card's effect
     EffectActivator effectActivator;
-    try {
-        auto funcPointer = effectActivator.effectMap.at(cardName);
-        (effectActivator.*funcPointer)();
 
-//        https://stackoverflow.com/questions/14814158/c-call-pointer-to-member-function
-//        std::invoke(effectActivator.effectMap.at(cardName));
+    try {
+        // TODO: refactor -> change funcPointer name to something else and use invoke()
+        auto effectFunctionPointer = effectActivator.effectMap.at(cardName);
+
+        // (effectActivator.*funcPointer)(); // This is the same as the invoke call.
+        // If the first argument is a pointer to member func, invoke expects an object that owns it to be a first argument.
+        std::invoke(effectFunctionPointer, effectActivator);
     } catch(std::out_of_range &e) {
         std::cerr << "Error: That card doesn't have an effect! Out of range exception from: " << e.what() << std::endl;
     }
