@@ -1,10 +1,15 @@
 #include "headers/Game.h"
 #include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
 #include "headers/Monstercard.h"
+#include "headers/EffectActivator.h"
 
 #include <iostream>
 #include <random>
 #include <map>
+
+
+
+
 
 #include <QGraphicsScene>
 #include <QGraphicsLayout>
@@ -262,7 +267,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // TODO: Move this elsewhere.
     MonsterCard* monsterCard1 = new MonsterCard(3000, 2500, MonsterType::DRAGON,
                                                 MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
-                                                8, "Sibirski Plavac", CardType::MONSTER_CARD,
+                                                8, "Lord of D", CardType::MONSTER_CARD,
                                                 CardLocation::HAND, "Effect"
                                                 );
     monsterCard1->setPos(450, 450);
@@ -375,18 +380,7 @@ void Game::onCardHover(Card * card)
 }
 
 
-//typedef void (*FUNC_POINTER)(void); // This is the same as the "using" below
-using FUNCTION_POINTER = void(*)();
-
-
-void activateSibirskiPlavacEffect() {
-    std::cout << "Inside function which handles Sibirski Plavac's effect!" << std::endl;
-}
-
-const std::map<std::string, FUNCTION_POINTER> effectMap{
-    {"Sibirski Plavac", activateSibirskiPlavacEffect}
-};
-
+#include <functional>
 
 // Slots for card menu UI
 void Game::onActivateButtonClick(const Card * card)
@@ -397,8 +391,13 @@ void Game::onActivateButtonClick(const Card * card)
     const std::string cardName = card->getCardName();
 
     // Activate card's effect
+    EffectActivator effectActivator;
     try {
-        effectMap.at(cardName)();
+        auto funcPointer = effectActivator.effectMap.at(cardName);
+        (effectActivator.*funcPointer)();
+
+//        https://stackoverflow.com/questions/14814158/c-call-pointer-to-member-function
+//        std::invoke(effectActivator.effectMap.at(cardName));
     } catch(std::out_of_range &e) {
         std::cerr << "Error: That card doesn't have an effect! Out of range exception from: " << e.what() << std::endl;
     }
@@ -412,4 +411,10 @@ void Game::onSummonButtonClick(const Card * card) {
 void Game::onSetButtonClick(const Card * card)
 {
     std::cout << "Set button clicked on card " << card->getCardName() << std::endl;
+
+
 }
+
+
+
+

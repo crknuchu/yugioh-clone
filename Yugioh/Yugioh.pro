@@ -6,6 +6,7 @@ QT += \
 
 SOURCES += \
         sources/Card.cpp \
+        sources/EffectActivator.cpp \
         sources/Monstercard.cpp \
         sources/Spellcard.cpp \
         sources/Trapcard.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 
 HEADERS += \
     headers/Card.h \
+    headers/EffectActivator.h \
     headers/Monstercard.h \
     headers/Spellcard.h \
     headers/Trapcard.h \
