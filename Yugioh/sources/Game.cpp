@@ -22,7 +22,6 @@ const std::map<GamePhases, QString> gamePhaseToQString{
     {GamePhases::END_PHASE,         "END PHASE"}
 };
 
-
 // Class definitions:
 Game::Game(Player p1, Player p2, QWidget *parent)
     : QMainWindow(parent),
@@ -264,19 +263,15 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     MonsterCard* monsterCard1 = new MonsterCard(3000, 2500, MonsterType::DRAGON,
                                                 MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
                                                 8, "Sibirski Plavac", CardType::MONSTER_CARD,
-                                                CardLocation::HAND, "Opis"
+                                                CardLocation::HAND, "Effect"
                                                 );
-
-//    monsterCard1->setName("monsterCard1");
     monsterCard1->setPos(450, 450);
     ui->graphicsView->scene()->addItem(monsterCard1);
-
 
     // Notify the game that a card was added.
     emit cardAddedToScene(monsterCard1);
 
     // WIP: UI components
-
     // Game phase buttons and label:
     ui->labelGamePhase->setAlignment(Qt::AlignCenter);
 
@@ -296,8 +291,10 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     ui->labelImage->setPixmap(pix);
 
 
+
+
     // GraphicsView and GraphicsScene adjustments:
-    ui->graphicsView->setWindowTitle("Yu-Gi-Oh!");
+    this->setWindowTitle("Yu-Gi-Oh!");
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -316,9 +313,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 //    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
 
-
-
-
     // WIP: Background image
     // TODO: Find another image of the field
     QPixmap background(":/resources/field2.png");
@@ -336,7 +330,8 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 }
 
-void Game::onCardAddedToScene(const Card * card)
+// TODO: const Card *&Card
+void Game::onCardAddedToScene(const Card *card)
 {
     // TODO: If exact subclass of Card is needed here eventually, we could check with:
     /*
@@ -345,8 +340,15 @@ void Game::onCardAddedToScene(const Card * card)
      *         and then static cast into that class
      *      3) Templates?
      */
+
     std::cout << "A card was added to the scene!" << std::endl;
     std::cout << "Card name: " << card->getCardName() << std::endl;
+
+
+    // Pseudo-code
+    /* -> Call setCardMenu() that determines the appearance of card menu based on flags
+     *  -> calls cardMenu.set() that sets the appropriate fields to false
+    */
 
     // Now we need to connect the card's menu UI to our slots
     /* We use a lambda here because QT's clicked() signal only sends a bool value of true/false
@@ -359,6 +361,10 @@ void Game::onCardAddedToScene(const Card * card)
         onSetButtonClick(card);
     });
 
+    connect(card->cardMenu->summonButton, &QPushButton::clicked, this, [this, card](){
+        onSummonButtonClick(card);
+    });
+
     // FIXME: Problem maybe happens because card is QGraphicsPixmapItem which is not a QOBJECT (even though we used Q_OBJECT macro in Card.h)
 //    connect(card, &Card::cardHovered, this, &Game::onCardHover);
 }
@@ -369,17 +375,16 @@ void Game::onCardHover(Card * card)
 }
 
 
-
 //typedef void (*FUNC_POINTER)(void); // This is the same as the "using" below
 using FUNCTION_POINTER = void(*)();
 
 
-void sibirskiPlavacEffect() {
+void activateSibirskiPlavacEffect() {
     std::cout << "Inside function which handles Sibirski Plavac's effect!" << std::endl;
 }
 
 const std::map<std::string, FUNCTION_POINTER> effectMap{
-    {"Sibirski Plavac", sibirskiPlavacEffect}
+    {"Sibirski Plavac", activateSibirskiPlavacEffect}
 };
 
 
@@ -396,32 +401,13 @@ void Game::onActivateButtonClick(const Card * card)
         effectMap.at(cardName)();
     } catch(std::out_of_range &e) {
         std::cerr << "Error: That card doesn't have an effect! Out of range exception from: " << e.what() << std::endl;
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
+
+void Game::onSummonButtonClick(const Card * card) {
+    std::cout<< "Summon button was clicked on card " << card->getCardName() << std::endl;
+}
+
 
 void Game::onSetButtonClick(const Card * card)
 {

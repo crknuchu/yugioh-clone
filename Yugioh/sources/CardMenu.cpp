@@ -1,18 +1,20 @@
 #include "headers/CardMenu.h"
 #include <iostream>
 #include <QGraphicsSceneHoverEvent>
-// #include "headers/Card.h"
-
 
 CardMenu::CardMenu()
 {
     // std::cout<<"test";
     setGeometry(0, 0,150,0); //this needs to be the size of the card, not hardcoded and the location just above the card
     setWindowFlags(Qt::FramelessWindowHint);
+
+
+    // TODO:
     layout->addWidget(activateButton);
     layout->addWidget(setButton);
 }
 
+// Maybe we can pass a Card* here that made this menu
 CardMenu::CardMenu(int x, int y){
     // setGeometry(0,0parent->getWidth(),0);
     // setGeometry(x,y,100,0);
@@ -20,6 +22,7 @@ CardMenu::CardMenu(int x, int y){
     // setGeometry(0,0,150,0);
     layout->addWidget(activateButton);
     layout->addWidget(setButton);
+    layout->addWidget(summonButton);
     //   show();
 }
 

@@ -21,6 +21,10 @@ enum class GamePhases {
   END_PHASE
 };
 
+// Will be needed in the future for the Summoning action
+//static int *p_Summon_target = nullptr;
+
+
 class Game: public QMainWindow
 {
     Q_OBJECT
@@ -31,6 +35,8 @@ public:
   ~Game();
   // Public member functions:
   void start();
+
+
 
 private:
   Ui::MainWindow *ui;
@@ -74,11 +80,13 @@ private slots:
      * For now, cards are added to the scene in Game.cpp for test purposes
      * so this is a good enough placeholder until we change that.
      */
+
+    // TODO: Card *&?
     void onCardAddedToScene(const Card *);
 
 
 
-    // Slots for signals emitted in Card.cpp
+    // FIXME: Slots for signals emitted in Card.cpp
     void onCardHover(Card *);
 
 
@@ -86,6 +94,7 @@ private slots:
     // Slots for CardMenu signal handling
     void onActivateButtonClick(const Card *);
     void onSetButtonClick(const Card *);
+    void onSummonButtonClick(const Card *);
 
 signals:
     void mainWindowResized(QResizeEvent *);
