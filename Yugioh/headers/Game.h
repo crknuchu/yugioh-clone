@@ -76,6 +76,13 @@ private slots:
      */
     void onCardAddedToScene(const Card *);
 
+
+
+    // Slots for signals emitted in Card.cpp
+    void onCardHover(Card *);
+
+
+
     // Slots for CardMenu signal handling
     void onActivateButtonClick(const Card *);
     void onSetButtonClick(const Card *);

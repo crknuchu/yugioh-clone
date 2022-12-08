@@ -28,6 +28,7 @@ enum class CardLocation
 
 class Card:public QGraphicsPixmapItem
 {
+//    Q_OBJECT
 public:
 
     virtual ~Card();
@@ -35,6 +36,7 @@ public:
     const std::string &getCardName() const;
 
     std::string getCardType() const;    // TODO: Maybe return CardType instead of string?
+
 
     CardLocation getCardLocation() const;
     void setCardLocation(CardLocation newCardLocation);
@@ -76,6 +78,10 @@ private:
     std::string owner = "";
     float height;
     float width;
+
+
+//signals:
+//    void cardHovered(Card *);
 
 };
 

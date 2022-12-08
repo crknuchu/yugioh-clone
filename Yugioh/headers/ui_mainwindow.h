@@ -19,6 +19,7 @@
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -29,7 +30,7 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QGraphicsView *graphicsView;
-    QWidget *layoutWidget;
+    QWidget *widget;
     QVBoxLayout *leftVerticalLayout;
     QLabel *labelImage;
     QTextBrowser *textBrowserEffect;
@@ -41,6 +42,7 @@ public:
     QPushButton *btnEndPhase;
     QMenuBar *menubar;
     QStatusBar *statusbar;
+    QToolBar *toolBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -51,21 +53,20 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         graphicsView = new QGraphicsView(centralwidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        graphicsView->setGeometry(QRect(420, 0, 1211, 771));
-        layoutWidget = new QWidget(centralwidget);
-        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(2, 2, 401, 761));
-        leftVerticalLayout = new QVBoxLayout(layoutWidget);
+        graphicsView->setGeometry(QRect(423, 9, 1201, 711));
+        widget = new QWidget(centralwidget);
+        widget->setObjectName(QString::fromUtf8("widget"));
+        leftVerticalLayout = new QVBoxLayout(widget);
         leftVerticalLayout->setObjectName(QString::fromUtf8("leftVerticalLayout"));
         leftVerticalLayout->setContentsMargins(0, 0, 0, 0);
-        labelImage = new QLabel(layoutWidget);
+        labelImage = new QLabel(widget);
         labelImage->setObjectName(QString::fromUtf8("labelImage"));
         labelImage->setEnabled(true);
         labelImage->setMinimumSize(QSize(399, 300));
 
         leftVerticalLayout->addWidget(labelImage);
 
-        textBrowserEffect = new QTextBrowser(layoutWidget);
+        textBrowserEffect = new QTextBrowser(widget);
         textBrowserEffect->setObjectName(QString::fromUtf8("textBrowserEffect"));
 
         leftVerticalLayout->addWidget(textBrowserEffect);
@@ -74,7 +75,7 @@ public:
 
         leftVerticalLayout->addItem(verticalSpacer_2);
 
-        labelGamePhase = new QLabel(layoutWidget);
+        labelGamePhase = new QLabel(widget);
         labelGamePhase->setObjectName(QString::fromUtf8("labelGamePhase"));
 
         leftVerticalLayout->addWidget(labelGamePhase);
@@ -83,18 +84,18 @@ public:
 
         leftVerticalLayout->addItem(verticalSpacer);
 
-        btnBattlePhase = new QPushButton(layoutWidget);
+        btnBattlePhase = new QPushButton(widget);
         btnBattlePhase->setObjectName(QString::fromUtf8("btnBattlePhase"));
 
         leftVerticalLayout->addWidget(btnBattlePhase);
 
-        btnMainPhase2 = new QPushButton(layoutWidget);
+        btnMainPhase2 = new QPushButton(widget);
         btnMainPhase2->setObjectName(QString::fromUtf8("btnMainPhase2"));
         btnMainPhase2->setEnabled(false);
 
         leftVerticalLayout->addWidget(btnMainPhase2);
 
-        btnEndPhase = new QPushButton(layoutWidget);
+        btnEndPhase = new QPushButton(widget);
         btnEndPhase->setObjectName(QString::fromUtf8("btnEndPhase"));
 
         leftVerticalLayout->addWidget(btnEndPhase);
@@ -107,6 +108,9 @@ public:
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
         MainWindow->setStatusBar(statusbar);
+        toolBar = new QToolBar(MainWindow);
+        toolBar->setObjectName(QString::fromUtf8("toolBar"));
+        MainWindow->addToolBar(Qt::TopToolBarArea, toolBar);
 
         retranslateUi(MainWindow);
 
@@ -130,6 +134,7 @@ public:
         btnBattlePhase->setText(QCoreApplication::translate("MainWindow", "Battle Phase", nullptr));
         btnMainPhase2->setText(QCoreApplication::translate("MainWindow", "Main Phase 2", nullptr));
         btnEndPhase->setText(QCoreApplication::translate("MainWindow", "End Phase", nullptr));
+        toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi
 
 };

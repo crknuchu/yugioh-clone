@@ -41,6 +41,7 @@ std::string Card::getCardType() const
     }
 }
 
+
 CardLocation Card::getCardLocation() const
 {
     return cardLocation;
@@ -67,7 +68,8 @@ bool Card::operator==(const Card &other) const
 }
 
 void Card::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
-
+    // TODO: Is this even possible since QGraphicsPixmapItem doesn't inherit QObject
+//    emit cardHovered(this);
 }
 
 void Card::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){

@@ -17,22 +17,14 @@
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
-      <x>420</x>
-      <y>0</y>
-      <width>1211</width>
-      <height>771</height>
+      <x>423</x>
+      <y>9</y>
+      <width>1201</width>
+      <height>711</height>
      </rect>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>2</x>
-      <y>2</y>
-      <width>401</width>
-      <height>761</height>
-     </rect>
-    </property>
+   <widget class="QWidget" name="">
     <layout class="QVBoxLayout" name="leftVerticalLayout">
      <item>
       <widget class="QLabel" name="labelImage">
@@ -136,6 +128,17 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
  </widget>
  <resources/>
  <connections/>

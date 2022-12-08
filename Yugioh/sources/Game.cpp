@@ -244,6 +244,9 @@ void Game::onTurnEnd() {
 }
 
 
+
+/* In order to have drag resizes on the main window, we can place CentralWidget in a layout,
+   but weird things tend to happen when we actually resize then, so for now its not done like that.*/
 void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
 //    std::cout << "Window has been resized!" << std::endl;
@@ -355,19 +358,72 @@ void Game::onCardAddedToScene(const Card * card)
     connect(card->cardMenu->setButton, &QPushButton::clicked, this, [this, card](){
         onSetButtonClick(card);
     });
+
+    // FIXME: Problem maybe happens because card is QGraphicsPixmapItem which is not a QOBJECT (even though we used Q_OBJECT macro in Card.h)
+//    connect(card, &Card::cardHovered, this, &Game::onCardHover);
 }
+
+void Game::onCardHover(Card * card)
+{
+    std::cout << "Card " << card->getCardName() << " hovered!" << std::endl;
+}
+
+
+
+//typedef void (*FUNC_POINTER)(void); // This is the same as the "using" below
+using FUNCTION_POINTER = void(*)();
+
+
+void sibirskiPlavacEffect() {
+    std::cout << "Inside function which handles Sibirski Plavac's effect!" << std::endl;
+}
+
+const std::map<std::string, FUNCTION_POINTER> effectMap{
+    {"Sibirski Plavac", sibirskiPlavacEffect}
+};
 
 
 // Slots for card menu UI
 void Game::onActivateButtonClick(const Card * card)
 {
     std::cout << "Activate button clicked on card " << card->getCardName() << std::endl;
+
+    // Idea: Map of function pointers for effects
+    const std::string cardName = card->getCardName();
+
+    // Activate card's effect
+    try {
+        effectMap.at(cardName)();
+    } catch(std::out_of_range &e) {
+        std::cerr << "Error: That card doesn't have an effect! Out of range exception from: " << e.what() << std::endl;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 void Game::onSetButtonClick(const Card * card)
 {
     std::cout << "Set button clicked on card " << card->getCardName() << std::endl;
 }
-
-
-
