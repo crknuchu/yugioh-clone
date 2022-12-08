@@ -34,7 +34,7 @@ Game::Game() {}
 Game::~Game() {}
 
 
-GamePhases Game::getGamePhase(){
+GamePhases Game::getGamePhase() const{
   if (this->m_phase == GamePhases::DRAW_PHASE){
         return GamePhases::DRAW_PHASE;
     }

@@ -23,7 +23,7 @@ public:
 
   // Public member functions:
   void start();
-  GamePhases getGamePhase();
+  GamePhases getGamePhase() const;
 
 private:
   QGraphicsScene *scene;

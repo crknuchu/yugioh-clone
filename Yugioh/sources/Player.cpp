@@ -1,14 +1,4 @@
 #include "headers/Player.h"
-#include <iostream>
-#include <string>
-#include <ostream>
-#include <istream>
-#include "headers/Card.h"
-#include "headers/Game.h"
-#include "headers/Hand.h"
-#include "headers/CardList.h"
-#include <vector>
-#include "headers/Monstercard.h"
 std::string Player::getPlayerName() const{
     return this->m_name;
 }
@@ -21,12 +11,49 @@ void Player::setPoints(unsigned points){
     this->m_points-= points;
 }
 
+//DRAW PHASE 
 
 void Player::drawCards(unsigned int numOfCards) {
     //TODO
+    if (this->m_deck.getDeck().size() < numOfCards){
+        this->setPoints(0);
+        throw "Can't draw anymore, GAME ENDED!";
+    }
+    std::vector<Card *> new_cards = this->m_deck.draw(numOfCards);
+    for (int i = 0; i < new_cards.size(); i++){
+        this->m_hand.addToHand(*new_cards[i]);
+    }
     //draw cards only if game is in draw phase
   std::cout << "The player " << this->getPlayerName() << " gets " << numOfCards << " cards." << std::endl;
 }
+
+void Player::activationSpellCard(Card &spellCard){ 
+    //need activation first
+    if (spellCard.getCardType() == CardType::SPELL_CARD){
+
+    this->m_graveyard.sendToGraveyard(spellCard);
+    }
+    else
+        throw "NOT A SPELL CARD\n";
+}
+
+// ---------------------------------------------
+
+
+// STANDBY PHASE
+
+void Player::automaticallyActivationSBPhase() {
+    std::vector<Card *>array = this->m_tableTrapSepllCards.getSpellTrapZone();
+    for (int i = 0 ; i < array.size(); i++){
+        if (array[i]->getCardName() == "Treeborn Frog")
+        {
+        //activate;
+        }
+    }
+
+}
+//
+
 
 // Operator overloads:
 bool Player::operator==(const Player &other) const {
@@ -68,8 +95,8 @@ Card &Player::putCardOnTheTable(Hand &hand, Game &game){
 
 }
 
-int Player::checkOpponentGround(const Player &opponent) const {
-    return opponent.m_tableMonsterCards.size();
+int Player::checkOpponentGround(Player &opponent) const {
+    return opponent.m_tableMonsterCards.getMonsterZone().size();
 }
 void Player::attackOpponent(Game &game, MonsterCard m, Player &opponent){
 
@@ -92,8 +119,9 @@ void Player::attackOpponent(Game &game, MonsterCard m, Player &opponent){
 
 void Player::addMonsterCardOnTable(MonsterCard &card){
 
+    
     if (card.getCardType() == CardType::MONSTER_CARD){
-        this->m_tableMonsterCards.push_back(&card);
+        this->m_tableMonsterCards.getMonsterZone().push_back(&card);
         return;
     }
     else
@@ -101,8 +129,4 @@ void Player::addMonsterCardOnTable(MonsterCard &card){
         throw "Not a monsterCard, cannot add to monsterCard vector\n";
     }
 
-}
-
-std::vector<MonsterCard *> Player::tableMonsterCards(const Player &opponent){
-    return opponent.m_tableMonsterCards;
 }

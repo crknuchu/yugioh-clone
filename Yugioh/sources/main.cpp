@@ -9,11 +9,12 @@ int main(int argc,char **argv)
 {
    QApplication app(argc,argv);
 
-  Player player1("Nikola");
-  Player player2("Milan");
+  // Player player1;
+  // Player player2;
 
-  Game game(player1, player2);
+  // Game game(player1, player2);
 //  game.start();
+  Game game;
   game.show(); //this is to turn on the graphics, need to decide if we use Game as pointer
 
 
