@@ -6,14 +6,15 @@
 
 #include "headers/Game.h"
 
-Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsItem *parent)
-    :cardName(cardName)
+Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent)
+    : QGraphicsPixmapItem(parent)
+    ,cardName(cardName)
     ,cardType(cardType)
     ,cardLocation(cardLocation)
     ,cardDescription(cardDescription)
 {
     QPixmap pixmap(":/resources/blue_eyes.jpg");
-    pixmap = pixmap.scaled(QSize(200,150),Qt::KeepAspectRatio); //pixmap size needs to not be hardcoded
+    pixmap = pixmap.scaled(QSize(200,150), Qt::KeepAspectRatio); //pixmap size needs to not be hardcoded
     height = pixmap.height();
     width = pixmap.width();
     setPixmap(pixmap);
@@ -50,6 +51,7 @@ std::string Card::getCardLocationString() const
         return "error:unsupported card location";
     }
 }
+
 
 CardLocation Card::getCardLocation() const
 {
@@ -89,11 +91,12 @@ bool Card::operator==(const Card &other) const
 }
 
 void Card::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
-
+    // TODO: Is this even possible since QGraphicsPixmapItem doesn't inherit QObject
+//    emit cardHovered(this);
 }
 
 void Card::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){
-
+//    std::cout<<"leave"<<std::endl;
 }
 
 void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
@@ -132,8 +135,6 @@ float Card::getHeight(){
 float Card::getWidth(){
     return width;
 }
-
-
 
 std::ostream &operator<<(std::ostream &out, Card &c){
     return out << "Card name: " << c.getCardName() << ", card type: " << c.getCardTypeString()

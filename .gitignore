@@ -1,7 +1,25 @@
+<<<<<<< HEAD
 qrc_resources.cpp
 qrc_resources.o
+=======
+Yugioh/compile_ui.sh
+>>>>>>> feature/game
 build-Yugioh-Desktop-Debug/
 Yugioh/Yugioh.pro.user
 build-Yugioh-Desktop_Qt_5_15_2_GCC_64bit-Debug/
 .vscode
+<<<<<<< HEAD
 Yugioh
+=======
+.qmake.stash
+Card.o
+Game.o
+Makefile
+Monstercard.o
+Player.o
+Spellcard.o
+Trapcard.o
+main.o
+qrc_resources.cpp
+qrc_resources.o
+>>>>>>> feature/game

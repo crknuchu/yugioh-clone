@@ -11,7 +11,7 @@ QT += \
 
 SOURCES += \
         sources/Card.cpp \
-        sources/MonsterZone.cpp \
+        sources/EffectActivator.cpp \
         sources/Monstercard.cpp \
         sources/SpellTrapZone.cpp \
         sources/Spellcard.cpp \
@@ -23,11 +23,12 @@ SOURCES += \
         sources/Graveyard.cpp \
         sources/Hand.cpp \
         sources/Player.cpp \
-        sources/CardMenu.cpp
+        sources/CardMenu.cpp \
+        sources/MonsterZone.cpp 
 
 HEADERS += \
     headers/Card.h \
-    headers/MonsterZone.h \
+    headers/EffectActivator.h \
     headers/Monstercard.h \
     headers/SpellTrapZone.h \
     headers/Spellcard.h \
@@ -38,7 +39,9 @@ HEADERS += \
     headers/Graveyard.h \
     headers/Hand.h \
     headers/Player.h \
-    headers/CardMenu.h
+    headers/ui_mainwindow.h \
+    headers/CardMenu.h \ 
+    headers/MonsterZone.h
 
 RESOURCES += \
         resources.qrc

@@ -16,8 +16,8 @@ int main(int argc,char **argv)
     Player player2("Milan");
 
   Game game(player1, player2);
-  game.show();
 
-    app.exec();
-    return 0;
+  game.showFullScreen();
+
+  return app.exec();
 }

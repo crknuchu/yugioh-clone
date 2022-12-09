@@ -34,6 +34,7 @@ enum class CardLocation
 
 class Card:public QGraphicsPixmapItem
 {
+//    Q_OBJECT
 public:
 
     virtual ~Card();
@@ -43,6 +44,7 @@ public:
     std::string getCardTypeString() const;
 
     CardType getCardType() const;
+
 
 
     CardLocation getCardLocation() const;
@@ -70,11 +72,11 @@ public:
     // void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void move(float x,float y);
 
-    CardMenu *cardMenu = new CardMenu(0,450);
+    CardMenu *cardMenu = new CardMenu(0, 450);
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
-    Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsItem *parent = 0);
+    Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent = 0);
     std::string cardName;
     CardType cardType;
     CardLocation cardLocation;
@@ -91,6 +93,10 @@ private:
     std::string owner = "";
     float height;
     float width;
+
+
+//signals:
+//    void cardHovered(Card *);
 
 };
 
