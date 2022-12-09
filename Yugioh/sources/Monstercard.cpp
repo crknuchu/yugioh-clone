@@ -196,18 +196,23 @@ bool MonsterCard::specialSummon(Position s){
 }
 
 void MonsterCard::setCardMenu(Game & game){
+    QMap<QString, bool> flagMap ;
+
     if (cardLocation == CardLocation::HAND && (game.getGamePhase() == GamePhases::MAIN_PHASE1 || game.getGamePhase() == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
-        //summon,set flags= true
+        flagMap.insert("set",true);
+        flagMap.insert("summon",true);
     }
     if(cardLocation == CardLocation::FIELD  && (game.getGamePhase() == GamePhases::MAIN_PHASE1|| game.getGamePhase() == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
-       //reposition flag = true
+        flagMap.insert("reposition",true);
     }
     if(monsterKind == MonsterKind::EFFECT_MONSTER){
-        //flag,activate = true
+        flagMap.insert("activate",true);
     }
     if(cardLocation == CardLocation::FIELD  && game.getGamePhase() == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){
-       // attack = true
+        flagMap.insert("attack",true);
+        flagMap.insert("summon",true);
     //call constructor CardMenu(all selected flags)
+        //cardMenu(flagMap);
     }
     };
 
