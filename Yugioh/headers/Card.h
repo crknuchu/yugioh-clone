@@ -62,7 +62,7 @@ public:
     // void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void move(float x,float y);
 
-    CardMenu *cardMenu = new CardMenu();
+    // CardMenu *cardMenu = new CardMenu(QMap<int,int> flags);
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.

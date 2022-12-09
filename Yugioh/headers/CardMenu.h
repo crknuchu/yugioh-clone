@@ -6,11 +6,13 @@
 #include <QVBoxLayout>
 #include <QGraphicsSceneHoverEvent>
 #include <QEvent>
+#include <QMap>
+#include <QString>
 
 class CardMenu: public QWidget
 {
 public:
-    CardMenu();
+    CardMenu(QMap<QString,bool> flags);
 
     QPushButton *activateButton = new QPushButton("Activate");
     QPushButton *setButton = new QPushButton("Set");

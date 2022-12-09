@@ -1,28 +1,24 @@
 #include "headers/CardMenu.h"
-#include <iostream>
-#include <QGraphicsSceneHoverEvent>
 
-CardMenu::CardMenu() //need arguments for menu options
+CardMenu::CardMenu(QMap<QString,bool> flags)
 {
     setWindowFlags(Qt::FramelessWindowHint);
 
-    bool tmpArgument = true;
-
-    if(tmpArgument == true){
+    if(flags["activate"] == true){
         layout->addWidget(activateButton);
     }
-    if(tmpArgument == true){
+    if(flags["set"] == true){
         layout->addWidget(setButton);
     }
-    if(tmpArgument == true){
+    if(flags["summon"] == true){
         layout->addWidget(summonButton);        
     }
-    if(tmpArgument == true){
+    if(flags["reposition"] == true){
         layout->addWidget(repositionButton);
     }
-    if(tmpArgument == true){
+    if(flags["attack"] == true){
         layout->addWidget(attackButton);        
     }
     
-    hide();
+    hide(); // the menu is not visible at default
 }
