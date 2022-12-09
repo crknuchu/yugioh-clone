@@ -356,15 +356,15 @@ void Game::onCardAddedToScene(const Card *card)
     /* We use a lambda here because QT's clicked() signal only sends a bool value of true/false
        This way, we can pass the card to our onActivateButtonClick slot */
     connect(card->cardMenu->activateButton, &QPushButton::clicked, this, [this, card](){
-        onActivateButtonClick(card);
+        onActivateButtonClick(*card);
     });
 
     connect(card->cardMenu->setButton, &QPushButton::clicked, this, [this, card](){
-        onSetButtonClick(card);
+        onSetButtonClick(*card);
     });
 
     connect(card->cardMenu->summonButton, &QPushButton::clicked, this, [this, card](){
-        onSummonButtonClick(card);
+        onSummonButtonClick(*card);
     });
 
     // FIXME: Problem maybe happens because card is QGraphicsPixmapItem which is not a QOBJECT (even though we used Q_OBJECT macro in Card.h)
@@ -378,21 +378,20 @@ void Game::onCardHover(Card * card)
 
 
 // Slots for card menu UI
-void Game::onActivateButtonClick(const Card * card)
+void Game::onActivateButtonClick(const Card &card)
 {
-    std::cout << "Activate button clicked on card " << card->getCardName() << std::endl;
+    std::cout << "Activate button clicked on card " << card.getCardName() << std::endl;
 
     // Idea: Map of function pointers for effects
-    const std::string cardName = card->getCardName();
+    const std::string cardName = card.getCardName();
 
     // Activate card's effect
     EffectActivator effectActivator;
 
     try {
-        // TODO: refactor -> change funcPointer name to something else and use invoke()
         auto effectFunctionPointer = effectActivator.effectMap.at(cardName);
 
-        // (effectActivator.*funcPointer)(); // This is the same as the invoke call.
+        // (effectActivator.*funcPointer)(); // This is the same as the invoke call below.
         // If the first argument is a pointer to member func, invoke expects an object that owns it to be a first argument.
         std::invoke(effectFunctionPointer, effectActivator);
     } catch(std::out_of_range &e) {
@@ -400,14 +399,14 @@ void Game::onActivateButtonClick(const Card * card)
     }
 }
 
-void Game::onSummonButtonClick(const Card * card) {
-    std::cout<< "Summon button was clicked on card " << card->getCardName() << std::endl;
+void Game::onSummonButtonClick(const Card &card) {
+    std::cout<< "Summon button was clicked on card " << card.getCardName() << std::endl;
 }
 
 
-void Game::onSetButtonClick(const Card * card)
+void Game::onSetButtonClick(const Card &card)
 {
-    std::cout << "Set button clicked on card " << card->getCardName() << std::endl;
+    std::cout << "Set button clicked on card " << card.getCardName() << std::endl;
 
 
 }

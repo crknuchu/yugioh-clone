@@ -81,7 +81,7 @@ private slots:
      * so this is a good enough placeholder until we change that.
      */
 
-    // TODO: Card *&?
+
     void onCardAddedToScene(const Card *);
 
 
@@ -92,9 +92,9 @@ private slots:
 
 
     // Slots for CardMenu signal handling
-    void onActivateButtonClick(const Card *);
-    void onSetButtonClick(const Card *);
-    void onSummonButtonClick(const Card *);
+    void onActivateButtonClick(const Card &);
+    void onSetButtonClick(const Card &);
+    void onSummonButtonClick(const Card &);
 
 signals:
     void mainWindowResized(QResizeEvent *);
