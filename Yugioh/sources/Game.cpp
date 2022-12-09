@@ -30,14 +30,11 @@ Game::Game(Player p1, Player p2) : m_player1(p1), m_player2(p2) {
 Game::Game() {}
 Game::~Game() {}
 
-enum class GamePhases {
-  DRAW_PHASE,
-  STANDBY_PHASE,
-  MAIN_PHASE1,
-  BATTLE_PHASE,
-  MAIN_PHASE2,
-  END_PHASE
-};
+
+GamePhases Game::getGamePhase() const
+{
+    return gamePhase;
+}
 
 int Game::randomGenerator(const int limit) const {
   /*

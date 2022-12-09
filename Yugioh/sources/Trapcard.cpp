@@ -1,8 +1,9 @@
 #include "headers/Trapcard.h"
 
-TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active)
+TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active,bool setThisTurn)
     : Card(cardName, cardType, cardLocation, cardDescription)
     ,trapType(type)
+    ,setThisTurn(setThisTurn)
     ,active(active)
 {}
 
@@ -31,3 +32,12 @@ void TrapCard::activateTrap()
     this->active = true;
 }
 
+void TrapCard::setCardMenu(Game & game){
+    if(cardLocation == CardLocation::HAND && (game.getGamePhase() == GamePhases::MAIN_PHASE1 || game.getGamePhase() == GamePhases::MAIN_PHASE2)){
+        // set, activate = true
+    }
+    if(cardLocation == CardLocation::FIELD && setThisTurn == false){
+        //flag activate = true
+    }
+        //call CardMenu(all flags from if)
+};

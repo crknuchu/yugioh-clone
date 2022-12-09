@@ -1,7 +1,7 @@
 #include "headers/Monstercard.h"
 
 
-MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Summon position, CardType cardType, CardLocation cardLocation, const std::string &cardDescription)
+MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn)
     : Card(cardName, cardType, cardLocation, cardDescription)
     ,attackPoints(attackPoints)
     ,defensePoints(defensePoints)
@@ -10,6 +10,9 @@ MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defe
     ,attribute(attribute)
     ,level(level)
     ,active(active)
+    ,position(position)
+    ,alreadyAttack(alreadyAttack)
+    ,summonedThisTurn(summonedThisTurn)
 {
 }
 
@@ -175,21 +178,38 @@ void MonsterCard::muliplyDefensePoints(int coef)
 
 }
 
-void MonsterCard::normalSummon(Summon s){
-    if (this->active == true or this->cardLocation != CardLocation :: HAND or s == Summon::FLIP)
-        return ; // unsuporeted actions
+bool MonsterCard::normalSummon(Position s){
+    if (this->active == true or this->cardLocation != CardLocation :: HAND )
+        return false; // unsuporeted actions
     this->active = true;
     this->position = s;
+    return true;
 }
 
 
-void MonsterCard::specialSummon(Summon s){
+bool MonsterCard::specialSummon(Position s){
     if ( this->cardLocation == CardLocation :: DECK )
-        return ; // ne moze da radi ako je na terenu
-    this->active = true;
-    this->position = s;
+        return false; // ne moze da radi ako je na terenu
+    active = true;
+    position = s;
+    return true;
 }
 
+void MonsterCard::setCardMenu(Game & game){
+    if (cardLocation == CardLocation::HAND && (game.getGamePhase() == GamePhases::MAIN_PHASE1 || game.getGamePhase() == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
+        //summon,set flags= true
+    }
+    if(cardLocation == CardLocation::FIELD  && (game.getGamePhase() == GamePhases::MAIN_PHASE1|| game.getGamePhase() == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
+       //reposition flag = true
+    }
+    if(monsterKind == MonsterKind::EFFECT_MONSTER){
+        //flag,activate = true
+    }
+    if(cardLocation == CardLocation::FIELD  && game.getGamePhase() == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){
+       // attack = true
+    //call constructor CardMenu(all selected flags)
+    }
+    };
 
 
 

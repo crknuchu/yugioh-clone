@@ -4,12 +4,26 @@
 #include "Player.h"
 #include <QGraphicsView>
 
+class Card;
+
+enum class GamePhases {
+  DRAW_PHASE,
+  STANDBY_PHASE,
+  MAIN_PHASE1,
+  BATTLE_PHASE,
+  MAIN_PHASE2,
+  END_PHASE
+};
+
+
 class Game: public QGraphicsView
 {
 public:
   Game();
   Game(Player p1, Player p2);
   ~Game();
+  GamePhases gamePhase;
+  GamePhases getGamePhase()const;
 
   // Public member functions:
   void start();

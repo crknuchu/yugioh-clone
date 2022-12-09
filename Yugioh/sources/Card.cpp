@@ -2,7 +2,7 @@
 #include<numeric>
 #include<iterator>
 #include <iostream>
-
+#include "headers/Game.h"
 
 Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsItem *parent)
     :cardName(cardName)
@@ -121,6 +121,7 @@ float Card::getHeight(){
 float Card::getWidth(){
     return width;
 }
+
 
 
 std::ostream &operator<<(std::ostream &out, Card &c){

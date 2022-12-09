@@ -13,13 +13,13 @@ int main(int argc,char **argv)
   Player player2("Milan");
 
   Game game(player1, player2);
-//  game.start();
-  //game->show(); this is to turn on the graphics, need to decide if we use Game as pointer
+  //game.start();
+  //game.show();// this is to turn on the graphics, need to decide if we use Game as pointer
 
 
 
   MonsterCard card("Sibirski Plavac",3000, 2500,8,
-                   MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,false,Summon::NONE,  CardType::MONSTER_CARD, CardLocation::HAND, "Placeholder Description"
+                   MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,false,Position::NONE,false,  CardType::MONSTER_CARD, CardLocation::HAND, "Placeholder Description"
                    );
   std::cout << card << std::endl;
 
