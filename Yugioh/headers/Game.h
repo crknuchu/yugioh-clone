@@ -19,7 +19,19 @@ enum class GamePhases {
   END_PHASE
 };
 
-class Game: public QMainWindow
+class Card;
+
+enum class GamePhases {
+  DRAW_PHASE,
+  STANDBY_PHASE,
+  MAIN_PHASE1,
+  BATTLE_PHASE,
+  MAIN_PHASE2,
+  END_PHASE
+};
+
+
+class Game: public QGraphicsView
 {
     Q_OBJECT
 
@@ -27,6 +39,9 @@ public:
   Game();
   Game(Player p1, Player p2, QWidget *parent = nullptr);  // Why is parent's type QWidget and not QMainWindow?
   ~Game();
+  GamePhases gamePhase;
+  GamePhases getGamePhase()const;
+
   // Public member functions:
   void start();
 

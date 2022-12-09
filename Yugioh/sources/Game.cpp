@@ -72,6 +72,10 @@ Game::~Game() {
     delete scene; // TODO: Check other memory deallocations too.
     // delete monsterCard1; // We can't free this here because it lives only in the constructor. !!
     // !! FIXME: Where do we free it then? Should it be initialized in the constructor or not?
+
+GamePhases Game::getGamePhase() const
+{
+    return gamePhase;
 }
 
 int Game::randomGenerator(const int limit) const {

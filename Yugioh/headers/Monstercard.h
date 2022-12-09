@@ -48,12 +48,13 @@ enum class MonsterAttribute
     WIND
 };
 
-enum class Summon{
+enum class Position{
     ATTACK,
-    SET,
-    FLIP,
+    DEFENSE,
     NONE
 };
+
+
 
 
 class MonsterCard : public Card
@@ -61,7 +62,7 @@ class MonsterCard : public Card
 public:
 
     MonsterCard( const std::string &cardName,int attackPoints, int defensePoints, int level, MonsterType type,
-                 MonsterKind kind, MonsterAttribute attribute,bool active,Summon position, CardType cardType, CardLocation cardLocation, const std::string &cardDescription);
+                 MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn = false);
     virtual ~MonsterCard();
 
     int getAttackPoints() const;
@@ -78,6 +79,7 @@ public:
     void setDefensePoints(int newDefensePoints);
 
 
+
     //methods to be called with the appropriate spell/trap card
     void increaseAttackPoints(int points);
     void muliplyAttackPoints(int coef);
@@ -85,9 +87,11 @@ public:
     void increaseDefensePoints(int points);
     void muliplyDefensePoints(int coef);
 
-    void normalSummon(Summon s);
-    void specialSummon(Summon s);
+    bool normalSummon(Position position);
+    bool specialSummon(Position position);
 
+
+    void setCardMenu(Game&game) override;
 
 protected:
     int attackPoints;
@@ -97,8 +101,13 @@ protected:
     MonsterAttribute attribute;
     int level;
     bool active;
-    Summon position;
+    Position position;
+    bool alreadyAttack;
+    bool summonedThisTurn;
+
 };
+
+
 
 
 #endif // MONSTERCARD_H

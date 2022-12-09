@@ -1,6 +1,7 @@
 #ifndef CARD_H
 #define CARD_H
 
+#include "headers/Game.h"
 #include <string>
 #include <vector>
 #include <QGraphicsPixmapItem>
@@ -10,6 +11,8 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
+
+class Game;
 
 enum class CardType
 {
@@ -23,7 +26,10 @@ enum class CardLocation
     HAND,
     DECK,
     GRAVEYARD,
-    FIELD
+    FIELD,
+    //ATTACK,
+    //DEFENSE,
+    //SPELL_TRAP_ZONE
 };
 
 class Card:public QGraphicsPixmapItem
@@ -48,6 +54,8 @@ public:
     const std::string &getCardDescription() const;
 
     //virtual void placeCardOnField();
+
+    virtual void setCardMenu(Game &game) = 0;
 
     bool operator==(const Card &card) const;
 

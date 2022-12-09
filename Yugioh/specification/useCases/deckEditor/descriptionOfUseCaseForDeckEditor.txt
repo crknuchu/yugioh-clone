@@ -1,0 +1,37 @@
+Quick description:The player adds new decks, deletes the existing ones or renames decks.
+
+Actors: One player
+
+Main course of events:
+1. The player chooses the  "Deck editor" button from main menu
+2. The application opens the deck editor menu
+3. The player chooses the "Add deck" button
+    3.1. The application shows a list of available cards
+    3.2. The player chooses cards to add to a new deck.
+        3.2.1. Deck must have minimum 40 cards
+    3.3. The player enters the name for a deck
+    3.4. The application saves the deck with chosen cards and name
+4. The player chooses the "Remove deck" button
+    4.1. The application shows a list of existing decks
+        4.1.1. If there is no decks, application alerts the player that there is no existing decks
+    4.2. The player chooses what deck to remove
+    4.3. The application removes chosen deck
+5.The player chooses the "Rename deck" button
+    5.1. The application shows a list of existing decks
+        5.1.1. If there is no decks, application alerts the player that there is no existing decks
+    5.2. The player chooses deck to be renamed
+    5.3. The player enters the name
+    5.4. The application renames the chosen deck with the entered name
+6. Application goes back to the main menu
+
+Alternate streams:
+1. Unexpected shut down of the application. If the application at any part of the procedure turns off, the settings will not be saved
+
+Substreams:
+/
+
+Special demands:
+/
+
+Additional information:
+/

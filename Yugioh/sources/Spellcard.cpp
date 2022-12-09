@@ -40,6 +40,14 @@ void SpellCard::activateSpell()
     this->active = true;
 }
 
-
-
-
+void SpellCard::setCardMenu(Game & game){
+    QMap<QString, bool> flagMap ;
+    if(cardLocation == CardLocation::HAND && (game.getGamePhase() == GamePhases::MAIN_PHASE1 || game.getGamePhase() == GamePhases::MAIN_PHASE2)){
+        flagMap.insert("set",true);
+        flagMap.insert("activate",true);
+    }
+     if(cardLocation == CardLocation::FIELD){
+         flagMap.insert("activate",true);
+        }
+        //mainMenu(flagMap)
+};
