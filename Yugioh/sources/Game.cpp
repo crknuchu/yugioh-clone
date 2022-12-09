@@ -42,11 +42,20 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 
     // Creating items
     // TODO: Should monstercard1 be a pointer or not?
-     MonsterCard* monsterCard1 = new MonsterCard("Sibirski Plavac",3000, 2500,4, MonsterType::DRAGON,
+
+
+    /*
+     *     MonsterCard( const std::string &cardName,int attackPoints, int defensePoints, int level, MonsterType type,
+                 MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack,
+                 CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn = false);
+    */
+
+
+     MonsterCard* monsterCard1 = new MonsterCard("Sibirski Plavac", 3000, 2500, 4, MonsterType::DRAGON,
                                                  MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
-                                                 true,Summon::SET,   CardType::MONSTER_CARD,
-                                                 CardLocation::HAND, "Opis"
-                                                 );
+                                                 true, Position::ATTACK, false,
+                                                 CardType::MONSTER_CARD, CardLocation::HAND, "Opis", false
+                                                );
      monsterCard1->setName("monsterCard1");
 
      scene->addItem(monsterCard1);
@@ -72,6 +81,7 @@ Game::~Game() {
     delete scene; // TODO: Check other memory deallocations too.
     // delete monsterCard1; // We can't free this here because it lives only in the constructor. !!
     // !! FIXME: Where do we free it then? Should it be initialized in the constructor or not?
+}
 
 GamePhases Game::getGamePhase() const
 {
