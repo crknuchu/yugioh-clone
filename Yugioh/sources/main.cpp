@@ -12,12 +12,12 @@ int main(int argc,char **argv)
 {
   QApplication app(argc, argv);
 
-  Player player1("Nikola");
-  Player player2("Milan");
+    Player player1("Nikola");
+    Player player2("Milan");
 
   Game game(player1, player2);
   game.show();
 
-  app.exec();
-  return 0;
+    app.exec();
+    return 0;
 }

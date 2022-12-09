@@ -15,6 +15,12 @@ std::vector<Card*> Deck::getDeck() const{
     return m_cardList;
 }
 
+Card* Deck::draw(){
+    Card* drawnCard = m_cardList.front();
+    m_cardList.erase(m_cardList.begin());
+    return drawnCard;
+};
+
 std::vector<Card*> Deck::draw(int numberOfCards) {
     std::vector<Card*> cards;
     for(int i = 0; i < numberOfCards; i++){

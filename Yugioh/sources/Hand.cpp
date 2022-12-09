@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <optional>
 
+Hand::Hand(){};
 Hand::Hand(std::vector<Card*> &initialHand)
     :CardList(initialHand){
     for(auto card : m_cardList){
