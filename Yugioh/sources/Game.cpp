@@ -386,8 +386,9 @@ void Game::onActivateButtonClick(const Card &card)
     // Effect activator is needed for effect handling
     EffectActivator effectActivator;
 
-    // We connect it via connect():
+    // We connect every signal from EffectActivator to our slots in Game:
     connect(&effectActivator, &EffectActivator::healthPointsChanged, this, &Game::onHealthPointsChange);
+    connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
     try {
         auto effectFunctionPointer = effectActivator.effectMap.at(cardName);
 
@@ -403,12 +404,22 @@ void Game::onSummonButtonClick(const Card &card) {
     std::cout<< "Summon button was clicked on card " << card.getCardName() << std::endl;
 }
 
+
+/* TODO: This should accept the targetPlayer as an argument, because otherwise we always print currentPlayer's hp,
+         even if it was other player's health that had changed. */
 void Game::onHealthPointsChange()
 {
-    std::cout << "Health points have been changed!" << std::endl;
+    std::cout << "Current health points: " << GameExternVars::m_pCurrentPlayer->getPlayerHealthPoints() << std::endl;
 
     // Set the label text to the current health value
     ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::m_pCurrentPlayer->getPlayerHealthPoints())));
+}
+
+void Game::onGameEnd(Player &loser)
+{
+    std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost!";
+
+    // TODO: Stop the game here somehow!
 }
 
 

@@ -110,7 +110,13 @@ void EffectActivator::returnToHand(Card &card, const GamePhases &inWhichGamePhas
 void EffectActivator::changeHealthPointsBy(int pointChange, Player &targetPlayer) {
 
     // TODO: Implement checks to make sure health points don't go below 0.
-    targetPlayer.changeHealthPointsBy(pointChange);
+    /* TODO: Is it better to do it here or in Player?
+     * If we do it here, we can emit a signal, whereas we would have to make Player inherit QObject to be able to do that...
+     */
+    unsigned currentPlayerHealthPoints = targetPlayer.getPlayerHealthPoints();
+
+    unsigned newHealthPoints = currentPlayerHealthPoints + pointChange;
+    newHealthPoints > 0 ? targetPlayer.setPlayerHealthPoints(newHealthPoints) : emit gameEnded(targetPlayer); // return is probably not needed
 
     // The following code is only for the purpose of unified output, it can be made prettier probably.
     std::string lostOrGained = pointChange < 0 ? "lost" : "gained";

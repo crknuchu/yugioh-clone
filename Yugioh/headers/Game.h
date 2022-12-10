@@ -110,8 +110,10 @@ private slots:
     void onSetButtonClick(const Card &);
     void onSummonButtonClick(const Card &);
 
-    // Slots for player stats changes
+    // Slots for EffectActivator signal handling
     void onHealthPointsChange();
+    void onGameEnd(Player &loser); // const?
+
 
 signals:
     void mainWindowResized(QResizeEvent *);

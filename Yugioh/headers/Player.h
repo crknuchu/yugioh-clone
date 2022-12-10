@@ -27,7 +27,6 @@ public:
   void setPlayerHealthPoints(unsigned);
 
   void drawCards(unsigned int numOfCards);
-  void changeHealthPointsBy(int);
 
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
 
