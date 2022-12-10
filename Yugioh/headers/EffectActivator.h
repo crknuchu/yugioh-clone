@@ -48,7 +48,7 @@ private:
     void changeHealthPointsBy(int, Player &);
 
 signals:
-    void healthPointsChanged();
+    void healthPointsChanged(Player &);
     void gameEnded(Player &loser);
 };
 

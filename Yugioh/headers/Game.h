@@ -111,8 +111,8 @@ private slots:
     void onSummonButtonClick(const Card &);
 
     // Slots for EffectActivator signal handling
-    void onHealthPointsChange();
-    void onGameEnd(Player &loser); // const?
+    void onHealthPointsChange(Player &);
+    void onGameEnd(Player &); // const?
 
 
 signals:

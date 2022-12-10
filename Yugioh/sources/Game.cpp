@@ -407,17 +407,17 @@ void Game::onSummonButtonClick(const Card &card) {
 
 /* TODO: This should accept the targetPlayer as an argument, because otherwise we always print currentPlayer's hp,
          even if it was other player's health that had changed. */
-void Game::onHealthPointsChange()
+void Game::onHealthPointsChange(Player &targetPlayer) // const?
 {
-    std::cout << "Current health points: " << GameExternVars::m_pCurrentPlayer->getPlayerHealthPoints() << std::endl;
+    std::cout << "Current health points for player " << targetPlayer.getPlayerName() << " : "<< targetPlayer.getPlayerHealthPoints() << std::endl;
 
-    // Set the label text to the current health value
+    // Set the label text to the current turn player's health value
     ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::m_pCurrentPlayer->getPlayerHealthPoints())));
 }
 
 void Game::onGameEnd(Player &loser)
 {
-    std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost!";
+    std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost because his health points reached " << loser.getPlayerHealthPoints() << " !" << std::endl;
 
     // TODO: Stop the game here somehow!
 }
