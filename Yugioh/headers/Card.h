@@ -2,7 +2,8 @@
 #define CARD_H
 
 #include "CardMenu.h"
-#include "GamePhase.h"
+#include "headers/GamePhase.h"
+
 
 
 #include <string>
@@ -59,7 +60,7 @@ public:
 
     //virtual void placeCardOnField();
 
-    virtual void setCardMenu(Game &game) = 0;
+    virtual void setCardMenu() = 0;
 
     bool operator==(const Card &card) const;
 

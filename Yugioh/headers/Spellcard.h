@@ -23,7 +23,7 @@ public:
     SpellType getSpellType() const;
     std:: string getSpellTypeString()const;
     void activateSpell();
-    void setCardMenu(Game & game) override;
+    void setCardMenu() override;
 
 
 protected:

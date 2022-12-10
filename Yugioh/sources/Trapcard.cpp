@@ -32,8 +32,9 @@ void TrapCard::activateTrap()
     this->active = true;
 }
 
-void TrapCard::setCardMenu(Game & game){
-    QMap<QString, bool> flagMap ;
+void TrapCard::setCardMenu(){
+    QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
+
     if(cardLocation == CardLocation::HAND && (GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE1 || GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE2)){
         flagMap.insert("set",true);
         flagMap.insert("activate",true);
@@ -41,5 +42,5 @@ void TrapCard::setCardMenu(Game & game){
     if(cardLocation == CardLocation::FIELD && setThisTurn == false){
         flagMap.insert("activate",true);
     }
-        //mainMenu(flagMap)
+    cardMenu->update(flagMap);
 };

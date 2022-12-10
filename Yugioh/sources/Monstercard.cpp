@@ -189,14 +189,14 @@ bool MonsterCard::normalSummon(Position s){
 
 bool MonsterCard::specialSummon(Position s){
     if ( this->cardLocation == CardLocation :: DECK )
-        return false; // ne moze da radi ako je na terenu
+        return false;
     active = true;
     position = s;
     return true;
 }
 
-void MonsterCard::setCardMenu(Game & game){
-    QMap<QString, bool> flagMap ;
+void MonsterCard::setCardMenu(){
+    QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
 
     if (cardLocation == CardLocation::HAND && (GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE1 || GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("set",true);
@@ -211,9 +211,8 @@ void MonsterCard::setCardMenu(Game & game){
     if(cardLocation == CardLocation::FIELD  && GamePhase::currentGamePhase == GamePhasesEnum::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){
         flagMap.insert("attack",true);
         flagMap.insert("summon",true);
-    //call constructor CardMenu(all selected flags)
-        //cardMenu(flagMap);
     }
+    cardMenu->update(flagMap);
     };
 
 

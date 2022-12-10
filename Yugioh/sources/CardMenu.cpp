@@ -14,6 +14,8 @@ CardMenu::CardMenu()
     layout->addWidget(setButton);
 }
 
+
+
 // Maybe we can pass a Card* here that made this menu
 CardMenu::CardMenu(int x, int y){
     // setGeometry(0,0parent->getWidth(),0);
@@ -33,4 +35,8 @@ CardMenu::CardMenu(int x, int y){
 
 void CardMenu::leaveEvent(QEvent *event){
     hide();
+}
+
+void CardMenu::update(QMap<QString,bool>flagmap){
+
 }
