@@ -14,7 +14,8 @@ enum class UntargetableBy {
 };
 
 
-class EffectActivator {
+class EffectActivator : public QObject {
+    Q_OBJECT
     // Our type that represents a pointer to EffectActivator member function that accept no arguments and return void
     using EFFECT_MEMBER_FUNCTION_POINTER = void(EffectActivator::*)(void);
 public:
@@ -44,6 +45,10 @@ private:
     // Generic outcomes that make up card's effects:
     void makeMonstersOfThisTypeUntargetable(const MonsterType &, const UntargetableBy &, const CardLocation &, Player &);
     void returnToHand(Card &, const GamePhases &, Player &);
+    void changeHealthPointsBy(int, Player &);
+
+signals:
+    void healthPointsChanged();
 };
 
 

@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
@@ -30,7 +31,7 @@ class Ui_MainWindow
 public:
     QWidget *centralwidget;
     QGraphicsView *graphicsView;
-    QWidget *widget;
+    QWidget *layoutWidget;
     QVBoxLayout *leftVerticalLayout;
     QLabel *labelImage;
     QTextBrowser *textBrowserEffect;
@@ -40,6 +41,13 @@ public:
     QPushButton *btnBattlePhase;
     QPushButton *btnMainPhase2;
     QPushButton *btnEndPhase;
+    QVBoxLayout *verticalLayout;
+    QHBoxLayout *horizontalLayout;
+    QLabel *labelCurrentPlayerConst;
+    QLabel *labelCurrentPlayerDynamic;
+    QHBoxLayout *horizontalLayout_2;
+    QLabel *labelHealthPointsConst;
+    QLabel *labelHealthPointsDynamic;
     QMenuBar *menubar;
     QStatusBar *statusbar;
     QToolBar *toolBar;
@@ -54,19 +62,20 @@ public:
         graphicsView = new QGraphicsView(centralwidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
         graphicsView->setGeometry(QRect(423, 9, 1201, 711));
-        widget = new QWidget(centralwidget);
-        widget->setObjectName(QString::fromUtf8("widget"));
-        leftVerticalLayout = new QVBoxLayout(widget);
+        layoutWidget = new QWidget(centralwidget);
+        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+        layoutWidget->setGeometry(QRect(0, 0, 401, 708));
+        leftVerticalLayout = new QVBoxLayout(layoutWidget);
         leftVerticalLayout->setObjectName(QString::fromUtf8("leftVerticalLayout"));
         leftVerticalLayout->setContentsMargins(0, 0, 0, 0);
-        labelImage = new QLabel(widget);
+        labelImage = new QLabel(layoutWidget);
         labelImage->setObjectName(QString::fromUtf8("labelImage"));
         labelImage->setEnabled(true);
         labelImage->setMinimumSize(QSize(399, 300));
 
         leftVerticalLayout->addWidget(labelImage);
 
-        textBrowserEffect = new QTextBrowser(widget);
+        textBrowserEffect = new QTextBrowser(layoutWidget);
         textBrowserEffect->setObjectName(QString::fromUtf8("textBrowserEffect"));
 
         leftVerticalLayout->addWidget(textBrowserEffect);
@@ -75,7 +84,7 @@ public:
 
         leftVerticalLayout->addItem(verticalSpacer_2);
 
-        labelGamePhase = new QLabel(widget);
+        labelGamePhase = new QLabel(layoutWidget);
         labelGamePhase->setObjectName(QString::fromUtf8("labelGamePhase"));
 
         leftVerticalLayout->addWidget(labelGamePhase);
@@ -84,21 +93,56 @@ public:
 
         leftVerticalLayout->addItem(verticalSpacer);
 
-        btnBattlePhase = new QPushButton(widget);
+        btnBattlePhase = new QPushButton(layoutWidget);
         btnBattlePhase->setObjectName(QString::fromUtf8("btnBattlePhase"));
 
         leftVerticalLayout->addWidget(btnBattlePhase);
 
-        btnMainPhase2 = new QPushButton(widget);
+        btnMainPhase2 = new QPushButton(layoutWidget);
         btnMainPhase2->setObjectName(QString::fromUtf8("btnMainPhase2"));
         btnMainPhase2->setEnabled(false);
 
         leftVerticalLayout->addWidget(btnMainPhase2);
 
-        btnEndPhase = new QPushButton(widget);
+        btnEndPhase = new QPushButton(layoutWidget);
         btnEndPhase->setObjectName(QString::fromUtf8("btnEndPhase"));
 
         leftVerticalLayout->addWidget(btnEndPhase);
+
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        labelCurrentPlayerConst = new QLabel(layoutWidget);
+        labelCurrentPlayerConst->setObjectName(QString::fromUtf8("labelCurrentPlayerConst"));
+
+        horizontalLayout->addWidget(labelCurrentPlayerConst);
+
+        labelCurrentPlayerDynamic = new QLabel(layoutWidget);
+        labelCurrentPlayerDynamic->setObjectName(QString::fromUtf8("labelCurrentPlayerDynamic"));
+
+        horizontalLayout->addWidget(labelCurrentPlayerDynamic);
+
+
+        verticalLayout->addLayout(horizontalLayout);
+
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        labelHealthPointsConst = new QLabel(layoutWidget);
+        labelHealthPointsConst->setObjectName(QString::fromUtf8("labelHealthPointsConst"));
+
+        horizontalLayout_2->addWidget(labelHealthPointsConst);
+
+        labelHealthPointsDynamic = new QLabel(layoutWidget);
+        labelHealthPointsDynamic->setObjectName(QString::fromUtf8("labelHealthPointsDynamic"));
+
+        horizontalLayout_2->addWidget(labelHealthPointsDynamic);
+
+
+        verticalLayout->addLayout(horizontalLayout_2);
+
+
+        leftVerticalLayout->addLayout(verticalLayout);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
@@ -134,6 +178,10 @@ public:
         btnBattlePhase->setText(QCoreApplication::translate("MainWindow", "Battle Phase", nullptr));
         btnMainPhase2->setText(QCoreApplication::translate("MainWindow", "Main Phase 2", nullptr));
         btnEndPhase->setText(QCoreApplication::translate("MainWindow", "End Phase", nullptr));
+        labelCurrentPlayerConst->setText(QCoreApplication::translate("MainWindow", "Current Player:", nullptr));
+        labelCurrentPlayerDynamic->setText(QString());
+        labelHealthPointsConst->setText(QCoreApplication::translate("MainWindow", "Health Points: ", nullptr));
+        labelHealthPointsDynamic->setText(QString());
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi
 

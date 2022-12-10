@@ -35,8 +35,11 @@ void EffectActivator::activateLordOfD() {
 
 
 
-    // Placeholder for testing, will be removed
+    // Placeholder for generic parts testing, will be removed
     // Cards will probably be passed as an argument to the activation functions
+
+
+    // returnToHand test
     MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                                 MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                                 MonsterAttribute::DARK, false, Position::ATTACK, false,
@@ -44,6 +47,10 @@ void EffectActivator::activateLordOfD() {
                                                 "Neither player can target Dragon monsters on the field with card effects."
                                                 );
     returnToHand(*monsterCard2, GamePhases::END_PHASE, *GameExternVars::m_pCurrentPlayer);
+
+
+    // changeHealthPointsBy test
+    changeHealthPointsBy(500, *GameExternVars::m_pCurrentPlayer);
 
 }
 
@@ -96,6 +103,24 @@ void EffectActivator::returnToHand(Card &card, const GamePhases &inWhichGamePhas
 
 //    if(currentGamePhase == inWhichGamePhase)
 //        targetPlayer.deck.returnToHand(card)
+}
+
+
+// Maybe this is unneeded because a similar thing can exist in Player
+void EffectActivator::changeHealthPointsBy(int pointChange, Player &targetPlayer) {
+    // targetPlayer.changeHealthBy(pointChange);
+
+    // The following code is only for the purpose of unified output, it can be made prettier probably.
+    std::string lostOrGained = pointChange < 0 ? "lost" : "gained";
+
+    // We want to have non-negative points for the output, since we already say "lost" or "gained" it would be weird to say lost -500 hp.
+    pointChange = pointChange < 0 ? pointChange * -1 : pointChange;
+
+
+    std::cout << "Player " << targetPlayer.getPlayerName() << " " << lostOrGained << " " << pointChange << " health points." << std::endl;
+
+    emit healthPointsChanged();
+
 }
 
 

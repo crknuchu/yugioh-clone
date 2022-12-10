@@ -43,9 +43,19 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     ui->graphicsView->setScene(scene);
 
 
-
     // First turn setup at the beginning of the game:
     firstTurnSetup();
+
+
+
+    // Label setup:
+    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::m_pCurrentPlayer->getPlayerName()));
+
+    /* TODO: This is only set here and never updated.
+     * We should emit a signal in EffectActivator whenever the player loses/gains health and then catch it with a slot in game and call this line there.
+     */
+
+    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::m_pCurrentPlayer->getPlayerPoints())));
 }
 
 Game::Game() {}
@@ -82,6 +92,7 @@ void Game::switchPlayers() {
     *GameExternVars::m_pOtherPlayer = tmp;
 
     std::cout << "Current player is: " << *GameExternVars::m_pCurrentPlayer << std::endl;
+    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::m_pCurrentPlayer->getPlayerName()));
 }
 
 void Game::firstTurnSetup() {
@@ -372,9 +383,11 @@ void Game::onActivateButtonClick(const Card &card)
     // Idea: Map of function pointers for effects
     const std::string cardName = card.getCardName();
 
-    // Activate card's effect
+    // Effect activator is needed for effect handling
     EffectActivator effectActivator;
 
+    // We connect it via connect():
+    connect(&effectActivator, &EffectActivator::healthPointsChanged, this, &Game::onHealthPointsChange);
     try {
         auto effectFunctionPointer = effectActivator.effectMap.at(cardName);
 
@@ -388,6 +401,11 @@ void Game::onActivateButtonClick(const Card &card)
 
 void Game::onSummonButtonClick(const Card &card) {
     std::cout<< "Summon button was clicked on card " << card.getCardName() << std::endl;
+}
+
+void Game::onHealthPointsChange()
+{
+    std::cout << "Health points have been changed!" << std::endl;
 }
 
 
