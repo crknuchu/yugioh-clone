@@ -83,7 +83,7 @@ private slots:
     void onMainPhase2ButtonClick();
     void onEndPhaseButtonClick();
     void onMainWindowResize(QResizeEvent *);
-    void onGamePhaseChange(const GamePhasesEnum &newGamePhase);
+    void onGamePhaseChange(const GamePhases &newGamePhase);
     void onTurnEnd();
 
 
@@ -112,7 +112,7 @@ private slots:
 
 signals:
     void mainWindowResized(QResizeEvent *);
-    void gamePhaseChanged(const GamePhasesEnum &newGamePhase);
+    void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
     void cardAddedToScene(Card *);
 };

@@ -31,6 +31,20 @@ void EffectActivator::activateLordOfD() {
     // TODO: Should we pass the "global" GameExternVars here or use them directly inside function definition?
     makeMonstersOfThisTypeUntargetable(MonsterType::DRAGON, UntargetableBy::CARD_EFFECT, CardLocation::FIELD, *GameExternVars::m_pCurrentPlayer);
 
+
+
+
+
+    // Placeholder for testing, will be removed
+    // Cards will probably be passed as an argument to the activation functions
+    MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                                MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                CardType::MONSTER_CARD, CardLocation::HAND,
+                                                "Neither player can target Dragon monsters on the field with card effects."
+                                                );
+    returnToHand(*monsterCard2, GamePhases::END_PHASE, *GameExternVars::m_pCurrentPlayer);
+
 }
 
 void EffectActivator::activateMysteriousPuppeteer() {
@@ -64,13 +78,22 @@ void EffectActivator::activateHaneHane() {
 void EffectActivator::makeMonstersOfThisTypeUntargetable(const MonsterType &targetType, const UntargetableBy &restrictedMechanic,
                                                          const CardLocation &cardLocation, Player &targetPlayer)
 {
+    /* TODO: cout for these enums isn't possible because there are no extern enum -> string maps,
+             so we can currently only cout the player that this applies to. */
+    std::cout << "This applies to: " << targetPlayer << std::endl;
+
+
+
     // TODO: Normal naming system
 //    targetPlayer.setMonstersOfThisTypeUntargetable(targetType, restrictedMechanic, cardLocation, true);
 }
 
 
-void EffectActivator::returnToHand(const Card &card, const GamePhasesEnum &inWhichGamePhase, Player &targetPlayer)
+void EffectActivator::returnToHand(Card &card, const GamePhases &inWhichGamePhase, Player &targetPlayer)
 {
+    std::cout << "Player " << targetPlayer.getPlayerName() << "'s card " << card.getCardName() <<
+                 " will be returned to the hand in the " << GamePhaseExternVars::gamePhaseToQString.at(inWhichGamePhase).toStdString() << "." << std::endl;
+
 //    if(currentGamePhase == inWhichGamePhase)
 //        targetPlayer.deck.returnToHand(card)
 }

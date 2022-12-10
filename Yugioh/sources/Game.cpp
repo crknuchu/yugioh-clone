@@ -100,8 +100,8 @@ void Game::firstTurnSetup() {
   std::cout << "The first one to play is " << GameExternVars::m_pCurrentPlayer->getPlayerName() << std::endl;
 
   m_currentTurn = 1;
-  GamePhase::currentGamePhase = GamePhasesEnum::DRAW_PHASE;
-  emit gamePhaseChanged(GamePhase::currentGamePhase);
+  GamePhaseExternVars::currentGamePhase = GamePhases::DRAW_PHASE;
+  emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
   // The first one gets 6 cards:
   GameExternVars::m_pCurrentPlayer->drawCards(6);
@@ -151,9 +151,9 @@ bool Game::eventFilter(QObject *obj, QEvent *event)
 void Game::onBattlePhaseButtonClick()
 {
     std::cout << "Battle phase button clicked" << std::endl;
-    GamePhase::currentGamePhase = GamePhasesEnum::BATTLE_PHASE;
+    GamePhaseExternVars::currentGamePhase = GamePhases::BATTLE_PHASE;
 
-    emit gamePhaseChanged(GamePhase::currentGamePhase);
+    emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
     /* We enable Main Phase 2 button only if the BP button was clicked
      * since there can't be MP2 if there was no BP previously */
@@ -163,18 +163,18 @@ void Game::onBattlePhaseButtonClick()
 void Game::onMainPhase2ButtonClick()
 {
     std::cout << "Main phase 2 button clicked" << std::endl;
-    GamePhase::currentGamePhase = GamePhasesEnum::MAIN_PHASE2;
+    GamePhaseExternVars::currentGamePhase = GamePhases::MAIN_PHASE2;
 
-    emit gamePhaseChanged(GamePhase::currentGamePhase);
+    emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 }
 
 void Game::onEndPhaseButtonClick()
 {
     std::cout << "End phase button clicked" << std::endl;
-    GamePhase::currentGamePhase = GamePhasesEnum::END_PHASE;
+    GamePhaseExternVars::currentGamePhase = GamePhases::END_PHASE;
 
     // Set the label text to indicate that we are in the End Phase:
-    emit gamePhaseChanged(GamePhase::currentGamePhase);
+    emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
     //... (something may happen here eventually)
 
@@ -185,11 +185,11 @@ void Game::onEndPhaseButtonClick()
 
 }
 
-void Game::onGamePhaseChange(const GamePhasesEnum &newGamePhase)
+void Game::onGamePhaseChange(const GamePhases &newGamePhase)
 {
     // When game phase changes, we update label's text.
     // We use at() instead of [] because [] is not const and our map is.
-    ui->labelGamePhase->setText(GamePhase::gamePhaseToQString.at(newGamePhase));
+    ui->labelGamePhase->setText(GamePhaseExternVars::gamePhaseToQString.at(newGamePhase));
 }
 
 
@@ -205,8 +205,8 @@ void Game::onTurnEnd() {
     switchPlayers();
 
     // The draw phase begins (this is not optional).
-    GamePhase::currentGamePhase = GamePhasesEnum::DRAW_PHASE;
-    emit gamePhaseChanged(GamePhase::currentGamePhase);
+    GamePhaseExternVars::currentGamePhase = GamePhases::DRAW_PHASE;
+    emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
     // The current player draws a card (this is not optional).
     GameExternVars::m_pCurrentPlayer->drawCards(1);
@@ -214,8 +214,8 @@ void Game::onTurnEnd() {
 
 
     // The draw phase ends and the standby phase begins (this is not optional).
-    GamePhase::currentGamePhase = GamePhasesEnum::STANDBY_PHASE;
-    emit gamePhaseChanged(GamePhase::currentGamePhase);
+    GamePhaseExternVars::currentGamePhase = GamePhases::STANDBY_PHASE;
+    emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
     /* ... Something may happen here due to effects (maybe we should call checkEffects()
      or something similar that will check if there are effects to be activated in SP */
@@ -223,8 +223,8 @@ void Game::onTurnEnd() {
 
 
     // The standby phase ends and the main phase 1 begins (this is not optional).
-    GamePhase::currentGamePhase = GamePhasesEnum::MAIN_PHASE1;
-    emit gamePhaseChanged(GamePhase::currentGamePhase);
+    GamePhaseExternVars::currentGamePhase = GamePhases::MAIN_PHASE1;
+    emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
     // checkEffects(MAINPHASE1)
     // Main Phase 1 runs until user clicks one of the buttons.

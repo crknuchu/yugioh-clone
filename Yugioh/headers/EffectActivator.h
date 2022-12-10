@@ -43,7 +43,7 @@ private:
     // WIP
     // Generic outcomes that make up card's effects:
     void makeMonstersOfThisTypeUntargetable(const MonsterType &, const UntargetableBy &, const CardLocation &, Player &);
-    void returnToHand(const Card &, const GamePhasesEnum &, Player &);
+    void returnToHand(Card &, const GamePhases &, Player &);
 };
 
 

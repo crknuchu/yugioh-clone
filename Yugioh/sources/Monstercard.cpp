@@ -198,17 +198,17 @@ bool MonsterCard::specialSummon(Position s){
 void MonsterCard::setCardMenu(Game & game){
     QMap<QString, bool> flagMap ;
 
-    if (cardLocation == CardLocation::HAND && (GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE1 || GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE2) && summonedThisTurn == false){
+    if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("set",true);
         flagMap.insert("summon",true);
     }
-    if(cardLocation == CardLocation::FIELD  && (GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE1|| GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE2) && summonedThisTurn == false){
+    if(cardLocation == CardLocation::FIELD  && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1|| GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("reposition",true);
     }
     if(monsterKind == MonsterKind::EFFECT_MONSTER){
         flagMap.insert("activate",true);
     }
-    if(cardLocation == CardLocation::FIELD  && GamePhase::currentGamePhase == GamePhasesEnum::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){
+    if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){
         flagMap.insert("attack",true);
         flagMap.insert("summon",true);
     //call constructor CardMenu(all selected flags)
