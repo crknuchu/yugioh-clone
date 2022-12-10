@@ -24,23 +24,18 @@ class Card;
 
 
 
-/* TODO:
- * 1) GamePhasesEnum.h to avoid Game.h includes in other files
- * 2)Unnamed namespaces
- */
-
-
-
-// Unnamed namespaces as a replacement for global static variables
-//namespace {
-//    Player *m_pCurrentPlayer;
-//    Player *m_pOtherPlayer;
-//}
-
-
 
 // Will be needed in the future for the Summoning action
 //static int *p_Summon_target = nullptr;
+
+// WIP
+namespace GameExternVars {
+    extern Player *m_pCurrentPlayer;
+    extern Player *m_pOtherPlayer;
+}
+
+
+
 
 
 class Game: public QMainWindow
@@ -65,8 +60,7 @@ private:
 
   Player m_player1;
   Player m_player2;
-  Player *m_pCurrentPlayer;
-  Player *m_pOtherPlayer;
+
   int m_currentTurn;
 
 

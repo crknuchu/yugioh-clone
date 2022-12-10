@@ -1,5 +1,5 @@
 #include "headers/EffectActivator.h"
-
+#include "headers/Game.h"
 // Maybe unneeded
 //enum class PhasePart {
 //    BEGINNING,
@@ -24,19 +24,13 @@ void EffectActivator::activateLordOfD() {
     /* Neither player can target Dragon monsters on the field with card effects. */
     std::cout << "Lord of D's effect has been activated!" << std::endl;
 
-
-    /* Placeholder, maybe in the future EffectActivator can inherit Player,
-       then we wouldn't have to pass a player variable to our methods,
-       we could use exact player
-    */
-    /* The other way is maybe to use m_pCurrentPlayer which would have to be a static variable */
-    Player p1;
-
-
-
-
     // This is actually a passive effect. Its only "activated" while Lord of D is on the field.
-    makeMonstersOfThisTypeUntargetable(MonsterType::DRAGON, UntargetableBy::CARD_EFFECT, CardLocation::FIELD, p1);
+    // TODO: How to make it apply only while Lord of D is on the field?
+
+
+    // TODO: Should we pass the "global" GameExternVars here or use them directly inside function definition?
+    makeMonstersOfThisTypeUntargetable(MonsterType::DRAGON, UntargetableBy::CARD_EFFECT, CardLocation::FIELD, *GameExternVars::m_pCurrentPlayer);
+
 }
 
 void EffectActivator::activateMysteriousPuppeteer() {
@@ -67,17 +61,18 @@ void EffectActivator::activateHaneHane() {
 // TODO: Methods (for example, setTargetable) used in these methods have to be implemented in the future.
 
 // TODO: Variable arguments (1 or 2 players)
-void EffectActivator::makeMonstersOfThisTypeUntargetable(const MonsterType &targetType, const UntargetableBy &restrictedMechanic, const CardLocation &cardLocation, Player &targetPlayer)
+void EffectActivator::makeMonstersOfThisTypeUntargetable(const MonsterType &targetType, const UntargetableBy &restrictedMechanic,
+                                                         const CardLocation &cardLocation, Player &targetPlayer)
 {
     // TODO: Normal naming system
-    // targetPlayer.setMonsterOfThisTypeTargetable(targetType, restrictedMechanic, cardLocation, false);
+//    targetPlayer.setMonstersOfThisTypeUntargetable(targetType, restrictedMechanic, cardLocation, true);
 }
 
 
-void EffectActivator::returnToHand(const Card &card, const GamePhasesEnum &inWhichPhase)
+void EffectActivator::returnToHand(const Card &card, const GamePhasesEnum &inWhichGamePhase, Player &targetPlayer)
 {
-//    if(currentGamePhase == inWhichPhase)
-//        currentPlayer.deck.return
+//    if(currentGamePhase == inWhichGamePhase)
+//        targetPlayer.deck.returnToHand(card)
 }
 
 

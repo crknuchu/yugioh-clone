@@ -1,4 +1,4 @@
-#include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
+#include "headers/ui_mainwindow.h"
 #include "headers/Game.h"
 #include "headers/Monstercard.h"
 #include "headers/EffectActivator.h"
@@ -11,9 +11,12 @@
 #include <QGraphicsScene>
 #include <QGraphicsLayout>
 
+// This is needed because of these vars being extern in Game.h
+Player *GameExternVars::m_pCurrentPlayer = nullptr;
+Player *GameExternVars::m_pOtherPlayer = nullptr;
 
 
-// Class definitions:
+// Class definition:
 Game::Game(Player p1, Player p2, QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
@@ -74,39 +77,39 @@ int Game::randomGenerator(const int limit) const {
 int Game::decideWhoPlaysFirst() const { return randomGenerator(2); }
 
 void Game::switchPlayers() {
-    Player tmp = *m_pCurrentPlayer;
-    *m_pCurrentPlayer = *m_pOtherPlayer;
-    *m_pOtherPlayer = tmp;
+    Player tmp = *GameExternVars::m_pCurrentPlayer;
+    *GameExternVars::m_pCurrentPlayer = *GameExternVars::m_pOtherPlayer;
+    *GameExternVars::m_pOtherPlayer = tmp;
 
-    std::cout << "Current player is: " << *m_pCurrentPlayer << std::endl;
+    std::cout << "Current player is: " << *GameExternVars::m_pCurrentPlayer << std::endl;
 }
 
 void Game::firstTurnSetup() {
   // The game decides who will play first:
   if (decideWhoPlaysFirst() == 1)
   {
-      m_pCurrentPlayer = &m_player1;
-      m_pOtherPlayer = &m_player2;
+      GameExternVars::m_pCurrentPlayer = &m_player1;
+      GameExternVars::m_pOtherPlayer = &m_player2;
   }
   else
   {
-      m_pCurrentPlayer = &m_player2;
-      m_pOtherPlayer = &m_player1;
+      GameExternVars::m_pCurrentPlayer = &m_player2;
+      GameExternVars::m_pOtherPlayer = &m_player1;
   }
 
-  std::cout << "The first one to play is " << m_pCurrentPlayer->getPlayerName() << std::endl;
+  std::cout << "The first one to play is " << GameExternVars::m_pCurrentPlayer->getPlayerName() << std::endl;
 
   m_currentTurn = 1;
   GamePhase::currentGamePhase = GamePhasesEnum::DRAW_PHASE;
   emit gamePhaseChanged(GamePhase::currentGamePhase);
 
   // The first one gets 6 cards:
-  m_pCurrentPlayer->drawCards(6);
+  GameExternVars::m_pCurrentPlayer->drawCards(6);
 
   // The other one gets 5 cards
-  // Without m_pOtherPlayer:  *m_pCurrentPlayer == m_player1 ? m_player2.drawCards(5) : m_player1.drawCards(5);
-  // With m_pOtherPlayer:
-  m_pOtherPlayer->drawCards(5);
+  // Without GameExternVars::m_pOtherPlayer:  *GameExternVars::m_pCurrentPlayer == m_player1 ? m_player2.drawCards(5) : m_player1.drawCards(5);
+  // With GameExternVars::m_pOtherPlayer:
+  GameExternVars::m_pOtherPlayer->drawCards(5);
 }
 
 
@@ -206,7 +209,7 @@ void Game::onTurnEnd() {
     emit gamePhaseChanged(GamePhase::currentGamePhase);
 
     // The current player draws a card (this is not optional).
-    m_pCurrentPlayer->drawCards(1);
+    GameExternVars::m_pCurrentPlayer->drawCards(1);
 
 
 
