@@ -1,5 +1,5 @@
-#include "headers/Game.h"
 #include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
+#include "headers/Game.h"
 #include "headers/Monstercard.h"
 #include "headers/EffectActivator.h"
 
@@ -12,17 +12,6 @@
 #include <QGraphicsLayout>
 
 
-
-// Global variables:
-// FIXME: non-POD static (map) warning
-const std::map<GamePhases, QString> gamePhaseToQString{
-    {GamePhases::DRAW_PHASE,        "DRAW PHASE"},
-    {GamePhases::STANDBY_PHASE,     "STANDBY PHASE"},
-    {GamePhases::MAIN_PHASE1,       "MAIN PHASE 1"},
-    {GamePhases::BATTLE_PHASE,      "BATTLE PHASE"},
-    {GamePhases::MAIN_PHASE2,       "MAIN PHASE 2"},
-    {GamePhases::END_PHASE,         "END PHASE"}
-};
 
 // Class definitions:
 Game::Game(Player p1, Player p2, QWidget *parent)
@@ -60,11 +49,6 @@ Game::Game() {}
 Game::~Game() {
     delete ui;
     delete scene;
-}
-
-GamePhases Game::getGamePhase() const
-{
-    return gamePhase;
 }
 
 int Game::randomGenerator(const int limit) const {
@@ -113,8 +97,8 @@ void Game::firstTurnSetup() {
   std::cout << "The first one to play is " << m_pCurrentPlayer->getPlayerName() << std::endl;
 
   m_currentTurn = 1;
-  m_currentGamePhase = GamePhases::DRAW_PHASE;
-  emit gamePhaseChanged(m_currentGamePhase);
+  GamePhase::currentGamePhase = GamePhasesEnum::DRAW_PHASE;
+  emit gamePhaseChanged(GamePhase::currentGamePhase);
 
   // The first one gets 6 cards:
   m_pCurrentPlayer->drawCards(6);
@@ -164,9 +148,9 @@ bool Game::eventFilter(QObject *obj, QEvent *event)
 void Game::onBattlePhaseButtonClick()
 {
     std::cout << "Battle phase button clicked" << std::endl;
-    m_currentGamePhase = GamePhases::BATTLE_PHASE;
+    GamePhase::currentGamePhase = GamePhasesEnum::BATTLE_PHASE;
 
-    emit gamePhaseChanged(m_currentGamePhase);
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
 
     /* We enable Main Phase 2 button only if the BP button was clicked
      * since there can't be MP2 if there was no BP previously */
@@ -176,18 +160,18 @@ void Game::onBattlePhaseButtonClick()
 void Game::onMainPhase2ButtonClick()
 {
     std::cout << "Main phase 2 button clicked" << std::endl;
-    m_currentGamePhase = GamePhases::MAIN_PHASE2;
+    GamePhase::currentGamePhase = GamePhasesEnum::MAIN_PHASE2;
 
-    emit gamePhaseChanged(m_currentGamePhase);
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
 }
 
 void Game::onEndPhaseButtonClick()
 {
     std::cout << "End phase button clicked" << std::endl;
-    m_currentGamePhase = GamePhases::END_PHASE;
+    GamePhase::currentGamePhase = GamePhasesEnum::END_PHASE;
 
     // Set the label text to indicate that we are in the End Phase:
-    emit gamePhaseChanged(m_currentGamePhase);
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
 
     //... (something may happen here eventually)
 
@@ -198,11 +182,11 @@ void Game::onEndPhaseButtonClick()
 
 }
 
-void Game::onGamePhaseChange(const GamePhases &newGamePhase)
+void Game::onGamePhaseChange(const GamePhasesEnum &newGamePhase)
 {
     // When game phase changes, we update label's text.
     // We use at() instead of [] because [] is not const and our map is.
-    ui->labelGamePhase->setText(gamePhaseToQString.at(newGamePhase));
+    ui->labelGamePhase->setText(GamePhase::gamePhaseToQString.at(newGamePhase));
 }
 
 
@@ -218,8 +202,8 @@ void Game::onTurnEnd() {
     switchPlayers();
 
     // The draw phase begins (this is not optional).
-    m_currentGamePhase = GamePhases::DRAW_PHASE;
-    emit gamePhaseChanged(m_currentGamePhase);
+    GamePhase::currentGamePhase = GamePhasesEnum::DRAW_PHASE;
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
 
     // The current player draws a card (this is not optional).
     m_pCurrentPlayer->drawCards(1);
@@ -227,8 +211,8 @@ void Game::onTurnEnd() {
 
 
     // The draw phase ends and the standby phase begins (this is not optional).
-    m_currentGamePhase = GamePhases::STANDBY_PHASE;
-    emit gamePhaseChanged(m_currentGamePhase);
+    GamePhase::currentGamePhase = GamePhasesEnum::STANDBY_PHASE;
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
 
     /* ... Something may happen here due to effects (maybe we should call checkEffects()
      or something similar that will check if there are effects to be activated in SP */
@@ -236,8 +220,8 @@ void Game::onTurnEnd() {
 
 
     // The standby phase ends and the main phase 1 begins (this is not optional).
-    m_currentGamePhase = GamePhases::MAIN_PHASE1;
-    emit gamePhaseChanged(m_currentGamePhase);
+    GamePhase::currentGamePhase = GamePhasesEnum::MAIN_PHASE1;
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
 
     // checkEffects(MAINPHASE1)
     // Main Phase 1 runs until user clicks one of the buttons.
@@ -248,8 +232,6 @@ void Game::onTurnEnd() {
              because its switched so fast that we can't see DP and SP. */
 
 }
-
-
 
 /* In order to have drag resizes on the main window, we can place CentralWidget in a layout,
    but weird things tend to happen when we actually resize then, so for now its not done like that.*/

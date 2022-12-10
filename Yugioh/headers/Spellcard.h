@@ -1,7 +1,7 @@
 #ifndef SPELLCARD_H
 #define SPELLCARD_H
 
-#include "headers/Card.h"
+#include "Card.h"
 
 enum class SpellType
 {

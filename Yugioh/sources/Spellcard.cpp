@@ -1,14 +1,10 @@
 #include "headers/Spellcard.h"
-#include "headers/Card.h"
-
 
 SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active)
     : Card(cardName, cardType, cardLocation, cardDescription)
     ,type(type)
     ,active(active)
 {}
-
-
 
 SpellType SpellCard::getSpellType() const
 {
@@ -42,7 +38,7 @@ void SpellCard::activateSpell()
 
 void SpellCard::setCardMenu(Game & game){
     QMap<QString, bool> flagMap ;
-    if(cardLocation == CardLocation::HAND && (game.getGamePhase() == GamePhases::MAIN_PHASE1 || game.getGamePhase() == GamePhases::MAIN_PHASE2)){
+    if(cardLocation == CardLocation::HAND && (GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE1 || GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE2)){
         flagMap.insert("set",true);
         flagMap.insert("activate",true);
     }

@@ -8,20 +8,37 @@
 #include <QMainWindow>
 #include <QResizeEvent>
 
+// WIP
+#include "GamePhase.h"
+
+
 namespace Ui {
     class MainWindow;
 }
 
-enum class GamePhases {
-  DRAW_PHASE,
-  STANDBY_PHASE,
-  MAIN_PHASE1,
-  BATTLE_PHASE,
-  MAIN_PHASE2,
-  END_PHASE
-};
 
 class Card;
+
+
+
+
+
+
+/* TODO:
+ * 1) GamePhasesEnum.h to avoid Game.h includes in other files
+ * 2)Unnamed namespaces
+ */
+
+
+
+// Unnamed namespaces as a replacement for global static variables
+//namespace {
+//    Player *m_pCurrentPlayer;
+//    Player *m_pOtherPlayer;
+//}
+
+
+
 // Will be needed in the future for the Summoning action
 //static int *p_Summon_target = nullptr;
 
@@ -34,8 +51,8 @@ public:
   Game();
   Game(Player p1, Player p2, QWidget *parent = nullptr);  // Why is parent's type QWidget and not QMainWindow?
   ~Game();
-  GamePhases gamePhase;
-  GamePhases getGamePhase()const;
+
+
 
   // Public member functions:
   void start();
@@ -50,7 +67,6 @@ private:
   Player m_player2;
   Player *m_pCurrentPlayer;
   Player *m_pOtherPlayer;
-  GamePhases m_currentGamePhase;
   int m_currentTurn;
 
 
@@ -73,7 +89,7 @@ private slots:
     void onMainPhase2ButtonClick();
     void onEndPhaseButtonClick();
     void onMainWindowResize(QResizeEvent *);
-    void onGamePhaseChange(const GamePhases &newGamePhase);
+    void onGamePhaseChange(const GamePhasesEnum &newGamePhase);
     void onTurnEnd();
 
 
@@ -102,7 +118,7 @@ private slots:
 
 signals:
     void mainWindowResized(QResizeEvent *);
-    void gamePhaseChanged(const GamePhases &newGamePhase);
+    void gamePhaseChanged(const GamePhasesEnum &newGamePhase);
     void turnEnded();
     void cardAddedToScene(Card *);
 };

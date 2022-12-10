@@ -12,6 +12,7 @@ QT += \
 SOURCES += \
         sources/Card.cpp \
         sources/EffectActivator.cpp \
+        sources/GamePhase.cpp \
         sources/Monstercard.cpp \
         sources/SpellTrapZone.cpp \
         sources/Spellcard.cpp \
@@ -29,6 +30,7 @@ SOURCES += \
 HEADERS += \
     headers/Card.h \
     headers/EffectActivator.h \
+    headers/GamePhase.h \
     headers/Monstercard.h \
     headers/SpellTrapZone.h \
     headers/Spellcard.h \

@@ -4,8 +4,6 @@
 #include <iostream>
 #include "headers/CardMenu.h"
 
-#include "headers/Game.h"
-
 Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent)
     : QGraphicsPixmapItem(parent)
     ,cardName(cardName)

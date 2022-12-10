@@ -4,6 +4,16 @@
 #include <iostream>
 #include <map>
 
+#include "Monstercard.h"
+#include "Player.h"
+#include "GamePhase.h"
+
+enum class UntargetableBy {
+    CARD_EFFECT,
+    MONSTER
+};
+
+
 class EffectActivator {
     // Our type that represents a pointer to EffectActivator member function that accept no arguments and return void
     using EFFECT_MEMBER_FUNCTION_POINTER = void(EffectActivator::*)(void);
@@ -26,6 +36,14 @@ private:
     // Spell card activations:
 
     // Trap card activations:
+
+
+
+
+    // WIP
+    // Generic outcomes that make up card's effects:
+    void makeMonstersOfThisTypeUntargetable(const MonsterType &, const UntargetableBy &, const CardLocation &, Player &);
+    void returnToHand(const Card &, const GamePhasesEnum &);
 };
 
 

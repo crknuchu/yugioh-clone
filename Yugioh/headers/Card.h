@@ -1,13 +1,15 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include "headers/Game.h"
+#include "CardMenu.h"
+#include "GamePhase.h"
+
+
 #include <string>
 #include <vector>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsItem>
 #include <QGraphicsSceneHoverEvent>
-#include "headers/CardMenu.h"
 #include <QEvent>
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>

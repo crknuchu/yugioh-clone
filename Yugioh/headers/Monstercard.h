@@ -2,6 +2,7 @@
 #define MONSTERCARD_H
 
 #include "headers/Card.h"
+#include "headers/GamePhase.h"
 
 enum class MonsterKind
 {
