@@ -9,13 +9,27 @@ std::string Player::getPlayerName() const{
     return this->m_name;
 }
 
-unsigned Player::getPlayerPoints(){
+
+
+unsigned Player::getPlayerHealthPoints() const {
     return this->m_points;
+}
+
+void Player::setPlayerHealthPoints(unsigned newHealthPoints)
+{
+    m_points = newHealthPoints;
 }
 
 void Player::drawCards(unsigned int numOfCards) {
 
-  std::cout << "The player " << this->getPlayerName() << " gets " << numOfCards << " cards." << std::endl;
+    std::cout << "The player " << this->getPlayerName() << " gets " << numOfCards << " cards." << std::endl;
+}
+
+void Player::changeHealthPointsBy(int pointsChange)
+{
+    unsigned newHealthPoints = this->getPlayerHealthPoints() + pointsChange;
+
+    this->setPlayerHealthPoints(newHealthPoints);
 }
 
 // Operator overloads:
@@ -30,5 +44,5 @@ bool Player::operator==(const Player &other) const {
 // }
 
 std::ostream &operator<<(std::ostream &out, Player &p){
-    return out << "Player name: " << p.getPlayerName() << ", points " << p.getPlayerPoints()<<std::endl;
+    return out << "Player name: " << p.getPlayerName() << ", points " << p.getPlayerHealthPoints()<<std::endl;
 }

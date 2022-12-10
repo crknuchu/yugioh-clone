@@ -55,7 +55,7 @@ Game::Game(Player p1, Player p2, QWidget *parent)
      * We should emit a signal in EffectActivator whenever the player loses/gains health and then catch it with a slot in game and call this line there.
      */
 
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::m_pCurrentPlayer->getPlayerPoints())));
+    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::m_pCurrentPlayer->getPlayerHealthPoints())));
 }
 
 Game::Game() {}
@@ -406,6 +406,9 @@ void Game::onSummonButtonClick(const Card &card) {
 void Game::onHealthPointsChange()
 {
     std::cout << "Health points have been changed!" << std::endl;
+
+    // Set the label text to the current health value
+    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::m_pCurrentPlayer->getPlayerHealthPoints())));
 }
 
 

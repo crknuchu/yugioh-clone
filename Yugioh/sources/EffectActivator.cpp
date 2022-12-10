@@ -50,7 +50,7 @@ void EffectActivator::activateLordOfD() {
 
 
     // changeHealthPointsBy test
-    changeHealthPointsBy(500, *GameExternVars::m_pCurrentPlayer);
+    changeHealthPointsBy(-500, *GameExternVars::m_pCurrentPlayer);
 
 }
 
@@ -108,7 +108,9 @@ void EffectActivator::returnToHand(Card &card, const GamePhases &inWhichGamePhas
 
 // Maybe this is unneeded because a similar thing can exist in Player
 void EffectActivator::changeHealthPointsBy(int pointChange, Player &targetPlayer) {
-    // targetPlayer.changeHealthBy(pointChange);
+
+    // TODO: Implement checks to make sure health points don't go below 0.
+    targetPlayer.changeHealthPointsBy(pointChange);
 
     // The following code is only for the purpose of unified output, it can be made prettier probably.
     std::string lostOrGained = pointChange < 0 ? "lost" : "gained";

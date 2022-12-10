@@ -22,11 +22,12 @@ public:
 
   //implement graveyard
 
+  std::string getPlayerName() const;
+  unsigned getPlayerHealthPoints() const;
+  void setPlayerHealthPoints(unsigned);
 
   void drawCards(unsigned int numOfCards);
-
-  std::string getPlayerName() const;
-  unsigned getPlayerPoints();
+  void changeHealthPointsBy(int);
 
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
 
