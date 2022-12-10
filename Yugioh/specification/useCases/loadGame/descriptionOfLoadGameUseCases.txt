@@ -1,0 +1,25 @@
+Quick description: The player loads the existing savefile from the main menu.
+
+Actors: One player 
+
+Main course of events:
+  1. The player chooses "Load game" in the main menu
+  2. The application sends a request to the file loader for savefile to be loaded 
+  3. The file loader searches for the file 
+    3.1 When the file is located, it is returned to the file loader 
+    3.2 The deserialization request is sent by the file loader to the deserializer 
+  4. The deserializer accepts deserialization request
+    4.1 The data goes through the deserialization process 
+  5. The data is sent back and the game can continue from that state.
+
+Alternate course of events:
+/
+
+Subcourses of events:
+/
+
+Special demands:
+Savefile has to exist on the disk.
+
+Additional information:
+/

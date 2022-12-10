@@ -1,0 +1,23 @@
+Quick description: the player changes their avatar and card sleeve
+
+Actors: One player
+
+Basic stream:
+1. The player with a click of the "Profile settings" button opens the profile settings
+	2. The application opens the profile settings
+		3.1 The player chooses between the offered avatars
+		3.2 The player chooses between the offered card sleeves
+			4. Application goes back to the main menu
+
+Alternate streams:
+1. Unexpected shut down of the application. If the application at any part of the procedure turns off, the settings will not be saved
+
+Substreams:
+/
+
+Special demands:
+/
+
+Additional information:
+/
+

@@ -1,14 +1,19 @@
-#include "headers/Game.h"
 #include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
+#include "headers/Game.h"
 #include "headers/Monstercard.h"
+#include "headers/EffectActivator.h"
 
 #include <iostream>
 #include <random>
+#include <map>
+#include <functional>
+
 #include <QGraphicsScene>
+#include <QGraphicsLayout>
 
 
-// QMainWindow != Ui::MainWindow
 
+// Class definitions:
 Game::Game(Player p1, Player p2, QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
@@ -16,62 +21,34 @@ Game::Game(Player p1, Player p2, QWidget *parent)
       m_player2(p2)
 
 {
-    /*
-     *  !! FIXME: For some reason, uic (Qt Ui Compiler) is not run automatically on Build,
-     *            so any additions to the .ui file must be compiled manually
-     *            by using uic mainwindow.ui -o ui_mainwindow.h
-     */
-
     ui->setupUi(this);
 
     // Setup connections:
     setupConnections();
 
-    // Create the scene:
-    scene = new QGraphicsScene(this);
+    /* Install an event filter for Resize event
+       With this, we will be notified of every resize event on MainWindow
+       We can use this to get new resolution after showFullscreen, whereas
+       standard way of this->size() would return window size from the form designer,
+       and not after going fullscreen.
+       However, this only applies to this constructor (in other parts, this->size() can be used).
+    */
+    this->installEventFilter(this);
 
+    // Create a new scene:
+    scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
 
-    ui->graphicsView->setSceneRect(0,0,800,600); // Make the scene not hardcoded
-
-    //    setFixedSize(800,600);
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setWindowTitle("Yu-Gi-Oh!"); // This compiles even without ui->graphicsView
 
 
-    // Creating items
-    // TODO: Should monstercard1 be a pointer or not?
-     MonsterCard* monsterCard1 = new MonsterCard("Sibirski Plavac",3000, 2500,4, MonsterType::DRAGON,
-                                                 MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
-                                                 true,Summon::SET,   CardType::MONSTER_CARD,
-                                                 CardLocation::HAND, "Opis"
-                                                 );
-     monsterCard1->setName("monsterCard1");
-
-     scene->addItem(monsterCard1);
-     scene->addWidget(monsterCard1->cardMenu);
-     monsterCard1->move(300,300);
-     // FIXME:Maybe this doesn't work because getHeight() returns height which is a private field of Card class so MonsterCard can't see it?
-        // monsterCard1->setPos(0, scene->height() - monsterCard1->getHeight());
-
-     // TODO: Make setting position not hardcoded:
-
-     QPixmap background(":/resources/field2.png");
-//     background = background.scaled(this->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-//     QPalette palette;
-//     palette.setBrush(QPalette::Window, background);
-     QBrush brush(QPalette::Window, background);
-    //  ui->graphicsView->setBackgroundBrush(brush);
-
+    // First turn setup at the beginning of the game:
+    firstTurnSetup();
 }
 
 Game::Game() {}
 Game::~Game() {
     delete ui;
-    delete scene; // TODO: Check other memory deallocations too.
-    // delete monsterCard1; // We can't free this here because it lives only in the constructor. !!
-    // !! FIXME: Where do we free it then? Should it be initialized in the constructor or not?
+    delete scene;
 }
 
 int Game::randomGenerator(const int limit) const {
@@ -100,6 +77,8 @@ void Game::switchPlayers() {
     Player tmp = *m_pCurrentPlayer;
     *m_pCurrentPlayer = *m_pOtherPlayer;
     *m_pOtherPlayer = tmp;
+
+    std::cout << "Current player is: " << *m_pCurrentPlayer << std::endl;
 }
 
 void Game::firstTurnSetup() {
@@ -117,6 +96,10 @@ void Game::firstTurnSetup() {
 
   std::cout << "The first one to play is " << m_pCurrentPlayer->getPlayerName() << std::endl;
 
+  m_currentTurn = 1;
+  GamePhase::currentGamePhase = GamePhasesEnum::DRAW_PHASE;
+  emit gamePhaseChanged(GamePhase::currentGamePhase);
+
   // The first one gets 6 cards:
   m_pCurrentPlayer->drawCards(6);
 
@@ -126,145 +109,290 @@ void Game::firstTurnSetup() {
   m_pOtherPlayer->drawCards(5);
 }
 
-void Game::playFirstTurn() {
-    m_currentTurn = 1;
-    std::cout << "Current turn: " << m_currentTurn << std::endl;
 
-    m_currentGamePhase = GamePhases::DRAW_PHASE;
-    firstTurnSetup();
+// QT related stuff:
+void Game::setupConnections() {
+    // Game
+    connect(this, &Game::mainWindowResized, this, &Game::onMainWindowResize);
+    connect(this, &Game::gamePhaseChanged, this, &Game::onGamePhaseChange);
+    connect(this, &Game::turnEnded, this, &Game::onTurnEnd);
 
-    m_currentGamePhase = GamePhases::STANDBY_PHASE;
-    // ...
+    // WIP
+    connect(this, &Game::cardAddedToScene, this, &Game::onCardAddedToScene);
 
-    m_currentGamePhase = GamePhases::MAIN_PHASE1;
-
-    /*
-     *  Placeholder for the first turn's loop.
-     *  Since the player action mechanisms are still not implemented (TODO),
-     *  for now we only have a while loop that instantly finishes.
-     */
-    while(m_currentGamePhase != GamePhases::END_PHASE)
-    {
-      /*
-       *  Here the firstPlayer will play his MainPhase1 in the first turn.
-       *  For now, we still don't have playMP1() implemented.
-       */
-
-       m_currentGamePhase = GamePhases::END_PHASE;
-    }
-    std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
+    // Buttons
+    connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
+    connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::onMainPhase2ButtonClick);
+    connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::onEndPhaseButtonClick);
 }
 
-void Game::playTurn() {
-    std::cout << "Current turn: " << m_currentTurn << std::endl;
-    // The player switch:
-    switchPlayers();
-    std::cout << "Current player: " << m_pCurrentPlayer->getPlayerName() << std::endl;
+bool Game::eventFilter(QObject *obj, QEvent *event)
+{
+    if(event->type() == QEvent::Resize)
+    {
+        QResizeEvent *resizeEvent = static_cast<QResizeEvent *>(event);
 
-    // Draw Phase begins:
-    m_currentGamePhase = GamePhases::DRAW_PHASE;
+        // We need to emit the signal here so that we can scale the UI AFTER we catch it
+        if (resizeEvent != nullptr)
+            emit mainWindowResized(resizeEvent);
+
+        return true;
+    }
+    else {
+        return QObject::eventFilter(obj, event);
+    }
+}
+
+
+// Slots:
+void Game::onBattlePhaseButtonClick()
+{
+    std::cout << "Battle phase button clicked" << std::endl;
+    GamePhase::currentGamePhase = GamePhasesEnum::BATTLE_PHASE;
+
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
+
+    /* We enable Main Phase 2 button only if the BP button was clicked
+     * since there can't be MP2 if there was no BP previously */
+    ui->btnMainPhase2->setEnabled(true);
+}
+
+void Game::onMainPhase2ButtonClick()
+{
+    std::cout << "Main phase 2 button clicked" << std::endl;
+    GamePhase::currentGamePhase = GamePhasesEnum::MAIN_PHASE2;
+
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
+}
+
+void Game::onEndPhaseButtonClick()
+{
+    std::cout << "End phase button clicked" << std::endl;
+    GamePhase::currentGamePhase = GamePhasesEnum::END_PHASE;
+
+    // Set the label text to indicate that we are in the End Phase:
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
+
+    //... (something may happen here eventually)
+
+    // TODO: More work is needed here...
+    std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
+    m_currentTurn++;
+    emit turnEnded();
+
+}
+
+void Game::onGamePhaseChange(const GamePhasesEnum &newGamePhase)
+{
+    // When game phase changes, we update label's text.
+    // We use at() instead of [] because [] is not const and our map is.
+    ui->labelGamePhase->setText(GamePhase::gamePhaseToQString.at(newGamePhase));
+}
+
+
+/* This is actually a slot that does things at the beginning of a new turn
+   so it could be called beginNewTurn or onNewTurn or something like that...*/
+void Game::onTurnEnd() {
+    // Disable MP2 Button unless BP button was clicked
+    ui->btnMainPhase2->setEnabled(false);
+
+
+
+    // Switch the players:
+    switchPlayers();
+
+    // The draw phase begins (this is not optional).
+    GamePhase::currentGamePhase = GamePhasesEnum::DRAW_PHASE;
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
 
     // The current player draws a card (this is not optional).
     m_pCurrentPlayer->drawCards(1);
 
 
+
     // The draw phase ends and the standby phase begins (this is not optional).
-    m_currentGamePhase = GamePhases::STANDBY_PHASE;
-    // ...
+    GamePhase::currentGamePhase = GamePhasesEnum::STANDBY_PHASE;
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
+
+    /* ... Something may happen here due to effects (maybe we should call checkEffects()
+     or something similar that will check if there are effects to be activated in SP */
+
+
 
     // The standby phase ends and the main phase 1 begins (this is not optional).
-    m_currentGamePhase = GamePhases::MAIN_PHASE1;
-    // ...
+    GamePhase::currentGamePhase = GamePhasesEnum::MAIN_PHASE1;
+    emit gamePhaseChanged(GamePhase::currentGamePhase);
+
+    // checkEffects(MAINPHASE1)
+    // Main Phase 1 runs until user clicks one of the buttons.
 
 
-    // The battle phase is optional.
-    // Placeholder pseudo-code for event listening:
+
+    /* FIXME: Currently when EndPhase is clicked, labelGamePhase is instantly Main Phase 1
+             because its switched so fast that we can't see DP and SP. */
+
+}
+
+/* In order to have drag resizes on the main window, we can place CentralWidget in a layout,
+   but weird things tend to happen when we actually resize then, so for now its not done like that.*/
+void Game::onMainWindowResize(QResizeEvent *resizeEvent)
+{
+//    std::cout << "Window has been resized!" << std::endl;
+
+    // Set our private variables to the new window size:
+    m_windowWidth = resizeEvent->size().width();
+    m_windowHeight = resizeEvent->size().height();
+
+    // Check: Very rarely, this displays the same width/height as the old window
+//    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
+
+
+    // FIXME: Memory leak.
+    // TODO: Move this elsewhere.
+    // MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints,
+    // int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn)
+    MonsterCard* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                                MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                CardType::MONSTER_CARD, CardLocation::HAND,
+                                                "Neither player can target Dragon monsters on the field with card effects."
+                                                );
+    monsterCard1->setPos(450, 450);
+    ui->graphicsView->scene()->addItem(monsterCard1);
+
+    // Notify the game that a card was added.
+    emit cardAddedToScene(monsterCard1);
+
+    // WIP: UI components
+    // Game phase buttons and label:
+    ui->labelGamePhase->setAlignment(Qt::AlignCenter);
+
+    // Card info:
+    ui->labelImage->setAlignment(Qt::AlignCenter);
+
+    // TODO: getEffect()
+//    ui->textBrowserEffect->setText(monsterCard1->getEffect());
+
+    QPixmap pix;
+    pix.load(":/resources/blue_eyes.jpg");
+    pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
+    ui->labelImage->setPixmap(pix);
+
+
+    // GraphicsView and GraphicsScene adjustments:
+    this->setWindowTitle("Yu-Gi-Oh!");
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
+    // TODO: Change leftVerticalLayout name to something normal
+    const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
+    const int leftVerticalLayoutHeight = ui->leftVerticalLayout->sizeHint().height();
+//    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
+
+    const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
+    ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
+    ui->graphicsView->scene()->setSceneRect(0, 0, viewAndSceneWidth, m_windowHeight);
+
+    // TODO: Check if this is needed
+    ui->graphicsView->fitInView(0, 0, viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
+
+//    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
+
+    // WIP: Background image
+    // TODO: Find another image of the field
+    QPixmap background(":/resources/field2.png");
+    background = background.scaled(viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
+    QBrush brush(QPalette::Window, background);
+    ui->graphicsView->setBackgroundBrush(brush);
+
+    // TODO: Maybe this can be a "starting" point for our program
+    /* For example, we could call firstTurnSetup here ...
+     * Problem with that is that it would restart the game every time the main window gets resized.
+     * Solution ideas:
+     *  1) Flags
+     *  2) ?
+     */
+
+}
+
+// TODO: const Card *&Card
+void Game::onCardAddedToScene(const Card *card)
+{
+    // TODO: If exact subclass of Card is needed here eventually, we could check with:
     /*
-     * if BP button was clicked                     // TODO
-     * then m_currentGamePhase = GamePhases::BATTLE_PHASE;
-     * ...
+     *      1) Dynamic cast
+     *      2) Make every card have a field which describes if its a monster, spell or a trap
+     *         and then static cast into that class
+     *      3) Templates?
+     */
+
+    std::cout << "A card was added to the scene!" << std::endl;
+    std::cout << "Card name: " << card->getCardName() << std::endl;
+
+
+    // Pseudo-code
+    /* -> Call setCardMenu() that determines the appearance of card menu based on flags
+     *  -> calls cardMenu.set() that sets the appropriate fields to false
     */
 
+    // Now we need to connect the card's menu UI to our slots
+    /* We use a lambda here because QT's clicked() signal only sends a bool value of true/false
+       This way, we can pass the card to our onActivateButtonClick slot */
+    connect(card->cardMenu->activateButton, &QPushButton::clicked, this, [this, card](){
+        onActivateButtonClick(*card);
+    });
 
-    /* We (optionally) enter the MP2 only if there was a battle phase
-     * and the MP2 button was clicked (TODO) */
-    if (m_currentGamePhase == GamePhases::BATTLE_PHASE)
-    {
-        m_currentGamePhase = GamePhases::MAIN_PHASE2;
-        // ...
+    connect(card->cardMenu->setButton, &QPushButton::clicked, this, [this, card](){
+        onSetButtonClick(*card);
+    });
+
+    connect(card->cardMenu->summonButton, &QPushButton::clicked, this, [this, card](){
+        onSummonButtonClick(*card);
+    });
+
+    // FIXME: Problem maybe happens because card is QGraphicsPixmapItem which is not a QOBJECT (even though we used Q_OBJECT macro in Card.h)
+//    connect(card, &Card::cardHovered, this, &Game::onCardHover);
+}
+
+void Game::onCardHover(Card * card)
+{
+    std::cout << "Card " << card->getCardName() << " hovered!" << std::endl;
+}
+
+
+// Slots for card menu UI
+void Game::onActivateButtonClick(const Card &card)
+{
+    std::cout << "Activate button clicked on card " << card.getCardName() << std::endl;
+
+    // Idea: Map of function pointers for effects
+    const std::string cardName = card.getCardName();
+
+    // Activate card's effect
+    EffectActivator effectActivator;
+
+    try {
+        auto effectFunctionPointer = effectActivator.effectMap.at(cardName);
+
+        // (effectActivator.*funcPointer)(); // This is the same as the invoke call below.
+        // If the first argument is a pointer to member func, invoke expects an object that owns it to be a first argument.
+        std::invoke(effectFunctionPointer, effectActivator);
+    } catch(std::out_of_range &e) {
+        std::cerr << "Error: That card doesn't have an effect! Out of range exception from: " << e.what() << std::endl;
     }
+}
 
-    // The end phase begins if the EP button was clicked (TODO):
-    m_currentGamePhase = GamePhases::END_PHASE;
-    // ...
-
-
-    std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
-    m_currentTurn++;
+void Game::onSummonButtonClick(const Card &card) {
+    std::cout<< "Summon button was clicked on card " << card.getCardName() << std::endl;
 }
 
 
-void Game::start() {
-  std::cout << "The game has started." << std::endl;
-
-  int tmpBlockLoop; // Needed for now for the cin at the end of our while loop, will be removed when checkLifePoints is implemented.
-
-  /*
-   *  First turn is special (there is no battle phase and main phase 2),
-   *  so it has its own function:
-   */
-  playFirstTurn();
-  m_currentTurn++;
-
-  // Other turns are all the same structure-wise practically:
-  while (true)
-  {
-    playTurn();
-
-    /*
-     *  For now, the game runs as an infinite loop (the cin is added as a blocking operation).
-     *  checkLifePoints function will be implemented as the way to end the game.
-     */
-    std::cin >> tmpBlockLoop;
-  }
-  std::cout << "The game has ended." << std::endl;
-}
-
-
-// QT related stuff:
-void Game::setupConnections() {
-    connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::btnBattlePhaseClicked);
-    connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::btnMainPhase2Clicked);
-    connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::btnEndPhaseClicked);
-
-
-}
-
-// Slots:
-void Game::btnBattlePhaseClicked()
+void Game::onSetButtonClick(const Card &card)
 {
-    std::cout << "Battle phase button clicked" << std::endl;
-    m_currentGamePhase = GamePhases::BATTLE_PHASE;
-//    std::cout << "m_currentGamePhase: " << m_currentGamePhase << std::endl;
-}
+    std::cout << "Set button clicked on card " << card.getCardName() << std::endl;
 
-void Game::btnMainPhase2Clicked()
-{
-    std::cout << "Main phase 2 button clicked" << std::endl;
-    m_currentGamePhase = GamePhases::MAIN_PHASE2;
-}
 
-void Game::btnEndPhaseClicked()
-{
-    std::cout << "End phase button clicked" << std::endl;
-    m_currentGamePhase = GamePhases::END_PHASE;
-
-    /*
-     *  FIXME: This breaks the program, probably because we didn't call firstTurnSetup() yet,
-     *  so m_pCurrentPlayer and m_pOtherPlayer have undefined values and can't be switched, leading to a SEGFAULT.
-     */
-    // In the end phase, we switch the players:
-    //    switchPlayers();
 }
 
 

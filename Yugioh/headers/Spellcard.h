@@ -1,7 +1,7 @@
 #ifndef SPELLCARD_H
 #define SPELLCARD_H
 
-#include "headers/Card.h"
+#include "Card.h"
 
 enum class SpellType
 {
@@ -23,6 +23,8 @@ public:
     SpellType getSpellType() const;
     std:: string getSpellTypeString()const;
     void activateSpell();
+    void setCardMenu() override;
+
 
 protected:
     SpellType type;

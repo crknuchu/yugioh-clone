@@ -1,0 +1,29 @@
+Quick description: The player changes the default number of initial: life points, the duration of the move and the number of cards in the hand.
+
+Actors: One player
+
+Main course of events:
+1. The player chooses the "Game settings" button from the main menu
+2. The application opens game settings options
+3. If the player chooses the "Set life points" button
+    3.1. The application displays combobox of offered points, as well as an additional field where the player can enter an arbitrary number of life points (in the appropriate domain).
+    3.2. The player enters or chooses the points (if he wants to change the default ones)
+        3.2.1. The number of life points must be a positive integer from the domain [1000,15000] or the changes will not be accepted with a value out of range error sent
+    3.3. The application temporarily remembers changes to initial life point (if any)
+4.If the player chooses the "Set time per move" button
+    4.1. The application displays combobox with the offered times in minutes, as well as an additional field where the player can enter an arbitrary time in minutes (in the appropriate domain).
+    4.2. The player enters or chooses a new move duration (if he wants to change the default ones)
+        4.2.1. The duration of the move must be a positive integer from the domain [3,100], or the changes will not be accepted with a value out of range error sent
+    4.3. The application temporarily remembers changes to time  per move (if any)
+5.If the player chooses the "Set initial number of cards" button
+    5.1. The application displays a list with the offered numbers, as well as an additional field where the player can enter an arbitrary number of cards (in the appropriate domain).
+    5.2. The player enters or chooses a new initial number of cards (if he wants to change the default ones)
+        5.2.1. The number of the cards must be a positive integer from the domain [3,100], or the changes will not be accepted with a value out of range error sent
+    5.3. The application temporarily remembers changes to initial number of cards (if any)
+6.If the player selects the "Get help" button
+    6.1 The application displays a brief description of the game so that the player knows how best to set life points, time per move and initial number of cards in hand.
+7. Permanently save all changes for the given player, which will be ready for the game.
+
+
+
+

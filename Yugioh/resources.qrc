@@ -2,8 +2,10 @@
 <qresource>
     <file>resources/card_back.jpg</file>
     <file>resources/blue_eyes.jpg</file>
+    <file>resources/field.png</file>
     <file>resources/field2.png</file>
     <file>resources/yugioh1.jpg</file>
     <file>resources/background.jpg</file>
+    <file>resources/space.jpeg</file>
 </qresource>
 </RCC>

@@ -6,6 +6,7 @@
 
 class Hand : public CardList {
 public:
+    Hand();
     Hand(std::vector<Card*> &initialHand);
     std::vector<Card*> getHand() const;
     void addToHand(Card &card);

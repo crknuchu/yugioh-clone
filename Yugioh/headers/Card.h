@@ -1,15 +1,21 @@
 #ifndef CARD_H
 #define CARD_H
 
+#include "CardMenu.h"
+#include "headers/GamePhase.h"
+
+
+
 #include <string>
 #include <vector>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsItem>
 #include <QGraphicsSceneHoverEvent>
-#include "headers/CardMenu.h"
 #include <QEvent>
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
+
+class Game;
 
 enum class CardType
 {
@@ -23,11 +29,15 @@ enum class CardLocation
     HAND,
     DECK,
     GRAVEYARD,
-    FIELD
+    FIELD,
+    //ATTACK,
+    //DEFENSE,
+    //SPELL_TRAP_ZONE
 };
 
 class Card:public QGraphicsPixmapItem
 {
+//    Q_OBJECT
 public:
 
     virtual ~Card();
@@ -39,6 +49,7 @@ public:
     CardType getCardType() const;
 
 
+
     CardLocation getCardLocation() const;
 
     std::string  getCardLocationString() const;
@@ -48,6 +59,8 @@ public:
     const std::string &getCardDescription() const;
 
     //virtual void placeCardOnField();
+
+    virtual void setCardMenu() = 0;
 
     bool operator==(const Card &card) const;
 
@@ -62,11 +75,11 @@ public:
     // void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void move(float x,float y);
 
-    CardMenu *cardMenu = new CardMenu(0,450);
+    CardMenu *cardMenu = new CardMenu(0, 450);
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
-    Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsItem *parent = 0);
+    Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent = 0);
     std::string cardName;
     CardType cardType;
     CardLocation cardLocation;
@@ -83,6 +96,10 @@ private:
     std::string owner = "";
     float height;
     float width;
+
+
+//signals:
+//    void cardHovered(Card *);
 
 };
 
