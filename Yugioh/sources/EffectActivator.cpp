@@ -110,16 +110,12 @@ void EffectActivator::changeHealthPointsBy(int pointChange, Player &targetPlayer
     unsigned currentPlayerHealthPoints = targetPlayer.getPlayerHealthPoints();
 
     std::cout << "currentPlayerHealthPoints: " << currentPlayerHealthPoints << std::endl;
-    if(currentPlayerHealthPoints > 0)
-    {
-        unsigned newHealthPoints = currentPlayerHealthPoints + pointChange;
-        targetPlayer.setPlayerHealthPoints(newHealthPoints);
-    }
-    else
-    {
-        targetPlayer.setPlayerHealthPoints(0);
-        emit gameEnded(targetPlayer); // return is probably not needed since we can end the game in gameEnded somehow
-    }
+
+    // This shouldn't be unsigned because it goes to UINT_MAX if its subtracted below 0.
+    int newHealthPoints = currentPlayerHealthPoints + pointChange;
+
+    newHealthPoints > 0 ? targetPlayer.setPlayerHealthPoints(newHealthPoints) : emit gameEnded(targetPlayer);
+
 
     // The following code is only for the purpose of unified output, it can be made prettier probably.
     std::string lostOrGained = pointChange < 0 ? "lost" : "gained";

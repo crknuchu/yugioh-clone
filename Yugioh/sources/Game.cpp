@@ -415,9 +415,12 @@ void Game::onHealthPointsChange(Player &targetPlayer) // const?
     ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::m_pCurrentPlayer->getPlayerHealthPoints())));
 }
 
+#include <string>
 void Game::onGameEnd(Player &loser)
 {
-    std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost because his health points reached " << loser.getPlayerHealthPoints() << " !" << std::endl;
+    loser.setPlayerHealthPoints(0);
+    ui->labelHealthPointsDynamic->setText(QString::fromStdString("0"));
+    std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost because his health points reached 0 !" << std::endl;
 
     // TODO: Stop the game here somehow!
 }
