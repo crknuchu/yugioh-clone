@@ -12,12 +12,17 @@ int main(int argc,char **argv)
 {
   QApplication app(argc, argv);
 
-    Player player1("Nikola");
-    Player player2("Milan");
+  MainMenu m;
+  m.showFullScreen();
 
-  Game game(player1, player2);
+  //  Player player1("Nikola");
+  //  Player player2("Milan");
+    //std::cout << GameSettings::lifePoints;
+  //Game game(player1, player2);
+  // m.setGame(new Game(player1,player2));
+  //game.showFullScreen();
 
-  game.showFullScreen();
+
 
   return app.exec();
 }

@@ -51,6 +51,36 @@ Game::~Game() {
     delete scene;
 }
 
+int Game::getTimePerMove() const
+{
+    return timePerMove;
+}
+
+void Game::setTimePerMove(int newTimePerMove)
+{
+    timePerMove = newTimePerMove;
+}
+
+int Game::getNumberOfCards() const
+{
+    return numberOfCards;
+}
+
+void Game::setNumberOfCards(int newNumberOfCards)
+{
+    numberOfCards = newNumberOfCards;
+}
+
+int Game::getLifePoints() const
+{
+    return lifePoints;
+}
+
+void Game::setLifePoints(int newLifePoints)
+{
+    lifePoints = newLifePoints;
+}
+
 int Game::randomGenerator(const int limit) const {
   /*
    * Uniformly-distributed integer random number
