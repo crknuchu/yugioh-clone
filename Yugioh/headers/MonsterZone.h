@@ -9,11 +9,13 @@
 class MonsterZone : public QVector<Zone*> {
 public:
     MonsterZone();
-    void placeInMonsterZone(Card* card, int position);
+    ~MonsterZone();
+    void placeInMonsterZone(Card* card, Zone* zone);
 //    MonsterCard* removeFromMonsterZone(MonsterCard* card);
 //    MonsterCard* operator[](const int) const;
     bool isFull() const;
     void colorFreeZones();
+    void refresh();
     std::vector<Zone*> m_monsterZone;
 };
 

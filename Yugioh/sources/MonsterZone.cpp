@@ -4,13 +4,22 @@
 
 MonsterZone::MonsterZone(){
     float x = 0;
-    float y = 0;
+    float y = 300;
     float gap = 20;
     for(int i = 0; i < 5; i++) {
         Zone* z = new Zone(x, y);
         m_monsterZone.push_back(z);
         x += z->getWidth() + gap;
     }
+}
+
+MonsterZone::~MonsterZone()
+{
+    for(Zone* zone : m_monsterZone) {
+        delete zone;
+    }
+
+    m_monsterZone.clear();
 };
 
 //MonsterCard* MonsterZone::removeFromMonsterZone(MonsterCard *card) {
@@ -19,8 +28,8 @@ MonsterZone::MonsterZone(){
 //    return card;
 //}
 
-void MonsterZone::placeInMonsterZone(Card *card, int position){
-    Zone *zone = m_monsterZone[position - 1];
+void MonsterZone::placeInMonsterZone(Card *card, Zone* zone){
+
     if(!zone->isEmpty()) {
         std::cout << "Spot is occupied" << std::endl;
         return;
@@ -42,6 +51,13 @@ void MonsterZone::colorFreeZones() {
             zone->setBrush(Qt::red);
             zone->update();
         }
+    }
+}
+
+void MonsterZone::refresh() {
+    for(Zone *zone : m_monsterZone) {
+        zone->setBrush(Qt::NoBrush);
+        zone->update();
     }
 }
 
