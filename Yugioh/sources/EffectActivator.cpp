@@ -106,16 +106,13 @@ void EffectActivator::returnToHand(Card &card, const GamePhases &inWhichGamePhas
 }
 
 void EffectActivator::changeHealthPointsBy(int pointChange, Player &targetPlayer) {
-
     unsigned currentPlayerHealthPoints = targetPlayer.getPlayerHealthPoints();
 
     std::cout << "currentPlayerHealthPoints: " << currentPlayerHealthPoints << std::endl;
 
     // This shouldn't be unsigned because it goes to UINT_MAX if its subtracted below 0.
     int newHealthPoints = currentPlayerHealthPoints + pointChange;
-
     newHealthPoints > 0 ? targetPlayer.setPlayerHealthPoints(newHealthPoints) : emit gameEnded(targetPlayer);
-
 
     // The following code is only for the purpose of unified output, it can be made prettier probably.
     std::string lostOrGained = pointChange < 0 ? "lost" : "gained";
@@ -123,11 +120,8 @@ void EffectActivator::changeHealthPointsBy(int pointChange, Player &targetPlayer
     // We want to have non-negative points for the output, since we already say "lost" or "gained" it would be weird to say lost -500 hp.
     pointChange = pointChange < 0 ? pointChange * -1 : pointChange;
 
-
     std::cout << "Player " << targetPlayer.getPlayerName() << " " << lostOrGained << " " << pointChange << " health points." << std::endl;
-
     emit healthPointsChanged(targetPlayer);
-
 }
 
 

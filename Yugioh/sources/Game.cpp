@@ -330,6 +330,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 }
 
+
 // TODO: const Card *&Card
 void Game::onCardAddedToScene(Card *card)
 {
@@ -349,6 +350,8 @@ void Game::onCardAddedToScene(Card *card)
     /* -> Call setCardMenu() that determines the appearance of card menu based on flags
      *  -> calls cardMenu.set() that sets the appropriate fields to false
     */
+
+
 
     // Now we need to connect the card's menu UI to our slots
     /* We use a lambda here because QT's clicked() signal only sends a bool value of true/false
@@ -403,9 +406,15 @@ void Game::onActivateButtonClick(const Card &card)
 void Game::onSummonButtonClick(Card &card) {
     std::cout<< "Summon button was clicked on card " << card.getCardName() << std::endl;
 
+    // Remove target card from player's hand:
+    // GameExternVars::pCurrentPlayer->hand.removeFromHand(card);
+
     /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
        to see it. */
     GameExternVars::pSummonTarget = &card;
+
+    // Color the free zones so user can select one to place.
+    // GameExternVars::pCurrentPlayer->monsterZone.colorFreeZones();
 
     std::cout << "Current summon target is: " << GameExternVars::pSummonTarget->getCardName() << std::endl;
 }
