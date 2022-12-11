@@ -24,11 +24,11 @@ MainMenu::~MainMenu()
 void MainMenu::on_pushButton_clicked()
 {
 
-    Player player1("Nikola");
-    Player player2("Milan");
-    game = new Game(player1,player2);
+    //Player player1("Nikola");
+    //Player player2("Milan");
+    //game = new Game(player1,player2);
     //Game game(player1, player2);
-    game->show();
+    //game->show();
 }
 
 

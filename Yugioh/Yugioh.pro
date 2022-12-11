@@ -11,7 +11,6 @@ QT += \
 
 SOURCES += \
         sources/GameSettings.cpp \
-        sources/mainmenu.cpp \
         sources/Card.cpp \
         sources/EffectActivator.cpp \
         sources/GamePhase.cpp \
@@ -27,7 +26,9 @@ SOURCES += \
         sources/Hand.cpp \
         sources/Player.cpp \
         sources/CardMenu.cpp \
-        sources/MonsterZone.cpp 
+        sources/MonsterZone.cpp \
+        sources/mainmenu.cpp
+
 
 HEADERS += \
     headers/GameSettings.h \
@@ -46,14 +47,14 @@ HEADERS += \
     headers/Player.h \
     headers/ui_mainwindow.h \
     headers/CardMenu.h \ 
-    headers/MonsterZone.h
+    headers/MonsterZone.h\
+    sources/mainmenu.h
 
 RESOURCES += \
         resources.qrc
 
 FORMS += \
     sources/GameSettings.ui \
-    sources/mainmenu.ui \
     sources/mainwindow.ui
 
 
