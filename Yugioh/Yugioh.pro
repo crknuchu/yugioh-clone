@@ -46,7 +46,8 @@ HEADERS += \
     headers/Player.h \
     headers/ui_mainwindow.h \
     headers/CardMenu.h \ 
-    headers/MonsterZone.h
+    headers/MonsterZone.h \
+    headers/mainmenu.h
 
 RESOURCES += \
         resources.qrc
