@@ -16,6 +16,7 @@ SOURCES += \
         sources/SpellTrapZone.cpp \
         sources/Spellcard.cpp \
         sources/Trapcard.cpp \
+        sources/Zone.cpp \
         sources/main.cpp \
         sources/Game.cpp \
         sources/CardList.cpp \
@@ -38,7 +39,8 @@ HEADERS += \
     headers/Graveyard.h \
     headers/Hand.h \
     headers/Player.h \
-    headers/CardMenu.h
+    headers/CardMenu.h \
+    headers/Zone.h
 
 RESOURCES += \
         resources.qrc
