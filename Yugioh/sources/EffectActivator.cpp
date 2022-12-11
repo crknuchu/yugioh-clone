@@ -29,7 +29,7 @@ void EffectActivator::activateLordOfD() {
 
 
     // TODO: Should we pass the "global" GameExternVars here or use them directly inside function definition?
-    makeMonstersOfThisTypeUntargetable(MonsterType::DRAGON, UntargetableBy::CARD_EFFECT, CardLocation::FIELD, *GameExternVars::m_pCurrentPlayer);
+    makeMonstersOfThisTypeUntargetable(MonsterType::DRAGON, UntargetableBy::CARD_EFFECT, CardLocation::FIELD, *GameExternVars::pCurrentPlayer);
 
 
 
@@ -46,11 +46,11 @@ void EffectActivator::activateLordOfD() {
                                                 CardType::MONSTER_CARD, CardLocation::HAND,
                                                 "Neither player can target Dragon monsters on the field with card effects."
                                                 );
-    returnToHand(*monsterCard2, GamePhases::END_PHASE, *GameExternVars::m_pCurrentPlayer);
+    returnToHand(*monsterCard2, GamePhases::END_PHASE, *GameExternVars::pCurrentPlayer);
 
 
     // changeHealthPointsBy test
-    changeHealthPointsBy(-500, *GameExternVars::m_pCurrentPlayer);
+    changeHealthPointsBy(-500, *GameExternVars::pCurrentPlayer);
 
 }
 

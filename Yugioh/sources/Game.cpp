@@ -11,10 +11,10 @@
 #include <QGraphicsScene>
 #include <QGraphicsLayout>
 
-// This is needed because of these vars being extern in Game.h
-Player *GameExternVars::m_pCurrentPlayer = nullptr;
-Player *GameExternVars::m_pOtherPlayer = nullptr;
-
+// Extern vars initialization:
+Player *GameExternVars::pCurrentPlayer = nullptr;
+Player *GameExternVars::pOtherPlayer = nullptr;
+Card *GameExternVars::pSummonTarget = nullptr;
 
 // Class definition:
 Game::Game(Player p1, Player p2, QWidget *parent)
@@ -49,13 +49,13 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 
 
     // Label setup:
-    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::m_pCurrentPlayer->getPlayerName()));
+    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
 
     /* TODO: This is only set here and never updated.
      * We should emit a signal in EffectActivator whenever the player loses/gains health and then catch it with a slot in game and call this line there.
      */
 
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::m_pCurrentPlayer->getPlayerHealthPoints())));
+    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerHealthPoints())));
 }
 
 Game::Game() {}
@@ -87,40 +87,40 @@ int Game::randomGenerator(const int limit) const {
 int Game::decideWhoPlaysFirst() const { return randomGenerator(2); }
 
 void Game::switchPlayers() {
-    Player tmp = *GameExternVars::m_pCurrentPlayer;
-    *GameExternVars::m_pCurrentPlayer = *GameExternVars::m_pOtherPlayer;
-    *GameExternVars::m_pOtherPlayer = tmp;
+    Player tmp = *GameExternVars::pCurrentPlayer;
+    *GameExternVars::pCurrentPlayer = *GameExternVars::pOtherPlayer;
+    *GameExternVars::pOtherPlayer = tmp;
 
-    std::cout << "Current player is: " << *GameExternVars::m_pCurrentPlayer << std::endl;
-    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::m_pCurrentPlayer->getPlayerName()));
+    std::cout << "Current player is: " << *GameExternVars::pCurrentPlayer << std::endl;
+    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
 }
 
 void Game::firstTurnSetup() {
   // The game decides who will play first:
   if (decideWhoPlaysFirst() == 1)
   {
-      GameExternVars::m_pCurrentPlayer = &m_player1;
-      GameExternVars::m_pOtherPlayer = &m_player2;
+      GameExternVars::pCurrentPlayer = &m_player1;
+      GameExternVars::pOtherPlayer = &m_player2;
   }
   else
   {
-      GameExternVars::m_pCurrentPlayer = &m_player2;
-      GameExternVars::m_pOtherPlayer = &m_player1;
+      GameExternVars::pCurrentPlayer = &m_player2;
+      GameExternVars::pOtherPlayer = &m_player1;
   }
 
-  std::cout << "The first one to play is " << GameExternVars::m_pCurrentPlayer->getPlayerName() << std::endl;
+  std::cout << "The first one to play is " << GameExternVars::pCurrentPlayer->getPlayerName() << std::endl;
 
   m_currentTurn = 1;
   GamePhaseExternVars::currentGamePhase = GamePhases::DRAW_PHASE;
   emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
   // The first one gets 6 cards:
-  GameExternVars::m_pCurrentPlayer->drawCards(6);
+  GameExternVars::pCurrentPlayer->drawCards(6);
 
   // The other one gets 5 cards
-  // Without GameExternVars::m_pOtherPlayer:  *GameExternVars::m_pCurrentPlayer == m_player1 ? m_player2.drawCards(5) : m_player1.drawCards(5);
-  // With GameExternVars::m_pOtherPlayer:
-  GameExternVars::m_pOtherPlayer->drawCards(5);
+  // Without GameExternVars::pOtherPlayer:  *GameExternVars::pCurrentPlayer == m_player1 ? m_player2.drawCards(5) : m_player1.drawCards(5);
+  // With GameExternVars::pOtherPlayer:
+  GameExternVars::pOtherPlayer->drawCards(5);
 }
 
 
@@ -220,7 +220,7 @@ void Game::onTurnEnd() {
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
     // The current player draws a card (this is not optional).
-    GameExternVars::m_pCurrentPlayer->drawCards(1);
+    GameExternVars::pCurrentPlayer->drawCards(1);
 
 
 
@@ -331,7 +331,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 }
 
 // TODO: const Card *&Card
-void Game::onCardAddedToScene(const Card *card)
+void Game::onCardAddedToScene(Card *card)
 {
     // TODO: If exact subclass of Card is needed here eventually, we could check with:
     /*
@@ -400,8 +400,14 @@ void Game::onActivateButtonClick(const Card &card)
     }
 }
 
-void Game::onSummonButtonClick(const Card &card) {
+void Game::onSummonButtonClick(Card &card) {
     std::cout<< "Summon button was clicked on card " << card.getCardName() << std::endl;
+
+    /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
+       to see it. */
+    GameExternVars::pSummonTarget = &card;
+
+    std::cout << "Current summon target is: " << GameExternVars::pSummonTarget->getCardName() << std::endl;
 }
 
 
@@ -412,10 +418,9 @@ void Game::onHealthPointsChange(Player &targetPlayer) // const?
     std::cout << "Current health points for player " << targetPlayer.getPlayerName() << " : "<< targetPlayer.getPlayerHealthPoints() << std::endl;
 
     // Set the label text to the current turn player's health value
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::m_pCurrentPlayer->getPlayerHealthPoints())));
+    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerHealthPoints())));
 }
 
-#include <string>
 void Game::onGameEnd(Player &loser)
 {
     loser.setPlayerHealthPoints(0);
@@ -429,8 +434,6 @@ void Game::onGameEnd(Player &loser)
 void Game::onSetButtonClick(const Card &card)
 {
     std::cout << "Set button clicked on card " << card.getCardName() << std::endl;
-
-
 }
 
 

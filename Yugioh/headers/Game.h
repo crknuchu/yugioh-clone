@@ -30,8 +30,9 @@ class Card;
 
 // WIP
 namespace GameExternVars {
-    extern Player *m_pCurrentPlayer;
-    extern Player *m_pOtherPlayer;
+    extern Player *pCurrentPlayer;
+    extern Player *pOtherPlayer;
+    extern Card *pSummonTarget;
 }
 
 
@@ -96,7 +97,7 @@ private slots:
      */
 
 
-    void onCardAddedToScene(const Card *);
+    void onCardAddedToScene(Card *);
 
 
 
@@ -108,7 +109,7 @@ private slots:
     // Slots for CardMenu signal handling
     void onActivateButtonClick(const Card &);
     void onSetButtonClick(const Card &);
-    void onSummonButtonClick(const Card &);
+    void onSummonButtonClick(Card &);
 
     // Slots for EffectActivator signal handling
     void onHealthPointsChange(Player &);
