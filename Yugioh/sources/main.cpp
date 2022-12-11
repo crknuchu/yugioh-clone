@@ -15,6 +15,10 @@ int main(int argc,char **argv)
     Player player1("Nikola");
     Player player2("Milan");
 
+    //MainMenu m;
+      //m.show();
+
+
   Game game(player1, player2);
 
   game.showFullScreen();
