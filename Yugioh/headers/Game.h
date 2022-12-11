@@ -23,7 +23,6 @@ class Card;
 
 
 
-
 /* TODO:
  * 1) GamePhasesEnum.h to avoid Game.h includes in other files
  * 2)Unnamed namespaces
@@ -56,14 +55,15 @@ public:
 
   // Public member functions:
   void start();
+  GamePhasesEnum getGamePhase() const;
 
 
 
 private:
   Ui::MainWindow *ui;
   QGraphicsScene *scene;
-
-  Player m_player1;
+  GamePhasesEnum m_phase;
+  Player m_player1;  
   Player m_player2;
   Player *m_pCurrentPlayer;
   Player *m_pOtherPlayer;
@@ -107,7 +107,7 @@ private slots:
 
 
     // FIXME: Slots for signals emitted in Card.cpp
-    void onCardHover(Card *);
+//    void onCardHover(Card *);
 
 
 

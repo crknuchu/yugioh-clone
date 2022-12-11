@@ -343,21 +343,17 @@ void Game::onCardAddedToScene(const Card *card)
         onActivateButtonClick(*card);
     });
 
+
     connect(card->cardMenu->setButton, &QPushButton::clicked, this, [this, card](){
         onSetButtonClick(*card);
     });
 
     connect(card->cardMenu->summonButton, &QPushButton::clicked, this, [this, card](){
-        onSummonButtonClick(*card);
     });
 
-    // FIXME: Problem maybe happens because card is QGraphicsPixmapItem which is not a QOBJECT (even though we used Q_OBJECT macro in Card.h)
-//    connect(card, &Card::cardHovered, this, &Game::onCardHover);
-}
-
-void Game::onCardHover(Card * card)
-{
-    std::cout << "Card " << card->getCardName() << " hovered!" << std::endl;
+    /* We (optionally) enter the MP2 only if there was a battle phase
+     * and the MP2 button was clicked (TODO) */
+  
 }
 
 

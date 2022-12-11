@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <optional>
 
+Graveyard::Graveyard(){}
+
 Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
     :CardList(initialGraveyard)
 {

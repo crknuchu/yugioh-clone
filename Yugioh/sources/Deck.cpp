@@ -4,6 +4,9 @@
 #include <algorithm>
 #include <random>
 
+Deck::Deck(){}
+
+
 Deck::Deck(const std::string &pathToDeck, std::vector<Card*> &deck)
     :CardList(deck){
     for(auto card : m_cardList){
@@ -14,6 +17,7 @@ Deck::Deck(const std::string &pathToDeck, std::vector<Card*> &deck)
 std::vector<Card*> Deck::getDeck() const{
     return m_cardList;
 }
+
 
 Card* Deck::draw(){
     Card* drawnCard = m_cardList.front();

@@ -40,6 +40,8 @@ class Card:public QGraphicsPixmapItem
 //    Q_OBJECT
 public:
 
+    friend class Player;
+
     virtual ~Card();
 
     const std::string &getCardName() const;
