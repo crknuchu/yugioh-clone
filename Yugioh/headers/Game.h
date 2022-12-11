@@ -4,7 +4,7 @@
 #include "Player.h"
 #include <QGraphicsScene>
 #include <QMainWindow>
-
+#include "Zone.h"
 namespace Ui {
     class MainWindow;
 }
@@ -62,6 +62,7 @@ private slots:
     void btnBattlePhaseClicked();
     void btnMainPhase2Clicked();
     void btnEndPhaseClicked();
+    void onRedZoneClicked(Zone* zone);
 };
 
 

@@ -1,6 +1,7 @@
 #include "headers/Game.h"
 #include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
 #include "headers/Monstercard.h"
+#include "headers/MonsterZone.h"
 
 #include <iostream>
 #include <random>
@@ -8,6 +9,7 @@
 
 
 // QMainWindow != Ui::MainWindow
+MonsterZone mz = MonsterZone();
 
 Game::Game(Player p1, Player p2, QWidget *parent)
     : QMainWindow(parent),
@@ -56,6 +58,12 @@ Game::Game(Player p1, Player p2, QWidget *parent)
                                                  true, Position::ATTACK, false,
                                                  CardType::MONSTER_CARD, CardLocation::HAND, "Opis", false
                                                 );
+
+     for(auto *zone : mz.m_monsterZone) {
+         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
+         scene->addItem(zone);
+     }
+     mz.colorFreeZones();
      monsterCard1->setName("monsterCard1");
 
      scene->addItem(monsterCard1);
@@ -76,6 +84,7 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 }
 
 Game::Game() {}
+
 Game::~Game() {
     delete ui;
     delete scene; // TODO: Check other memory deallocations too.
@@ -281,6 +290,18 @@ void Game::btnEndPhaseClicked()
     //    switchPlayers();
 }
 
-
-
+void Game::onRedZoneClicked(Zone * clickedRedZone) {
+    MonsterCard* globalMonsterCard1 = new MonsterCard("Sibirski Plavac", 3000, 2500, 4, MonsterType::DRAGON,
+                                                MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
+                                                true, Position::ATTACK, false,
+                                                CardType::MONSTER_CARD, CardLocation::HAND, "Opis", false
+                                               );
+    mz.placeInMonsterZone(globalMonsterCard1, clickedRedZone);
+    globalMonsterCard1->setCardLocation(CardLocation::FIELD);
+    for(auto x : mz.m_monsterZone) {
+        if(!x->isEmpty())
+            std::cout << *x->m_pCard << std::endl;
+    }
+    mz.refresh();
+}
 

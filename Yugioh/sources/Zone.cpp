@@ -1,12 +1,13 @@
 #include "headers/Zone.h"
-#include "headers/MonsterZone.h"
 
 Zone::Zone(float x, float y)
     : m_x(x), m_y(y){
     m_pCard = nullptr;
-    setPen(QPen(Qt::blue, 2));
+    setPen(QPen(Qt::black, 2));
     setBrush(Qt::NoBrush);
 }
+
+Zone::~Zone(){}
 
 void Zone::putInZone(Card *card)
 {
@@ -25,16 +26,29 @@ float Zone::getHeight() const {
     return m_height;
 }
 
-void Zone::mousePressEvent(QGraphicsSceneMouseEvent*event) {
-    if(this->brush().color() != Qt::red)
-            return;
+void Zone::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 
-    emit zoneRedAndClicked();
+    if(this->brush().color() != Qt::red) {
+        return;
+    }
+
+    emit zoneRedAndClicked(this);
+//    QGraphicsRectItem::mousePressEvent(event);
 }
 
 QRectF Zone::boundingRect() const
 {
     return QRectF(m_x, m_y, m_width, m_height);
+}
+
+QPainterPath Zone::shape() const
+{
+    QRectF rect = boundingRect();
+
+    QPainterPath path;
+    path.addRect(rect);
+
+    return path;
 }
 
 void Zone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
