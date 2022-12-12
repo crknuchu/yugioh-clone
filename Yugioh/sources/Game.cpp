@@ -375,6 +375,8 @@ void Game::onActivateButtonClick(Card &card)
     // Activate card's effect
     EffectActivator effectActivator(card);
 
+
+    // TODO: Move this try catch block in EffectActivator as a method
     try {
         auto effectFunctionPointer = effectActivator.effectMap.at(cardName);
 

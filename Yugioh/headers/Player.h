@@ -9,10 +9,8 @@ class Player{
 
 public:
   Player() = default;
-  ~Player() {
-
-  };
-  Player(std::string playerName, int points = 4000) : m_name(playerName), m_points(points){};
+  ~Player() {}
+  Player(std::string playerName, int points = 4000) : m_name(playerName), m_points(points){}
 
   //TODO 
   //implement deck

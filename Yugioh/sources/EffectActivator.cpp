@@ -70,9 +70,13 @@ void EffectActivator::activateLordOfD() {
 
 
 
+    // Test returnToHand
+    returnToHand(*(this->getCard()), GamePhases::END_PHASE, *GameExternVars::m_pCurrentPlayer);
 
-    returnToHand(GamePhases::END_PHASE, *GameExternVars::m_pCurrentPlayer);
 
+    // Test increaseATK
+    // FIXME: We can't pass Card to this function because we need a MonsterCard
+//    increaseATK(, 500);
 }
 
 void EffectActivator::activateMysteriousPuppeteer() {
@@ -214,13 +218,54 @@ void EffectActivator::makeMonstersOfThisTypeUntargetable(const MonsterType &targ
 }
 
 
-void EffectActivator::returnToHand(const GamePhases &inWhichGamePhase, Player &targetPlayer)
+/* TODO: This should probably accept Card &targetCard as a parameter because there probably
+         exists an effect that returns a card other than itself to the hand. */
+void EffectActivator::returnToHand(Card &targetCard, const GamePhases &inWhichGamePhase, Player &targetPlayer)
 {
     std::cout << "Player " << targetPlayer.getPlayerName() << "'s card " << getCard()->getCardName() <<
                  " will be returned to the hand in the " << GamePhaseExternVars::gamePhaseToQString.at(inWhichGamePhase).toStdString() << "." << std::endl;
 
 //    if(currentGamePhase == inWhichGamePhase)
-//        targetPlayer.deck.returnToHand(card)
+    //        targetPlayer.deck.returnToHand(card)
+}
+
+void EffectActivator::destroyCard(Card &targetCard/*, Player &targetPlayer, CardList &cards*/)
+{
+    // targetPlayer->sendToGraveyard(card);
+}
+
+void EffectActivator::excavateCards(int numberOfCards, Player &targetPlayer)
+{
+    // FIXME: Why would std::array require that numberOfCards be a constexpr?
+//    std::array<Card*, numberOfCards> cardArray;
+
+    Card* excavatedCards[numberOfCards];
+//    for (unsigned int i = 0; i < numberOfCards; i++)
+//        cardArray[i] = targetPlayer.deck[i];  // TODO: Is there a better way?
+
+//    emit displayExcavatedCards(cardArray);
+}
+
+
+void EffectActivator::increaseATK(MonsterCard &targetCard, int increaseBy)
+{
+    // TODO: Currently there is an implicit cast from unsigned to int, maybe change it in Card class
+    targetCard.increaseAttackPoints(increaseBy);
+}
+
+void EffectActivator::increaseDEF(MonsterCard &targetCard, int increaseBy)
+{
+    targetCard.increaseDefensePoints(increaseBy);
+}
+
+void EffectActivator::decreaseATK(MonsterCard &targetCard, int decreaseBy)
+{
+    targetCard.decreaseAttackPoints(decreaseBy);
+}
+
+void EffectActivator::decreaseDEF(MonsterCard &targetCard, int decreaseBy)
+{
+    targetCard.decreaseDefensePoints(decreaseBy);
 }
 
 

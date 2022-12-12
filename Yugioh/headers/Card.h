@@ -47,8 +47,6 @@ public:
 
     CardType getCardType() const;
 
-
-
     CardLocation getCardLocation() const;
 
     std::string  getCardLocationString() const;
