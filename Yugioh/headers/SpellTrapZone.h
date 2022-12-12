@@ -11,12 +11,13 @@ class SpellTrapZone : public QVector<Zone*> {
 public:
     SpellTrapZone();
     ~SpellTrapZone();
-    void placeInSpellTrapZone(Card* card, Zone* zone);
+    void placeInSpellTrapZone(Card*, Zone*);
+    Card* removeFromSpellTrapZone(Zone*);
     bool isFull() const;
     void colorFreeZones();
     void colorOccupiedZones();
     void refresh();
-//    Card* removeFromSpellTrapZone(Card* card);
+
     std::vector<Zone*> m_spellTrapZone;
 };
 

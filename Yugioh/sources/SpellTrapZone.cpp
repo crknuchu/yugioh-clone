@@ -21,11 +21,11 @@ SpellTrapZone::~SpellTrapZone()
     m_spellTrapZone.clear();
 };
 
-//Card* SpellTrapZone::removeFromSpellTrapZone(Card *card) {
-//    auto it = std::find(m_spellTrapZone.begin(), m_spellTrapZone.end(), card);
-//    m_spellTrapZone.erase(it);
-//    return card;
-//}
+Card* SpellTrapZone::removeFromSpellTrapZone(Zone* targetedZone) {
+    Card* card = targetedZone->m_pCard;
+    targetedZone->m_pCard = nullptr;
+    return card;
+}
 
 void SpellTrapZone::placeInSpellTrapZone(Card *card, Zone* zone){
 
