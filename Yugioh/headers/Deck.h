@@ -3,6 +3,7 @@
 
 #include <string>
 #include "CardList.h"
+#include <QVector>
 
 class Deck : public CardList {
 public:

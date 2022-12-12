@@ -218,28 +218,31 @@ void EffectActivator::makeMonstersOfThisTypeUntargetable(const MonsterType &targ
 }
 
 
-/* TODO: This should probably accept Card &targetCard as a parameter because there probably
-         exists an effect that returns a card other than itself to the hand. */
 void EffectActivator::returnToHand(Card &targetCard, const GamePhases &inWhichGamePhase, Player &targetPlayer)
 {
     std::cout << "Player " << targetPlayer.getPlayerName() << "'s card " << getCard()->getCardName() <<
                  " will be returned to the hand in the " << GamePhaseExternVars::gamePhaseToQString.at(inWhichGamePhase).toStdString() << "." << std::endl;
 
-//    if(currentGamePhase == inWhichGamePhase)
-    //        targetPlayer.deck.returnToHand(card)
+
+    /* FIXME:
+     * This can't be implemented like this, because it will only check if its
+     * the target gamephase once when we call returnToHand
+     * Instead, we need to somehow wait on it with slots and signals maybe? */
+    if(GamePhaseExternVars::currentGamePhase == inWhichGamePhase)
+        targetPlayer.hand.addToHand(targetCard);
 }
 
-void EffectActivator::destroyCard(Card &targetCard/*, Player &targetPlayer, CardList &cards*/)
+void EffectActivator::destroyCard(Card &targetCard, Player &targetPlayer)
 {
-    // targetPlayer->sendToGraveyard(card);
+    targetPlayer.graveyard.sendToGraveyard(targetCard);
 }
 
-void EffectActivator::destroyCards(std::vector<Card*> &targetCards)
+void EffectActivator::destroyCards(std::vector<Card*> &targetCards, Player &targetPlayer)
 {
-//    for(Card* pCard : targetCards)
-//    {
-//        destroyCard(*pCard);
-//    }
+    for(Card* pCard : targetCards)
+    {
+        destroyCard(*pCard, targetPlayer);
+    }
 }
 
 void EffectActivator::excavateCards(int numberOfCards, Player &targetPlayer)
@@ -247,16 +250,16 @@ void EffectActivator::excavateCards(int numberOfCards, Player &targetPlayer)
     // FIXME: Why would std::array require that numberOfCards be a constexpr?
         // std::array<Card*, numberOfCards> cardArray;
 
-//    Card* excavatedCards[numberOfCards];
-//    for (unsigned int i = 0; i < numberOfCards; i++)
-//        cardArray[i] = targetPlayer.deck[i];  // TODO: Is there a better way?
+    Card* excavatedCards[numberOfCards];
+    for (int i = 0; i < numberOfCards; i++)
+        excavatedCards[i] = targetPlayer.deck[i]; // TODO: Is there a better way?
 
-    //    emit displayExcavatedCards(cardArray);
+    //    emit displayExcavatedCards(excavatedCards);
 }
 
 std::vector<Card *> EffectActivator::returnPlayerGraveyard(Player &targetPlayer)
 {
-    // targetPlayer.getGraveyard();
+    return targetPlayer.graveyard.getGraveyard();
 }
 
 
@@ -283,40 +286,76 @@ void EffectActivator::decreaseDEF(MonsterCard &targetCard, int decreaseBy)
 
 std::vector<MonsterCard *> EffectActivator::findLowestATKMonsters(Player &targetPlayer)
 {
+    // TODO: A more functional way (copy_if) for this
+
+//    MonsterZone monsterZone(targetPlayer.monsterZone); // TODO: This way of copying vs vec1 = vec2
+
+//    // TODO: This should be in MonsterZone class probably
+//    std::vector<MonsterCard> monsters;
+//    for(auto zone : monsterZone)
+//    {
+//        if(!zone->isEmpty())
+//        {
+//            monsters.push_back(*(zone->m_pCard));
+//        }
+//    }
+
+
+
+
 //    std::vector<MonsterCard *> lowestATKMonsters;
 //    int minAttackPoints = INT_MAX;
-//    for(MonsterCard monster : targetPlayer.monsterZone)
+//    for(MonsterCard &monster : monsters)
 //    {
 //        int currentMonsterAttackPoints = monster.getAttackPoints();
 //        if(currentMonsterAttackPoints <= minAttackPoints)
 //            minAttackPoints = currentMonsterAttackPoints;
 //    }
 
-//    for(MonsterCard monster : targetPlayer.monsterZone)
+//    for(MonsterCard &monster : monsters)
 //    {
 //        if(monster.getAttackPoints() == minAttackPoints)
 //            lowestATKMonsters.push_back(&monster);
 //    }
 
-
+//    return lowestATKMonsters;
 }
 
 std::vector<MonsterCard *> EffectActivator::findHighestATKMonsters(Player &targetPlayer)
 {
+    // TODO: A more functional way (copy_if) for this
+
+//    MonsterZone monsterZone(targetPlayer.monsterZone); // TODO: This way of copying vs vec1 = vec2
+
+//    // TODO: This should be in MonsterZone class probably
+//    std::vector<MonsterCard> monsters;
+//    for(auto zone : monsterZone)
+//    {
+//        if(!zone->isEmpty())
+//        {
+//            monsters.push_back(*(zone->m_pCard));
+//        }
+//    }
+
+
+
+
 //    std::vector<MonsterCard *> highestATKMonsters;
 //    int maxAttackPoints = INT_MIN;
-//    for(MonsterCard monster : targetPlayer.monsterZone)
+//    for(MonsterCard &monster : monsters)
 //    {
 //        int currentMonsterAttackPoints = monster.getAttackPoints();
-//        if(currentMonsterAttackPoints >= maxAttackPoints)
+//        if(currentMonsterAttackPoints <= maxAttackPoints)
 //            maxAttackPoints = currentMonsterAttackPoints;
 //    }
 
-//    for(MonsterCard monster : targetPlayer.monsterZone)
+//    for(MonsterCard &monster : monsters)
 //    {
 //        if(monster.getAttackPoints() == maxAttackPoints)
 //            highestATKMonsters.push_back(&monster);
 //    }
+
+//    return highestATKMonsters;
 }
 
 

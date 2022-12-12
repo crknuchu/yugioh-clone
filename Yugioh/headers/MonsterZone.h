@@ -4,7 +4,10 @@
 #include <vector>
 #include "Monstercard.h"
 
-class MonsterZone {
+// Placeholder forward declaration, to be removed in the future
+class Zone;
+
+class MonsterZone : public QVector<Zone *>  {
 public:
     MonsterZone();
     void placeInMonsterZone(Card* card, const int position);

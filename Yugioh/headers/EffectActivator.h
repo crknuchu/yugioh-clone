@@ -72,8 +72,8 @@ private:
     // TODO: Does every method here need a targetPlayer in order to differentiate whose card we need to check
     void makeMonstersOfThisTypeUntargetable(const MonsterType &type, const UntargetableBy &forbiddenMechanic, const CardLocation &where, Player &targetPlayer);
     void returnToHand(Card &targetCard, const GamePhases &targetGamePhase, Player &targetPlayer);
-    void destroyCard(Card &targetCard);
-    void destroyCards(std::vector<Card*> &targetCards);
+    void destroyCard(Card &targetCard, Player &targetPlayer);
+    void destroyCards(std::vector<Card*> &targetCards, Player &targetPlayer);
     void excavateCards(int numberOfCards, Player &targetPlayer);
     std::vector<Card*> returnPlayerGraveyard(Player &targetPlayer);
 
