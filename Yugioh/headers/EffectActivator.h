@@ -26,6 +26,7 @@ public:
 private:
     // Private member functions
 
+    // Deck 1:
     // Monster card effect activations:
     void activateLordOfD();
     void activateMysteriousPuppeteer();
@@ -33,9 +34,29 @@ private:
     void activateTrapMaster();
     void activateHaneHane();
 
-    // Spell card activations:
+    // Spell card effect activations:
+    void activateDarkEnergy();
+    void activateInvigoration();
+    void activateSogen();
+    void activateAncientTelescope();
+    void activateDarkHole();
+    void activateDeSpell();
+    void activateFissure();
+    void activateMonsterReborn();
+    void activateOokazi();
+    void activateRemoveTrap();
+    void activateTheFluteOfSummoningDragon();
+    void activateTheInexperiencedSpy();
 
-    // Trap card activations:
+    // Trap card effect activations:
+    void activateUltimateOffering();
+    void activateCastleWalls();
+    void activateJustDesserts();
+    void activateReinforcements();
+    void activateReverseTrap();
+    void activateTrapHole();
+    void activateTwoProngedAttack();
+
 
 
 

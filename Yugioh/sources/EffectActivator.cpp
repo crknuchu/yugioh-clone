@@ -11,11 +11,35 @@ EffectActivator::EffectActivator() {}
 EffectActivator::~EffectActivator() {}
 
 const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> EffectActivator::effectMap = {
+    // Monsters
     {"Lord of D",               &EffectActivator::activateLordOfD},
     {"Mysterious Puppeteer",    &EffectActivator::activateMysteriousPuppeteer},
     {"The Wicked Worm Beast",   &EffectActivator::activateTheWickedWormBeast},
     {"Trap Master",             &EffectActivator::activateTrapMaster},
-    {"Hane-Hane",               &EffectActivator::activateHaneHane}
+    {"Hane-Hane",               &EffectActivator::activateHaneHane},
+
+    // Spells
+    {"Dark Energy",                     &EffectActivator::activateDarkEnergy},
+    {"Invigoration",                    &EffectActivator::activateInvigoration},
+    {"Sogen",                           &EffectActivator::activateSogen},
+    {"Ancient Telescope",               &EffectActivator::activateAncientTelescope},
+    {"Dark Hole",                       &EffectActivator::activateDarkHole},
+    {"De-Spell",                        &EffectActivator::activateDeSpell},
+    {"Fissure",                         &EffectActivator::activateFissure},
+    {"Monster Reborn",                  &EffectActivator::activateMonsterReborn},
+    {"Ookazi",                          &EffectActivator::activateOokazi},
+    {"Remove Trap",                     &EffectActivator::activateRemoveTrap},
+    {"The Flute of Summoning Dragon",   &EffectActivator::activateTheFluteOfSummoningDragon},
+    {"The Inexperienced Spy",           &EffectActivator::activateTheInexperiencedSpy},
+
+    // Traps
+    {"Ultimate Offering",   &EffectActivator::activateUltimateOffering},
+    {"Castle Walls",        &EffectActivator::activateCastleWalls},
+    {"Just Desserts",       &EffectActivator::activateJustDesserts},
+    {"Reinforcements",      &EffectActivator::activateReinforcements},
+    {"Reverse Trap",        &EffectActivator::activateReverseTrap},
+    {"Trap Hole",           &EffectActivator::activateTrapHole},
+    {"Two-Pronged Attack",  &EffectActivator::activateTwoProngedAttack}
 };
 
 
