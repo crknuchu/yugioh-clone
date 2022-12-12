@@ -93,7 +93,7 @@ public:
     bool specialSummon(Position position);
 
 
-    void setCardMenu(Game&game) override;
+    void setCardMenu() override;
 
 protected:
     int attackPoints;

@@ -3,7 +3,6 @@
 #include <iterator>
 #include <iostream>
 #include "headers/CardMenu.h"
-
 Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent)
     : QGraphicsPixmapItem(parent)
     ,cardName(cardName)
@@ -17,7 +16,6 @@ Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLoca
     width = pixmap.width();
     setPixmap(pixmap);
     setAcceptHoverEvents(true);
-    cardMenu->hide();
 }
 
 Card::~Card()
@@ -105,6 +103,8 @@ void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
     if(cardMenu->visible == false){
         cardMenu->show();
         cardMenu->visible = true;
+        // QMap<QString,bool> x;
+        // cardMenu->update(x);
     }
     else{
         cardMenu->hide();
@@ -116,11 +116,6 @@ void Card::move(float x,float y){
     setPos(x,y); //we need to implement a unified move() function that moves the card and the menu at the same time
     cardMenu->move(pos().x(),pos().y()-cardMenu->height());
 }
-
-// void Card::menuPopUp(QGraphicsSceneHoverEvent *event){
-//     // std::cout<<"menu pops up"<<std::endl;
-//     cardMenu->show();
-// }
 
 void Card::setName(std::string name){
     cardName = name;

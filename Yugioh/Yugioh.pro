@@ -10,6 +10,8 @@ QT += \
         widgets
 
 SOURCES += \
+        sources/GameSettings.cpp \
+        sources/mainmenu.cpp \
         sources/Card.cpp \
         sources/EffectActivator.cpp \
         sources/GamePhase.cpp \
@@ -29,6 +31,7 @@ SOURCES += \
         sources/MonsterZone.cpp 
 
 HEADERS += \
+    headers/GameSettings.h \
     headers/Card.h \
     headers/EffectActivator.h \
     headers/GamePhase.h \
@@ -52,6 +55,8 @@ RESOURCES += \
         resources.qrc
 
 FORMS += \
+    sources/GameSettings.ui \
+    sources/mainmenu.ui \
     sources/mainwindow.ui
 
 

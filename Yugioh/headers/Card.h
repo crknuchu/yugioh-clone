@@ -13,6 +13,8 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QMap>
+#include <QString>
 
 class Game;
 
@@ -39,6 +41,8 @@ class Card:public QGraphicsPixmapItem
 //    Q_OBJECT
 public:
 
+    friend class Player;
+
     virtual ~Card();
 
     const std::string &getCardName() const;
@@ -59,7 +63,7 @@ public:
 
     //virtual void placeCardOnField();
 
-    virtual void setCardMenu(Game &game) = 0;
+    virtual void setCardMenu() = 0;
 
     bool operator==(const Card &card) const;
 
@@ -74,7 +78,9 @@ public:
     // void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void move(float x,float y);
 
-    CardMenu *cardMenu = new CardMenu(0, 450);
+    QMap<QString,bool> tmp;
+
+    CardMenu *cardMenu = new CardMenu();
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.

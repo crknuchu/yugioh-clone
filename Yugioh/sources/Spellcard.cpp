@@ -36,7 +36,7 @@ void SpellCard::activateSpell()
     this->active = true;
 }
 
-void SpellCard::setCardMenu(Game & game){
+void SpellCard::setCardMenu(){
     QMap<QString, bool> flagMap ;
     if(cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)){
         flagMap.insert("set",true);
@@ -45,5 +45,5 @@ void SpellCard::setCardMenu(Game & game){
      if(cardLocation == CardLocation::FIELD){
          flagMap.insert("activate",true);
         }
-        //mainMenu(flagMap)
+     cardMenu->update(flagMap);
 };

@@ -53,16 +53,18 @@ public:
 
   // Public member functions:
   void start();
+  GamePhases setGamePhase() const;
+
+
 
 
 
 private:
   Ui::MainWindow *ui;
   QGraphicsScene *scene;
-
-  Player m_player1;
+  GamePhases m_phase;
+  Player m_player1;  
   Player m_player2;
-
   int m_currentTurn;
 
 

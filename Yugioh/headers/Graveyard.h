@@ -6,6 +6,7 @@
 
 class Graveyard : public CardList {
 public:
+    Graveyard();
     Graveyard(std::vector<Card*> &initialGraveyard);
     void sendToGraveyard(Card &card);
     std::vector<Card*> getGraveyard() const;

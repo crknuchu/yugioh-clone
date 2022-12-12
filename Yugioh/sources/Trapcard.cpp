@@ -32,7 +32,7 @@ void TrapCard::activateTrap()
     this->active = true;
 }
 
-void TrapCard::setCardMenu(Game & game){
+void TrapCard::setCardMenu(){
     QMap<QString, bool> flagMap ;
     if(cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)){
         flagMap.insert("set",true);
@@ -41,5 +41,5 @@ void TrapCard::setCardMenu(Game & game){
     if(cardLocation == CardLocation::FIELD && setThisTurn == false){
         flagMap.insert("activate",true);
     }
-        //mainMenu(flagMap)
+    cardMenu->update(flagMap);
 };

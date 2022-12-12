@@ -6,6 +6,7 @@
 
 class Deck : public CardList {
 public:
+    Deck();
     Deck(const std::string &pathToDeck, std::vector<Card*> &deck);
     std::vector<Card*> getDeck() const;
     Card* draw();

@@ -61,7 +61,7 @@ Game::Game(Player p1, Player p2, QWidget *parent)
      * We should emit a signal in EffectActivator whenever the player loses/gains health and then catch it with a slot in game and call this line there.
      */
 
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerHealthPoints())));
+    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
 }
 
 Game::Game() {}
@@ -125,8 +125,6 @@ void Game::firstTurnSetup() {
   GameExternVars::pCurrentPlayer->drawCards(6);
 
   // The other one gets 5 cards
-  // Without GameExternVars::pOtherPlayer:  *GameExternVars::pCurrentPlayer == m_player1 ? m_player2.drawCards(5) : m_player1.drawCards(5);
-  // With GameExternVars::pOtherPlayer:
   GameExternVars::pOtherPlayer->drawCards(5);
 }
 
@@ -284,12 +282,12 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
          ui->graphicsView->scene()->addItem(zone);
      }
 
-     for(auto *zone : spellTrapZone.m_spellTrapZone) {
+    for(auto *zone : spellTrapZone.m_spellTrapZone) {
          connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
          ui->graphicsView->scene()->addItem(zone);
-     }
+    }
 
-     spellTrapZone.colorFreeZones();
+    spellTrapZone.colorFreeZones();
     monsterCard1->setPos(450, 450);
     ui->graphicsView->scene()->addItem(monsterCard1);
 
@@ -320,7 +318,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
     // TODO: Change leftVerticalLayout name to something normal
     const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
-    const int leftVerticalLayoutHeight = ui->leftVerticalLayout->sizeHint().height();
+//    const int leftVerticalLayoutHeight = ui->leftVerticalLayout->sizeHint().height();
 //    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
 
     const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
@@ -443,15 +441,15 @@ void Game::onSummonButtonClick(Card &card) {
          even if it was other player's health that had changed. */
 void Game::onHealthPointsChange(Player &targetPlayer) // const?
 {
-    std::cout << "Current health points for player " << targetPlayer.getPlayerName() << " : "<< targetPlayer.getPlayerHealthPoints() << std::endl;
+    std::cout << "Current health points for player " << targetPlayer.getPlayerName() << " : "<< targetPlayer.getPlayerLifePoints() << std::endl;
 
     // Set the label text to the current turn player's health value
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerHealthPoints())));
+    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
 }
 
 void Game::onGameEnd(Player &loser)
 {
-    loser.setPlayerHealthPoints(0);
+    loser.setPlayerLifePoints(0);
     ui->labelHealthPointsDynamic->setText(QString::fromStdString("0"));
     std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost because his health points reached 0 !" << std::endl;
 
