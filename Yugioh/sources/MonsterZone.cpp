@@ -22,11 +22,11 @@ MonsterZone::~MonsterZone()
     m_monsterZone.clear();
 };
 
-//MonsterCard* MonsterZone::removeFromMonsterZone(MonsterCard *card) {
-//    auto it = std::find(m_monsterZone.begin(), m_monsterZone.end(), card);
-//    m_monsterZone.erase(it);
-//    return card;
-//}
+MonsterCard* MonsterZone::removeFromMonsterZone(Zone* targetedZone) {
+    MonsterCard* card = static_cast<MonsterCard*>(targetedZone->m_pCard);
+    targetedZone->m_pCard = nullptr;
+    return card;
+}
 
 void MonsterZone::placeInMonsterZone(Card *card, Zone* zone){
 
@@ -54,6 +54,15 @@ void MonsterZone::colorFreeZones() {
     }
 }
 
+void MonsterZone::colorOccupiedZones() {
+    for(Zone *zone : m_monsterZone) {
+        if(!zone->isEmpty()) {
+            zone->setBrush(Qt::green);
+            zone->update();
+        }
+    }
+}
+
 void MonsterZone::refresh() {
     for(Zone *zone : m_monsterZone) {
         zone->setBrush(Qt::NoBrush);
@@ -68,8 +77,4 @@ bool MonsterZone::isFull() const {
     }
     return true;
 }
-
-//MonsterCard* MonsterZone::operator[](const int i) const {
-//    return m_monsterZone[i];
-//}
 
