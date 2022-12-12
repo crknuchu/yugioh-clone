@@ -15,13 +15,13 @@ class TrapCard : public Card
 public:
 
     TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active = false,bool setThisTurn = false);
-
+    ~TrapCard();
 
     TrapType getTrapType() const;
     std::string getTrapTypeString() const;
 
     void activateTrap();
-    void setCardMenu() override;
+    void setCardMenu();
 
 protected:
     TrapType trapType;

@@ -6,6 +6,11 @@ SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardT
     ,active(active)
 {}
 
+SpellCard::~SpellCard()
+{
+
+}
+
 SpellType SpellCard::getSpellType() const
 {
     return type;

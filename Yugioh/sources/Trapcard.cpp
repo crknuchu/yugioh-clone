@@ -7,6 +7,11 @@ TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType
     ,active(active)
 {}
 
+TrapCard::~TrapCard()
+{
+
+}
+
 
 TrapType TrapCard::getTrapType() const
 {

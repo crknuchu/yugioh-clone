@@ -60,7 +60,7 @@ public:
 
     //virtual void placeCardOnField();
 
-    virtual void setCardMenu() = 0;
+    //virtual void setCardMenu() ;
 
     bool operator==(const Card &card) const;
 

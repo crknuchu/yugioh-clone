@@ -103,7 +103,6 @@ void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
     if(event->buttons() & Qt::LeftButton)
     {
        emit cardSelected(*this);
-    }
 
     if(cardMenu->visible == false){
         cardMenu->show();
@@ -112,6 +111,7 @@ void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
     else{
         cardMenu->hide();
         cardMenu->visible = false;
+    }
     }
 }
 
