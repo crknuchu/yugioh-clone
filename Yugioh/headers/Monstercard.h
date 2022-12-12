@@ -80,8 +80,6 @@ public:
     void setAttackPoints(int newAttackPoints);
     void setDefensePoints(int newDefensePoints);
 
-
-
     //methods to be called with the appropriate spell/trap card
     void increaseAttackPoints(int increaseBy);
     void decreaseAttackPoints(int decreaseBy);

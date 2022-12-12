@@ -234,16 +234,29 @@ void EffectActivator::destroyCard(Card &targetCard/*, Player &targetPlayer, Card
     // targetPlayer->sendToGraveyard(card);
 }
 
+void EffectActivator::destroyCards(std::vector<Card*> &targetCards)
+{
+//    for(Card* pCard : targetCards)
+//    {
+//        destroyCard(*pCard);
+//    }
+}
+
 void EffectActivator::excavateCards(int numberOfCards, Player &targetPlayer)
 {
     // FIXME: Why would std::array require that numberOfCards be a constexpr?
-//    std::array<Card*, numberOfCards> cardArray;
+        // std::array<Card*, numberOfCards> cardArray;
 
-    Card* excavatedCards[numberOfCards];
+//    Card* excavatedCards[numberOfCards];
 //    for (unsigned int i = 0; i < numberOfCards; i++)
 //        cardArray[i] = targetPlayer.deck[i];  // TODO: Is there a better way?
 
-//    emit displayExcavatedCards(cardArray);
+    //    emit displayExcavatedCards(cardArray);
+}
+
+std::vector<Card *> EffectActivator::returnPlayerGraveyard(Player &targetPlayer)
+{
+    // targetPlayer.getGraveyard();
 }
 
 
@@ -266,6 +279,44 @@ void EffectActivator::decreaseATK(MonsterCard &targetCard, int decreaseBy)
 void EffectActivator::decreaseDEF(MonsterCard &targetCard, int decreaseBy)
 {
     targetCard.decreaseDefensePoints(decreaseBy);
+}
+
+std::vector<MonsterCard *> EffectActivator::findLowestATKMonsters(Player &targetPlayer)
+{
+//    std::vector<MonsterCard *> lowestATKMonsters;
+//    int minAttackPoints = INT_MAX;
+//    for(MonsterCard monster : targetPlayer.monsterZone)
+//    {
+//        int currentMonsterAttackPoints = monster.getAttackPoints();
+//        if(currentMonsterAttackPoints <= minAttackPoints)
+//            minAttackPoints = currentMonsterAttackPoints;
+//    }
+
+//    for(MonsterCard monster : targetPlayer.monsterZone)
+//    {
+//        if(monster.getAttackPoints() == minAttackPoints)
+//            lowestATKMonsters.push_back(&monster);
+//    }
+
+
+}
+
+std::vector<MonsterCard *> EffectActivator::findHighestATKMonsters(Player &targetPlayer)
+{
+//    std::vector<MonsterCard *> highestATKMonsters;
+//    int maxAttackPoints = INT_MIN;
+//    for(MonsterCard monster : targetPlayer.monsterZone)
+//    {
+//        int currentMonsterAttackPoints = monster.getAttackPoints();
+//        if(currentMonsterAttackPoints >= maxAttackPoints)
+//            maxAttackPoints = currentMonsterAttackPoints;
+//    }
+
+//    for(MonsterCard monster : targetPlayer.monsterZone)
+//    {
+//        if(monster.getAttackPoints() == maxAttackPoints)
+//            highestATKMonsters.push_back(&monster);
+//    }
 }
 
 

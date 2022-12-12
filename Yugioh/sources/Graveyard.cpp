@@ -21,7 +21,7 @@ std::vector<Card*> Graveyard::getGraveyard() const{
 
 Card* Graveyard::removeFromGraveyard(Card &card)
 {
-   auto it = std::find(m_cardList.begin(), m_cardList.end(), &card);
+    auto it = std::find(m_cardList.begin(), m_cardList.end(), &card);
     m_cardList.erase(it);
     return &card;
 }

@@ -33,9 +33,6 @@ private:
     Card *m_card; // We can't have a non pointer because Card is abstract
 
 
-
-
-
     // Private member functions
     // Deck 1:
     // Monster card effect activations:
@@ -70,25 +67,24 @@ private:
 
 
 
-
-
     // WIP
     // Generic outcomes that make up card's effects:
     // TODO: Does every method here need a targetPlayer in order to differentiate whose card we need to check
     void makeMonstersOfThisTypeUntargetable(const MonsterType &type, const UntargetableBy &forbiddenMechanic, const CardLocation &where, Player &targetPlayer);
     void returnToHand(Card &targetCard, const GamePhases &targetGamePhase, Player &targetPlayer);
     void destroyCard(Card &targetCard);
+    void destroyCards(std::vector<Card*> &targetCards);
     void excavateCards(int numberOfCards, Player &targetPlayer);
-
+    std::vector<Card*> returnPlayerGraveyard(Player &targetPlayer);
 
 
     void increaseATK(MonsterCard &targetMonster, int increaseBy);
     void increaseDEF(MonsterCard &targetMonster, int increaseBy);
     void decreaseATK(MonsterCard &targetMonster, int decreaseBy);
     void decreaseDEF(MonsterCard &targetMonster, int decreaseBy);
-
+    std::vector<MonsterCard*> findLowestATKMonsters(Player &targetPlayer); // MonsterCard* because we want a pointer to the actual cards
+    std::vector<MonsterCard*> findHighestATKMonsters(Player &targetPlayer);
 };
-
 
 
 #endif // EFFECTACTIVATOR_H
