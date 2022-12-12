@@ -100,15 +100,11 @@ void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
 }
 
 void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
-    if(cardMenu->visible == false){
+    if(cardMenu->isVisible() == false){
         cardMenu->show();
-        cardMenu->visible = true;
-        // QMap<QString,bool> x;
-        // cardMenu->update(x);
     }
     else{
         cardMenu->hide();
-        cardMenu->visible = false;
     }
 }
 
