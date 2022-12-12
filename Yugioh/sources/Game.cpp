@@ -2,6 +2,7 @@
 #include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
 #include "headers/Monstercard.h"
 #include "headers/MonsterZone.h"
+#include "headers/SpellTrapZone.h"
 
 #include <iostream>
 #include <random>
@@ -10,6 +11,7 @@
 
 // QMainWindow != Ui::MainWindow
 MonsterZone mz = MonsterZone();
+SpellTrapZone stz = SpellTrapZone();
 
 Game::Game(Player p1, Player p2, QWidget *parent)
     : QMainWindow(parent),
@@ -39,7 +41,7 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     //    setFixedSize(800,600);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setWindowTitle("Yu-Gi-Oh!"); // This compiles even without ui->graphicsView
+    setWindowTitle("Yu-Gi-Oh!"); // This compiles even without ui->graphicsView
 
 
     // Creating items
@@ -63,7 +65,13 @@ Game::Game(Player p1, Player p2, QWidget *parent)
          connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
          scene->addItem(zone);
      }
-     mz.colorFreeZones();
+
+     for(auto *zone : stz.m_spellTrapZone) {
+         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
+         scene->addItem(zone);
+     }
+
+     stz.colorFreeZones();
      monsterCard1->setName("monsterCard1");
 
      scene->addItem(monsterCard1);
@@ -296,12 +304,31 @@ void Game::onRedZoneClicked(Zone * clickedRedZone) {
                                                 true, Position::ATTACK, false,
                                                 CardType::MONSTER_CARD, CardLocation::HAND, "Opis", false
                                                );
-    mz.placeInMonsterZone(globalMonsterCard1, clickedRedZone);
-    globalMonsterCard1->setCardLocation(CardLocation::FIELD);
-    for(auto x : mz.m_monsterZone) {
-        if(!x->isEmpty())
-            std::cout << *x->m_pCard << std::endl;
+
+    SpellCard* globalSpellCard = new SpellCard(SpellType::NORMAL_SPELL, "Dark Hole",
+                                               CardType::SPELL_CARD, CardLocation::HAND,
+                                               " Destroy all monsters on the field. ", true);
+
+    Card* card = globalSpellCard;
+    if(card->getCardType() == CardType::MONSTER_CARD) {
+        mz.placeInMonsterZone(card, clickedRedZone);
+        card->setCardLocation(CardLocation::FIELD);
+        for(auto x : mz.m_monsterZone) {
+            if(!x->isEmpty())
+                std::cout << *x->m_pCard << std::endl;
+        }
+        mz.refresh();
     }
-    mz.refresh();
+    else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
+        stz.placeInSpellTrapZone(card, clickedRedZone);
+        card->setCardLocation(CardLocation::FIELD);
+        for(auto x: stz.m_spellTrapZone) {
+            if(!x->isEmpty())
+                std::cout << *x->m_pCard << std::endl;
+        }
+        stz.refresh();
+    }
+
+    delete globalMonsterCard1;
 }
 

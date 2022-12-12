@@ -12,6 +12,10 @@ public:
     SpellTrapZone();
     ~SpellTrapZone();
     void placeInSpellTrapZone(Card* card, Zone* zone);
+    bool isFull() const;
+    void colorFreeZones();
+    void colorOccupiedZones();
+    void refresh();
 //    Card* removeFromSpellTrapZone(Card* card);
     std::vector<Zone*> m_spellTrapZone;
 };

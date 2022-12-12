@@ -47,3 +47,37 @@ void SpellTrapZone::placeInSpellTrapZone(Card *card, Zone* zone){
         return;
     }
 }
+
+void SpellTrapZone::colorFreeZones() {
+    for(Zone *zone : m_spellTrapZone) {
+        if(zone->isEmpty()) {
+            zone->setBrush(Qt::red);
+            zone->update();
+        }
+    }
+}
+
+void SpellTrapZone::colorOccupiedZones() {
+    for(Zone *zone : m_spellTrapZone) {
+        if(!zone->isEmpty()) {
+            zone->setBrush(Qt::green);
+            zone->update();
+        }
+    }
+}
+
+void SpellTrapZone::refresh() {
+    for(Zone *zone : m_spellTrapZone) {
+        zone->setBrush(Qt::NoBrush);
+        zone->update();
+    }
+}
+
+bool SpellTrapZone::isFull() const {
+    for(Zone* zone : m_spellTrapZone) {
+        if(zone->isEmpty())
+            return false;
+    }
+    return true;
+}
+
