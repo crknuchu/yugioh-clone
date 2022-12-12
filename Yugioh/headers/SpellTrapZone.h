@@ -2,17 +2,18 @@
 #define SPELLTRAPZONE_H
 
 #include <vector>
+#include <QVector>
 #include "Spellcard.h"
 #include "Trapcard.h"
+#include "Zone.h"
 
-class SpellTrapZone {
+class SpellTrapZone : public QVector<Zone*> {
 public:
     SpellTrapZone();
+    ~SpellTrapZone();
     void placeInSpellTrapZone(Card* card, const int position);
     Card* removeFromSpellTrapZone(Card* card);
-    Card* operator[](const int) const;
-private:
-    std::vector<Card*> m_spellTrapZone;
+    std::vector<Zone*> m_spellTrapZone;
 };
 
 #endif // SPELLTRAPZONE_H
