@@ -2,6 +2,8 @@
 #include "headers/Game.h"
 #include "headers/Monstercard.h"
 #include "headers/EffectActivator.h"
+#include "headers/MonsterZone.h"
+#include "headers/SpellTrapZone.h"
 
 #include <iostream>
 #include <random>
@@ -12,6 +14,9 @@
 #include <QGraphicsLayout>
 
 
+// QMainWindow != Ui::MainWindow
+MonsterZone monsterZone = MonsterZone();
+SpellTrapZone spellTrapZone = SpellTrapZone();
 
 // Class definitions:
 Game::Game(Player p1, Player p2, QWidget *parent)
@@ -46,6 +51,7 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 }
 
 Game::Game() {}
+
 Game::~Game() {
     delete ui;
     delete scene;
@@ -257,6 +263,18 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                                                 CardType::MONSTER_CARD, CardLocation::HAND,
                                                 "Neither player can target Dragon monsters on the field with card effects."
                                                 );
+
+    for(auto *zone : monsterZone.m_monsterZone) {
+         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
+         ui->graphicsView->scene()->addItem(zone);
+     }
+
+     for(auto *zone : spellTrapZone.m_spellTrapZone) {
+         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
+         ui->graphicsView->scene()->addItem(zone);
+     }
+
+     spellTrapZone.colorFreeZones();
     monsterCard1->setPos(450, 450);
     ui->graphicsView->scene()->addItem(monsterCard1);
 
@@ -301,8 +319,8 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
     // WIP: Background image
     // TODO: Find another image of the field
-    QPixmap background(":/resources/field2.png");
-    background = background.scaled(viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
+    QPixmap background(":/resources/space.jpeg");
+    background = background.scaled(viewAndSceneWidth,  this->size().height() / 10, Qt::IgnoreAspectRatio);
     QBrush brush(QPalette::Window, background);
     ui->graphicsView->setBackgroundBrush(brush);
 
@@ -349,8 +367,8 @@ void Game::onCardAddedToScene(const Card *card)
     });
 
     connect(card->cardMenu->summonButton, &QPushButton::clicked, this, [this, card](){
+        onSummonButtonClick(*card);
     });
-
     /* We (optionally) enter the MP2 only if there was a battle phase
      * and the MP2 button was clicked (TODO) */
   
@@ -391,6 +409,37 @@ void Game::onSetButtonClick(const Card &card)
 
 }
 
+void Game::onRedZoneClicked(Zone * clickedRedZone) {
+    MonsterCard* globalMonsterCard1 = new MonsterCard("Sibirski Plavac", 3000, 2500, 4, MonsterType::DRAGON,
+                                                MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
+                                                true, Position::ATTACK, false,
+                                                CardType::MONSTER_CARD, CardLocation::HAND, "Opis", false
+                                               );
 
+    SpellCard* globalSpellCard = new SpellCard(SpellType::NORMAL_SPELL, "Dark Hole",
+                                               CardType::SPELL_CARD, CardLocation::HAND,
+                                               " Destroy all monsters on the field. ", true);
 
+    Card* card = globalSpellCard;
+    if(card->getCardType() == CardType::MONSTER_CARD) {
+        monsterZone.placeInMonsterZone(card, clickedRedZone);
+        card->setCardLocation(CardLocation::FIELD);
+        for(auto x : monsterZone.m_monsterZone) {
+            if(!x->isEmpty())
+                std::cout << *x->m_pCard << std::endl;
+        }
+        monsterZone.refresh();
+    }
+    else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
+        spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
+        card->setCardLocation(CardLocation::FIELD);
+        for(auto x: spellTrapZone.m_spellTrapZone) {
+            if(!x->isEmpty())
+                std::cout << *x->m_pCard << std::endl;
+        }
+        spellTrapZone.refresh();
+    }
+
+    delete globalMonsterCard1;
+}
 

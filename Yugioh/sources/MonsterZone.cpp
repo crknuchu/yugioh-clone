@@ -2,30 +2,42 @@
 #include <algorithm>
 #include <iostream>
 
-MonsterZone::MonsterZone()
-    :m_monsterZone({nullptr, nullptr, nullptr, nullptr, nullptr}){};
+MonsterZone::MonsterZone(){
+    float x = 0;
+    float y = 300;
+    float gap = 20;
+    for(int i = 0; i < 5; i++) {
+        Zone* zone = new Zone(x, y);
+        m_monsterZone.push_back(zone);
+        x += zone->getWidth() + gap;
+    }
+}
 
-MonsterCard* MonsterZone::removeFromMonsterZone(MonsterCard *card) {
-    auto it = std::find(m_monsterZone.begin(), m_monsterZone.end(), card);
-    m_monsterZone.erase(it);
+MonsterZone::~MonsterZone()
+{
+    for(Zone* zone : m_monsterZone) {
+        delete zone;
+    }
+
+    m_monsterZone.clear();
+};
+
+MonsterCard* MonsterZone::removeFromMonsterZone(Zone* targetedZone) {
+    MonsterCard* card = static_cast<MonsterCard*>(targetedZone->m_pCard);
+    targetedZone->m_pCard = nullptr;
     return card;
 }
 
-void MonsterZone::placeInMonsterZone(Card *card, const int position){
-    if(position < 1 || position > 5) {
-        std::cout << "Incorrect field spot" << std::endl;
-        return;
-    }
+void MonsterZone::placeInMonsterZone(Card *card, Zone* zone){
 
-    //-1 is there because position can be 1 to 5 translated to arrays language its 0 to 4
-    if(m_monsterZone[position - 1] != nullptr) {
+    if(!zone->isEmpty()) {
         std::cout << "Spot is occupied" << std::endl;
         return;
     }
 
     MonsterCard* monsterCard = dynamic_cast<MonsterCard*>(card);
     if(monsterCard) {
-        m_monsterZone.insert(m_monsterZone.begin() + position - 1, monsterCard);
+        zone->putInZone(monsterCard);
     }
     else {
         std::cout << "Only monster cards can be put in monster zone" << std::endl;
@@ -33,7 +45,36 @@ void MonsterZone::placeInMonsterZone(Card *card, const int position){
     }
 }
 
-MonsterCard* MonsterZone::operator[](const int i) const {
-    return m_monsterZone[i];
+void MonsterZone::colorFreeZones() {
+    for(Zone *zone : m_monsterZone) {
+        if(zone->isEmpty()) {
+            zone->setBrush(Qt::red);
+            zone->update();
+        }
+    }
+}
+
+void MonsterZone::colorOccupiedZones() {
+    for(Zone *zone : m_monsterZone) {
+        if(!zone->isEmpty()) {
+            zone->setBrush(Qt::green);
+            zone->update();
+        }
+    }
+}
+
+void MonsterZone::refresh() {
+    for(Zone *zone : m_monsterZone) {
+        zone->setBrush(Qt::NoBrush);
+        zone->update();
+    }
+}
+
+bool MonsterZone::isFull() const {
+    for(Zone* zone : m_monsterZone) {
+        if(zone->isEmpty())
+            return false;
+    }
+    return true;
 }
 

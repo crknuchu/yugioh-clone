@@ -12,6 +12,7 @@
 #include "GamePhase.h"
 
 
+#include "Zone.h"
 namespace Ui {
     class MainWindow;
 }
@@ -91,7 +92,7 @@ private slots:
     void onMainWindowResize(QResizeEvent *);
     void onGamePhaseChange(const GamePhasesEnum &newGamePhase);
     void onTurnEnd();
-
+    void onRedZoneClicked(Zone* zone);
 
     /*
      * This Card* will eventually be replaced with Player * probably,
