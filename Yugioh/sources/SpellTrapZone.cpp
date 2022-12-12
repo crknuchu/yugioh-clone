@@ -3,7 +3,7 @@
 
 SpellTrapZone::SpellTrapZone(){
     float x = 0;
-    float y = 320;
+    float y = 470;
     float gap = 20;
     for(int i = 0; i < 5; i++) {
         Zone* z = new Zone(x, y);
@@ -21,20 +21,15 @@ SpellTrapZone::~SpellTrapZone()
     m_spellTrapZone.clear();
 };
 
-Card* SpellTrapZone::removeFromSpellTrapZone(Card *card) {
-    auto it = std::find(m_spellTrapZone.begin(), m_spellTrapZone.end(), card);
-    m_spellTrapZone.erase(it);
-    return card;
-}
+//Card* SpellTrapZone::removeFromSpellTrapZone(Card *card) {
+//    auto it = std::find(m_spellTrapZone.begin(), m_spellTrapZone.end(), card);
+//    m_spellTrapZone.erase(it);
+//    return card;
+//}
 
-void SpellTrapZone::placeInSpellTrapZone(Card *card, const int position){
-    if(position < 1 || position > 5) {
-        std::cout << "Incorrect field spot" << std::endl;
-        return;
-    }
+void SpellTrapZone::placeInSpellTrapZone(Card *card, Zone* zone){
 
-    //-1 is there because position can be 1 to 5 translated to arrays language its 0 to 4
-    if(m_spellTrapZone[position - 1] != nullptr) {
+    if(!zone->isEmpty()) {
         std::cout << "Spot is occupied" << std::endl;
         return;
     }
@@ -42,10 +37,10 @@ void SpellTrapZone::placeInSpellTrapZone(Card *card, const int position){
     SpellCard* spellCard = dynamic_cast<SpellCard*>(card);
     TrapCard* trapCard = dynamic_cast<TrapCard*>(card);
     if(spellCard) {
-//        m_spellTrapZone.insert(m_spellTrapZone.begin() + position - 1, spellCard);
+        zone->putInZone(spellCard);
     }
     else if(trapCard) {
-//        m_spellTrapZone.insert(m_spellTrapZone.begin() + position - 1, trapCard);
+        zone->putInZone(trapCard);
     }
     else {
         std::cout << "Only spell or trap cards can be put in spell/trap zone" << std::endl;

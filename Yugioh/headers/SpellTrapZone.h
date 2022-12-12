@@ -11,8 +11,8 @@ class SpellTrapZone : public QVector<Zone*> {
 public:
     SpellTrapZone();
     ~SpellTrapZone();
-    void placeInSpellTrapZone(Card* card, const int position);
-    Card* removeFromSpellTrapZone(Card* card);
+    void placeInSpellTrapZone(Card* card, Zone* zone);
+//    Card* removeFromSpellTrapZone(Card* card);
     std::vector<Zone*> m_spellTrapZone;
 };
 
