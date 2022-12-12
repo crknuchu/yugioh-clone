@@ -7,24 +7,21 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QEvent>
 #include <QMap>
-//#include "headers/Card.h" // We have an include circle if this is uncommented
+#include <QString>
 
 class CardMenu: public QWidget
 {
 public:
     CardMenu();
-    CardMenu(int x,int y);
 
     QPushButton *activateButton = new QPushButton("Activate");
     QPushButton *setButton = new QPushButton("Set");
     QPushButton *summonButton = new QPushButton("Summon");
+    QPushButton *repositionButton = new QPushButton("Reposition");
+    QPushButton *attackButton = new QPushButton("Attack");
     QVBoxLayout *layout = new QVBoxLayout(this);
 
-    void leaveEvent(QEvent *event);
-
-    void setWidth(int width);
-
-    void update(QMap<QString,bool>flagmap);
+    void update(QMap<QString,bool> flags);
 
     bool visible = false;
 

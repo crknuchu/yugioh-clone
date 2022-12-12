@@ -1,42 +1,41 @@
 #include "headers/CardMenu.h"
-#include <iostream>
-#include <QGraphicsSceneHoverEvent>
 
 CardMenu::CardMenu()
 {
-    // std::cout<<"test";
-    setGeometry(0, 0,150,0); //this needs to be the size of the card, not hardcoded and the location just above the card
     setWindowFlags(Qt::FramelessWindowHint);
-
-
-    // TODO:
-    layout->addWidget(activateButton);
-    layout->addWidget(setButton);
+    hide(); // the menu is not visible at default
 }
 
-
-
-// Maybe we can pass a Card* here that made this menu
-CardMenu::CardMenu(int x, int y){
-    // setGeometry(0,0parent->getWidth(),0);
-    // setGeometry(x,y,100,0);
-    setWindowFlags(Qt::FramelessWindowHint);
-    // setGeometry(0,0,150,0);
-    layout->addWidget(activateButton);
-    layout->addWidget(setButton);
-    layout->addWidget(summonButton);
-    //   show();
-}
-
-
-//void CardMenu::setWidth(int width){
-//    this->setWidth(width);
-//}
-
-void CardMenu::leaveEvent(QEvent *event){
-    hide();
-}
-
-void CardMenu::update(QMap<QString,bool>flagmap){
-
+void CardMenu::update(QMap<QString,bool> flags)
+{
+    if(flags["activate"] == true){
+        layout->addWidget(activateButton);
+    }
+    else{
+        layout->removeWidget(activateButton);
+    }
+    if(flags["set"] == true){
+        layout->addWidget(setButton);
+    }
+    else{
+        layout->removeWidget(setButton);
+    }
+    if(flags["summon"] == true){
+        layout->addWidget(summonButton);        
+    }
+    else{
+        layout->removeWidget(summonButton);
+    }
+    if(flags["reposition"] == true){
+        layout->addWidget(repositionButton);
+    }
+    else{
+        layout->removeWidget(repositionButton);
+    }
+    if(flags["attack"] == true){
+        layout->addWidget(attackButton);        
+    }
+    else{
+        layout->removeWidget(attackButton);
+    }    
 }

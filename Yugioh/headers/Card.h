@@ -14,6 +14,8 @@
 #include <QEvent>
 #include <QMouseEvent>
 #include <QGraphicsSceneMouseEvent>
+#include <QMap>
+#include <QString>
 
 class Game;
 
@@ -77,7 +79,9 @@ public:
     // void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void move(float x,float y);
 
-    CardMenu *cardMenu = new CardMenu(0, 450);
+    QMap<QString,bool> tmp;
+
+    CardMenu *cardMenu = new CardMenu();
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
