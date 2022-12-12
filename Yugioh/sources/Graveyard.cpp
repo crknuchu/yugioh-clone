@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <optional>
 
+Graveyard::Graveyard(){}
 Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
     :CardList(initialGraveyard)
 {
@@ -10,6 +11,7 @@ Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
         std::cout << x->getCardName() << " ";
     }
 }
+Graveyard::~Graveyard(){}
 
 void Graveyard::sendToGraveyard(Card &card) {
     m_cardList.push_back(&card);

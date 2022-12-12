@@ -4,12 +4,14 @@
 #include <algorithm>
 #include <random>
 
+Deck::Deck(){}
 Deck::Deck(const std::string &pathToDeck, std::vector<Card*> &deck)
     :CardList(deck){
     for(auto card : m_cardList){
         std::cout << card->getCardName() << " ";
     }
 }
+Deck::~Deck(){}
 
 std::vector<Card*> Deck::getDeck() const{
     return m_cardList;

@@ -6,7 +6,9 @@
 
 class Graveyard : public CardList {
 public:
+    Graveyard();
     Graveyard(std::vector<Card*> &initialGraveyard);
+    ~Graveyard();
     void sendToGraveyard(Card &card);
     std::vector<Card*> getGraveyard() const;
     Card* removeFromGraveyard(Card &card);

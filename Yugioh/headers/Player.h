@@ -5,26 +5,38 @@
 #include <iostream>
 #include <memory>
 
+#include "Hand.h"
+#include "Deck.h"
+
+#include "Graveyard.h"
+#include "MonsterZone.h"
+#include "SpellTrapZone.h"
+
+
+
 class Player{ 
 
 public:
-  Player() = default;
-  ~Player() {}
-  Player(std::string playerName, int points = 4000) : m_name(playerName), m_points(points){}
+  Player();
+  Player(std::string playerName,int points = 8000);
+  ~Player();
 
-  //TODO 
-  //implement deck
-
-
-  //implement hand cards
-
-  //implement graveyard
-
-
-  void drawCards(unsigned int numOfCards);
 
   std::string getPlayerName() const;
   unsigned getPlayerPoints();
+
+  void setPoints(unsigned points);
+
+  void drawCards(unsigned int numOfCards);
+
+
+  Graveyard graveyard;
+  MonsterZone monsterZone;
+  SpellTrapZone spellTrapZone;
+  Hand hand;
+  Deck deck;
+
+
 
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
 
