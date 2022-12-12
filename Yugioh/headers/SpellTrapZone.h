@@ -11,6 +11,7 @@ public:
     void placeInSpellTrapZone(Card* card, const int position);
     Card* removeFromSpellTrapZone(Card* card);
     Card* operator[](const int) const;
+    std::vector<Card*>getSpellTrapZone();
 private:
     std::vector<Card*> m_spellTrapZone;
 };

@@ -14,7 +14,7 @@ int main(int argc,char **argv)
 
     Player player1("Nikola");
     Player player2("Milan");
-
+    player1.drawCards(3);
     //MainMenu m;
       //m.show();
 

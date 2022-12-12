@@ -37,3 +37,8 @@ MonsterCard* MonsterZone::operator[](const int i) const {
     return m_monsterZone[i];
 }
 
+std::vector<MonsterCard*> MonsterZone::getMonsterZone(){
+    return this->m_monsterZone;
+}
+
+

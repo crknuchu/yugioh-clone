@@ -39,3 +39,10 @@ void SpellTrapZone::placeInSpellTrapZone(Card *card, const int position){
 Card* SpellTrapZone::operator[](const int i) const {
     return m_spellTrapZone[i];
 }
+
+
+std::vector<Card*> SpellTrapZone::getSpellTrapZone(){
+    return m_spellTrapZone;
+}
+
+

@@ -12,11 +12,11 @@
 #include "SpellTrapZone.h"
 #include "Hand.h"
 #include "Deck.h"
-#include "Card.h"
+
 #include "Graveyard.h"
 #include "MonsterZone.h"
 #include "SpellTrapZone.h"
-#include "GamePhase.h"
+
 
 class Player{ 
 
@@ -25,11 +25,13 @@ public:
   ~Player() {
 
   };
-  Player(std::string playerName,int points = 8000) : m_graveyard(Graveyard()), m_monsterZone(MonsterZone()), m_SpellTrapZone(SpellTrapZone()), m_hand(Hand()), m_deck(Deck()) , m_name(playerName), m_points(points){};
+  Player(std::string playerName,int points = 8000) : m_graveyard(Graveyard()),
+      m_monsterZone(MonsterZone()), m_SpellTrapZone(SpellTrapZone()), m_hand(Hand()),
+      m_deck(Deck()) , m_name(playerName), m_points(points){};
   //DRAW PHASE
   void drawCards(unsigned int numOfCards); //done
-  void activationSpellCard(Card &); 
-  void activationTrapCard(Card &);
+  void activationSpellCard();
+  void activationTrapCard();
   // ------------------------------------------
 
   //STANDBYPHASE
@@ -42,9 +44,9 @@ public:
   // ------------------------------------------
 
   //BATTLE PHASE
-  int checkOpponentGround(Player &opponent) const;
+  int checkOpponentGround(Player &opponent);
   // std::vector<MonsterCard *> tableMonsterCards(const Player &opponent); //check vector size before attack
-  void attackOpponent(Game &game, MonsterCard a, Player &opponent);
+  void attackOpponent(MonsterCard a, Player &opponent);
 
   // -----------------------------------------
 
