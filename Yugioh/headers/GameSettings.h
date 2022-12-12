@@ -28,6 +28,8 @@ private slots:
 
     void on_Back_accepted();
 
+    void on_Back_rejected();
+
 private:
     Ui::GameSettings *ui;
 };
