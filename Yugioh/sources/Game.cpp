@@ -320,7 +320,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 }
 
 // TODO: const Card *&Card
-void Game::onCardAddedToScene(const Card *card)
+void Game::onCardAddedToScene(Card *card)
 {
     // TODO: If exact subclass of Card is needed here eventually, we could check with:
     /*
@@ -365,7 +365,7 @@ void Game::onCardHover(Card * card)
 
 
 // Slots for card menu UI
-void Game::onActivateButtonClick(const Card &card)
+void Game::onActivateButtonClick(Card &card)
 {
     std::cout << "Activate button clicked on card " << card.getCardName() << std::endl;
 
@@ -373,7 +373,7 @@ void Game::onActivateButtonClick(const Card &card)
     const std::string cardName = card.getCardName();
 
     // Activate card's effect
-    EffectActivator effectActivator;
+    EffectActivator effectActivator(card);
 
     try {
         auto effectFunctionPointer = effectActivator.effectMap.at(cardName);

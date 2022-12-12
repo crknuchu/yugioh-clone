@@ -16,16 +16,25 @@ enum class UntargetableBy {
 
 class EffectActivator {
     // Our type that represents a pointer to EffectActivator member function that accept no arguments and return void
-    using EFFECT_MEMBER_FUNCTION_POINTER = void(EffectActivator::*)(void);
+    using EFFECT_MEMBER_FUNCTION_POINTER = void (EffectActivator::*)(void);
 public:
-    EffectActivator();
+    EffectActivator() = delete;
+    EffectActivator(Card &);
     ~EffectActivator();
+
     static const std::map<std::string, EFFECT_MEMBER_FUNCTION_POINTER> effectMap;
 
-
+    // Public member functions
+    Card* getCard() const; // Card* &getCard() const; ?
+    void setCard(Card &);
 private:
-    // Private member functions
+    Card *m_card; // We can't have a non pointer because Card is abstract
 
+
+
+
+
+    // Private member functions
     // Deck 1:
     // Monster card effect activations:
     void activateLordOfD();
@@ -64,7 +73,7 @@ private:
     // WIP
     // Generic outcomes that make up card's effects:
     void makeMonstersOfThisTypeUntargetable(const MonsterType &, const UntargetableBy &, const CardLocation &, Player &);
-    void returnToHand(Card &, const GamePhases &, Player &);
+    void returnToHand(const GamePhases &, Player &);
 };
 
 

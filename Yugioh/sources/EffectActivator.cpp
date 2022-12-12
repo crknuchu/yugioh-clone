@@ -6,8 +6,10 @@
 //    END
 //};
 
+EffectActivator::EffectActivator(Card &card)
+    : m_card(&card)
+{}
 
-EffectActivator::EffectActivator() {}
 EffectActivator::~EffectActivator() {}
 
 const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> EffectActivator::effectMap = {
@@ -42,8 +44,18 @@ const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> Eff
     {"Two-Pronged Attack",  &EffectActivator::activateTwoProngedAttack}
 };
 
+Card* EffectActivator::getCard() const {
+    return m_card;
+}
 
-// Monster effect activations:
+void EffectActivator::setCard(Card &card) {
+    m_card = &card;
+}
+
+
+
+// Card effect activation functions:
+// Monsters
 void EffectActivator::activateLordOfD() {
     /* Neither player can target Dragon monsters on the field with card effects. */
     std::cout << "Lord of D's effect has been activated!" << std::endl;
@@ -59,15 +71,7 @@ void EffectActivator::activateLordOfD() {
 
 
 
-    // Placeholder for testing, will be removed
-    // Cards will probably be passed as an argument to the activation functions
-    MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
-                                                MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                MonsterAttribute::DARK, false, Position::ATTACK, false,
-                                                CardType::MONSTER_CARD, CardLocation::HAND,
-                                                "Neither player can target Dragon monsters on the field with card effects."
-                                                );
-    returnToHand(*monsterCard2, GamePhases::END_PHASE, *GameExternVars::m_pCurrentPlayer);
+    returnToHand(GamePhases::END_PHASE, *GameExternVars::m_pCurrentPlayer);
 
 }
 
@@ -93,6 +97,103 @@ void EffectActivator::activateHaneHane() {
     // ...
 }
 
+// Spells
+void EffectActivator::activateDarkEnergy()
+{
+
+}
+
+void EffectActivator::activateInvigoration()
+{
+
+}
+
+void EffectActivator::activateSogen()
+{
+
+}
+
+void EffectActivator::activateAncientTelescope()
+{
+
+}
+
+void EffectActivator::activateDarkHole()
+{
+
+}
+
+void EffectActivator::activateDeSpell()
+{
+
+}
+
+void EffectActivator::activateFissure()
+{
+
+}
+
+void EffectActivator::activateMonsterReborn()
+{
+
+}
+
+void EffectActivator::activateOokazi()
+{
+
+}
+
+void EffectActivator::activateRemoveTrap()
+{
+
+}
+
+void EffectActivator::activateTheFluteOfSummoningDragon()
+{
+
+}
+
+void EffectActivator::activateTheInexperiencedSpy()
+{
+
+}
+
+// Traps
+void EffectActivator::activateUltimateOffering()
+{
+
+}
+
+void EffectActivator::activateCastleWalls()
+{
+
+}
+
+void EffectActivator::activateJustDesserts()
+{
+
+}
+
+void EffectActivator::activateReinforcements()
+{
+
+}
+
+void EffectActivator::activateReverseTrap()
+{
+
+}
+
+void EffectActivator::activateTrapHole()
+{
+
+}
+
+void EffectActivator::activateTwoProngedAttack()
+{
+
+}
+
 
 
 // Generic parts of effects:
@@ -113,9 +214,9 @@ void EffectActivator::makeMonstersOfThisTypeUntargetable(const MonsterType &targ
 }
 
 
-void EffectActivator::returnToHand(Card &card, const GamePhases &inWhichGamePhase, Player &targetPlayer)
+void EffectActivator::returnToHand(const GamePhases &inWhichGamePhase, Player &targetPlayer)
 {
-    std::cout << "Player " << targetPlayer.getPlayerName() << "'s card " << card.getCardName() <<
+    std::cout << "Player " << targetPlayer.getPlayerName() << "'s card " << getCard()->getCardName() <<
                  " will be returned to the hand in the " << GamePhaseExternVars::gamePhaseToQString.at(inWhichGamePhase).toStdString() << "." << std::endl;
 
 //    if(currentGamePhase == inWhichGamePhase)

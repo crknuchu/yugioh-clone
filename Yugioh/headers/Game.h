@@ -96,7 +96,7 @@ private slots:
      */
 
 
-    void onCardAddedToScene(const Card *);
+    void onCardAddedToScene(Card *);
 
 
 
@@ -106,7 +106,7 @@ private slots:
 
 
     // Slots for CardMenu signal handling
-    void onActivateButtonClick(const Card &);
+    void onActivateButtonClick(Card &);
     void onSetButtonClick(const Card &);
     void onSummonButtonClick(const Card &);
 
