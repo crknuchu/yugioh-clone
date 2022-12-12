@@ -17,7 +17,7 @@ class SpellCard : public Card
 {
 public:
     SpellCard(SpellType type,const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active = false);
-
+    ~SpellCard(); //placeholder
 
 
     SpellType getSpellType() const;

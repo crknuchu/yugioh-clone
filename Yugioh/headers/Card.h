@@ -1,7 +1,6 @@
 #ifndef CARD_H
 #define CARD_H
 
-#include "headers/Game.h"
 #include <string>
 #include <vector>
 #include <QGraphicsPixmapItem>
