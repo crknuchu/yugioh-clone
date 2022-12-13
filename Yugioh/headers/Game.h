@@ -74,7 +74,11 @@ private:
   int decideWhoPlaysFirst() const;
   void firstTurnSetup();
   void switchPlayers();
-  void damageCalculation(Card *attackingMonster, Card *attackedMonster); // TODO: MonsterCard instead of Card
+
+  void damageCalculation(Card *attackingMonster, Card *attackedMonster);
+  void battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
+  void battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
+  void damagePlayer(Player &targetPlayer, int howMuch);
 
 // QT related stuff:
   int m_windowWidth;

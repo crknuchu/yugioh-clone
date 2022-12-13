@@ -68,7 +68,6 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 Game::Game() {}
 
 Game::~Game() {
-    std::cout << "We are in Game destructor" << std::endl;
     delete ui;
     delete scene;
 }
@@ -109,55 +108,64 @@ void Game::damageCalculation(Card *attackingMonster, Card *attackedMonster)
     MonsterCard* attacker = static_cast<MonsterCard*>(attackingMonster);
     MonsterCard* defender = static_cast<MonsterCard*>(attackedMonster);
 
-    /* TODO: Move these into separate functions, for example battleBetweenAttackingMonsters() and battleBetweenAttackingAndDefendingMonsters()
-             Also, remove duplicate code. */
     if(defender->positionEnumToString.at(defender->getPosition()) == "ATTACK")
     {
         std::cout << "Battle between 2 attacking monsters begins!" << std::endl;
-        int attackPointsDifference = attacker->getAttackPoints() - defender->getAttackPoints();
-        if(attackPointsDifference < 0)
-        {
-            /* This means that the attacker is weaker than the defender
-               In that case, attacker gets destroyed and the player
-               that was controlling it takes damage. */
-            GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(*attackingMonster); // TODO: Is this okay? Both attacker and attackingMonster ptrs should point to same Card
-
-            // TODO: We need this damage dealing in a separate function somewhere.
-            // TODO: It also needs to check if the life points are <= 0 and end the game in that case
-            int newLifePoints = GameExternVars::pCurrentPlayer->getPlayerLifePoints() + attackPointsDifference;
-            newLifePoints > 0 ? GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints) : emit gameEndedAfterBattle(*GameExternVars::pCurrentPlayer);
-            std::cout << "The defender wins!" << std::endl;
-        }
-        else
-        {
-            GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(*attackedMonster);
-            int newLifePoints = GameExternVars::pOtherPlayer->getPlayerLifePoints() + attackPointsDifference;
-            newLifePoints > 0 ? GameExternVars::pOtherPlayer->setPlayerLifePoints(newLifePoints) : emit gameEndedAfterBattle(*GameExternVars::pOtherPlayer);
-            std::cout << "The attacker wins!" << std::endl;
-        }
+        battleBetweenTwoAttackPositionMonsters(*attacker, *defender);
     }
     else
     {
-        // TODO: Move this into separate functions
-        int pointsDifference = attacker->getAttackPoints() - defender->getDefensePoints();
-        if(pointsDifference < 0)
-        {
-            /* This means that the attacker is weaker than the defender.
-             * Because the defender is in the DEFENSE position, attacker doesn't
-             * get destroyed but the player controlling the attacker still takes damage. */
-            int newLifePoints = GameExternVars::pCurrentPlayer->getPlayerLifePoints() + pointsDifference;
-            newLifePoints > 0 ? GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints) : emit gameEndedAfterBattle(*GameExternVars::pCurrentPlayer);
-            std::cout << "The defender wins!" << std::endl;
-        }
-        else
-        {
-            /* If the attacker was stronger, the defender gets destroyed but the player
-             * that was controlling the defender doesn't take damage because it was in
-             * DEFENSE position. */
-            GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(*attackedMonster);
-            std::cout << "The attacker wins!" << std::endl;
-        }
+        std::cout << "Battle against a defense position monster begins!" << std::endl;
+        battleBetweenTwoDifferentPositionMonsters(*attacker, *defender);
     }
+}
+
+void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender)
+{
+    int attackPointsDifference = attacker.getAttackPoints() - defender.getAttackPoints();
+    if(attackPointsDifference < 0)
+    {
+        /* This means that the attacker is weaker than the defender
+           In that case, attacker gets destroyed and the player
+           that was controlling it takes damage. */
+        GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
+        damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
+        std::cout << "The defender wins!" << std::endl;
+    }
+    else
+    {
+        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
+        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
+        std::cout << "The attacker wins!" << std::endl;
+    }
+}
+
+void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender)
+{
+    int pointsDifference = attacker.getAttackPoints() - defender.getDefensePoints();
+    if(pointsDifference < 0)
+    {
+        /* This means that the attacker is weaker than the defender.
+         * Because the defender is in the DEFENSE position, attacker doesn't
+         * get destroyed but the player controlling the attacker still takes damage. */
+        damagePlayer(*GameExternVars::pCurrentPlayer, pointsDifference);
+        std::cout << "The defender wins!" << std::endl;
+    }
+    else
+    {
+        /* If the attacker was stronger, the defender gets destroyed but the player
+         * that was controlling the defender doesn't take damage because it was in
+         * DEFENSE position. */
+        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
+        std::cout << "The attacker wins!" << std::endl;
+    }
+}
+
+void Game::damagePlayer(Player &targetPlayer, int howMuch)
+{
+    // This assumes that howMuch is negative
+    int newLifePoints = GameExternVars::pCurrentPlayer->getPlayerLifePoints() + howMuch;
+    newLifePoints > 0 ? targetPlayer.setPlayerLifePoints(newLifePoints) : emit gameEndedAfterBattle(targetPlayer);
 }
 
 void Game::firstTurnSetup() {
