@@ -71,6 +71,8 @@ public:
   SpellTrapZone m_SpellTrapZone;
   Hand m_hand;
   Deck m_deck;
+  unsigned doDirectDamage(unsigned);
+  void addPoints(unsigned);
 private:
     std::string m_name;
     unsigned m_points;

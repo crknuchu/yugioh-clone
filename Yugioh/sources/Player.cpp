@@ -11,29 +11,36 @@ unsigned Player::getPlayerPoints(){
 }
 
 void Player::setPoints(unsigned points){
-    this->m_points-= points;
+    this->m_points = points;
+}
+
+unsigned Player::doDirectDamage(unsigned points) {
+    return this->m_points - points;
+}
+
+void Player::addPoints(unsigned points){
+    this->m_points = this->m_points + points;
 }
 
 //DRAW PHASE 
 
 void Player::drawCards(unsigned int numOfCards) {
     //TODO refactor
-    std::cout<<"num of card " << this->m_deck.getDeck().size()<<std::endl;
-//    try{
-//        if (this->m_deck.getDeck().size() <= 0){
-//            throw "Empty deck, player lost!\n";
-//        }
-//        else {
-//            std::vector<Card*> newCards = this->m_deck.draw(numOfCards);
-//            for (unsigned i = 0; i < newCards.size(); i++){
-//                this->m_hand.addToHand(*newCards[i]);
-//            }
-//            std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
-//        }
-//    }
-//    catch (std::exception err){
-//        throw "error";
-//    }
+    std::vector<Card *>currentDeck = this->m_deck.getDeck();
+    unsigned int deckSize = currentDeck.size();
+    std::cout<<"num of card " << deckSize << std::endl;
+    if (this->m_deck.getDeck().empty() == true || deckSize < numOfCards)
+    {
+        std::cout<<"cant draw cards\n";
+        return;
+    }
+    else{
+        std::vector<Card*> newCards = this->m_deck.draw(numOfCards);
+        for (unsigned i = 0; i < newCards.size(); i++){
+            this->m_hand.addToHand(*newCards[i]);
+        }
+        std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
+    }
 }
 void Player::activationSpellCard(){
   //TODO
