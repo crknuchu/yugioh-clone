@@ -99,7 +99,8 @@ private slots:
 
 
     // Slots for Card signal handling
-    void onCardHover(Card &);
+    void onCardHoverEnter(Card &);
+    void onCardHoverLeave(Card &);
     void onCardSelect(Card *);
 
 

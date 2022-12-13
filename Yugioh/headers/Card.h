@@ -106,7 +106,8 @@ private:
 
 
 signals:
-   void cardHovered(Card &);
+   void cardHoveredEnter(Card &);
+   void cardHoveredLeave(Card &);
    void cardSelected(Card *);
 
 };

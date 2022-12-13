@@ -88,11 +88,11 @@ bool Card::operator==(const Card &other) const
 
 void Card::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
     // TODO: Is this even possible since QGraphicsPixmapItem doesn't inherit QObject
-    emit cardHovered(*this);
+    emit cardHoveredEnter(*this);
 }
 
 void Card::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){
-//    std::cout<<"leave"<<std::endl;
+    emit cardHoveredLeave(*this);
 }
 
 void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){

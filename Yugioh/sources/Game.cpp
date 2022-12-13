@@ -491,9 +491,17 @@ void Game::onCardSelect(Card *card)
     }
 }
 
-void Game::onCardHover(Card &card)
+void Game::onCardHoverEnter(Card &card)
 {
-    std::cout << "Card " << card.getCardName() << " hovered!" << std::endl;
+    std::cout << "Card " << card.getCardName() << " hover-entered!" << std::endl;
+    ui->labelImage->setVisible(true);
+    ui->textBrowserEffect->setVisible(true);
+}
+void Game::onCardHoverLeave(Card &card)
+{
+    std::cout << "Card " << card.getCardName() << " hover-left!" << std::endl;
+    ui->labelImage->setVisible(false);
+    ui->textBrowserEffect->setVisible(false);
 }
 
 
@@ -636,6 +644,12 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 void Game::onCardAddedToScene(Card &card)
 {
     connect(&card, &Card::cardSelected, this, &Game::onCardSelect);
-    connect(&card, &Card::cardHovered, this, &Game::onCardHover);
+    connect(&card, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
+    connect(&card, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
+
+    // By default we don't want to show card info unless the card is hovered
+    ui->labelImage->setVisible(false);
+    ui->textBrowserEffect->setVisible(false);
 }
+
 
