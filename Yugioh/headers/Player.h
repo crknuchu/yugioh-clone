@@ -30,8 +30,7 @@ public:
       m_deck(Deck()) , m_name(playerName), m_points(points){};
   //DRAW PHASE
   void drawCards(unsigned int numOfCards); //done
-  void activationSpellCard();
-  void activationTrapCard();
+  void activationSpellTrapCard();
   // ------------------------------------------
 
   //STANDBYPHASE

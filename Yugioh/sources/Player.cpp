@@ -42,26 +42,18 @@ void Player::drawCards(unsigned int numOfCards) {
         std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
     }
 }
-void Player::activationSpellCard(){
+void Player::activationSpellTrapCard(){
   //TODO
 //    std::vector<Card*> currentCards = this->m_SpellTrapZone;
+    std::cout<<"You have " << this->m_SpellTrapZone.size()
+            << " cards on the ground\nDo you want to activate some spell/trap card"<<std::endl;
+
 //    for (unsigned i = 0; i < currentCards.size(); i++){
 //        // if (makeActivationDecision(currentCards[i]) == true)-> return true if player decided to activate this card
 //        //      summoningCards(currentCards[i]) -> from effectACtivator class fetch method
 //                std::cout<<currentCards[i]->getCardName() <<" has been activated\n";
 //    }
 }
-
-void Player::activationTrapCard(){
-  //TODO
-//    std::vector<Card*> currentCards = this->m_SpellTrapZone.getSpellTrapZone();
-//    for (unsigned i = 0; i < currentCards.size(); i++){
-//        // if (makeActivationDecision(currentCards[i]) == true)-> return true if player decided to activate this card
-//        //      summoningCards(currentCards[i]) -> from effectActivator class fetch method
-//                std::cout<<currentCards[i]->getCardName() <<" has been activated\n";
-//    }
-}
-
 // ---------------------------------------------
 
 
@@ -75,7 +67,17 @@ void Player::automaticallyActivationSBPhase(){
 // BATTLE PHASE
 
 int Player::checkOpponentGround(Player &opponent) {
-//    return opponent.m_monsterZone.getMonsterZone().size();
+       std::vector<Zone*>cards = opponent.m_monsterZone.m_monsterZone; //first monsterZone is field in player.h
+                                                                       //second one is filed in monsterZone.h
+       return std::accumulate(cards.begin(), cards.end(), 0, [](unsigned acc, Zone *card){
+           if (card->isEmpty() == false)
+           {
+               return acc;
+           }
+           else {
+               return acc + 1;
+           }
+       });
 }
 
 void Player::attackOpponent(MonsterCard a, Player &opponent){
