@@ -82,6 +82,8 @@ public:
 
     CardMenu *cardMenu = new CardMenu();
 
+
+
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
     Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent = 0);

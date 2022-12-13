@@ -21,6 +21,16 @@ MonsterCard::~MonsterCard()
 
 }
 
+
+const std::map<Position, std::string> MonsterCard::positionEnumToString{
+    {Position::ATTACK,  "ATTACK"},
+    {Position::DEFENSE, "DEFENSE"},
+    {Position::NONE,    "NONE"}
+};
+
+
+
+
 int MonsterCard::getAttackPoints() const
 {
     return attackPoints;
@@ -143,6 +153,11 @@ std::string MonsterCard::getAttributeString() const
 int MonsterCard::getLevel() const
 {
     return level;
+}
+
+Position MonsterCard::getPosition() const
+{
+    return position;
 }
 
 void MonsterCard::setAttackPoints(int newAttackPoints)

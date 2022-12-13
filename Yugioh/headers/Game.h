@@ -34,6 +34,7 @@ namespace GameExternVars {
     extern Player *pCurrentPlayer;
     extern Player *pOtherPlayer;
     extern Card *pSummonTarget;
+    extern Card *pAttackingMonster;
 }
 
 
@@ -73,6 +74,7 @@ private:
   int decideWhoPlaysFirst() const;
   void firstTurnSetup();
   void switchPlayers();
+  void damageCalculation(Card *attackingMonster, Card *attackedMonster); // TODO: MonsterCard instead of Card
 
 // QT related stuff:
   int m_windowWidth;
@@ -89,22 +91,10 @@ private slots:
     void onMainWindowResize(QResizeEvent *);
     void onGamePhaseChange(const GamePhases &newGamePhase);
     void onTurnEnd();
-    void onRedZoneClicked(Zone* zone);
-
-    /*
-     * This Card* will eventually be replaced with Player * probably,
-     * because in the future Game will only have info about Player,
-     * who will manage adding the card to the scene.
-     * For now, cards are added to the scene in Game.cpp for test purposes
-     * so this is a good enough placeholder until we change that.
-     */
-
-
     void onCardAddedToScene(Card &);
 
 
-
-    // FIXME: Slots for signals emitted in Card.cpp
+    // Slots for Card signal handling
     void onCardHover(Card &);
     void onCardSelect(Card *);
 
@@ -119,12 +109,17 @@ private slots:
     void onHealthPointsChange(Player &);
     void onGameEnd(Player &); // const?
 
+    // Slots for Zone signal handling
+    void onRedZoneClick(Zone *zone);
+    void onGreenZoneClick(Zone *zone);
+
 
 signals:
     void mainWindowResized(QResizeEvent *);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
-    void cardAddedToScene(Card &);
+    void cardAddedToScene(Card &targetCard);
+    void gameEndedAfterBattle(Player &loser);
 };
 
 

@@ -76,6 +76,7 @@ public:
     MonsterAttribute getAttribute() const;
     std::string getAttributeString() const;
     int getLevel() const;
+    Position getPosition() const;
 
     void setAttackPoints(int newAttackPoints);
     void setDefensePoints(int newDefensePoints);
@@ -94,6 +95,8 @@ public:
 
 
     void setCardMenu() override;
+
+    static const std::map<Position, std::string> positionEnumToString;
 
 protected:
     int attackPoints;

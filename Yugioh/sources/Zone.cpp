@@ -31,11 +31,14 @@ float Zone::getHeight() const {
 
 void Zone::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 
-    if(this->brush().color() != Qt::red) {
-        return;
+    auto zoneColor = this->brush().color();
+    if(zoneColor == Qt::red) {
+        emit zoneRedAndClicked(this);
+    }
+    else if(zoneColor == Qt::green) {
+        emit zoneGreenAndClicked(this);
     }
 
-    emit zoneRedAndClicked(this);
 //    QGraphicsRectItem::mousePressEvent(event);
 }
 

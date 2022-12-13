@@ -23,6 +23,7 @@ public:
     Card* m_pCard;
 signals:
     void zoneRedAndClicked(Zone*);
+    void zoneGreenAndClicked(Zone*);
 
 private:
     float m_height = 150;

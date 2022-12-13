@@ -17,10 +17,11 @@
 Player *GameExternVars::pCurrentPlayer = nullptr;
 Player *GameExternVars::pOtherPlayer = nullptr;
 Card *GameExternVars::pSummonTarget = nullptr;
+Card *GameExternVars::pAttackingMonster = nullptr;
 
 // QMainWindow != Ui::MainWindow
 MonsterZone monsterZone = MonsterZone();
-//SpellTrapZone spellTrapZone = SpellTrapZone();
+SpellTrapZone spellTrapZone = SpellTrapZone();
 
 // Class definitions:
 Game::Game(Player p1, Player p2, QWidget *parent)
@@ -101,11 +102,62 @@ void Game::switchPlayers() {
 
     std::cout << "Current player is: " << *GameExternVars::pCurrentPlayer << std::endl;
     ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+}
 
-    std::cerr << "After ui set text in switchPlayers" << std::endl;
+void Game::damageCalculation(Card *attackingMonster, Card *attackedMonster)
+{
+    MonsterCard* attacker = static_cast<MonsterCard*>(attackingMonster);
+    MonsterCard* defender = static_cast<MonsterCard*>(attackedMonster);
 
+    /* TODO: Move these into separate functions, for example battleBetweenAttackingMonsters() and battleBetweenAttackingAndDefendingMonsters()
+             Also, remove duplicate code. */
+    if(defender->positionEnumToString.at(defender->getPosition()) == "ATTACK")
+    {
+        std::cout << "Battle between 2 attacking monsters begins!" << std::endl;
+        int attackPointsDifference = attacker->getAttackPoints() - defender->getAttackPoints();
+        if(attackPointsDifference < 0)
+        {
+            /* This means that the attacker is weaker than the defender
+               In that case, attacker gets destroyed and the player
+               that was controlling it takes damage. */
+            GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(*attackingMonster); // TODO: Is this okay? Both attacker and attackingMonster ptrs should point to same Card
 
-
+            // TODO: We need this damage dealing in a separate function somewhere.
+            // TODO: It also needs to check if the life points are <= 0 and end the game in that case
+            int newLifePoints = GameExternVars::pCurrentPlayer->getPlayerLifePoints() + attackPointsDifference;
+            newLifePoints > 0 ? GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints) : emit gameEndedAfterBattle(*GameExternVars::pCurrentPlayer);
+            std::cout << "The defender wins!" << std::endl;
+        }
+        else
+        {
+            GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(*attackedMonster);
+            int newLifePoints = GameExternVars::pOtherPlayer->getPlayerLifePoints() + attackPointsDifference;
+            newLifePoints > 0 ? GameExternVars::pOtherPlayer->setPlayerLifePoints(newLifePoints) : emit gameEndedAfterBattle(*GameExternVars::pOtherPlayer);
+            std::cout << "The attacker wins!" << std::endl;
+        }
+    }
+    else
+    {
+        // TODO: Move this into separate functions
+        int pointsDifference = attacker->getAttackPoints() - defender->getDefensePoints();
+        if(pointsDifference < 0)
+        {
+            /* This means that the attacker is weaker than the defender.
+             * Because the defender is in the DEFENSE position, attacker doesn't
+             * get destroyed but the player controlling the attacker still takes damage. */
+            int newLifePoints = GameExternVars::pCurrentPlayer->getPlayerLifePoints() + pointsDifference;
+            newLifePoints > 0 ? GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints) : emit gameEndedAfterBattle(*GameExternVars::pCurrentPlayer);
+            std::cout << "The defender wins!" << std::endl;
+        }
+        else
+        {
+            /* If the attacker was stronger, the defender gets destroyed but the player
+             * that was controlling the defender doesn't take damage because it was in
+             * DEFENSE position. */
+            GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(*attackedMonster);
+            std::cout << "The attacker wins!" << std::endl;
+        }
+    }
 }
 
 void Game::firstTurnSetup() {
@@ -293,16 +345,18 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                                                 );
 
     for(auto *zone : monsterZone.m_monsterZone) {
-         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
+         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
+         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
          ui->graphicsView->scene()->addItem(zone);
      }
 
-//    for(auto *zone : spellTrapZone.m_spellTrapZone) {
-//         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
-//         ui->graphicsView->scene()->addItem(zone);
-//    }
+    for(auto *zone : spellTrapZone.m_spellTrapZone) {
+         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
+         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+         ui->graphicsView->scene()->addItem(zone);
+    }
 
-//    spellTrapZone.colorFreeZones();
+    spellTrapZone.colorFreeZones();
     monsterCard1->setPos(450, 450);
     ui->graphicsView->scene()->addItem(monsterCard1);
 
@@ -469,9 +523,25 @@ void Game::onSummonButtonClick(Card &card) {
     std::cout << "Current summon target is: " << GameExternVars::pSummonTarget->getCardName() << std::endl;
 }
 
-void Game::onAttackButtonClick(Card &)
+void Game::onAttackButtonClick(Card &attackingMonster)
 {
    std::cout << "Attack button clicked" << std::endl;
+
+   // Set the monster that initiated the attack as the global attacking monster
+   GameExternVars::pAttackingMonster = &attackingMonster;
+
+   // Color opponent's monsters
+   GameExternVars::pOtherPlayer->monsterZone.colorOccupiedZones();
+
+
+   // Placeholders for testing purposes:
+   Card* defender = new MonsterCard("Lord of D", 1000, 2500, 4,
+                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                               MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                               CardType::MONSTER_CARD, CardLocation::FIELD,
+                                               "Neither player can target Dragon monsters on the field with card effects."
+                                               );
+   damageCalculation(&attackingMonster, defender);
 }
 
 
@@ -500,7 +570,7 @@ void Game::onSetButtonClick(const Card &card)
     std::cout << "Set button clicked on card " << card.getCardName() << std::endl;
 }
 
-void Game::onRedZoneClicked(Zone * clickedRedZone) {
+void Game::onRedZoneClick(Zone * clickedRedZone) {
     MonsterCard* globalMonsterCard1 = new MonsterCard("Sibirski Plavac", 3000, 2500, 4, MonsterType::DRAGON,
                                                 MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
                                                 true, Position::ATTACK, false,
@@ -513,27 +583,41 @@ void Game::onRedZoneClicked(Zone * clickedRedZone) {
 
     Card* card = globalSpellCard;
     if(card->getCardType() == CardType::MONSTER_CARD) {
-        monsterZone.placeInMonsterZone(card, clickedRedZone);
+        GameExternVars::pCurrentPlayer->monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
         for(auto x : monsterZone.m_monsterZone) {
             if(!x->isEmpty())
                 std::cout << *x->m_pCard << std::endl;
         }
-        monsterZone.refresh();
+        GameExternVars::pCurrentPlayer->monsterZone.refresh();
     }
-//    else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
-//        spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
-//        card->setCardLocation(CardLocation::FIELD);
-//        for(auto x: spellTrapZone.m_spellTrapZone) {
-//            if(!x->isEmpty())
-//                std::cout << *x->m_pCard << std::endl;
-//        }
-//        spellTrapZone.refresh();
-//    }
+    else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
+        GameExternVars::pCurrentPlayer->spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
+        card->setCardLocation(CardLocation::FIELD);
+        for(auto x: GameExternVars::pCurrentPlayer->spellTrapZone.m_spellTrapZone) {
+            if(!x->isEmpty())
+                std::cout << *x->m_pCard << std::endl;
+        }
+        GameExternVars::pCurrentPlayer->spellTrapZone.refresh();
+    }
 
     delete globalMonsterCard1;
 }
 
+void Game::onGreenZoneClick(Zone *clickedGreenZone) {
+    std::cout << "Green zone was clicked!" << std::endl;
+
+    // TODO: MonsterCard instead of Card?
+    Card* attackedMonster = clickedGreenZone->m_pCard;
+
+    // Refresh the opponent's monster zone
+    GameExternVars::pOtherPlayer->monsterZone.refresh();
+
+    // Do the damage calculation
+    damageCalculation(GameExternVars::pAttackingMonster, attackedMonster);
+
+
+}
 void Game::onCardAddedToScene(Card &card)
 {
     connect(&card, &Card::cardSelected, this, &Game::onCardSelect);
