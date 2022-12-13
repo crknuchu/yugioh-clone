@@ -14,10 +14,10 @@ SpellTrapZone::SpellTrapZone(){
 
 SpellTrapZone::~SpellTrapZone()
 {
-    for(Zone* zone : m_spellTrapZone){
-        delete zone;
-    }
-
+    // FIXME: Memory leak!!
+//    for(auto zone : m_spellTrapZone){
+//        delete zone;
+//    }
     m_spellTrapZone.clear();
 };
 

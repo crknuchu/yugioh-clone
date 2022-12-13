@@ -1,4 +1,5 @@
 #include "headers/Zone.h"
+#include <iostream>
 
 Zone::Zone(float x, float y)
     : m_x(x), m_y(y){
@@ -7,7 +8,9 @@ Zone::Zone(float x, float y)
     setBrush(Qt::NoBrush);
 }
 
-Zone::~Zone(){}
+Zone::~Zone(){
+    std::cerr << "We are in Zone destructor!" << std::endl;
+}
 
 void Zone::putInZone(Card *card)
 {

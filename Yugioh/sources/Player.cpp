@@ -2,6 +2,17 @@
 
 Player::Player(){}
 
+Player::~Player()
+{
+    std::cout << "We are in Player destructor because of player " << this->getPlayerName() << std::endl;
+}
+
+Player::Player(std::string playerName, int points)
+    : m_graveyard(Graveyard()), m_monsterZone(MonsterZone()),
+      m_SpellTrapZone(SpellTrapZone()), m_hand(Hand()), m_deck(Deck()),
+      m_name(playerName), m_points(points){};
+
+
 std::string Player::getPlayerName() const{
     return this->m_name;
 }
@@ -19,18 +30,6 @@ void Player::drawCards(unsigned int numOfCards) {
 
     std::cout << "The player " << this->getPlayerName() << " gets " << numOfCards << " cards." << std::endl;
 }
-
-void Player::activationSpellCard(Card &spellCard){ 
-  //TODO
-}
-
-// ---------------------------------------------
-
-
-// STANDBY PHASE
-
-
-//
 
 
 // Operator overloads:

@@ -22,10 +22,8 @@ class Player{
 
 public:
   Player();
-  ~Player() {
-
-  };
-  Player(std::string playerName,int points = 8000) : m_graveyard(Graveyard()), m_monsterZone(MonsterZone()), m_SpellTrapZone(SpellTrapZone()), m_hand(Hand()), m_deck(Deck()) , m_name(playerName), m_points(points){};
+  ~Player();
+  Player(std::string playerName,int points = 8000);
   //DRAW PHASE
   void drawCards(unsigned int numOfCards); //done
   void activationSpellCard(Card &); 

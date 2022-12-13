@@ -20,7 +20,7 @@ Card *GameExternVars::pSummonTarget = nullptr;
 
 // QMainWindow != Ui::MainWindow
 MonsterZone monsterZone = MonsterZone();
-SpellTrapZone spellTrapZone = SpellTrapZone();
+//SpellTrapZone spellTrapZone = SpellTrapZone();
 
 // Class definitions:
 Game::Game(Player p1, Player p2, QWidget *parent)
@@ -67,6 +67,7 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 Game::Game() {}
 
 Game::~Game() {
+    std::cout << "We are in Game destructor" << std::endl;
     delete ui;
     delete scene;
 }
@@ -100,6 +101,11 @@ void Game::switchPlayers() {
 
     std::cout << "Current player is: " << *GameExternVars::pCurrentPlayer << std::endl;
     ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+
+    std::cerr << "After ui set text in switchPlayers" << std::endl;
+
+
+
 }
 
 void Game::firstTurnSetup() {
@@ -203,6 +209,8 @@ void Game::onEndPhaseButtonClick()
 
 void Game::onGamePhaseChange(const GamePhases &newGamePhase)
 {
+    std::cout << "We are in onGamePhaseChange" << std::endl;
+
     // When game phase changes, we update label's text.
     // We use at() instead of [] because [] is not const and our map is.
     ui->labelGamePhase->setText(GamePhaseExternVars::gamePhaseToQString.at(newGamePhase));
@@ -219,6 +227,7 @@ void Game::onTurnEnd() {
 
     // Switch the players:
     switchPlayers();
+    std::cout << "After switchPlayers()" << std::endl;
 
     // The draw phase begins (this is not optional).
     GamePhaseExternVars::currentGamePhase = GamePhases::DRAW_PHASE;
@@ -282,12 +291,12 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
          ui->graphicsView->scene()->addItem(zone);
      }
 
-    for(auto *zone : spellTrapZone.m_spellTrapZone) {
-         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
-         ui->graphicsView->scene()->addItem(zone);
-    }
+//    for(auto *zone : spellTrapZone.m_spellTrapZone) {
+//         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
+//         ui->graphicsView->scene()->addItem(zone);
+//    }
 
-    spellTrapZone.colorFreeZones();
+//    spellTrapZone.colorFreeZones();
     monsterCard1->setPos(450, 450);
     ui->graphicsView->scene()->addItem(monsterCard1);
 
@@ -483,15 +492,15 @@ void Game::onRedZoneClicked(Zone * clickedRedZone) {
         }
         monsterZone.refresh();
     }
-    else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
-        spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
-        card->setCardLocation(CardLocation::FIELD);
-        for(auto x: spellTrapZone.m_spellTrapZone) {
-            if(!x->isEmpty())
-                std::cout << *x->m_pCard << std::endl;
-        }
-        spellTrapZone.refresh();
-    }
+//    else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
+//        spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
+//        card->setCardLocation(CardLocation::FIELD);
+//        for(auto x: spellTrapZone.m_spellTrapZone) {
+//            if(!x->isEmpty())
+//                std::cout << *x->m_pCard << std::endl;
+//        }
+//        spellTrapZone.refresh();
+//    }
 
     delete globalMonsterCard1;
 }
