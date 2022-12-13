@@ -18,8 +18,8 @@
 #include "SpellTrapZone.h"
 #include "GamePhase.h"
 
-class Player{ 
-
+class Player {
+//    Q_OBJECT
 public:
   Player();
   ~Player();
@@ -50,14 +50,17 @@ public:
   unsigned getPlayerLifePoints() const;
   void setPlayerLifePoints(unsigned points);
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
-  Graveyard m_graveyard;
-  MonsterZone m_monsterZone;
-  SpellTrapZone m_SpellTrapZone;
-  Hand m_hand;
-  Deck m_deck;
+  Graveyard graveyard;
+  MonsterZone monsterZone;
+  SpellTrapZone spellTrapZone;
+  Hand hand;
+  Deck deck;
 private:
     std::string m_name;
     unsigned m_points;
+
+//signals:
+//    void gameEndedNoCardsLeft(Player &loser);
 };
 
 // std::istream &operator>>(std::istream &in, Player &p);

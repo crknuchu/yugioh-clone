@@ -130,6 +130,12 @@ void Game::firstTurnSetup() {
   // The first one gets 6 cards:
   GameExternVars::pCurrentPlayer->drawCards(6);
 
+//  std::cout << "Current player's hand: ";
+//  std::vector<Card*> currentPlayerHand = GameExternVars::pCurrentPlayer->hand.getHand();
+//  for(Card* card : currentPlayerHand)
+//      std::cout << card->getCardName() << ", ";
+//  std::cout << std::endl;
+
   // The other one gets 5 cards
   GameExternVars::pOtherPlayer->drawCards(5);
 }
@@ -282,7 +288,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     MonsterCard* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                                 MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                                 MonsterAttribute::DARK, false, Position::ATTACK, false,
-                                                CardType::MONSTER_CARD, CardLocation::HAND,
+                                                CardType::MONSTER_CARD, CardLocation::FIELD,
                                                 "Neither player can target Dragon monsters on the field with card effects."
                                                 );
 
@@ -301,7 +307,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     ui->graphicsView->scene()->addItem(monsterCard1);
 
     // Notify the game that a card was added.
-    emit cardAddedToScene(monsterCard1);
+    emit cardAddedToScene(*monsterCard1);
 
     // WIP: UI components
     // Game phase buttons and label:
@@ -358,7 +364,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 
 // TODO: const Card *&Card
-void Game::onCardAddedToScene(Card *card)
+void Game::onCardSelect(Card *card)
 {
     // TODO: If exact subclass of Card is needed here eventually, we could check with:
     /*
@@ -376,7 +382,7 @@ void Game::onCardAddedToScene(Card *card)
     /* -> Call setCardMenu() that determines the appearance of card menu based on flags
      *  -> calls cardMenu.set() that sets the appropriate fields to false
     */
-
+    card->setCardMenu();
 
 
     // Now we need to connect the card's menu UI to our slots
@@ -394,13 +400,31 @@ void Game::onCardAddedToScene(Card *card)
         onSummonButtonClick(*card);
     });
 
+    connect(card->cardMenu->attackButton, &QPushButton::clicked, this, [this, card](){
+        onAttackButtonClick(*card);
+    });
     // FIXME: Problem maybe happens because card is QGraphicsPixmapItem which is not a QOBJECT (even though we used Q_OBJECT macro in Card.h)
 //    connect(card, &Card::cardHovered, this, &Game::onCardHover);
+
+
+
+    if(card->cardMenu->visible == false)
+    {
+        card->cardMenu->show();
+        card->cardMenu->visible = true;
+        // QMap<QString,bool> x;
+        // cardMenu->update(x);
+    }
+    else
+    {
+        card->cardMenu->hide();
+        card->cardMenu->visible = false;
+    }
 }
 
-void Game::onCardHover(Card * card)
+void Game::onCardHover(Card &card)
 {
-    std::cout << "Card " << card->getCardName() << " hovered!" << std::endl;
+    std::cout << "Card " << card.getCardName() << " hovered!" << std::endl;
 }
 
 
@@ -443,6 +467,11 @@ void Game::onSummonButtonClick(Card &card) {
     // GameExternVars::pCurrentPlayer->monsterZone.colorFreeZones();
 
     std::cout << "Current summon target is: " << GameExternVars::pSummonTarget->getCardName() << std::endl;
+}
+
+void Game::onAttackButtonClick(Card &)
+{
+   std::cout << "Attack button clicked" << std::endl;
 }
 
 
@@ -503,5 +532,11 @@ void Game::onRedZoneClicked(Zone * clickedRedZone) {
 //    }
 
     delete globalMonsterCard1;
+}
+
+void Game::onCardAddedToScene(Card &card)
+{
+    connect(&card, &Card::cardSelected, this, &Game::onCardSelect);
+    connect(&card, &Card::cardHovered, this, &Game::onCardHover);
 }
 

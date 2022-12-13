@@ -100,19 +100,20 @@ private slots:
      */
 
 
-    void onCardAddedToScene(Card *);
+    void onCardAddedToScene(Card &);
 
 
 
     // FIXME: Slots for signals emitted in Card.cpp
-    void onCardHover(Card *);
-
+    void onCardHover(Card &);
+    void onCardSelect(Card *);
 
 
     // Slots for CardMenu signal handling
     void onActivateButtonClick(const Card &);
     void onSetButtonClick(const Card &);
     void onSummonButtonClick(Card &);
+    void onAttackButtonClick(Card &);
 
     // Slots for EffectActivator signal handling
     void onHealthPointsChange(Player &);
@@ -123,7 +124,7 @@ signals:
     void mainWindowResized(QResizeEvent *);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
-    void cardAddedToScene(Card *);
+    void cardAddedToScene(Card &);
 };
 
 

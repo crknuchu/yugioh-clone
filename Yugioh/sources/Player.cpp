@@ -8,8 +8,8 @@ Player::~Player()
 }
 
 Player::Player(std::string playerName, int points)
-    : m_graveyard(Graveyard()), m_monsterZone(MonsterZone()),
-      m_SpellTrapZone(SpellTrapZone()), m_hand(Hand()), m_deck(Deck()),
+    : graveyard(Graveyard()), monsterZone(MonsterZone()),
+      spellTrapZone(SpellTrapZone()), hand(Hand()), deck(Deck()),
       m_name(playerName), m_points(points){};
 
 
@@ -29,6 +29,13 @@ void Player::setPlayerLifePoints(unsigned newHealthPoints)
 void Player::drawCards(unsigned int numOfCards) {
 
     std::cout << "The player " << this->getPlayerName() << " gets " << numOfCards << " cards." << std::endl;
+
+//    // Check if there are that many cards left in the deck
+//    if(deck.getDeck().size() < numOfCards)
+//        emit gameEndedNoCardsLeft(*this);
+
+//    for(unsigned int i = 0; i < numOfCards;  i++)
+//        hand.addToHand(*deck.draw());
 }
 
 

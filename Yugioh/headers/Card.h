@@ -36,9 +36,9 @@ enum class CardLocation
     //SPELL_TRAP_ZONE
 };
 
-class Card:public QGraphicsPixmapItem
+class Card : public QObject, public QGraphicsPixmapItem
 {
-//    Q_OBJECT
+    Q_OBJECT
 public:
 
     friend class Player;
@@ -103,8 +103,9 @@ private:
     float width;
 
 
-//signals:
-//    void cardHovered(Card *);
+signals:
+   void cardHovered(Card &);
+   void cardSelected(Card *);
 
 };
 

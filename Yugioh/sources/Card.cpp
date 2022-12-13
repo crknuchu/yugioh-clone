@@ -88,7 +88,7 @@ bool Card::operator==(const Card &other) const
 
 void Card::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
     // TODO: Is this even possible since QGraphicsPixmapItem doesn't inherit QObject
-//    emit cardHovered(this);
+    emit cardHovered(*this);
 }
 
 void Card::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){
@@ -100,15 +100,9 @@ void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
 }
 
 void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
-    if(cardMenu->visible == false){
-        cardMenu->show();
-        cardMenu->visible = true;
-        // QMap<QString,bool> x;
-        // cardMenu->update(x);
-    }
-    else{
-        cardMenu->hide();
-        cardMenu->visible = false;
+    if(event->buttons() & Qt::LeftButton)
+    {
+       emit cardSelected(this);
     }
 }
 
