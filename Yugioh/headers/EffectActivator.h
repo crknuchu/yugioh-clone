@@ -75,6 +75,8 @@ private:
     void destroyCard(Card &targetCard, Player &targetPlayer);
     void destroyCards(std::vector<Card*> &targetCards, Player &targetPlayer);
     void excavateCards(int numberOfCards, Player &targetPlayer);
+    void revealCardsInHand(int numberOfCards, Player &targetPlayer);
+    bool isCardOnField(Card &targetCard, Player &targetPlayer);
     std::vector<Card*> returnPlayerGraveyard(Player &targetPlayer);
 
 
@@ -84,6 +86,9 @@ private:
     void decreaseDEF(MonsterCard &targetMonster, int decreaseBy);
     std::vector<MonsterCard*> findLowestATKMonsters(Player &targetPlayer); // MonsterCard* because we want a pointer to the actual cards
     std::vector<MonsterCard*> findHighestATKMonsters(Player &targetPlayer);
+    /* This could be void and instead emit a signal that would color the avaliable face-up monsters.
+       Or it could return a vector like it does now, and then we can do the above in the card that calls this. */
+    std::vector<MonsterCard*> findFaceUpMonsters(Player &targetPlayer);
 };
 
 

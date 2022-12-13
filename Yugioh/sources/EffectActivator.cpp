@@ -74,6 +74,11 @@ void EffectActivator::activateLordOfD() {
     returnToHand(*(this->getCard()), GamePhases::END_PHASE, *GameExternVars::m_pCurrentPlayer);
 
 
+    // Test revealCardsInHand
+    revealCardsInHand(1, *GameExternVars::m_pCurrentPlayer);
+
+
+
     // Test increaseATK
     // FIXME: We can't pass Card to this function because we need a MonsterCard
 //    increaseATK(, 500);
@@ -257,6 +262,52 @@ void EffectActivator::excavateCards(int numberOfCards, Player &targetPlayer)
     //    emit displayExcavatedCards(excavatedCards);
 }
 
+void EffectActivator::revealCardsInHand(int numberOfCards, Player &targetPlayer)
+{
+    std::vector<Card *> hand = targetPlayer.hand.getHand();
+    for(Card* card : hand)
+        std::cout << *card << std::endl;
+    if((unsigned long)numberOfCards > hand.size())
+    {
+        std::cerr << "Number of cards passed to revealCardsInHand() is bigger than the actual number of cards in the hand." << std::endl;
+        return;
+    }
+
+    /* TODO
+     * For now, we reveal first numberOfCards cards in hand.
+     * In the future, there needs to be a system for opponent player to select which ones he wants to reveal.
+     * It would probably be similar to our Attack slot, where we color proper cards and wait for a click. */
+
+    std::vector<Card *> selectedCards;
+    std::copy_n(begin(hand), numberOfCards, std::back_inserter(selectedCards));
+
+    std::cout << "Test: Selected cards: " << std::endl;
+    for(Card *card : selectedCards)
+        std::cout << card->getCardName() << std::endl;
+    // emit displayCards(selectedCards);
+}
+
+bool EffectActivator::isCardOnField(Card &targetCard, Player &targetPlayer)
+{
+    // TODO: MonsterZone, SpellTrapZone and other "zones" could have a method for searching if card is in them?
+
+//    MonsterZone monsterZone(targetPlayer.monsterZone); // TODO: This way of copying vs vec1 = vec2
+//    for(Zone *zone : monsterZone)
+//    {
+//        if(!zone->isEmpty())
+//        {
+//            if(zone->*m_pCard.getCardName() == targetCard.getCardName())
+//                return true;
+//        }
+//    }
+//    return false;
+
+    // FIXME: This is only checking the MonsterZone, what if the card is a Spell or a Trap...
+}
+
+
+
+
 std::vector<Card *> EffectActivator::returnPlayerGraveyard(Player &targetPlayer)
 {
     return targetPlayer.graveyard.getGraveyard();
@@ -355,7 +406,24 @@ std::vector<MonsterCard *> EffectActivator::findHighestATKMonsters(Player &targe
 //            highestATKMonsters.push_back(&monster);
 //    }
 
-//    return highestATKMonsters;
+    //    return highestATKMonsters;
+}
+
+std::vector<MonsterCard *> EffectActivator::findFaceUpMonsters(Player &targetPlayer)
+{
+//    MonsterZone monsterZone(targetPlayer.monsterZone); // Copy constructor vs =
+
+//    // TODO: This should be in MonsterZone class maybe
+//    std::vector<MonsterCard> faceUpMonsters;
+//    for(auto zone : monsterZone)
+//    {
+//        if(!zone->isEmpty())
+//        {
+//            Card cardInZone = *(zone->m_pCard);
+//            if (cardInZone.getPosition != "SET")
+//                faceUpMonsters.push_back(cardInZone);
+//        }
+//    }
 }
 
 

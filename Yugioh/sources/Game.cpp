@@ -106,6 +106,29 @@ void Game::firstTurnSetup() {
   // The first one gets 6 cards:
   GameExternVars::m_pCurrentPlayer->drawCards(6);
 
+  //---- Placeholders for EffectActivator testing
+    Card* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                              MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                              MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                              CardType::MONSTER_CARD, CardLocation::HAND,
+                                              "Neither player can target Dragon monsters on the field with card effects."
+                                              );
+
+    Card* monsterCard2 = new MonsterCard("Blue-eyes White Dragon", 3000, 2500, 4,
+                                              MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER,
+                                              MonsterAttribute::LIGHT, false, Position::ATTACK, false,
+                                              CardType::MONSTER_CARD, CardLocation::HAND,
+                                              ""
+                                              );
+
+    GameExternVars::m_pCurrentPlayer->hand.addToHand(*monsterCard1);
+    GameExternVars::m_pCurrentPlayer->hand.addToHand(*monsterCard2);
+
+    std::cout << "Current player's hand: " << std::endl;
+    for(auto card : GameExternVars::m_pCurrentPlayer->hand.getHand())
+        std::cout << card->getCardName() << std::endl;
+  //----
+
   // The other one gets 5 cards
   // Without GameExternVars::m_pOtherPlayer:  *GameExternVars::m_pCurrentPlayer == m_player1 ? m_player2.drawCards(5) : m_player1.drawCards(5);
   // With GameExternVars::m_pOtherPlayer:
