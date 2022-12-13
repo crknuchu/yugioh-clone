@@ -37,22 +37,22 @@ void Player::drawCards(unsigned int numOfCards) {
 }
 void Player::activationSpellCard(){
   //TODO
-    std::vector<Card*> currentCards = this->m_SpellTrapZone.getSpellTrapZone();
-    for (unsigned i = 0; i < currentCards.size(); i++){
-        // if (makeActivationDecision(currentCards[i]) == true)-> return true if player decided to activate this card
-        //      summoningCards(currentCards[i]) -> from effectACtivator class fetch method
-                std::cout<<currentCards[i]->getCardName() <<" has been activated\n";
-    }
+//    std::vector<Card*> currentCards = this->m_SpellTrapZone;
+//    for (unsigned i = 0; i < currentCards.size(); i++){
+//        // if (makeActivationDecision(currentCards[i]) == true)-> return true if player decided to activate this card
+//        //      summoningCards(currentCards[i]) -> from effectACtivator class fetch method
+//                std::cout<<currentCards[i]->getCardName() <<" has been activated\n";
+//    }
 }
 
 void Player::activationTrapCard(){
   //TODO
-    std::vector<Card*> currentCards = this->m_SpellTrapZone.getSpellTrapZone();
-    for (unsigned i = 0; i < currentCards.size(); i++){
-        // if (makeActivationDecision(currentCards[i]) == true)-> return true if player decided to activate this card
-        //      summoningCards(currentCards[i]) -> from effectActivator class fetch method
-                std::cout<<currentCards[i]->getCardName() <<" has been activated\n";
-    }
+//    std::vector<Card*> currentCards = this->m_SpellTrapZone.getSpellTrapZone();
+//    for (unsigned i = 0; i < currentCards.size(); i++){
+//        // if (makeActivationDecision(currentCards[i]) == true)-> return true if player decided to activate this card
+//        //      summoningCards(currentCards[i]) -> from effectActivator class fetch method
+//                std::cout<<currentCards[i]->getCardName() <<" has been activated\n";
+//    }
 }
 
 // ---------------------------------------------
@@ -68,7 +68,7 @@ void Player::automaticallyActivationSBPhase(){
 // BATTLE PHASE
 
 int Player::checkOpponentGround(Player &opponent) {
-    return opponent.m_monsterZone.getMonsterZone().size();
+//    return opponent.m_monsterZone.getMonsterZone().size();
 }
 
 void Player::attackOpponent(MonsterCard a, Player &opponent){
