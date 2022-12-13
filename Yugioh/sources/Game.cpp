@@ -207,9 +207,8 @@ void Game::setupConnections() {
     connect(this, &Game::mainWindowResized, this, &Game::onMainWindowResize);
     connect(this, &Game::gamePhaseChanged, this, &Game::onGamePhaseChange);
     connect(this, &Game::turnEnded, this, &Game::onTurnEnd);
-
-    // WIP
     connect(this, &Game::cardAddedToScene, this, &Game::onCardAddedToScene);
+    connect(this, &Game::gameEndedAfterBattle, this, &Game::onGameEnd); // Same slot for both game endings (one in EffectActivator and one here)
 
     // Buttons
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
@@ -240,8 +239,10 @@ void Game::onBattlePhaseButtonClick()
 {
     std::cout << "Battle phase button clicked" << std::endl;
     GamePhaseExternVars::currentGamePhase = GamePhases::BATTLE_PHASE;
-
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
+
+    // Disable BP button so it can't be clicked again
+    ui->btnBattlePhase->setEnabled(false);
 
     /* We enable Main Phase 2 button only if the BP button was clicked
      * since there can't be MP2 if there was no BP previously */
@@ -251,9 +252,14 @@ void Game::onBattlePhaseButtonClick()
 void Game::onMainPhase2ButtonClick()
 {
     std::cout << "Main phase 2 button clicked" << std::endl;
-    GamePhaseExternVars::currentGamePhase = GamePhases::MAIN_PHASE2;
-
+    GamePhaseExternVars::currentGamePhase = GamePhases::MAIN_PHASE2;    
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
+
+    // Disable MP2 button so it can't be clicked again
+    ui->btnMainPhase2->setEnabled(false);
+
+    // Disable BP button
+    ui->btnBattlePhase->setEnabled(false);
 }
 
 void Game::onEndPhaseButtonClick()
@@ -286,7 +292,8 @@ void Game::onGamePhaseChange(const GamePhases &newGamePhase)
 /* This is actually a slot that does things at the beginning of a new turn
    so it could be called beginNewTurn or onNewTurn or something like that...*/
 void Game::onTurnEnd() {
-    // Disable MP2 Button unless BP button was clicked
+    // Reset the buttons
+    ui->btnBattlePhase->setEnabled(true);
     ui->btnMainPhase2->setEnabled(false);
 
 
