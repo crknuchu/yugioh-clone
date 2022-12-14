@@ -19,16 +19,16 @@
      <rect>
       <x>423</x>
       <y>9</y>
-      <width>1201</width>
-      <height>751</height>
+      <width>1191</width>
+      <height>761</height>
      </rect>
     </property>
    </widget>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>0</y>
+      <x>9</x>
+      <y>9</y>
       <width>401</width>
       <height>760</height>
      </rect>

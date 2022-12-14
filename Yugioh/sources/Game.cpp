@@ -95,9 +95,9 @@ int Game::randomGenerator(const int limit) const {
 int Game::decideWhoPlaysFirst() const { return randomGenerator(2); }
 
 void Game::switchPlayers() {
-    Player tmp = *GameExternVars::pCurrentPlayer;
-    *GameExternVars::pCurrentPlayer = *GameExternVars::pOtherPlayer;
-    *GameExternVars::pOtherPlayer = tmp;
+    Player *tmp = GameExternVars::pCurrentPlayer;
+    GameExternVars::pCurrentPlayer = GameExternVars::pOtherPlayer;
+    GameExternVars::pOtherPlayer = tmp;
 
     std::cout << "Current player is: " << *GameExternVars::pCurrentPlayer << std::endl;
     ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
@@ -108,7 +108,7 @@ void Game::damageCalculation(Card *attackingMonster, Card *attackedMonster)
     MonsterCard* attacker = static_cast<MonsterCard*>(attackingMonster);
     MonsterCard* defender = static_cast<MonsterCard*>(attackedMonster);
 
-    if(defender->positionEnumToString.at(defender->getPosition()) == "ATTACK")
+    if(defender->getPosition() == Position::ATTACK)
     {
         std::cout << "Battle between 2 attacking monsters begins!" << std::endl;
         battleBetweenTwoAttackPositionMonsters(*attacker, *defender);
@@ -417,7 +417,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // WIP: Background image
     // TODO: Find another image of the field
     QPixmap background(":/resources/space.jpeg");
-    background = background.scaled(viewAndSceneWidth,  this->size().height() / 10, Qt::IgnoreAspectRatio);
+    background = background.scaled(viewAndSceneWidth,  this->size().height(), Qt::IgnoreAspectRatio);
     QBrush brush(QPalette::Window, background);
     ui->graphicsView->setBackgroundBrush(brush);
 
@@ -652,4 +652,5 @@ void Game::onCardAddedToScene(Card &card)
     ui->textBrowserEffect->setVisible(false);
 }
 
+// TODO: Clicking on a red zone doesn't work (it always says that its occupied)
 

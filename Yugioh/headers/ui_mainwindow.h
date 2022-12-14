@@ -61,10 +61,10 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         graphicsView = new QGraphicsView(centralwidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        graphicsView->setGeometry(QRect(423, 9, 1201, 751));
+        graphicsView->setGeometry(QRect(423, 9, 1191, 761));
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(0, 0, 401, 760));
+        layoutWidget->setGeometry(QRect(9, 9, 401, 760));
         leftVerticalLayout = new QVBoxLayout(layoutWidget);
         leftVerticalLayout->setObjectName(QString::fromUtf8("leftVerticalLayout"));
         leftVerticalLayout->setContentsMargins(0, 0, 0, 0);

@@ -15,10 +15,10 @@ MonsterZone::MonsterZone(){
 
 MonsterZone::~MonsterZone()
 {
-    // FIXME: Memory leak !!! If for loop is enabled, we get segfault
-//    for(Zone* zone : m_monsterZone) {
-//        delete zone;
-//    }
+    for(Zone* zone : m_monsterZone)
+    {
+        delete zone;
+    }
 
     m_monsterZone.clear();
 };
