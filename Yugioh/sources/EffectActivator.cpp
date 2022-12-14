@@ -10,6 +10,7 @@
 EffectActivator::EffectActivator() {}
 EffectActivator::~EffectActivator() {}
 
+
 const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> EffectActivator::effectMap = {
     {"Lord of D",               &EffectActivator::activateLordOfD},
     {"Mysterious Puppeteer",    &EffectActivator::activateMysteriousPuppeteer},
@@ -17,6 +18,22 @@ const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> Eff
     {"Trap Master",             &EffectActivator::activateTrapMaster},
     {"Hane-Hane",               &EffectActivator::activateHaneHane}
 };
+
+
+void EffectActivator::activateEffect(const std::string &cardName)
+{
+    try {
+        auto effectFunctionPointer = effectMap.at(cardName);
+
+        // (effectActivator.*funcPointer)(); // This is the same as the invoke call below.
+        // If the first argument is a pointer to member func, invoke expects an object that owns it to be a first argument.
+        std::invoke(effectFunctionPointer, this);
+    } catch(std::out_of_range &e) {
+        std::cerr << "Error: That card doesn't have an effect! Out of range exception from: " << e.what() << std::endl;
+    }
+}
+
+
 
 
 // Monster effect activations:

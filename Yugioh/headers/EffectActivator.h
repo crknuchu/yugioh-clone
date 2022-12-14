@@ -22,7 +22,7 @@ public:
     EffectActivator();
     ~EffectActivator();
     static const std::map<std::string, EFFECT_MEMBER_FUNCTION_POINTER> effectMap;
-
+    void activateEffect(const std::string &cardName);
 
 private:
     // Private member functions

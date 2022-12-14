@@ -49,11 +49,23 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
 
-
     // First turn setup at the beginning of the game:
     firstTurnSetup();
 
 
+    for(auto *zone : monsterZone.m_monsterZone) {
+         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
+         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+         ui->graphicsView->scene()->addItem(zone);
+     }
+
+    for(auto *zone : spellTrapZone.m_spellTrapZone) {
+         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
+         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+         ui->graphicsView->scene()->addItem(zone);
+    }
+
+    spellTrapZone.colorFreeZones();
 
     // Label setup:
     ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
@@ -359,19 +371,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                                                 "Neither player can target Dragon monsters on the field with card effects."
                                                 );
 
-    for(auto *zone : monsterZone.m_monsterZone) {
-         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-         ui->graphicsView->scene()->addItem(zone);
-     }
-
-    for(auto *zone : spellTrapZone.m_spellTrapZone) {
-         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-         ui->graphicsView->scene()->addItem(zone);
-    }
-
-    spellTrapZone.colorFreeZones();
+//    GameExternVars::pCurrentPlayer->spellTrapZone.colorFreeZones();
     monsterCard1->setPos(450, 450);
     ui->graphicsView->scene()->addItem(monsterCard1);
 
@@ -432,7 +432,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 }
 
 
-// TODO: const Card *&Card
 void Game::onCardSelect(Card *card)
 {
     // TODO: If exact subclass of Card is needed here eventually, we could check with:
@@ -472,17 +471,11 @@ void Game::onCardSelect(Card *card)
     connect(card->cardMenu->attackButton, &QPushButton::clicked, this, [this, card](){
         onAttackButtonClick(*card);
     });
-    // FIXME: Problem maybe happens because card is QGraphicsPixmapItem which is not a QOBJECT (even though we used Q_OBJECT macro in Card.h)
-//    connect(card, &Card::cardHovered, this, &Game::onCardHover);
-
-
 
     if(card->cardMenu->visible == false)
     {
         card->cardMenu->show();
         card->cardMenu->visible = true;
-        // QMap<QString,bool> x;
-        // cardMenu->update(x);
     }
     else
     {
@@ -519,15 +512,10 @@ void Game::onActivateButtonClick(const Card &card)
     // We connect every signal from EffectActivator to our slots in Game:
     connect(&effectActivator, &EffectActivator::healthPointsChanged, this, &Game::onHealthPointsChange);
     connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
-    try {
-        auto effectFunctionPointer = effectActivator.effectMap.at(cardName);
 
-        // (effectActivator.*funcPointer)(); // This is the same as the invoke call below.
-        // If the first argument is a pointer to member func, invoke expects an object that owns it to be a first argument.
-        std::invoke(effectFunctionPointer, effectActivator);
-    } catch(std::out_of_range &e) {
-        std::cerr << "Error: That card doesn't have an effect! Out of range exception from: " << e.what() << std::endl;
-    }
+    // Activate the card's effect
+    effectActivator.activateEffect(cardName);
+
 }
 
 void Game::onSummonButtonClick(Card &card) {
@@ -606,22 +594,22 @@ void Game::onRedZoneClick(Zone * clickedRedZone) {
 
     Card* card = globalSpellCard;
     if(card->getCardType() == CardType::MONSTER_CARD) {
-        GameExternVars::pCurrentPlayer->monsterZone.placeInMonsterZone(card, clickedRedZone);
+        monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
         for(auto x : monsterZone.m_monsterZone) {
             if(!x->isEmpty())
                 std::cout << *x->m_pCard << std::endl;
         }
-        GameExternVars::pCurrentPlayer->monsterZone.refresh();
+        monsterZone.refresh();
     }
     else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
-        GameExternVars::pCurrentPlayer->spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
+        spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
-        for(auto x: GameExternVars::pCurrentPlayer->spellTrapZone.m_spellTrapZone) {
+        for(auto x : spellTrapZone.m_spellTrapZone) {
             if(!x->isEmpty())
                 std::cout << *x->m_pCard << std::endl;
         }
-        GameExternVars::pCurrentPlayer->spellTrapZone.refresh();
+        spellTrapZone.refresh();
     }
 
     delete globalMonsterCard1;
