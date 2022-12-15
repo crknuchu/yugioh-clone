@@ -4,6 +4,7 @@
 #include "headers/EffectActivator.h"
 #include "headers/MonsterZone.h"
 #include "headers/SpellTrapZone.h"
+#include "headers/Hand.h"
 
 #include <iostream>
 #include <random>
@@ -17,6 +18,7 @@
 // QMainWindow != Ui::MainWindow
 MonsterZone monsterZone = MonsterZone();
 SpellTrapZone spellTrapZone = SpellTrapZone();
+Hand hand = Hand();
 
 // Class definitions:
 Game::Game(Player p1, Player p2, QWidget *parent)
@@ -263,7 +265,12 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                                                 CardType::MONSTER_CARD, CardLocation::HAND,
                                                 "Neither player can target Dragon monsters on the field with card effects."
                                                 );
-
+    MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                                MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                CardType::MONSTER_CARD, CardLocation::HAND,
+                                                "Neither player can target Dragon monsters on the field with card effects."
+                                                );
     for(auto *zone : monsterZone.m_monsterZone) {
          connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
          ui->graphicsView->scene()->addItem(zone);
@@ -274,10 +281,14 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
          ui->graphicsView->scene()->addItem(zone);
      }
 
-     spellTrapZone.colorFreeZones();
-    monsterCard1->setPos(450, 450);
-    ui->graphicsView->scene()->addItem(monsterCard1);
 
+    monsterCard2->setPos(200,200);
+    monsterCard1->setPos(0, 0);
+    ui->graphicsView->scene()->addItem(monsterCard1);
+    ui->graphicsView->scene()->addItem(monsterCard2);
+    hand.addToHand(*monsterCard1);
+    hand.addToHand(*monsterCard2);
+    monsterZone.colorFreeZones();
     // Notify the game that a card was added.
     emit cardAddedToScene(monsterCard1);
 

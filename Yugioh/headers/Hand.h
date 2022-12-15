@@ -11,6 +11,8 @@ public:
     std::vector<Card*> getHand() const;
     void addToHand(Card &card);
     Card* removeFromHand(Card &card);
+private:
+    float m_width;
 };
 
 #endif // HAND_H
