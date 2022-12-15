@@ -28,7 +28,8 @@ SOURCES += \
         sources/Hand.cpp \
         sources/Player.cpp \
         sources/CardMenu.cpp \
-        sources/MonsterZone.cpp 
+        sources/MonsterZone.cpp  \
+        sources/profilesettings.cpp
 
 HEADERS += \
     headers/GameSettings.h \
@@ -46,7 +47,8 @@ HEADERS += \
     headers/Hand.h \
     headers/Player.h \
     headers/ui_mainwindow.h \
-    headers/CardMenu.h \ 
+    headers/CardMenu.h \  \
+    sources/profilesettings.h \
     headers/MonsterZone.h \
     headers/mainmenu.h \
     headers/Zone.h
@@ -57,6 +59,7 @@ RESOURCES += \
 FORMS += \
     sources/GameSettings.ui \
     sources/mainmenu.ui \
-    sources/mainwindow.ui
+    sources/mainwindow.ui \
+    sources/profilesettings.ui
 
 

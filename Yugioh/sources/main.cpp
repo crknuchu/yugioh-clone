@@ -9,6 +9,7 @@
 #include <QApplication>
 #include "headers/CardMenu.h"
 #include"headers/mainmenu.h"
+#include "headers/profilesettings.h"
 int main(int argc,char **argv)
 {
   QApplication app(argc, argv);
@@ -39,7 +40,11 @@ int main(int argc,char **argv)
   player1.drawCards(1);
   player1.drawCards(1);
   player1.drawCards(1);
-  game.showFullScreen();
-
+//  game.showFullScreen();
+   profileSettings p;
+   //   p.resize(500, 500);
+   p.setMinimumWidth(1000);
+   p.setMinimumHeight(700);
+   p.show();
   return app.exec();
 }
