@@ -30,15 +30,19 @@ public:
       m_deck(Deck()) , m_name(playerName), m_points(points){};
   //DRAW PHASE
   void drawCards(unsigned int numOfCards); //done
-  void activationSpellTrapCard();
   // ------------------------------------------
 
   //STANDBYPHASE
-  void automaticallyActivationSBPhase(); //stanby phase
-  // ------------------------------------------
+  void activationSpellTrapCard(Card &); // need emit signal that send reference to card which needs to be activated
+
+  // ----------------------------------------------------------------------------------------------------------------
+  //THESE FUNCTIONS DONT NEED TO BE IMPLEMENTED - FUNCTION ABOVE WILL DO THAT EFFECT INSTEAD, JUST BEFORE ACTIVATION|
+  // NEED TO CHECK GAME PHASE                                                                                       |
+  //   void automaticallyActivationSBPhase(); // not necessary, function above will do the same thing               |
+  //   void automaticallyActivationMPhase(); //                                                                     |
+  // ----------------------------------------------------------------------------------------------------------------
 
   //MAIN PHASE 1 
-  void automaticallyActivationMPhase(); // mainPhase
   void setCardPosition();
   // ------------------------------------------
 

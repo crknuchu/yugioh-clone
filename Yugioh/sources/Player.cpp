@@ -42,26 +42,30 @@ void Player::drawCards(unsigned int numOfCards) {
         std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
     }
 }
-void Player::activationSpellTrapCard(){
-  //TODO
-//    std::vector<Card*> currentCards = this->m_SpellTrapZone;
-    std::cout<<"You have " << this->m_SpellTrapZone.size()
-            << " cards on the ground\nDo you want to activate some spell/trap card"<<std::endl;
-
-//    for (unsigned i = 0; i < currentCards.size(); i++){
-//        // if (makeActivationDecision(currentCards[i]) == true)-> return true if player decided to activate this card
-//        //      summoningCards(currentCards[i]) -> from effectACtivator class fetch method
-//                std::cout<<currentCards[i]->getCardName() <<" has been activated\n";
-//    }
-}
 // ---------------------------------------------
 
 
 // STANDBY PHASE
-void Player::automaticallyActivationSBPhase(){
+void Player::activationSpellTrapCard(Card &card){
+    //TODO
+
+    std::cout<<card.getCardName() << " is activated " << std::endl;
+    SpellCard *tmp = dynamic_cast<SpellCard *>(&card);
+    if (tmp != nullptr){
+        // effectActivator function() for spell card;
+        delete tmp;
+        return;
+    }
+    else {
+        TrapCard *tmp = dynamic_cast<TrapCard*>(&card);
+        tmp = dynamic_cast<TrapCard *>(&card);
+        if (tmp != nullptr){
+            //effectActivator funciton() for trap card;
+        }
+        delete tmp;
+    }
 
 }
-
 // --------------------------------------------
 
 // BATTLE PHASE
