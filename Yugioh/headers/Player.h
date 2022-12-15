@@ -30,6 +30,7 @@ public:
       m_deck(Deck()) , m_name(playerName), m_points(points){};
   //DRAW PHASE
   void drawCards(unsigned int numOfCards); //done
+  void drawCards();
   // ------------------------------------------
 
   //STANDBYPHASE
@@ -76,6 +77,7 @@ public:
   Deck m_deck;
   unsigned doDirectDamage(unsigned);
   void addPoints(unsigned);
+  void setDeck(Deck &);
 private:
     std::string m_name;
     unsigned m_points;

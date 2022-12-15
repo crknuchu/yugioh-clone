@@ -22,6 +22,10 @@ void Player::addPoints(unsigned points){
     this->m_points = this->m_points + points;
 }
 
+void Player::setDeck(Deck &d) {
+    this->m_deck = d;
+}
+
 //DRAW PHASE 
 
 void Player::drawCards(unsigned int numOfCards) {
@@ -31,7 +35,7 @@ void Player::drawCards(unsigned int numOfCards) {
     std::cout<<"num of card " << deckSize << std::endl;
     if (this->m_deck.getDeck().empty() == true || deckSize < numOfCards)
     {
-        std::cout<<"cant draw cards\n";
+        std::cout<<this->getPlayerName() << " cant draw cards" << std::endl;
         return;
     }
     else{
@@ -42,6 +46,12 @@ void Player::drawCards(unsigned int numOfCards) {
         std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
     }
 }
+
+void Player::drawCards(){
+
+    Player::drawCards(1);
+}
+
 // ---------------------------------------------
 
 
@@ -64,7 +74,6 @@ void Player::activationSpellTrapCard(Card &card){
         }
         delete tmp;
     }
-
 }
 // --------------------------------------------
 

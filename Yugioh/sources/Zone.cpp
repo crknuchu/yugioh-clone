@@ -61,8 +61,3 @@ void Zone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->drawRect(rect);
 };
 
-Card* Zone::getCard(){
-    return this->m_pCard;
-}
-
-

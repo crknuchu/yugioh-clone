@@ -21,7 +21,6 @@ public:
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     Card* m_pCard;
-    Card* getCard();
 signals:
     void zoneRedAndClicked(Zone*);
 
