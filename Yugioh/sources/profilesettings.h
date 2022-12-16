@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "headers/Game.h"
+#include <QGraphicsView>
 namespace Ui {
 class profileSettings;
 }
@@ -17,6 +18,7 @@ public:
 
 private:
     Ui::profileSettings *ui;
+    profileSettings *p;
 };
 
 #endif // PROFILESETTINGS_H
