@@ -45,6 +45,8 @@ int main(int argc,char **argv)
    //   p.resize(500, 500);
    p.setMinimumWidth(1000);
    p.setMinimumHeight(700);
+   p.setMaximumHeight(700);
+   p.setMaximumWidth(1000);
    p.show();
   return app.exec();
 }
