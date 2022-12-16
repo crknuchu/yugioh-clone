@@ -58,7 +58,7 @@ void MonsterZone::colorFreeZones() {
 void MonsterZone::colorOccupiedZones() {
     for(Zone *zone : m_monsterZone) {
         if(!zone->isEmpty()) {
-            zone->setBrush(Qt::green);
+            zone->setBrush(Qt::green); // After this we get the segfault
             zone->update();
         }
     }

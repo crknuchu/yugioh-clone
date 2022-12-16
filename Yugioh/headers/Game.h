@@ -33,7 +33,7 @@ class Card;
 namespace GameExternVars {
     extern Player *pCurrentPlayer;
     extern Player *pOtherPlayer;
-    extern Card *pSummonTarget;
+    extern Card *pCardToBePlacedOnField;
     extern Card *pAttackingMonster;
 }
 

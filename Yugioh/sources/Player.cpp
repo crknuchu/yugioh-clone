@@ -2,15 +2,16 @@
 
 Player::Player(){}
 
+Player::Player(std::string playerName, int points)
+    : graveyard(Graveyard()), monsterZone(MonsterZone()),
+      spellTrapZone(SpellTrapZone()), hand(Hand()), deck(Deck()),
+      m_name(playerName), m_points(points){};
+
 Player::~Player()
 {
     std::cout << "We are in Player destructor because of player " << this->getPlayerName() << std::endl;
 }
 
-Player::Player(std::string playerName, int points)
-    : graveyard(Graveyard()), monsterZone(MonsterZone()),
-      spellTrapZone(SpellTrapZone()), hand(Hand()), deck(Deck()),
-      m_name(playerName), m_points(points){};
 
 
 std::string Player::getPlayerName() const{

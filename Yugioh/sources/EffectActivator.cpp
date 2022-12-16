@@ -43,9 +43,7 @@ void EffectActivator::activateLordOfD() {
 
     // This is actually a passive effect. Its only "activated" while Lord of D is on the field.
     // TODO: How to make it apply only while Lord of D is on the field?
-
-
-    // TODO: Should we pass the "global" GameExternVars here or use them directly inside function definition?
+        // Serialization and deserialization ?
     makeMonstersOfThisTypeUntargetable(MonsterType::DRAGON, UntargetableBy::CARD_EFFECT, CardLocation::FIELD, *GameExternVars::pCurrentPlayer);
 
 

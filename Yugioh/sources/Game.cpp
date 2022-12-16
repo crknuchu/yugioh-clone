@@ -16,7 +16,7 @@
 // Extern vars initialization:
 Player *GameExternVars::pCurrentPlayer = nullptr;
 Player *GameExternVars::pOtherPlayer = nullptr;
-Card *GameExternVars::pSummonTarget = nullptr;
+Card *GameExternVars::pCardToBePlacedOnField = nullptr;
 Card *GameExternVars::pAttackingMonster = nullptr;
 
 // QMainWindow != Ui::MainWindow
@@ -140,6 +140,8 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
         /* This means that the attacker is weaker than the defender
            In that case, attacker gets destroyed and the player
            that was controlling it takes damage. */
+
+        // TODO: We need to call a function from the Player class that removes the monster from the field and sends it to the graveyard
         GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
         damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
         std::cout << "The defender wins!" << std::endl;
@@ -350,8 +352,6 @@ void Game::onTurnEnd() {
    but weird things tend to happen when we actually resize then, so for now its not done like that.*/
 void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
-//    std::cout << "Window has been resized!" << std::endl;
-
     // Set our private variables to the new window size:
     m_windowWidth = resizeEvent->size().width();
     m_windowHeight = resizeEvent->size().height();
@@ -359,19 +359,13 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // Check: Very rarely, this displays the same width/height as the old window
 //    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
 
-
-    // FIXME: Memory leak.
-    // TODO: Move this elsewhere.
-    // MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints,
-    // int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn)
-    MonsterCard* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
+    // FIXME: If this isn't dynamically allocated with "new", it doesn't get added to the scene
+    MonsterCard *monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                                 MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                                 MonsterAttribute::DARK, false, Position::ATTACK, false,
                                                 CardType::MONSTER_CARD, CardLocation::FIELD,
                                                 "Neither player can target Dragon monsters on the field with card effects."
                                                 );
-
-//    GameExternVars::pCurrentPlayer->spellTrapZone.colorFreeZones();
     monsterCard1->setPos(450, 450);
     ui->graphicsView->scene()->addItem(monsterCard1);
 
@@ -384,9 +378,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
     // Card info:
     ui->labelImage->setAlignment(Qt::AlignCenter);
-
-    // TODO: getEffect()
-//    ui->textBrowserEffect->setText(monsterCard1->getEffect());
+    ui->textBrowserEffect->setText(QString::fromStdString(monsterCard1->getCardDescription()));
 
     QPixmap pix;
     pix.load(":/resources/blue_eyes.jpg");
@@ -402,9 +394,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
     // TODO: Change leftVerticalLayout name to something normal
     const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
-//    const int leftVerticalLayoutHeight = ui->leftVerticalLayout->sizeHint().height();
-//    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
-
     const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
     ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
     ui->graphicsView->scene()->setSceneRect(0, 0, viewAndSceneWidth, m_windowHeight);
@@ -412,46 +401,24 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // TODO: Check if this is needed
     ui->graphicsView->fitInView(0, 0, viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
 
-//    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
-
-    // WIP: Background image
-    // TODO: Find another image of the field
+    // Background image
     QPixmap background(":/resources/space.jpeg");
     background = background.scaled(viewAndSceneWidth,  this->size().height(), Qt::IgnoreAspectRatio);
     QBrush brush(QPalette::Window, background);
     ui->graphicsView->setBackgroundBrush(brush);
-
-    // TODO: Maybe this can be a "starting" point for our program
-    /* For example, we could call firstTurnSetup here ...
-     * Problem with that is that it would restart the game every time the main window gets resized.
-     * Solution ideas:
-     *  1) Flags
-     *  2) ?
-     */
-
 }
 
 
 void Game::onCardSelect(Card *card)
 {
-    // TODO: If exact subclass of Card is needed here eventually, we could check with:
-    /*
-     *      1) Dynamic cast
-     *      2) Make every card have a field which describes if its a monster, spell or a trap
-     *         and then static cast into that class
-     *      3) Templates?
-     */
-
     std::cout << "A card was added to the scene!" << std::endl;
     std::cout << "Card name: " << card->getCardName() << std::endl;
-
 
     // Pseudo-code
     /* -> Call setCardMenu() that determines the appearance of card menu based on flags
      *  -> calls cardMenu.set() that sets the appropriate fields to false
     */
     card->setCardMenu();
-
 
     // Now we need to connect the card's menu UI to our slots
     /* We use a lambda here because QT's clicked() signal only sends a bool value of true/false
@@ -521,17 +488,27 @@ void Game::onActivateButtonClick(const Card &card)
 void Game::onSummonButtonClick(Card &card) {
     std::cout<< "Summon button was clicked on card " << card.getCardName() << std::endl;
 
-    // Remove target card from player's hand:
-    // GameExternVars::pCurrentPlayer->hand.removeFromHand(card);
+    // Add target card from player's hand: (for testing purposes)
+    GameExternVars::pCurrentPlayer->hand.addToHand(card);
+
+    std::cout << "Hand before removing the card: " << std::endl;
+    for(auto card : GameExternVars::pCurrentPlayer->hand.getHand())
+        std::cout << card->getCardName() << std::endl;
+
+    // Remove target card from player's hand
+    GameExternVars::pCurrentPlayer->hand.removeFromHand(card);
+    std::cout << "Hand after removing the card: " << std::endl;
+    for(auto card : GameExternVars::pCurrentPlayer->hand.getHand())
+        std::cout << card->getCardName() << std::endl;
 
     /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
        to see it. */
-    GameExternVars::pSummonTarget = &card;
+    GameExternVars::pCardToBePlacedOnField = &card;
 
     // Color the free zones so user can select one to place.
-    // GameExternVars::pCurrentPlayer->monsterZone.colorFreeZones();
+    monsterZone.colorFreeZones();
 
-    std::cout << "Current summon target is: " << GameExternVars::pSummonTarget->getCardName() << std::endl;
+    std::cout << "Current summon target is: " << GameExternVars::pCardToBePlacedOnField->getCardName() << std::endl;
 }
 
 void Game::onAttackButtonClick(Card &attackingMonster)
@@ -542,7 +519,9 @@ void Game::onAttackButtonClick(Card &attackingMonster)
    GameExternVars::pAttackingMonster = &attackingMonster;
 
    // Color opponent's monsters
-   GameExternVars::pOtherPlayer->monsterZone.colorOccupiedZones();
+
+   // Placeholder for now, should be GameExternVars::pOtherPlayer->monsterZone.colorOccupiedZones() but that produces segfault
+   monsterZone.colorOccupiedZones();
 
 
    // Placeholders for testing purposes:
@@ -552,7 +531,9 @@ void Game::onAttackButtonClick(Card &attackingMonster)
                                                CardType::MONSTER_CARD, CardLocation::FIELD,
                                                "Neither player can target Dragon monsters on the field with card effects."
                                                );
-   damageCalculation(&attackingMonster, defender);
+
+   // Placeholder for now, its actually called in onGreenZoneClick
+   damageCalculation(GameExternVars::pAttackingMonster, defender);
 }
 
 
@@ -582,17 +563,7 @@ void Game::onSetButtonClick(const Card &card)
 }
 
 void Game::onRedZoneClick(Zone * clickedRedZone) {
-    MonsterCard* globalMonsterCard1 = new MonsterCard("Sibirski Plavac", 3000, 2500, 4, MonsterType::DRAGON,
-                                                MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
-                                                true, Position::ATTACK, false,
-                                                CardType::MONSTER_CARD, CardLocation::HAND, "Opis", false
-                                               );
-
-    SpellCard* globalSpellCard = new SpellCard(SpellType::NORMAL_SPELL, "Dark Hole",
-                                               CardType::SPELL_CARD, CardLocation::HAND,
-                                               " Destroy all monsters on the field. ", true);
-
-    Card* card = globalSpellCard;
+    Card* card = GameExternVars::pCardToBePlacedOnField;
     if(card->getCardType() == CardType::MONSTER_CARD) {
         monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
@@ -611,8 +582,6 @@ void Game::onRedZoneClick(Zone * clickedRedZone) {
         }
         spellTrapZone.refresh();
     }
-
-    delete globalMonsterCard1;
 }
 
 void Game::onGreenZoneClick(Zone *clickedGreenZone) {
