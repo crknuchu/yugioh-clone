@@ -10,6 +10,7 @@ QT += \
         widgets
 
 SOURCES += \
+        sources/Field.cpp \
         sources/GameSettings.cpp \
         sources/mainmenu.cpp \
         sources/Card.cpp \
@@ -31,6 +32,7 @@ SOURCES += \
         sources/MonsterZone.cpp 
 
 HEADERS += \
+    headers/Field.h \
     headers/GameSettings.h \
     headers/Card.h \
     headers/EffectActivator.h \
