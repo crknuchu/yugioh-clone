@@ -2,6 +2,25 @@
 #include "headers/GamePhase.h"
 Player::Player(){}
 
+Player::Player(std::string playerName, int points) : graveyard(Graveyard()),
+    monsterZone(MonsterZone()), spellTrapZone(SpellTrapZone()), hand(Hand()),
+    deck(Deck()) , m_name(playerName), m_points(points){};
+
+Player::Player(Player &p){
+    this->spellTrapZone = p.spellTrapZone;
+    this->monsterZone = p.monsterZone;
+    this->deck = p.deck;
+    this->graveyard = p.graveyard;
+    this->hand = p.hand;
+    this->m_points = p.m_points;
+    this->m_name = p.m_name;
+
+}
+
+Player Player::operator=(Player &p){
+    return p;
+}
+
 std::string Player::getPlayerName() const{
     return this->m_name;
 }
@@ -23,25 +42,25 @@ void Player::addPoints(unsigned points){
 }
 
 void Player::setDeck(Deck &d) {
-    this->m_deck = d;
+    this->deck = d;
 }
 
 //DRAW PHASE 
 
 void Player::drawCards(unsigned int numOfCards) {
     //TODO refactor
-    std::vector<Card *>currentDeck = this->m_deck.getDeck();
+    std::vector<Card *>currentDeck = this->deck.getDeck();
     unsigned int deckSize = currentDeck.size();
     std::cout<<"num of card " << deckSize << std::endl;
-    if (this->m_deck.getDeck().empty() == true || deckSize < numOfCards)
+    if (this->deck.getDeck().empty() == true || deckSize < numOfCards)
     {
         std::cout<<this->getPlayerName() << " cant draw cards" << std::endl;
         return;
     }
     else{
-        std::vector<Card*> newCards = this->m_deck.draw(numOfCards);
+        std::vector<Card*> newCards = this->deck.draw(numOfCards);
         for (unsigned i = 0; i < newCards.size(); i++){
-            this->m_hand.addToHand(*newCards[i]);
+            this->hand.addToHand(*newCards[i]);
         }
         std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
     }
@@ -80,7 +99,7 @@ void Player::activationSpellTrapCard(Card &card){
 // BATTLE PHASE
 
 int Player::checkOpponentGround(Player &opponent) {
-       std::vector<Zone*>cards = opponent.m_monsterZone.m_monsterZone; //first monsterZone is field in player.h
+       std::vector<Zone*>cards = opponent.monsterZone.m_monsterZone; //first monsterZone is field in player.h
                                                                        //second one is filed in monsterZone.h
        return std::accumulate(cards.begin(), cards.end(), 0, [](unsigned acc, Zone *card){
            if (card->isEmpty() == false)

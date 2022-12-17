@@ -9,6 +9,8 @@
 class Graveyard : public CardList, public QGraphicsRectItem {
 public:
     Graveyard();
+    Graveyard(Graveyard &);
+    Graveyard operator=(Graveyard &);
     Graveyard(std::vector<Card*> &initialGraveyard);
     void sendToGraveyard(Card &card);
     std::vector<Card*> getGraveyard() const;

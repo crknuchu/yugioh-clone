@@ -9,6 +9,12 @@ Graveyard::Graveyard()
     setBrush(Qt::NoBrush);
 }
 
+Graveyard Graveyard::operator=(Graveyard &g){
+    return g;
+}
+
+Graveyard::Graveyard(Graveyard &g){}
+
 Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
     :CardList(initialGraveyard)
 {

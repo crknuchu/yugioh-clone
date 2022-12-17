@@ -11,7 +11,7 @@ public:
 
     MonsterZone monsterZone;
     SpellTrapZone spellTrapZone;
-    Graveyard Graveyard;
+    Graveyard graveyard;
     Deck deck;
 };
 
