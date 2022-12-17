@@ -12,6 +12,7 @@ Zone::~Zone(){}
 void Zone::putInZone(Card *card)
 {
     m_pCard = card;
+    card->move(this->m_x, this->m_y);
 }
 
 bool Zone::isEmpty() {
