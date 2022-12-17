@@ -69,6 +69,10 @@ private:
   int m_currentTurn;
 
 
+  int resizeCount = 0; // dirty hack
+
+
+
   // Private member functions:
   int randomGenerator(const int limit) const;
   int decideWhoPlaysFirst() const;

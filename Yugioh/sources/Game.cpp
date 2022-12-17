@@ -141,13 +141,16 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
            In that case, attacker gets destroyed and the player
            that was controlling it takes damage. */
 
-        // TODO: We need to call a function from the Player class that removes the monster from the field and sends it to the graveyard
+        /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard
+                 Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
         GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
         damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
         std::cout << "The defender wins!" << std::endl;
     }
     else
     {
+        /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard
+                 Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
         GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
         damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
         std::cout << "The attacker wins!" << std::endl;
@@ -170,6 +173,10 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         /* If the attacker was stronger, the defender gets destroyed but the player
          * that was controlling the defender doesn't take damage because it was in
          * DEFENSE position. */
+
+
+        /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard(defender)
+                 Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
         GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
         std::cout << "The attacker wins!" << std::endl;
     }
@@ -352,60 +359,77 @@ void Game::onTurnEnd() {
    but weird things tend to happen when we actually resize then, so for now its not done like that.*/
 void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
-    // Set our private variables to the new window size:
-    m_windowWidth = resizeEvent->size().width();
-    m_windowHeight = resizeEvent->size().height();
+    /* TODO: Is there a way to make Qt only do one resize (immediately to the fullscreen resolution,
+             instead of first resizing to the resolution that is same as in Designer (and only after that one
+             doing a proper resize to fullscreen) */
 
-    // Check: Very rarely, this displays the same width/height as the old window
-//    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
-
-    // FIXME: If this isn't dynamically allocated with "new", it doesn't get added to the scene
-    MonsterCard *monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
-                                                MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                MonsterAttribute::DARK, false, Position::ATTACK, false,
-                                                CardType::MONSTER_CARD, CardLocation::FIELD,
-                                                "Neither player can target Dragon monsters on the field with card effects."
-                                                );
-    monsterCard1->setPos(450, 450);
-    ui->graphicsView->scene()->addItem(monsterCard1);
-
-    // Notify the game that a card was added.
-    emit cardAddedToScene(*monsterCard1);
-
-    // WIP: UI components
-    // Game phase buttons and label:
-    ui->labelGamePhase->setAlignment(Qt::AlignCenter);
-
-    // Card info:
-    ui->labelImage->setAlignment(Qt::AlignCenter);
-    ui->textBrowserEffect->setText(QString::fromStdString(monsterCard1->getCardDescription()));
-
-    QPixmap pix;
-    pix.load(":/resources/blue_eyes.jpg");
-    pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
-    ui->labelImage->setPixmap(pix);
+    // Resize counter
+    this->resizeCount++;
+    std::cout << "Resize counter: " << resizeCount << std::endl;
 
 
-    // GraphicsView and GraphicsScene adjustments:
-    this->setWindowTitle("Yu-Gi-Oh!");
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    /* Initial setup (we need 2nd resize because that is the one when the window goes fullscreen)
+       Here we initialize objects, etc. (so that they don't get initialized on every resize event) */
+    if(resizeCount == 2)
+    {
+        std::cout << "We are in the fullscreen mode" << std::endl;
 
-    // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
-    // TODO: Change leftVerticalLayout name to something normal
-    const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
-    const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
-    ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
-    ui->graphicsView->scene()->setSceneRect(0, 0, viewAndSceneWidth, m_windowHeight);
 
-    // TODO: Check if this is needed
-    ui->graphicsView->fitInView(0, 0, viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
+        // Set our private variables to the new window size:
+        m_windowWidth = resizeEvent->size().width();
+        m_windowHeight = resizeEvent->size().height();
 
-    // Background image
-    QPixmap background(":/resources/space.jpeg");
-    background = background.scaled(viewAndSceneWidth,  this->size().height(), Qt::IgnoreAspectRatio);
-    QBrush brush(QPalette::Window, background);
-    ui->graphicsView->setBackgroundBrush(brush);
+        // Check: Very rarely, this displays the same width/height as the old window
+    //    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
+
+        // FIXME: If this isn't dynamically allocated with "new", it doesn't get added to the scene
+        MonsterCard *monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                                    MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                    MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                    CardType::MONSTER_CARD, CardLocation::FIELD,
+                                                    "Neither player can target Dragon monsters on the field with card effects."
+                                                    );
+        monsterCard1->setPos(450, 450);
+        ui->graphicsView->scene()->addItem(monsterCard1);
+
+        // Notify the game that a card was added.
+        emit cardAddedToScene(*monsterCard1);
+
+        // WIP: UI components
+        // Game phase buttons and label:
+        ui->labelGamePhase->setAlignment(Qt::AlignCenter);
+
+        // Card info:
+        ui->labelImage->setAlignment(Qt::AlignCenter);
+        ui->textBrowserEffect->setText(QString::fromStdString(monsterCard1->getCardDescription()));
+
+        QPixmap pix;
+        pix.load(":/resources/blue_eyes.jpg");
+        pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
+        ui->labelImage->setPixmap(pix);
+
+
+        // GraphicsView and GraphicsScene adjustments:
+        this->setWindowTitle("Yu-Gi-Oh!");
+        ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+        // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
+        // TODO: Change leftVerticalLayout name to something normal
+        const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
+        const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
+        ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
+        ui->graphicsView->scene()->setSceneRect(0, 0, viewAndSceneWidth, m_windowHeight);
+
+        // TODO: Check if this is needed
+        ui->graphicsView->fitInView(0, 0, viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
+
+        // Background image
+        QPixmap background(":/resources/space.jpeg");
+        background = background.scaled(viewAndSceneWidth,  this->size().height(), Qt::IgnoreAspectRatio);
+        QBrush brush(QPalette::Window, background);
+        ui->graphicsView->setBackgroundBrush(brush);
+    }
 }
 
 
@@ -504,11 +528,11 @@ void Game::onSummonButtonClick(Card &card) {
     /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
        to see it. */
     GameExternVars::pCardToBePlacedOnField = &card;
+    std::cout << "Current summon target is: " << GameExternVars::pCardToBePlacedOnField->getCardName() << std::endl;
 
     // Color the free zones so user can select one to place.
     monsterZone.colorFreeZones();
 
-    std::cout << "Current summon target is: " << GameExternVars::pCardToBePlacedOnField->getCardName() << std::endl;
 }
 
 void Game::onAttackButtonClick(Card &attackingMonster)
@@ -519,7 +543,6 @@ void Game::onAttackButtonClick(Card &attackingMonster)
    GameExternVars::pAttackingMonster = &attackingMonster;
 
    // Color opponent's monsters
-
    // Placeholder for now, should be GameExternVars::pOtherPlayer->monsterZone.colorOccupiedZones() but that produces segfault
    monsterZone.colorOccupiedZones();
 
@@ -562,8 +585,10 @@ void Game::onSetButtonClick(const Card &card)
     std::cout << "Set button clicked on card " << card.getCardName() << std::endl;
 }
 
-void Game::onRedZoneClick(Zone * clickedRedZone) {
+void Game::onRedZoneClick(Zone *clickedRedZone) {
     Card* card = GameExternVars::pCardToBePlacedOnField;
+
+    // TODO: Move this into separate functions.
     if(card->getCardType() == CardType::MONSTER_CARD) {
         monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
@@ -582,6 +607,9 @@ void Game::onRedZoneClick(Zone * clickedRedZone) {
         }
         spellTrapZone.refresh();
     }
+
+    // FIXME: For some reason, when card is in the zone and we go fullscreen, right border of the zone goes under the card
+    card->move(clickedRedZone->m_x, clickedRedZone->m_y);
 }
 
 void Game::onGreenZoneClick(Zone *clickedGreenZone) {
@@ -598,6 +626,7 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 
 
 }
+
 void Game::onCardAddedToScene(Card &card)
 {
     connect(&card, &Card::cardSelected, this, &Game::onCardSelect);
@@ -608,6 +637,3 @@ void Game::onCardAddedToScene(Card &card)
     ui->labelImage->setVisible(false);
     ui->textBrowserEffect->setVisible(false);
 }
-
-// TODO: Clicking on a red zone doesn't work (it always says that its occupied)
-

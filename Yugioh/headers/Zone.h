@@ -21,6 +21,11 @@ public:
     QPainterPath shape() const override;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     Card* m_pCard;
+
+    // Placeholder
+    float m_x;
+    float m_y;
+
 signals:
     void zoneRedAndClicked(Zone*);
     void zoneGreenAndClicked(Zone*);
@@ -28,8 +33,6 @@ signals:
 private:
     float m_height = 150;
     float m_width = 100;
-    float m_x;
-    float m_y;
 };
 
 #endif // ZONE_H

@@ -4,7 +4,7 @@
 Zone::Zone(float x, float y)
     : m_x(x), m_y(y){
     m_pCard = nullptr;
-    setPen(QPen(Qt::white, 2));
+    setPen(QPen(Qt::white, 5));
     setBrush(Qt::NoBrush);
 }
 
