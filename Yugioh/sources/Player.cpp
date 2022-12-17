@@ -98,33 +98,47 @@ void Player::activationSpellTrapCard(Card &card){
 
 void Player::sendToGraveyard(Card &card){
     //first need to be removed from field
-
-    //removing from deck, not sure if is it legal move
-    for (auto it = this->deck.cbegin(); it != this->deck.cend(); it++){
-        if ((*it) == &card){
-            this->deck.erase(it);
-            this->graveyard.sendToGraveyard(card);
-            std::cout<< (*it)->getCardName()<<" successfully removed from deck"<<std::endl;
-            break;
+    try {
+        //removing from deck, not sure if is it legal move
+        for (auto it = this->deck.cbegin(); it != this->deck.cend(); it++){
+            if ((*it) == &card){
+                this->deck.erase(it);
+                this->graveyard.sendToGraveyard(card);
+                std::cout<< (*it)->getCardName()<<" successfully removed from deck"<<std::endl;
+                break;
+            }
         }
-    }
 
-    for (auto it = this->monsterZone.m_monsterZone.cbegin(); it != this->monsterZone.m_monsterZone.cend(); it++){
-        if ((*it)->m_pCard == &card){
-            this->monsterZone.m_monsterZone.erase(it);
-            this->graveyard.sendToGraveyard(card);
-            std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
-            break;
+        for (auto it = this->monsterZone.m_monsterZone.cbegin(); it != this->monsterZone.m_monsterZone.cend(); it++){
+            if ((*it)->m_pCard == &card){
+                this->monsterZone.m_monsterZone.erase(it);
+                this->graveyard.sendToGraveyard(card);
+                std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
+                break;
+            }
         }
-    }
 
-    for (auto it = this->spellTrapZone.m_spellTrapZone.cbegin(); it != this->spellTrapZone.m_spellTrapZone.cend(); it++){
-        if ((*it)->m_pCard == &card){
-            this->spellTrapZone.m_spellTrapZone.erase(it);
-            this->graveyard.sendToGraveyard(card);
-            std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
-            break;
+        for (auto it = this->spellTrapZone.m_spellTrapZone.cbegin(); it != this->spellTrapZone.m_spellTrapZone.cend(); it++){
+            if ((*it)->m_pCard == &card){
+                this->spellTrapZone.m_spellTrapZone.erase(it);
+                this->graveyard.sendToGraveyard(card);
+                std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
+                break;
+            }
         }
+
+        for (auto it = this->hand.cbegin(); it != this->hand.cend(); it++){
+            if ((*it) == &card){
+               this->hand.erase(it);
+               this->graveyard.sendToGraveyard(card);
+               std::cout<< (*it)->getCardName() << " succesfully removed from hand"<<std::endl;
+               break;
+            }
+        }
+   }
+    catch(std::exception e){
+       std::cerr<<card.getCardName()<<" can't be removed"<<std::endl;
+//        throw e;
     }
 }
 
