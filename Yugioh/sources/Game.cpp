@@ -350,13 +350,11 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
     // WIP: Background image
     // TODO: Find another image of the field
-<<<<<<< HEAD
-    QPixmap background(":/resources/space.jpeg");
-    background = background.scaled(viewAndSceneWidth,  this->size().height() / 10, Qt::IgnoreAspectRatio);
-=======
+    //QPixmap background(":/resources/images/space.jpeg");
+    //background = background.scaled(viewAndSceneWidth,  this->size().height() / 10, Qt::IgnoreAspectRatio);
+
     QPixmap background(":/resources/images/field2.png");
     background = background.scaled(viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
->>>>>>> feature/menu
     QBrush brush(QPalette::Window, background);
     ui->graphicsView->setBackgroundBrush(brush);
 
