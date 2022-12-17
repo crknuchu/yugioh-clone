@@ -1,3 +1,4 @@
+
 #include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
 #include "headers/Game.h"
 #include "headers/Monstercard.h"
@@ -304,7 +305,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 //    ui->textBrowserEffect->setText(monsterCard1->getEffect());
 
     QPixmap pix;
-    pix.load(":/resources/blue_eyes.jpg");
+    pix.load(":/resources/images/blue_eyes.jpg");
     pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
     ui->labelImage->setPixmap(pix);
 
@@ -331,7 +332,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
     // WIP: Background image
     // TODO: Find another image of the field
-    QPixmap background(":/resources/field2.png");
+    QPixmap background(":/resources/images/field2.png");
     background = background.scaled(viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
     QBrush brush(QPalette::Window, background);
     ui->graphicsView->setBackgroundBrush(brush);

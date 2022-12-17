@@ -13,7 +13,7 @@ MainMenu::MainMenu(QWidget *parent) :
     ui(new Ui::MainMenu)
 {
     ui->setupUi(this);
-    QPixmap bkgnd(":/resources/menubackground.png");
+    QPixmap bkgnd(":/resources/pictures/menubackground.png");
     QScreen *screen = QGuiApplication::primaryScreen();
     QRect  screenGeometry = screen->geometry();
     int height = screenGeometry.height();

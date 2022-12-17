@@ -7,7 +7,7 @@ GameSettings::GameSettings(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QPixmap bkgnd(":/resources/background.jpg");
+    QPixmap bkgnd(":/resources/pictures/background.jpg");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
     QPalette palette;
     palette.setBrush(QPalette::Window, bkgnd);
