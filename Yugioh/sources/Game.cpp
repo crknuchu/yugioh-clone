@@ -147,13 +147,22 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
         damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
         std::cout << "The defender wins!" << std::endl;
     }
-    else
+    else if(attackPointsDifference > 0)
     {
         /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard
                  Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
         GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
         damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
         std::cout << "The attacker wins!" << std::endl;
+    }
+    else
+    {
+        /* This means that both attacking monsters had the same ATK.
+         * In that case, both of them get destroyed, but no player takes damage. */
+       GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
+       GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
+
+       std::cout << "Both monsters die!" << std::endl;
     }
 }
 
@@ -168,18 +177,23 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         damagePlayer(*GameExternVars::pCurrentPlayer, pointsDifference);
         std::cout << "The defender wins!" << std::endl;
     }
-    else
+    else if(pointsDifference > 0)
     {
         /* If the attacker was stronger, the defender gets destroyed but the player
          * that was controlling the defender doesn't take damage because it was in
          * DEFENSE position. */
-
 
         /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard(defender)
                  Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
         GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
         std::cout << "The attacker wins!" << std::endl;
     }
+    else
+    {
+        // If the pointsDifference is 0 then nothing happens
+        std::cout << "No monster dies!" << std::endl;
+    }
+
 }
 
 void Game::damagePlayer(Player &targetPlayer, int howMuch)
@@ -420,7 +434,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
         ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
         ui->graphicsView->scene()->setSceneRect(0, 0, viewAndSceneWidth, m_windowHeight);
-
         // TODO: Check if this is needed
         ui->graphicsView->fitInView(0, 0, viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
 
@@ -429,6 +442,17 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         background = background.scaled(viewAndSceneWidth,  this->size().height(), Qt::IgnoreAspectRatio);
         QBrush brush(QPalette::Window, background);
         ui->graphicsView->setBackgroundBrush(brush);
+
+
+
+
+
+
+
+
+
+        // Testing green zones
+        monsterZone.placeInMonsterZone(monsterCard1, monsterZone.m_monsterZone[1]);
     }
 }
 
@@ -545,18 +569,6 @@ void Game::onAttackButtonClick(Card &attackingMonster)
    // Color opponent's monsters
    // Placeholder for now, should be GameExternVars::pOtherPlayer->monsterZone.colorOccupiedZones() but that produces segfault
    monsterZone.colorOccupiedZones();
-
-
-   // Placeholders for testing purposes:
-   Card* defender = new MonsterCard("Lord of D", 1000, 2500, 4,
-                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                               MonsterAttribute::DARK, false, Position::ATTACK, false,
-                                               CardType::MONSTER_CARD, CardLocation::FIELD,
-                                               "Neither player can target Dragon monsters on the field with card effects."
-                                               );
-
-   // Placeholder for now, its actually called in onGreenZoneClick
-   damageCalculation(GameExternVars::pAttackingMonster, defender);
 }
 
 
@@ -619,7 +631,7 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
     Card* attackedMonster = clickedGreenZone->m_pCard;
 
     // Refresh the opponent's monster zone
-    GameExternVars::pOtherPlayer->monsterZone.refresh();
+    monsterZone.refresh();
 
     // Do the damage calculation
     damageCalculation(GameExternVars::pAttackingMonster, attackedMonster);

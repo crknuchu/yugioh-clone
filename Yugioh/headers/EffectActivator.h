@@ -16,7 +16,7 @@ enum class UntargetableBy {
 
 class EffectActivator : public QObject {
     Q_OBJECT
-    // Our type that represents a pointer to EffectActivator member function that accept no arguments and return void
+    // Our type that represents a pointer to EffectActivator member function that accept no arguments and returns void
     using EFFECT_MEMBER_FUNCTION_POINTER = void(EffectActivator::*)(void);
 public:
     EffectActivator();
