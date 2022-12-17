@@ -5,6 +5,8 @@
 #include "headers/GameSettings.h"
 #include <QDir>
 #include <QScreen>
+#include <QMediaPlayer>
+
 
 MainMenu::MainMenu(QWidget *parent) :
     QMainWindow(parent),
@@ -21,6 +23,11 @@ MainMenu::MainMenu(QWidget *parent) :
     QPalette palette;
     palette.setBrush(QPalette::Window, bkgnd);
     this->setPalette(palette);
+    QMediaPlayer * music = new QMediaPlayer();
+    music->setMedia(QUrl("qrc:/resources/sounds/illusion.mp3"));
+    music->play();
+
+
 }
 
 MainMenu::~MainMenu()
@@ -67,4 +74,11 @@ void MainMenu::setGame(Game *newGame)
 {
     game = newGame;
 }
+
+
+
+
+
+
+
 
