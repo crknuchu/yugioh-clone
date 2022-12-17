@@ -6,8 +6,8 @@ MOC_DIR = build
 RCC_DIR = build
 UI_DIR = build
 
-QT += \
-        widgets
+QT +=   widgets \
+        multimedia
 
 SOURCES += \
         sources/GameSettings.cpp \

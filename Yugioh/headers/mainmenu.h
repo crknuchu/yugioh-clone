@@ -16,6 +16,11 @@ class MainMenu : public QMainWindow
 public:
     explicit MainMenu(QWidget *parent = nullptr);
     ~MainMenu();
+    Game g;
+
+    void setGame(Game *newGame);
+
+    void setMusic();
 
 private slots:
     void on_pushButton_clicked();
@@ -24,10 +29,16 @@ private slots:
 
     void on_pushButton_5_clicked();
 
+    void on_pushButton_5_released();
+
+
+
 private:
     Ui::MainMenu *ui;
     Game *game;
     GameSettings *gameSettings;
 };
+
+
 
 #endif // MAINMENU_H

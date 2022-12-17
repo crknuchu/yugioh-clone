@@ -1,3 +1,4 @@
+
 #include "headers/ui_mainwindow.h" // TODO: Rename this file to avoid confusion
 #include "headers/Game.h"
 #include "headers/Monstercard.h"
@@ -55,6 +56,36 @@ Game::Game() {}
 Game::~Game() {
     delete ui;
     delete scene;
+}
+
+int Game::getTimePerMove() const
+{
+    return timePerMove;
+}
+
+void Game::setTimePerMove(int newTimePerMove)
+{
+    timePerMove = newTimePerMove;
+}
+
+int Game::getNumberOfCards() const
+{
+    return numberOfCards;
+}
+
+void Game::setNumberOfCards(int newNumberOfCards)
+{
+    numberOfCards = newNumberOfCards;
+}
+
+int Game::getLifePoints() const
+{
+    return lifePoints;
+}
+
+void Game::setLifePoints(int newLifePoints)
+{
+    lifePoints = newLifePoints;
 }
 
 int Game::randomGenerator(const int limit) const {
@@ -292,7 +323,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 //    ui->textBrowserEffect->setText(monsterCard1->getEffect());
 
     QPixmap pix;
-    pix.load(":/resources/blue_eyes.jpg");
+    pix.load(":/resources/images/blue_eyes.jpg");
     pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
     ui->labelImage->setPixmap(pix);
 
@@ -319,8 +350,13 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
     // WIP: Background image
     // TODO: Find another image of the field
+<<<<<<< HEAD
     QPixmap background(":/resources/space.jpeg");
     background = background.scaled(viewAndSceneWidth,  this->size().height() / 10, Qt::IgnoreAspectRatio);
+=======
+    QPixmap background(":/resources/images/field2.png");
+    background = background.scaled(viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
+>>>>>>> feature/menu
     QBrush brush(QPalette::Window, background);
     ui->graphicsView->setBackgroundBrush(brush);
 

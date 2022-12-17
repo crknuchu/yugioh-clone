@@ -7,7 +7,7 @@ GameSettings::GameSettings(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    QPixmap bkgnd(":/resources/background.jpg");
+    QPixmap bkgnd(":/resources/pictures/background.jpg");
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
     QPalette palette;
     palette.setBrush(QPalette::Window, bkgnd);
@@ -38,3 +38,34 @@ GameSettings::~GameSettings()
 {
     delete ui;
 }
+
+void GameSettings::on_SetLifepoints_currentIndexChanged(int index)
+{
+    lifePoints = index;
+}
+
+
+void GameSettings::on_SetTimePerMove_currentIndexChanged(int index)
+{
+    timePerMove = index;
+}
+
+
+void GameSettings::on_SetInitialNumberOfCards_currentIndexChanged(int index)
+{
+    numberOfCards = index;
+}
+
+
+//void GameSettings::on_Back_accepted()
+//{
+    //TO DO
+     //  save changes
+//}
+
+
+void GameSettings::on_Back_rejected()
+{
+    close();
+}
+

@@ -7,21 +7,16 @@
 #include <iostream>
 #include <QApplication>
 #include "headers/CardMenu.h"
-#include"headers/mainmenu.h"
+
 int main(int argc,char **argv)
 {
-  QApplication app(argc, argv);
+  //QApplication app(argc, argv);
 
-    Player player1("Nikola");
-    Player player2("Milan");
-
-    //MainMenu m;
-      //m.show();
+   MainMenu m;
+  m.showFullScreen();
 
 
-  Game game(player1, player2);
 
-  game.showFullScreen();
-
-  return app.exec();
+  //app.exec();
+  return 0;
 }
