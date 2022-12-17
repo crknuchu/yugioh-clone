@@ -17,8 +17,10 @@ public:
     ~profileSettings();
 
 private:
+    QGraphicsScene *scene;
+
     Ui::profileSettings *ui;
-    profileSettings *p;
+    QGraphicsView *cardSleve;
 };
 
 #endif // PROFILESETTINGS_H

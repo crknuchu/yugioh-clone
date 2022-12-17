@@ -8,5 +8,6 @@
         <file>resources/background.jpg</file>
         <file>resources/space.jpeg</file>
         <file>resources/avatars.jpg</file>
+        <file>resources/yugi.png</file>
     </qresource>
 </RCC>
