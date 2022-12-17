@@ -9,11 +9,17 @@ Graveyard::Graveyard()
     setBrush(Qt::NoBrush);
 }
 
+//NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
 Graveyard Graveyard::operator=(Graveyard &g){
     return g;
 }
-
-Graveyard::Graveyard(Graveyard &g){}
+//NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
+Graveyard::Graveyard(Graveyard &g){
+    this->m_height = g.m_height;
+    this->m_width = g.m_width;
+    this->m_x = g.m_x;
+    this->m_y = g.m_y;
+}
 
 Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
     :CardList(initialGraveyard)

@@ -6,6 +6,7 @@ Player::Player(std::string playerName, int points) : graveyard(Graveyard()),
     monsterZone(MonsterZone()), spellTrapZone(SpellTrapZone()), hand(Hand()),
     deck(Deck()) , m_name(playerName), m_points(points){};
 
+//NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
 Player::Player(Player &p){
     this->spellTrapZone = p.spellTrapZone;
     this->monsterZone = p.monsterZone;
@@ -16,7 +17,7 @@ Player::Player(Player &p){
     this->m_name = p.m_name;
 
 }
-
+//NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
 Player Player::operator=(Player &p){
     return p;
 }
@@ -94,6 +95,39 @@ void Player::activationSpellTrapCard(Card &card){
         delete tmp;
     }
 }
+
+void Player::sendToGraveyard(Card &card){
+    //first need to be removed from field
+
+    //removing from deck, not sure if is it legal move
+    for (auto it = this->deck.cbegin(); it != this->deck.cend(); it++){
+        if ((*it) == &card){
+            this->deck.erase(it);
+            this->graveyard.sendToGraveyard(card);
+            std::cout<< (*it)->getCardName()<<" successfully removed from deck"<<std::endl;
+            break;
+        }
+    }
+
+    for (auto it = this->monsterZone.m_monsterZone.cbegin(); it != this->monsterZone.m_monsterZone.cend(); it++){
+        if ((*it)->m_pCard == &card){
+            this->monsterZone.m_monsterZone.erase(it);
+            this->graveyard.sendToGraveyard(card);
+            std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
+            break;
+        }
+    }
+
+    for (auto it = this->spellTrapZone.m_spellTrapZone.cbegin(); it != this->spellTrapZone.m_spellTrapZone.cend(); it++){
+        if ((*it)->m_pCard == &card){
+            this->spellTrapZone.m_spellTrapZone.erase(it);
+            this->graveyard.sendToGraveyard(card);
+            std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
+            break;
+        }
+    }
+}
+
 // --------------------------------------------
 
 // BATTLE PHASE
