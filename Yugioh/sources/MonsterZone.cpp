@@ -19,6 +19,7 @@ void MonsterZone::setMonsterZone(float x, float y){
     float gap = 20;
     for(int i = 0; i < 5; i++) {
         Zone* zone = new Zone(x, y);
+        zone->setBrush(QColor(0,0,200,30));
         m_monsterZone.push_back(zone);
         x += zone->getWidth() + gap;
     }

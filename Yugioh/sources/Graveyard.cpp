@@ -11,7 +11,7 @@ void Graveyard::setGraveyard(float x, float y)
     m_x = x;
     m_y = y;
     setPen(QPen(Qt::white, 2));
-    setBrush(Qt::NoBrush);
+    setBrush(QColor(211,211,211,30));
 }
 
 Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
