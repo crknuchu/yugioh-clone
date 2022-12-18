@@ -41,9 +41,6 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
 
-    // First turn setup at the beginning of the game:
-    firstTurnSetup();
-
 }
 
 Game::Game() {}
@@ -83,7 +80,7 @@ void Game::switchPlayers() {
     std::cout << "Current player is: " << *m_pCurrentPlayer << std::endl;
 }
 
-void Game::firstTurnSetup() {
+void Game::firstTurnSetup(float windowWidth, float windowHeight) {
   // The game decides who will play first:
   if (decideWhoPlaysFirst() == 1)
   {
@@ -109,6 +106,25 @@ void Game::firstTurnSetup() {
   // Without m_pOtherPlayer:  *m_pCurrentPlayer == m_player1 ? m_player2.drawCards(5) : m_player1.drawCards(5);
   // With m_pOtherPlayer:
   m_pOtherPlayer->drawCards(5);
+
+  //just a placeholder code for hand
+  MonsterCard* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                              MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                              MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                              CardType::MONSTER_CARD, CardLocation::HAND,
+                                              "Neither player can target Dragon monsters on the field with card effects."
+                                              );
+  MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                              MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                              MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                              CardType::MONSTER_CARD, CardLocation::HAND,
+                                              "Neither player can target Dragon monsters on the field with card effects."
+                                              );
+  ui->graphicsView->scene()->addItem(monsterCard1);
+  ui->graphicsView->scene()->addItem(monsterCard2);
+  hand.setHandCoordinates(windowWidth, windowHeight);
+  hand.addToHand(*monsterCard1);
+  hand.addToHand(*monsterCard2);
 }
 
 
@@ -254,27 +270,10 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         // TODO: Move this elsewhere.
         // MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints,
         // int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn)
-        MonsterCard* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
-                                                    MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                    MonsterAttribute::DARK, false, Position::ATTACK, false,
-                                                    CardType::MONSTER_CARD, CardLocation::HAND,
-                                                    "Neither player can target Dragon monsters on the field with card effects."
-                                                    );
-        MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
-                                                    MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                    MonsterAttribute::DARK, false, Position::ATTACK, false,
-                                                    CardType::MONSTER_CARD, CardLocation::HAND,
-                                                    "Neither player can target Dragon monsters on the field with card effects."
-                                                    );
 
-        monsterCard2->setPos(200,200);
-        monsterCard1->setPos(0, 0);
-        ui->graphicsView->scene()->addItem(monsterCard1);
-        ui->graphicsView->scene()->addItem(monsterCard2);
-        hand.addToHand(*monsterCard1);
-        hand.addToHand(*monsterCard2);
+
         // Notify the game that a card was added.
-        emit cardAddedToScene(monsterCard1);
+//        emit cardAddedToScene(monsterCard1);
 
         // WIP: UI components
         // Game phase buttons and label:
@@ -335,7 +334,8 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         for(auto c : m_player1.field.deck.uiDeck) {
             ui->graphicsView->scene()->addItem(c);
         }
-        ui->graphicsView->scene()->addItem(m_player1.field  .graveyard);
+        ui->graphicsView->scene()->addItem(m_player1.field.graveyard);
+        ui->graphicsView->scene()->addItem(m_player1.field.fieldZone);
 
         m_player2.field.setField(2, viewAndSceneWidth,m_windowHeight);
         for(auto z :    m_player2.field.monsterZone.m_monsterZone) {
@@ -348,6 +348,10 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
             ui->graphicsView->scene()->addItem(c);
         }
         ui->graphicsView->scene()->addItem(m_player2.field.graveyard);
+        ui->graphicsView->scene()->addItem(m_player2.field.fieldZone);
+
+        // First turn setup at the beginning of the game:
+        firstTurnSetup(viewAndSceneWidth, m_windowHeight);
     }
 }
 

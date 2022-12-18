@@ -74,7 +74,7 @@ private:
   // Private member functions:
   int randomGenerator(const int limit) const;
   int decideWhoPlaysFirst() const;
-  void firstTurnSetup();
+  void firstTurnSetup(float, float);
   void switchPlayers();
 
 // QT related stuff:
