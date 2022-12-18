@@ -17,6 +17,7 @@
 #include "MonsterZone.h"
 #include "SpellTrapZone.h"
 #include "GamePhase.h"
+#include "Field.h"
 
 class Player{ 
 
@@ -25,7 +26,8 @@ public:
   ~Player() {
 
   };
-  Player(std::string playerName,int points = 8000) : m_graveyard(Graveyard()), m_monsterZone(MonsterZone()), m_SpellTrapZone(SpellTrapZone()), m_hand(Hand()), m_deck(Deck()) , m_name(playerName), m_points(points){};
+  Player(std::string playerName,int points = 8000) : m_name(playerName), m_points(points),
+    m_hand(Hand()), field(Field()){};
   //DRAW PHASE
   void drawCards(unsigned int numOfCards); //done
   void activationSpellCard(Card &); 
@@ -64,11 +66,12 @@ public:
   unsigned getPlayerPoints();
   void setPoints(unsigned points);
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
-  Graveyard m_graveyard;
-  MonsterZone m_monsterZone;
-  SpellTrapZone m_SpellTrapZone;
+//  Graveyard* m_graveyard;
+//  MonsterZone m_monsterZone;
+//  SpellTrapZone m_SpellTrapZone;
   Hand m_hand;
-  Deck m_deck;
+  Field field;
+//  Deck m_deck;
 private:
     std::string m_name;
     unsigned m_points;

@@ -3,14 +3,7 @@
 #include <iostream>
 
 MonsterZone::MonsterZone(){
-    float x = 0;
-    float y = 300;
-    float gap = 20;
-    for(int i = 0; i < 5; i++) {
-        Zone* zone = new Zone(x, y);
-        m_monsterZone.push_back(zone);
-        x += zone->getWidth() + gap;
-    }
+    std::cout  << "udjem li ovde" << std::endl;
 }
 
 MonsterZone::~MonsterZone()
@@ -22,11 +15,23 @@ MonsterZone::~MonsterZone()
     m_monsterZone.clear();
 };
 
+void MonsterZone::setMonsterZone(float x, float y){
+    float gap = 20;
+    for(int i = 0; i < 5; i++) {
+        Zone* zone = new Zone(x, y);
+        m_monsterZone.push_back(zone);
+        x += zone->getWidth() + gap;
+    }
+
+    m_width = x;
+}
+
 MonsterCard* MonsterZone::removeFromMonsterZone(Zone* targetedZone) {
     MonsterCard* card = static_cast<MonsterCard*>(targetedZone->m_pCard);
     targetedZone->m_pCard = nullptr;
     return card;
 }
+
 
 void MonsterZone::placeInMonsterZone(Card *card, Zone* zone){
 
@@ -76,5 +81,10 @@ bool MonsterZone::isFull() const {
             return false;
     }
     return true;
+}
+
+float MonsterZone::getWidth() const
+{
+    return m_width;
 }
 

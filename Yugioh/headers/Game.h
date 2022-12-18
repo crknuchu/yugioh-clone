@@ -69,7 +69,7 @@ private:
   Player *m_pCurrentPlayer;
   Player *m_pOtherPlayer;
   int m_currentTurn;
-
+  int counter = 0;
 
   // Private member functions:
   int randomGenerator(const int limit) const;

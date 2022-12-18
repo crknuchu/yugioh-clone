@@ -8,11 +8,15 @@
 class Field {
 public:
     Field();
+    void setField(int, int, int);
 
     MonsterZone monsterZone;
+    Graveyard* graveyard;
     SpellTrapZone spellTrapZone;
-    Graveyard Graveyard;
     Deck deck;
+
+private:
+    float m_width;
 };
 
 #endif // FIELD_H

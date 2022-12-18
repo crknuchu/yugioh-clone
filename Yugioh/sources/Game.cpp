@@ -2,8 +2,7 @@
 #include "headers/Game.h"
 #include "headers/Monstercard.h"
 #include "headers/EffectActivator.h"
-#include "headers/MonsterZone.h"
-#include "headers/SpellTrapZone.h"
+#include "headers/Field.h"
 #include "headers/Hand.h"
 
 #include <iostream>
@@ -14,10 +13,6 @@
 #include <QGraphicsScene>
 #include <QGraphicsLayout>
 
-
-// QMainWindow != Ui::MainWindow
-MonsterZone monsterZone = MonsterZone();
-SpellTrapZone spellTrapZone = SpellTrapZone();
 Hand hand = Hand();
 
 // Class definitions:
@@ -46,10 +41,9 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
 
-
-
     // First turn setup at the beginning of the game:
     firstTurnSetup();
+
 }
 
 Game::Game() {}
@@ -246,103 +240,115 @@ void Game::onTurnEnd() {
 void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
 //    std::cout << "Window has been resized!" << std::endl;
+    this->counter++;
+    if(counter == 2) {
+        // Set our private variables to the new window size:
+        m_windowWidth = resizeEvent->size().width();
+        m_windowHeight = resizeEvent->size().height();
 
-    // Set our private variables to the new window size:
-    m_windowWidth = resizeEvent->size().width();
-    m_windowHeight = resizeEvent->size().height();
-
-    // Check: Very rarely, this displays the same width/height as the old window
-//    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
-
-
-    // FIXME: Memory leak.
-    // TODO: Move this elsewhere.
-    // MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints,
-    // int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn)
-    MonsterCard* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
-                                                MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                MonsterAttribute::DARK, false, Position::ATTACK, false,
-                                                CardType::MONSTER_CARD, CardLocation::HAND,
-                                                "Neither player can target Dragon monsters on the field with card effects."
-                                                );
-    MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
-                                                MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                MonsterAttribute::DARK, false, Position::ATTACK, false,
-                                                CardType::MONSTER_CARD, CardLocation::HAND,
-                                                "Neither player can target Dragon monsters on the field with card effects."
-                                                );
-    for(auto *zone : monsterZone.m_monsterZone) {
-         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
-         ui->graphicsView->scene()->addItem(zone);
-     }
-
-     for(auto *zone : spellTrapZone.m_spellTrapZone) {
-         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
-         ui->graphicsView->scene()->addItem(zone);
-     }
+        // Check: Very rarely, this displays the same width/height as the old window
+    //    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
 
 
-    monsterCard2->setPos(200,200);
-    monsterCard1->setPos(0, 0);
-    ui->graphicsView->scene()->addItem(monsterCard1);
-    ui->graphicsView->scene()->addItem(monsterCard2);
-    hand.addToHand(*monsterCard1);
-    hand.addToHand(*monsterCard2);
-    monsterZone.colorFreeZones();
-    // Notify the game that a card was added.
-    emit cardAddedToScene(monsterCard1);
+        // FIXME: Memory leak.
+        // TODO: Move this elsewhere.
+        // MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints,
+        // int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn)
+        MonsterCard* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                                    MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                    MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                    CardType::MONSTER_CARD, CardLocation::HAND,
+                                                    "Neither player can target Dragon monsters on the field with card effects."
+                                                    );
+        MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                                    MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                    MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                    CardType::MONSTER_CARD, CardLocation::HAND,
+                                                    "Neither player can target Dragon monsters on the field with card effects."
+                                                    );
 
-    // WIP: UI components
-    // Game phase buttons and label:
-    ui->labelGamePhase->setAlignment(Qt::AlignCenter);
+        monsterCard2->setPos(200,200);
+        monsterCard1->setPos(0, 0);
+        ui->graphicsView->scene()->addItem(monsterCard1);
+        ui->graphicsView->scene()->addItem(monsterCard2);
+        hand.addToHand(*monsterCard1);
+        hand.addToHand(*monsterCard2);
+        // Notify the game that a card was added.
+        emit cardAddedToScene(monsterCard1);
 
-    // Card info:
-    ui->labelImage->setAlignment(Qt::AlignCenter);
+        // WIP: UI components
+        // Game phase buttons and label:
+        ui->labelGamePhase->setAlignment(Qt::AlignCenter);
 
-    // TODO: getEffect()
-//    ui->textBrowserEffect->setText(monsterCard1->getEffect());
+        // Card info:
+        ui->labelImage->setAlignment(Qt::AlignCenter);
 
-    QPixmap pix;
-    pix.load(":/resources/blue_eyes.jpg");
-    pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
-    ui->labelImage->setPixmap(pix);
+        // TODO: getEffect()
+    //    ui->textBrowserEffect->setText(monsterCard1->getEffect());
+
+        QPixmap pix;
+        pix.load(":/resources/blue_eyes.jpg");
+        pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
+        ui->labelImage->setPixmap(pix);
 
 
-    // GraphicsView and GraphicsScene adjustments:
-    this->setWindowTitle("Yu-Gi-Oh!");
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        // GraphicsView and GraphicsScene adjustments:
+        this->setWindowTitle("Yu-Gi-Oh!");
+        ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
-    // TODO: Change leftVerticalLayout name to something normal
-    const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
-    const int leftVerticalLayoutHeight = ui->leftVerticalLayout->sizeHint().height();
-//    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
+        // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
+        // TODO: Change leftVerticalLayout name to something normal
+        const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
+    //    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
 
-    const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
-    ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
-    ui->graphicsView->scene()->setSceneRect(0, 0, viewAndSceneWidth, m_windowHeight);
+        const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
+        ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
+        ui->graphicsView->scene()->setSceneRect(0, 0, viewAndSceneWidth, m_windowHeight);
 
-    // TODO: Check if this is needed
-    ui->graphicsView->fitInView(0, 0, viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
+        // TODO: Check if this is needed
+        ui->graphicsView->fitInView(0, 0, viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
 
-//    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
+    //    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
 
-    // WIP: Background image
-    // TODO: Find another image of the field
-    QPixmap background(":/resources/space.jpeg");
-    background = background.scaled(viewAndSceneWidth,  this->size().height() / 10, Qt::IgnoreAspectRatio);
-    QBrush brush(QPalette::Window, background);
-    ui->graphicsView->setBackgroundBrush(brush);
+        // WIP: Background image
+        // TODO: Find another image of the field
+        QPixmap background(":/resources/space.jpeg");
+        background = background.scaled(viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
+        QBrush brush(QPalette::Window, background);
+        ui->graphicsView->setBackgroundBrush(brush);
 
-    // TODO: Maybe this can be a "starting" point for our program
-    /* For example, we could call firstTurnSetup here ...
-     * Problem with that is that it would restart the game every time the main window gets resized.
-     * Solution ideas:
-     *  1) Flags
-     *  2) ?
-     */
+        // TODO: Maybe this can be a "starting" point for our program
+        /* For example, we could call firstTurnSetup here ...
+         * Problem with that is that it would restart the game every time the main window gets resized.
+         * Solution ideas:
+         *  1) Flags
+         *  2) ?
+         */
+        m_player1.field.setField(1, viewAndSceneWidth,m_windowHeight);
+        for(auto z :    m_player1.field.monsterZone.m_monsterZone) {
+            ui->graphicsView->scene()->addItem(z);
+        }
+        for(auto z : m_player1.field.spellTrapZone.m_spellTrapZone) {
+            ui->graphicsView->scene()->addItem(z);
+        }
+        for(auto c : m_player1.field.deck.uiDeck) {
+            ui->graphicsView->scene()->addItem(c);
+        }
+        ui->graphicsView->scene()->addItem(m_player1.field  .graveyard);
 
+        m_player2.field.setField(2, viewAndSceneWidth,m_windowHeight);
+        for(auto z :    m_player2.field.monsterZone.m_monsterZone) {
+            ui->graphicsView->scene()->addItem(z);
+        }
+        for(auto z : m_player2.field.spellTrapZone.m_spellTrapZone) {
+            ui->graphicsView->scene()->addItem(z);
+        }
+        for(auto c : m_player2.field.deck.uiDeck) {
+            ui->graphicsView->scene()->addItem(c);
+        }
+        ui->graphicsView->scene()->addItem(m_player2.field.graveyard);
+    }
 }
 
 // TODO: const Card *&Card
@@ -432,24 +438,24 @@ void Game::onRedZoneClicked(Zone * clickedRedZone) {
                                                " Destroy all monsters on the field. ", true);
 
     Card* card = globalSpellCard;
-    if(card->getCardType() == CardType::MONSTER_CARD) {
-        monsterZone.placeInMonsterZone(card, clickedRedZone);
-        card->setCardLocation(CardLocation::FIELD);
-        for(auto x : monsterZone.m_monsterZone) {
-            if(!x->isEmpty())
-                std::cout << *x->m_pCard << std::endl;
-        }
-        monsterZone.refresh();
-    }
-    else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
-        spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
-        card->setCardLocation(CardLocation::FIELD);
-        for(auto x: spellTrapZone.m_spellTrapZone) {
-            if(!x->isEmpty())
-                std::cout << *x->m_pCard << std::endl;
-        }
-        spellTrapZone.refresh();
-    }
+//    if(card->getCardType() == CardType::MONSTER_CARD) {
+//        f.monsterZone.placeInMonsterZone(card, clickedRedZone);
+//        card->setCardLocation(CardLocation::FIELD);
+//        for(auto x : f.monsterZone.m_monsterZone) {
+//            if(!x->isEmpty())
+//                std::cout << *x->m_pCard << std::endl;
+//        }
+//        f.monsterZone.refresh();
+//    }
+//    else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
+//        f.spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
+//        card->setCardLocation(CardLocation::FIELD);
+//        for(auto x: f.spellTrapZone.m_spellTrapZone) {
+//            if(!x->isEmpty())
+//                std::cout << *x->m_pCard << std::endl;
+//        }
+//        f.spellTrapZone.refresh();
+//    }
 
     delete globalMonsterCard1;
 }

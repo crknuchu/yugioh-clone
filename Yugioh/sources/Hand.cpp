@@ -13,7 +13,7 @@ std::vector<Card*> Hand::getHand() const{
 }
 
 void Hand::addToHand(Card &card) {
-    float gap = 20;
+    float gap = 2;
     float y = 700;
     card.move(m_width, y);
     card.setCardLocation(CardLocation::HAND);
