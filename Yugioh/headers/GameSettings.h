@@ -1,5 +1,6 @@
 #ifndef GAMESETTINGS_H
 #define GAMESETTINGS_H
+
 #include <QDialog>
 namespace Ui {
 class GameSettings;
@@ -12,12 +13,21 @@ class GameSettings : public QDialog
 public:
     explicit GameSettings(QWidget *parent = nullptr);
     ~GameSettings();
-    int lifePoints = 4000;
-    int timePerMove = 5;
-    int numberOfCards = 5;
+
+    int timePerMove ;
+    int numberOfCards ;
+    int lifePoints ;
 
 
 
+    int getLifePoints() const;
+    void setLifePoints(int newLifePoints);
+
+    int getNumberOfCards() const;
+    void setNumberOfCards(int newNumberOfCards);
+
+    int getTimePerMove() const;
+    void setTimePerMove(int newTimePerMove);
 
 private slots:
     void on_SetLifepoints_currentIndexChanged(int index);

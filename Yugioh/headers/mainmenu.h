@@ -19,24 +19,21 @@ public:
     Game g;
 
     void setGame(Game *newGame);
+    int lifepoints;
 
-    void setMusic();
+
 
 private slots:
-    void on_pushButton_clicked();
+    void on_start_clicked();
 
-    void on_pushButton_4_clicked();
+    void on_quit_clicked();
 
-    void on_pushButton_5_clicked();
-
-    void on_pushButton_5_released();
-
-
+    void on_gameSettings_clicked();
 
 private:
+    GameSettings *gameSetting;
     Ui::MainMenu *ui;
     Game *game;
-    GameSettings *gameSettings;
 };
 
 

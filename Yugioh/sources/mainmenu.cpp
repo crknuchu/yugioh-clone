@@ -35,40 +35,25 @@ MainMenu::~MainMenu()
     delete ui;
 }
 
-void MainMenu::on_pushButton_clicked()
+void MainMenu::on_start_clicked()
 {
 
     Player player1("Nikola");
     Player player2("Milan");
-    game = new Game(player1,player2);
-
-    game->showFullScreen();
-
-    //FIX THIS
-    //Player player1("Nikola");
-    //Player player2("Milan");
     //std::cout << GameSettings::lifePoints;
-   //this->setGame(new Game(player1,player2))
+    this->setGame(new Game(player1,player2));
+    //this->game->setLifePoints(gameSetting->getLifePoints());
+    //this->game->setNumberOfCards(game->getNumberOfCards());
+    //this->game->setTimePerMove(game->getTimePerMove());
 
 
-    close(); //mozda ne treba
-}
+    this->game->showFullScreen();
+
+    std::cout << "hej" << this->game->lifePoints;
 
 
-void MainMenu::on_pushButton_4_clicked()
-{
-    close();
-}
 
-
-void MainMenu::on_pushButton_5_clicked()
-{
-    gameSettings = new GameSettings();
-    gameSettings->show();
-
-}
-
-
+    }
 
 void MainMenu::setGame(Game *newGame)
 {
@@ -77,8 +62,16 @@ void MainMenu::setGame(Game *newGame)
 
 
 
+void MainMenu::on_quit_clicked()
+{
+    close();
+}
 
 
+void MainMenu::on_gameSettings_clicked()
+{
+    gameSetting = new GameSettings();
+    gameSetting->show();
 
-
+}
 
