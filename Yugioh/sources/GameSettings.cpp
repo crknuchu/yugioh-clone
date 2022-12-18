@@ -33,6 +33,10 @@ GameSettings::GameSettings(QWidget *parent) :
     ui->SetInitialNumberOfCards->addItem("9");
     ui->SetInitialNumberOfCards->addItem("10");
 
+    connect(ui->okButton , &QPushButton::clicked , this, &GameSettings::onOkButtonClick);
+
+    connect(ui->leaveButton, &QPushButton::clicked, this, &GameSettings::onLeaveButtonClick);
+
 }
 
 GameSettings::~GameSettings()
@@ -71,7 +75,7 @@ void GameSettings::setNumberOfCards(int newNumberOfCards)
 
 
 
-void GameSettings::on_SetLifepoints_currentIndexChanged(int index)
+void GameSettings::onSetLifepointsCurrentIndexChanged(int index)
 {
     switch (index) {
     case 0:
@@ -96,7 +100,7 @@ void GameSettings::on_SetLifepoints_currentIndexChanged(int index)
 }
 
 
-void GameSettings::on_SetTimePerMove_currentIndexChanged(int index)
+void GameSettings::onSetTimePerMoveCurrentIndexChanged(int index)
 {
     switch (index) {
     case 0:
@@ -121,7 +125,7 @@ void GameSettings::on_SetTimePerMove_currentIndexChanged(int index)
 }
 
 
-void GameSettings::on_SetInitialNumberOfCards_currentIndexChanged(int index)
+void GameSettings::onSetInitialNumberOfCardsCurrentIndexChanged(int index)
 {
     switch (index) {
     case 0:
@@ -150,19 +154,14 @@ void GameSettings::on_SetInitialNumberOfCards_currentIndexChanged(int index)
 }
 
 
-void GameSettings::on_Back_accepted()
-{
-    //TO DO
-     //  save changes
 
+void GameSettings::onOkButtonClick()
+{
+    emit okButtonClicked();
+    std:: cout << "ssss" << std:: endl ;
     close();
 }
 
-
-void GameSettings::on_Back_rejected()
-{
-
-
+void GameSettings::onLeaveButtonClick(){
     close();
 }
-

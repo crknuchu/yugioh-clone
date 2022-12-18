@@ -42,14 +42,11 @@ void MainMenu::on_start_clicked()
     Player player2("Milan");
     //std::cout << GameSettings::lifePoints;
     this->setGame(new Game(player1,player2));
-    //this->game->setLifePoints(gameSetting->getLifePoints());
-    //this->game->setNumberOfCards(game->getNumberOfCards());
-    //this->game->setTimePerMove(game->getTimePerMove());
 
 
     this->game->showFullScreen();
 
-    std::cout << "hej" << this->game->lifePoints;
+    std::cout <<  this->game->lifePoints;
 
 
 
@@ -58,6 +55,17 @@ void MainMenu::on_start_clicked()
 void MainMenu::setGame(Game *newGame)
 {
     game = newGame;
+}
+
+void MainMenu::updateValues()
+{
+    //to do save as json file?
+    if(!this->game)
+    {
+    this->game->setLifePoints(gameSetting->getLifePoints());
+    this->game->setNumberOfCards(game->getNumberOfCards());
+    this->game->setTimePerMove(game->getTimePerMove());
+    }
 }
 
 
@@ -72,6 +80,8 @@ void MainMenu::on_gameSettings_clicked()
 {
     gameSetting = new GameSettings();
     gameSetting->show();
+
+    connect(gameSetting,&GameSettings::okButtonClicked, this, &MainMenu::updateValues);
 
 }
 

@@ -29,16 +29,22 @@ public:
     int getTimePerMove() const;
     void setTimePerMove(int newTimePerMove);
 
+signals:
+    void okButtonClicked();
+
+
 private slots:
-    void on_SetLifepoints_currentIndexChanged(int index);
+    void onSetLifepointsCurrentIndexChanged(int index);
 
-    void on_SetTimePerMove_currentIndexChanged(int index);
+    void onSetTimePerMoveCurrentIndexChanged(int index);
 
-    void on_SetInitialNumberOfCards_currentIndexChanged(int index);
+    void onSetInitialNumberOfCardsCurrentIndexChanged(int index);
 
-    void on_Back_accepted();
+    void onOkButtonClick();
 
-    void on_Back_rejected();
+    void onLeaveButtonClick();
+
+
 
 private:
     Ui::GameSettings *ui;

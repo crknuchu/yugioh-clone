@@ -19,7 +19,7 @@ public:
     Game g;
 
     void setGame(Game *newGame);
-    int lifepoints;
+
 
 
 
@@ -29,6 +29,8 @@ private slots:
     void on_quit_clicked();
 
     void on_gameSettings_clicked();
+
+     void updateValues();
 
 private:
     GameSettings *gameSetting;
