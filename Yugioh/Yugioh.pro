@@ -11,6 +11,7 @@ QT += \
 
 SOURCES += \
         sources/Field.cpp \
+        sources/FieldZone.cpp \
         sources/GameSettings.cpp \
         sources/mainmenu.cpp \
         sources/Card.cpp \
@@ -33,6 +34,7 @@ SOURCES += \
 
 HEADERS += \
     headers/Field.h \
+    headers/FieldZone.h \
     headers/GameSettings.h \
     headers/Card.h \
     headers/EffectActivator.h \

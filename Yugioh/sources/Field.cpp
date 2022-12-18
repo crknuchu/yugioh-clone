@@ -7,7 +7,7 @@ void Field::setField(int playerNumber,int windowWidth ,int windowHeight) {
     int zoneHeight = 150;
     int zoneWidth = 100;
     int gapBetweenZones = 20;
-    int gapBetweenFields = 100;
+    int gapBetweenFields = 50;
     if(playerNumber == 1) {
         m_width = windowWidth / 4;
         float y = (windowHeight / 2);
