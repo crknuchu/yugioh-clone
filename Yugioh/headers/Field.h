@@ -4,12 +4,14 @@
 #include "SpellTrapZone.h"
 #include "Graveyard.h"
 #include "Deck.h"
+#include "FieldZone.h"
 
 class Field {
 public:
     Field();
     void setField(int, int, int);
 
+    FieldZone* fieldZone;
     MonsterZone monsterZone;
     Graveyard* graveyard;
     SpellTrapZone spellTrapZone;

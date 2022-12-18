@@ -5,8 +5,11 @@
 
 class FieldZone : public Zone {
 public:
-    FieldZone(float, float);
+    FieldZone();
+    ~FieldZone();
+    void setFieldZone(float, float);
 private:
+    Zone* m_fieldZone;
     float m_x;
     float m_y;
 };

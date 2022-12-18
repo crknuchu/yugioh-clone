@@ -7,5 +7,6 @@
     <file>resources/yugioh1.jpg</file>
     <file>resources/background.jpg</file>
     <file>resources/space.jpeg</file>
+    <file>resources/fieldZoneSymbol.png</file>
 </qresource>
 </RCC>

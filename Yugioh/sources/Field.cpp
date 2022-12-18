@@ -1,7 +1,7 @@
 #include "headers/Field.h"
 
 Field::Field()
-    : graveyard(new Graveyard()){}
+    : fieldZone(new FieldZone()), graveyard(new Graveyard()){}
 
 void Field::setField(int playerNumber,int windowWidth ,int windowHeight) {
     int zoneHeight = 150;
@@ -11,6 +11,7 @@ void Field::setField(int playerNumber,int windowWidth ,int windowHeight) {
     if(playerNumber == 1) {
         m_width = windowWidth / 4;
         float y = (windowHeight / 2);
+        fieldZone->setFieldZone(m_width - zoneWidth - gapBetweenZones, y);
         monsterZone.setMonsterZone(m_width, y);
         spellTrapZone.setSpellTrapZone(m_width, y + gapBetweenZones + zoneHeight);
         m_width = monsterZone.getWidth();
@@ -25,5 +26,7 @@ void Field::setField(int playerNumber,int windowWidth ,int windowHeight) {
         spellTrapZone.setSpellTrapZone(m_width, y - gapBetweenZones - zoneHeight);
         graveyard->setGraveyard(m_width - zoneWidth - gapBetweenZones, y);
         deck.setDeck(m_width - zoneWidth - gapBetweenZones, y - gapBetweenZones - zoneHeight, playerNumber);
+        m_width = monsterZone.getWidth();
+        fieldZone->setFieldZone(m_width, y);
     }
 }
