@@ -3,43 +3,24 @@
 
 #include "Player.h"
 #include "Card.h"
+#include "GamePhase.h"
+#include "Zone.h"
 
 #include <QGraphicsScene>
 #include <QMainWindow>
 #include <QResizeEvent>
+#include <QTcpSocket>
 
-// WIP
-#include "GamePhase.h"
-
-
-#include "Zone.h"
 namespace Ui {
     class MainWindow;
 }
 
-
-class Card;
-
-
-
-
-
-
-
-// Will be needed in the future for the Summoning action
-//static int *p_Summon_target = nullptr;
-
-// WIP
 namespace GameExternVars {
     extern Player *pCurrentPlayer;
     extern Player *pOtherPlayer;
     extern Card *pCardToBePlacedOnField;
     extern Card *pAttackingMonster;
 }
-
-
-
-
 
 class Game: public QMainWindow
 {
@@ -67,8 +48,6 @@ private:
   Player m_player1;  
   Player m_player2;
   int m_currentTurn;
-
-
   int resizeCount = 0; // dirty hack
 
 
@@ -91,6 +70,10 @@ private:
   void setupConnections();
   bool eventFilter(QObject *obj, QEvent *event) override;
 
+// Networking:
+  QTcpSocket *m_pTcpSocket = nullptr;
+  QDataStream m_inDataStream;
+  QString m_messageFromServer;
 
 private slots:
     void onBattlePhaseButtonClick();
@@ -121,6 +104,13 @@ private slots:
     // Slots for Zone signal handling
     void onRedZoneClick(Zone *zone);
     void onGreenZoneClick(Zone *zone);
+
+
+    // Networking slots
+    void onErrorOccurred(QAbstractSocket::SocketError socketError);
+    void onMessageIncoming();
+    void onTestNetworkButtonClick();
+
 
 
 signals:

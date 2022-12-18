@@ -160,6 +160,20 @@ li.checked::marker { content: &quot;\2612&quot;; }
          </item>
         </layout>
        </item>
+       <item>
+        <widget class="QPushButton" name="btnTestNetwork">
+         <property name="text">
+          <string>Test Network Connectivity</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelMessageFromServer">
+         <property name="text">
+          <string>Message from server</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>

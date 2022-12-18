@@ -48,6 +48,8 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QLabel *labelHealthPointsConst;
     QLabel *labelHealthPointsDynamic;
+    QPushButton *btnTestNetwork;
+    QLabel *labelMessageFromServer;
     QMenuBar *menubar;
     QStatusBar *statusbar;
     QToolBar *toolBar;
@@ -141,6 +143,16 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_2);
 
+        btnTestNetwork = new QPushButton(layoutWidget);
+        btnTestNetwork->setObjectName(QString::fromUtf8("btnTestNetwork"));
+
+        verticalLayout->addWidget(btnTestNetwork);
+
+        labelMessageFromServer = new QLabel(layoutWidget);
+        labelMessageFromServer->setObjectName(QString::fromUtf8("labelMessageFromServer"));
+
+        verticalLayout->addWidget(labelMessageFromServer);
+
 
         leftVerticalLayout->addLayout(verticalLayout);
 
@@ -182,6 +194,8 @@ public:
         labelCurrentPlayerDynamic->setText(QString());
         labelHealthPointsConst->setText(QCoreApplication::translate("MainWindow", "Health Points: ", nullptr));
         labelHealthPointsDynamic->setText(QString());
+        btnTestNetwork->setText(QCoreApplication::translate("MainWindow", "Test Network Connectivity", nullptr));
+        labelMessageFromServer->setText(QCoreApplication::translate("MainWindow", "Message from server", nullptr));
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi
 

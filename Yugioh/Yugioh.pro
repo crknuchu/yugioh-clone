@@ -7,7 +7,8 @@ RCC_DIR = build
 UI_DIR = build
 
 QT += \
-        widgets
+        widgets \
+        network
 
 SOURCES += \
         sources/GameSettings.cpp \

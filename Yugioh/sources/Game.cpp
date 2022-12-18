@@ -12,6 +12,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsLayout>
+#include <QMessageBox>
 
 // Extern vars initialization:
 Player *GameExternVars::pCurrentPlayer = nullptr;
@@ -28,10 +29,15 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
       m_player1(p1),
-      m_player2(p2)
+      m_player2(p2),
+      m_pTcpSocket(new QTcpSocket(this))
 
 {
     ui->setupUi(this);
+
+    // Setup data stream
+    m_inDataStream.setDevice(m_pTcpSocket);
+    m_inDataStream.setVersion(QDataStream::Qt_5_15);
 
     // Setup connections:
     setupConnections();
@@ -249,6 +255,11 @@ void Game::setupConnections() {
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
     connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::onMainPhase2ButtonClick);
     connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::onEndPhaseButtonClick);
+
+    // Networking
+    connect(m_pTcpSocket, &QIODevice::readyRead, this, &Game::onMessageIncoming);
+    connect(m_pTcpSocket, &::QAbstractSocket::errorOccurred, this, &Game::onErrorOccurred);
+    connect(ui->btnTestNetwork, &QPushButton::clicked, this, &Game::onTestNetworkButtonClick);
 }
 
 bool Game::eventFilter(QObject *obj, QEvent *event)
@@ -367,6 +378,17 @@ void Game::onTurnEnd() {
     /* FIXME: Currently when EndPhase is clicked, labelGamePhase is instantly Main Phase 1
              because its switched so fast that we can't see DP and SP. */
 
+}
+
+void Game::onCardAddedToScene(Card &card)
+{
+    connect(&card, &Card::cardSelected, this, &Game::onCardSelect);
+    connect(&card, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
+    connect(&card, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
+
+    // By default we don't want to show card info unless the card is hovered
+    ui->labelImage->setVisible(false);
+    ui->textBrowserEffect->setVisible(false);
 }
 
 /* In order to have drag resizes on the main window, we can place CentralWidget in a layout,
@@ -639,13 +661,56 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 
 }
 
-void Game::onCardAddedToScene(Card &card)
+void Game::onErrorOccurred(QAbstractSocket::SocketError socketError)
 {
-    connect(&card, &Card::cardSelected, this, &Game::onCardSelect);
-    connect(&card, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
-    connect(&card, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
+    switch (socketError) {
+       case QAbstractSocket::RemoteHostClosedError:
+           break;
+       case QAbstractSocket::HostNotFoundError:
+           QMessageBox::information(this, tr("Game client"),
+                                    tr("The host was not found. Please check the "
+                                       "host name and port settings."));
+           break;
+       case QAbstractSocket::ConnectionRefusedError:
+           QMessageBox::information(this, tr("Game client"),
+                                    tr("The connection was refused by the peer. "
+                                       "Make sure the server is running, "
+                                       "and check that the host name and port "
+                                       "settings are correct."));
+           break;
+       default:
+           QMessageBox::information(this, tr("Game client"),
+                                    tr("The following error occurred: %1.")
+                                    .arg(m_pTcpSocket->errorString()));
+    }
+}
 
-    // By default we don't want to show card info unless the card is hovered
-    ui->labelImage->setVisible(false);
-    ui->textBrowserEffect->setVisible(false);
+void Game::onMessageIncoming()
+{
+    // Read data that was sent from the server
+    m_inDataStream.startTransaction();
+
+    QByteArray nextMessage;
+    m_inDataStream >> nextMessage;
+
+    std::cout << "Server Message: " << nextMessage.toStdString() << std::endl;
+
+    if(!m_inDataStream.commitTransaction())
+        return;
+//    if(nextMessage == m_currentMessage)
+//    {
+//        QTimer::singleShot(0, this, &Client::onReadMessage);
+//        return;
+//    }
+
+    m_messageFromServer = nextMessage;
+    ui->labelMessageFromServer->setText(m_messageFromServer);
+}
+
+void Game::onTestNetworkButtonClick()
+{
+    ui->btnTestNetwork->setEnabled(false);
+
+    m_pTcpSocket->abort();
+    m_pTcpSocket->connectToHost("localhost" , 8090);
 }
