@@ -21,7 +21,7 @@ public:
     std::string getTrapTypeString() const;
 
     void activateTrap();
-    void setCardMenu();
+    void setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters) override;
 
 protected:
     TrapType trapType;

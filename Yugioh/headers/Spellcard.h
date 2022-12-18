@@ -23,7 +23,7 @@ public:
     SpellType getSpellType() const;
     std:: string getSpellTypeString()const;
     void activateSpell();
-    void setCardMenu();
+    void setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters) override;
 
 
 protected:

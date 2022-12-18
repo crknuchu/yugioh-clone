@@ -60,7 +60,7 @@ public:
 
     //virtual void placeCardOnField();
 
-    //virtual void setCardMenu() ;
+    virtual void setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters) = 0 ;
 
     bool operator==(const Card &card) const;
 

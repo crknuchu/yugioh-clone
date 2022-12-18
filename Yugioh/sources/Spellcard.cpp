@@ -41,7 +41,7 @@ void SpellCard::activateSpell()
     this->active = true;
 }
 
-void SpellCard::setCardMenu(){
+void SpellCard::setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters){
 
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
 

@@ -37,7 +37,7 @@ void TrapCard::activateTrap()
     this->active = true;
 }
 
-void TrapCard::setCardMenu(){
+void TrapCard::setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters){
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
 
     if(cardLocation == CardLocation::HAND && (GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE1 || GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE2)){

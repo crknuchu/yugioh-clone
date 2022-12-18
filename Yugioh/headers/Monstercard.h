@@ -93,7 +93,7 @@ public:
     bool specialSummon(Position position);
 
 
-    void setCardMenu(bool isMonsterZoneFull,bool doesOpponentHaveMonsters) ;
+    void setCardMenu(bool isMonsterZoneFull,bool doesOpponentHaveMonsters) override;
 
 protected:
     int attackPoints;
