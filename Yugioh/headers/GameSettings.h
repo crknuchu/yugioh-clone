@@ -26,7 +26,7 @@ private slots:
 
     void on_SetInitialNumberOfCards_currentIndexChanged(int index);
 
-    void on_Back_accepted();
+//    void on_Back_accepted();
 
     void on_Back_rejected();
 
