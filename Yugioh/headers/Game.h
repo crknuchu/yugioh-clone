@@ -80,12 +80,12 @@ private:
   Player *m_pCurrentPlayer;
   Player *m_pOtherPlayer;
   int m_currentTurn;
-
+  int counter = 0;
 
   // Private member functions:
   int randomGenerator(const int limit) const;
   int decideWhoPlaysFirst() const;
-  void firstTurnSetup();
+  void firstTurnSetup(float, float);
   void switchPlayers();
 
 // QT related stuff:

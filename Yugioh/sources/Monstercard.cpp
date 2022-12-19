@@ -1,6 +1,5 @@
 #include "headers/Monstercard.h"
 
-
 MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn)
     : Card(cardName, cardType, cardLocation, cardDescription)
     ,attackPoints(attackPoints)

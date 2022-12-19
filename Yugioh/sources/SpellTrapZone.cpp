@@ -1,16 +1,7 @@
 #include "headers/SpellTrapZone.h"
 #include <iostream>
 
-SpellTrapZone::SpellTrapZone(){
-    float x = 0;
-    float y = 470;
-    float gap = 20;
-    for(int i = 0; i < 5; i++) {
-        Zone* zone = new Zone(x, y);
-        m_spellTrapZone.push_back(zone);
-        x += zone->getWidth() + gap;
-    }
-}
+SpellTrapZone::SpellTrapZone(){}
 
 SpellTrapZone::~SpellTrapZone()
 {
@@ -20,6 +11,18 @@ SpellTrapZone::~SpellTrapZone()
 
     m_spellTrapZone.clear();
 };
+
+void SpellTrapZone::setSpellTrapZone(float x , float y){
+    float gap = 20;
+    for(int i = 0; i < 5; i++) {
+        Zone* zone = new Zone(x, y);
+        zone->setBrush(QColor(0,200,0,30));
+        m_spellTrapZone.push_back(zone);
+        x += zone->getWidth() + gap;
+    }
+
+    m_width = x;
+}
 
 Card* SpellTrapZone::removeFromSpellTrapZone(Zone* targetedZone) {
     Card* card = targetedZone->m_pCard;
@@ -81,3 +84,7 @@ bool SpellTrapZone::isFull() const {
     return true;
 }
 
+float SpellTrapZone::getWidth() const
+{
+    return m_width;
+}

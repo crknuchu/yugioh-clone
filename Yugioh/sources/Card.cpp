@@ -10,7 +10,7 @@ Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLoca
     ,cardLocation(cardLocation)
     ,cardDescription(cardDescription)
 {
-    QPixmap pixmap(":/resources/pictures/blue_eyes.jpg");
+    QPixmap pixmap(":/resources/pictures/card_back.jpg");
     pixmap = pixmap.scaled(QSize(200,150), Qt::KeepAspectRatio); //pixmap size needs to not be hardcoded
     height = pixmap.height();
     width = pixmap.width();
