@@ -42,7 +42,7 @@ std::string Card::getCardLocationString() const
     case CardLocation::GRAVEYARD:
         return "graveyard";
     case CardLocation::FIELD:
-        return "fiels";
+        return "field";
     default:
         return "error:unsupported card location";
     }

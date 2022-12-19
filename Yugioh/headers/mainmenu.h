@@ -16,7 +16,6 @@ class MainMenu : public QMainWindow
 public:
     explicit MainMenu(QWidget *parent = nullptr);
     ~MainMenu();
-    Game g;
 
     void setGame(Game *newGame);
 
@@ -34,7 +33,7 @@ private slots:
 
 private:
     Ui::MainMenu *ui;
-    Game *game;
+    Game *m_pGame;
     GameSettings *gameSettings;
 };
 

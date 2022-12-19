@@ -12,10 +12,8 @@ int main(int argc,char **argv)
 {
   QApplication app(argc, argv);
 
-   MainMenu m;
-   m.showFullScreen();
-
-
+  MainMenu m;
+  m.showFullScreen();
 
   app.exec();
   return 0;

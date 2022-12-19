@@ -5,6 +5,7 @@ build-Yugioh-Desktop-Debug/
 Yugioh/Yugioh.pro.user
 build-Yugioh-Desktop_Qt_6_4_1_GCC_64bit-Debug/
 build-Yugioh-Desktop_Qt_5_15_2_GCC_64bit-Debug/
+build*
 .vscode
 .qmake.stash
 Card.o
@@ -17,4 +18,3 @@ Trapcard.o
 main.o
 qrc_resources.cpp
 qrc_resources.o
-Yugioh

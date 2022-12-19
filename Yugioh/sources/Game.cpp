@@ -111,9 +111,9 @@ int Game::randomGenerator(const int limit) const {
 int Game::decideWhoPlaysFirst() const { return randomGenerator(2); }
 
 void Game::switchPlayers() {
-    Player tmp = *m_pCurrentPlayer;
+    Player *tmp = m_pCurrentPlayer;
     *m_pCurrentPlayer = *m_pOtherPlayer;
-    *m_pOtherPlayer = tmp;
+    m_pOtherPlayer = tmp;
 
     std::cout << "Current player is: " << *m_pCurrentPlayer << std::endl;
 }
@@ -323,7 +323,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 //    ui->textBrowserEffect->setText(monsterCard1->getEffect());
 
     QPixmap pix;
-    pix.load(":/resources/images/blue_eyes.jpg");
+    pix.load(":/resources/pictures/blue_eyes.jpg");
     pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
     ui->labelImage->setPixmap(pix);
 
@@ -336,9 +336,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
     // TODO: Change leftVerticalLayout name to something normal
     const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
-    const int leftVerticalLayoutHeight = ui->leftVerticalLayout->sizeHint().height();
-//    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
-
     const int viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
     ui->graphicsView->setFixedSize(viewAndSceneWidth, m_windowHeight);
     ui->graphicsView->scene()->setSceneRect(0, 0, viewAndSceneWidth, m_windowHeight);
@@ -350,10 +347,10 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
     // WIP: Background image
     // TODO: Find another image of the field
-    //QPixmap background(":/resources/images/space.jpeg");
+    //QPixmap background(":/resources/pictures/space.jpeg");
     //background = background.scaled(viewAndSceneWidth,  this->size().height() / 10, Qt::IgnoreAspectRatio);
 
-    QPixmap background(":/resources/images/field2.png");
+    QPixmap background(":/resources/pictures/field2.png");
     background = background.scaled(viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
     QBrush brush(QPalette::Window, background);
     ui->graphicsView->setBackgroundBrush(brush);
