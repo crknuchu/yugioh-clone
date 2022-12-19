@@ -442,24 +442,24 @@ void Game::onRedZoneClicked(Zone * clickedRedZone) {
                                                " Destroy all monsters on the field. ", true);
 
     Card* card = globalSpellCard;
-//    if(card->getCardType() == CardType::MONSTER_CARD) {
-//        f.monsterZone.placeInMonsterZone(card, clickedRedZone);
-//        card->setCardLocation(CardLocation::FIELD);
-//        for(auto x : f.monsterZone.m_monsterZone) {
-//            if(!x->isEmpty())
-//                std::cout << *x->m_pCard << std::endl;
-//        }
-//        f.monsterZone.refresh();
-//    }
-//    else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
-//        f.spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
-//        card->setCardLocation(CardLocation::FIELD);
-//        for(auto x: f.spellTrapZone.m_spellTrapZone) {
-//            if(!x->isEmpty())
-//                std::cout << *x->m_pCard << std::endl;
-//        }
-//        f.spellTrapZone.refresh();
-//    }
+    if(card->getCardType() == CardType::MONSTER_CARD) {
+        m_pCurrentPlayer->field.monsterZone.placeInMonsterZone(card, clickedRedZone);
+        card->setCardLocation(CardLocation::FIELD);
+        for(auto x : m_pCurrentPlayer->field.monsterZone.m_monsterZone) {
+            if(!x->isEmpty())
+                std::cout << *x->m_pCard << std::endl;
+        }
+        m_pCurrentPlayer->field.monsterZone.refresh();
+    }
+    else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
+        m_pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
+        card->setCardLocation(CardLocation::FIELD);
+        for(auto x: m_pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
+            if(!x->isEmpty())
+                std::cout << *x->m_pCard << std::endl;
+        }
+        m_pCurrentPlayer->field.spellTrapZone.refresh();
+    }
 
     delete globalMonsterCard1;
 }
