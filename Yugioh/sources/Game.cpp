@@ -20,11 +20,12 @@ Player *GameExternVars::pOtherPlayer = nullptr;
 Card *GameExternVars::pCardToBePlacedOnField = nullptr;
 Card *GameExternVars::pAttackingMonster = nullptr;
 
-// QMainWindow != Ui::MainWindow
+
+// Placeholders
 MonsterZone monsterZone = MonsterZone();
 SpellTrapZone spellTrapZone = SpellTrapZone();
 
-// Class definitions:
+
 Game::Game(Player p1, Player p2, QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
@@ -258,8 +259,9 @@ void Game::setupConnections() {
 
     // Networking
     connect(m_pTcpSocket, &QIODevice::readyRead, this, &Game::onMessageIncoming);
-    connect(m_pTcpSocket, &::QAbstractSocket::errorOccurred, this, &Game::onErrorOccurred);
+    connect(m_pTcpSocket, &::QAbstractSocket::errorOccurred, this, &Game::onNetworkErrorOccurred);
     connect(ui->btnTestNetwork, &QPushButton::clicked, this, &Game::onTestNetworkButtonClick);
+    connect(ui->btnWriteData, &QPushButton::clicked, this, &Game::onWriteDataButtonClick);
 }
 
 bool Game::eventFilter(QObject *obj, QEvent *event)
@@ -279,6 +281,32 @@ bool Game::eventFilter(QObject *obj, QEvent *event)
     }
 }
 
+// Networking:
+bool Game::writeData(QByteArray data)
+{
+    std::cout << "Data in writeData: " << data.toStdString() << std::endl;
+    if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
+    {
+        // First we send the data's size
+        m_pTcpSocket->write(QInt32ToQByteArray(data.size()));
+        // Then we write the actual data
+        m_pTcpSocket->write(data);
+        return m_pTcpSocket->waitForBytesWritten();
+    }
+    else
+    {
+        std::cerr << "Error: the socket that is trying to write the data is in UNCONNECTED state!" << std::endl;
+        return false;
+    }
+}
+
+QByteArray Game::QInt32ToQByteArray(qint32 source)
+{
+    QByteArray tmp;
+    QDataStream stream(&tmp, QIODevice::ReadWrite);
+    stream << source;
+    return tmp;
+}
 
 // Slots:
 void Game::onBattlePhaseButtonClick()
@@ -613,7 +641,6 @@ void Game::onGameEnd(Player &loser)
     // TODO: Stop the game here somehow!
 }
 
-
 void Game::onSetButtonClick(const Card &card)
 {
     std::cout << "Set button clicked on card " << card.getCardName() << std::endl;
@@ -661,7 +688,7 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 
 }
 
-void Game::onErrorOccurred(QAbstractSocket::SocketError socketError)
+void Game::onNetworkErrorOccurred(QAbstractSocket::SocketError socketError)
 {
     switch (socketError) {
        case QAbstractSocket::RemoteHostClosedError:
@@ -713,4 +740,20 @@ void Game::onTestNetworkButtonClick()
 
     m_pTcpSocket->abort();
     m_pTcpSocket->connectToHost("localhost" , 8090);
+}
+
+void Game::onWriteDataButtonClick()
+{
+    // WIP
+
+//   QByteArray buffer;
+//   QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+//   outDataStream.setVersion(QDataStream::Qt_5_15);
+//   outDataStream << tr("Hello from the client!");  // FIXME
+
+   if(!writeData("Hello from the client!"))
+    {
+       std::cerr << "Error in writeData function! " << std::endl;
+       return;
+   }
 }

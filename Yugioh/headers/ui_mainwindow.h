@@ -50,6 +50,7 @@ public:
     QLabel *labelHealthPointsDynamic;
     QPushButton *btnTestNetwork;
     QLabel *labelMessageFromServer;
+    QPushButton *btnWriteData;
     QMenuBar *menubar;
     QStatusBar *statusbar;
     QToolBar *toolBar;
@@ -153,6 +154,11 @@ public:
 
         verticalLayout->addWidget(labelMessageFromServer);
 
+        btnWriteData = new QPushButton(layoutWidget);
+        btnWriteData->setObjectName(QString::fromUtf8("btnWriteData"));
+
+        verticalLayout->addWidget(btnWriteData);
+
 
         leftVerticalLayout->addLayout(verticalLayout);
 
@@ -196,6 +202,7 @@ public:
         labelHealthPointsDynamic->setText(QString());
         btnTestNetwork->setText(QCoreApplication::translate("MainWindow", "Test Network Connectivity", nullptr));
         labelMessageFromServer->setText(QCoreApplication::translate("MainWindow", "Message from server", nullptr));
+        btnWriteData->setText(QCoreApplication::translate("MainWindow", "Write data to server", nullptr));
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi
 

@@ -174,6 +174,13 @@ li.checked::marker { content: &quot;\2612&quot;; }
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QPushButton" name="btnWriteData">
+         <property name="text">
+          <string>Write data to server</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
     </layout>

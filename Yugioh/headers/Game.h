@@ -71,9 +71,13 @@ private:
   bool eventFilter(QObject *obj, QEvent *event) override;
 
 // Networking:
+  // TODO: Separate class?
   QTcpSocket *m_pTcpSocket = nullptr;
   QDataStream m_inDataStream;
   QString m_messageFromServer;
+
+  bool writeData(QByteArray data);
+  QByteArray QInt32ToQByteArray(qint32 source); // We use qint32 to ensure the number has 4 bytes
 
 private slots:
     void onBattlePhaseButtonClick();
@@ -107,9 +111,13 @@ private slots:
 
 
     // Networking slots
-    void onErrorOccurred(QAbstractSocket::SocketError socketError);
+    // TODO: Separate class ?
+    void onNetworkErrorOccurred(QAbstractSocket::SocketError socketError);
     void onMessageIncoming();
     void onTestNetworkButtonClick();
+
+    // Testing
+    void onWriteDataButtonClick();
 
 
 
