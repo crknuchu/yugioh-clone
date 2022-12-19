@@ -13,6 +13,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsLayout>
 #include <QMessageBox>
+#include <QTimer>
 
 // Extern vars initialization:
 Player *GameExternVars::pCurrentPlayer = nullptr;
@@ -714,6 +715,7 @@ void Game::onNetworkErrorOccurred(QAbstractSocket::SocketError socketError)
 
 void Game::onMessageIncoming()
 {
+    std::cout << "We are in onMessageIncoming" << std::endl;
     // Read data that was sent from the server
     m_inDataStream.startTransaction();
 
@@ -724,9 +726,9 @@ void Game::onMessageIncoming()
 
     if(!m_inDataStream.commitTransaction())
         return;
-//    if(nextMessage == m_currentMessage)
+//    if(nextMessage == m_messageFromServer)
 //    {
-//        QTimer::singleShot(0, this, &Client::onReadMessage);
+//        QTimer::singleShot(0, this, &Game::onMessageIncoming);
 //        return;
 //    }
 
@@ -746,12 +748,12 @@ void Game::onWriteDataButtonClick()
 {
     // WIP
 
-//   QByteArray buffer;
-//   QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-//   outDataStream.setVersion(QDataStream::Qt_5_15);
-//   outDataStream << tr("Hello from the client!");  // FIXME
+   QByteArray buffer;
+   QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+   outDataStream.setVersion(QDataStream::Qt_5_15);
+   outDataStream << "Hello from the client!";
 
-   if(!writeData("Hello from the client!"))
+   if(!writeData(buffer))
     {
        std::cerr << "Error in writeData function! " << std::endl;
        return;
