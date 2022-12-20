@@ -2,17 +2,11 @@
 #include "headers/GamePhase.h"
 Player::Player(){}
 
-Player::Player(std::string playerName, int points) : graveyard(Graveyard()),
-    monsterZone(MonsterZone()), spellTrapZone(SpellTrapZone()), hand(Hand()),
-    deck(Deck()) , m_name(playerName), m_points(points){};
+Player::Player(std::string playerName, int points) : hand(Hand()), field(Field()), m_name(playerName), m_points(points){};
 
 //NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
 Player::Player(Player &p){
-    this->spellTrapZone = p.spellTrapZone;
-    this->monsterZone = p.monsterZone;
-    this->deck = p.deck;
-    this->graveyard = p.graveyard;
-    this->hand = p.hand;
+    this->field = p.field;
     this->m_points = p.m_points;
     this->m_name = p.m_name;
 
@@ -43,23 +37,23 @@ void Player::addPoints(unsigned points){
 }
 
 void Player::setDeck(Deck &d) {
-    this->deck = d;
+    this->field.deck = d;
 }
 
 //DRAW PHASE 
 
 void Player::drawCards(unsigned int numOfCards) {
     //TODO refactor
-    std::vector<Card *>currentDeck = this->deck.getDeck();
+    std::vector<Card *>currentDeck = this->field.deck.getDeck();
     unsigned int deckSize = currentDeck.size();
     std::cout<<"num of card " << deckSize << std::endl;
-    if (this->deck.getDeck().empty() == true || deckSize < numOfCards)
+    if (this->field.deck.getDeck().empty() == true || deckSize < numOfCards)
     {
         std::cout<<this->getPlayerName() << " cant draw cards" << std::endl;
         return;
     }
     else{
-        std::vector<Card*> newCards = this->deck.draw(numOfCards);
+        std::vector<Card*> newCards = this->field.deck.draw(numOfCards);
         for (unsigned i = 0; i < newCards.size(); i++){
             this->hand.addToHand(*newCards[i]);
         }
@@ -96,32 +90,41 @@ void Player::activationSpellTrapCard(Card &card){
     }
 }
 
+void Player::putCardOnField(Card &card){
+//    this->hand.removeFromHand(card);
+
+//    if (card.getCardType() == CardType::MONSTER_CARD){
+//        this->monsterZone.push_back(card);
+//    }
+}
+
+
 void Player::sendToGraveyard(Card &card){
     //first need to be removed from field
     try {
         //removing from deck, not sure if is it legal move
-        for (auto it = this->deck.cbegin(); it != this->deck.cend(); it++){
+        for (auto it = this->field.deck.cbegin(); it != this->field.deck.cend(); it++){
             if ((*it) == &card){
-                this->deck.erase(it);
-                this->graveyard.sendToGraveyard(card);
+                this->field.deck.erase(it);
+                this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->getCardName()<<" successfully removed from deck"<<std::endl;
                 break;
             }
         }
 
-        for (auto it = this->monsterZone.m_monsterZone.cbegin(); it != this->monsterZone.m_monsterZone.cend(); it++){
+        for (auto it = this->field.monsterZone.m_monsterZone.cbegin(); it != this->field.monsterZone.m_monsterZone.cend(); it++){
             if ((*it)->m_pCard == &card){
-                this->monsterZone.m_monsterZone.erase(it);
-                this->graveyard.sendToGraveyard(card);
+                this->field.monsterZone.m_monsterZone.erase(it);
+                this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
                 break;
             }
         }
 
-        for (auto it = this->spellTrapZone.m_spellTrapZone.cbegin(); it != this->spellTrapZone.m_spellTrapZone.cend(); it++){
+        for (auto it = this->field.spellTrapZone.m_spellTrapZone.cbegin(); it != this->field.spellTrapZone.m_spellTrapZone.cend(); it++){
             if ((*it)->m_pCard == &card){
-                this->spellTrapZone.m_spellTrapZone.erase(it);
-                this->graveyard.sendToGraveyard(card);
+                this->field.spellTrapZone.m_spellTrapZone.erase(it);
+                this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
                 break;
             }
@@ -130,7 +133,7 @@ void Player::sendToGraveyard(Card &card){
         for (auto it = this->hand.cbegin(); it != this->hand.cend(); it++){
             if ((*it) == &card){
                this->hand.erase(it);
-               this->graveyard.sendToGraveyard(card);
+               this->field.graveyard->sendToGraveyard(card);
                std::cout<< (*it)->getCardName() << " succesfully removed from hand"<<std::endl;
                break;
             }
@@ -147,7 +150,7 @@ void Player::sendToGraveyard(Card &card){
 // BATTLE PHASE
 
 int Player::checkOpponentGround(Player &opponent) {
-       std::vector<Zone*>cards = opponent.monsterZone.m_monsterZone; //first monsterZone is field in player.h
+       std::vector<Zone*>cards = opponent.field.monsterZone.m_monsterZone; //first monsterZone is field in player.h
                                                                        //second one is filed in monsterZone.h
        return std::accumulate(cards.begin(), cards.end(), 0, [](unsigned acc, Zone *card){
            if (card->isEmpty() == false)

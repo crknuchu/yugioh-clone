@@ -9,14 +9,13 @@
 #include <vector>
 #include "Monstercard.h"
 #include "Monstercard.h"
-#include "SpellTrapZone.h"
+//#include "SpellTrapZone.h"
 #include "Hand.h"
 #include "Deck.h"
 
-#include "Graveyard.h"
-#include "MonsterZone.h"
-#include "SpellTrapZone.h"
-#include "GamePhase.h"
+//#include "Graveyard.h"
+//#include "MonsterZone.h"
+//#include "SpellTrapZone.h"
 #include "Field.h"
 
 class Player{ 
@@ -44,6 +43,7 @@ public:
 
   //MAIN PHASE 1 
   void setCardPosition();
+  void putCardOnField(Card &);
   // ------------------------------------------
 
   //BATTLE PHASE
@@ -69,11 +69,14 @@ public:
   unsigned getPlayerPoints();
   void setPoints(unsigned points);
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
-  Graveyard graveyard;
-  MonsterZone monsterZone;
-  SpellTrapZone spellTrapZone;
+// DON'T NEED THIS OBJECTS, HAVE ON FIELD INSTEAD
+//  Graveyard graveyard;
+//  MonsterZone monsterZone;
+//  SpellTrapZone spellTrapZone;
   Hand hand;
-  Deck deck;
+//  Deck deck;
+
+
   unsigned doDirectDamage(unsigned);
   void addPoints(unsigned);
   void setDeck(Deck &);
