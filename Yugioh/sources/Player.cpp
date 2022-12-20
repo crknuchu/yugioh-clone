@@ -69,6 +69,29 @@ void Player::drawCards(){
 // ---------------------------------------------
 
 
+void Player::fromGraveyardToHand(Card &card){
+
+    int cardInGrave = 0; //flag
+    for (auto it = this->field.graveyard->cbegin(); it != this->field.graveyard->cend(); it++)
+    {
+        if ((*it) == &card) {
+            cardInGrave = 1;
+            this->field.graveyard->erase(it);
+            this->hand.addToHand(card);
+            return;
+        }
+    }
+
+    if (cardInGrave == 0)
+    {
+        std::cerr<<card.getCardName() << " card is not in grave, can't draw it back"<<std::endl;
+        return;
+    }
+
+
+}
+
+
 // STANDBY PHASE
 void Player::activationSpellTrapCard(Card &card){
     //TODO
@@ -88,14 +111,6 @@ void Player::activationSpellTrapCard(Card &card){
         }
         delete tmp;
     }
-}
-
-void Player::putCardOnField(Card &card){
-//    this->hand.removeFromHand(card);
-
-//    if (card.getCardType() == CardType::MONSTER_CARD){
-//        this->monsterZone.push_back(card);
-//    }
 }
 
 

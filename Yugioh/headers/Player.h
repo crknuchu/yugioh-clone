@@ -51,6 +51,8 @@ public:
   // std::vector<MonsterCard *> tableMonsterCards(const Player &opponent); //check vector size before attack
   void attackOpponent(MonsterCard a, Player &opponent);
   void sendToGraveyard(Card &);
+  void fromGraveyardToHand(Card &);
+  void fromGraveyardToField(Card &, Zone &);
   // -----------------------------------------
 
   //MAIN PHASE 2 -> same as MAIN PHASE 1 + XYZ Summon
