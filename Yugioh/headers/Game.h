@@ -76,7 +76,7 @@ private:
   QDataStream m_inDataStream;
   QString m_messageFromServer;
 
-  bool writeData(QByteArray data);
+  bool writeData(QByteArray &data);
   QByteArray QInt32ToQByteArray(qint32 source); // We use qint32 to ensure the number has 4 bytes
 
 private slots:

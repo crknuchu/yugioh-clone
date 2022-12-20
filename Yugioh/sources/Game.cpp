@@ -283,7 +283,7 @@ bool Game::eventFilter(QObject *obj, QEvent *event)
 }
 
 // Networking:
-bool Game::writeData(QByteArray data)
+bool Game::writeData(QByteArray &data)
 {
     std::cout << "Data in writeData: " << data.toStdString() << std::endl;
     if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
@@ -722,8 +722,7 @@ void Game::onMessageIncoming()
     QByteArray nextMessage;
     m_inDataStream >> nextMessage;
 
-    std::cout << "Server Message: " << nextMessage.toStdString() << std::endl;
-
+//    std::cout << "Server Message: " << nextMessage.toStdString() << std::endl;
     if(!m_inDataStream.commitTransaction())
         return;
 //    if(nextMessage == m_messageFromServer)
@@ -744,6 +743,8 @@ void Game::onTestNetworkButtonClick()
     m_pTcpSocket->connectToHost("localhost" , 8090);
 }
 
+#include <string>
+
 void Game::onWriteDataButtonClick()
 {
     // WIP
@@ -751,7 +752,16 @@ void Game::onWriteDataButtonClick()
    QByteArray buffer;
    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
    outDataStream.setVersion(QDataStream::Qt_5_15);
-   outDataStream << "Hello from the client!";
+//   outDataStream << "Hello from the client!";
+
+   // Testing
+   QString testTrim = QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()).trimmed();
+   QVector<int> testArray{1, 2, 3};
+
+   // Serialization
+   outDataStream << testTrim
+                 << GameExternVars::pCurrentPlayer->getPlayerLifePoints()
+                 << testArray;
 
    if(!writeData(buffer))
     {
