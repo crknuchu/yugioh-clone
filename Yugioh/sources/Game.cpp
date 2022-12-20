@@ -227,33 +227,33 @@ void Game::firstTurnSetup() {
   GameExternVars::pCurrentPlayer->drawCards(6);
   // Notify the server that cards were drawn
   // FIXME: This is ugly
-  for(int i = 0; i < 6; i++)
-  {
-      QByteArray buffer;
-      QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-      outDataStream.setVersion(QDataStream::Qt_5_15);
+//  for(int i = 0; i < 6; i++)
+//  {
+//      QByteArray buffer;
+//      QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+//      outDataStream.setVersion(QDataStream::Qt_5_15);
 
-      outDataStream << QString::fromStdString("ADD_CARD_TO_HAND");
-      outDataStream << QString::fromStdString("OPPONENT"); // We tell the opposite player that his opponent (current player in this call) got 6 cards
+//      outDataStream << QString::fromStdString("ADD_CARD_TO_HAND");
+//      outDataStream << QString::fromStdString("OPPONENT"); // We tell the opposite player that his opponent (current player in this call) got 6 cards
 
-      sendDataToServer(buffer);
-  }
+//      sendDataToServer(buffer);
+//  }
 
 
 
   // The other one gets 5 cards
   GameExternVars::pOtherPlayer->drawCards(5);
-  for(int i = 0; i < 5; i++)
-  {
-      QByteArray buffer;
-      QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-      outDataStream.setVersion(QDataStream::Qt_5_15);
+//  for(int i = 0; i < 5; i++)
+//  {
+//      QByteArray buffer;
+//      QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+//      outDataStream.setVersion(QDataStream::Qt_5_15);
 
-      outDataStream << QString::fromStdString("ADD_CARD_TO_HAND");
-      outDataStream << QString::fromStdString("MYSELF");
+//      outDataStream << QString::fromStdString("ADD_CARD_TO_HAND");
+//      outDataStream << QString::fromStdString("MYSELF");
 
-      sendDataToServer(buffer);
-  }
+//      sendDataToServer(buffer);
+//  }
 }
 
 
