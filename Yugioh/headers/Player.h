@@ -16,7 +16,8 @@
 #include "Graveyard.h"
 #include "MonsterZone.h"
 #include "SpellTrapZone.h"
-
+#include "GamePhase.h"
+#include "Field.h"
 
 class Player{ 
 
@@ -76,6 +77,11 @@ public:
   unsigned doDirectDamage(unsigned);
   void addPoints(unsigned);
   void setDeck(Deck &);
+//  Graveyard* m_graveyard;
+//  MonsterZone m_monsterZone;
+//  SpellTrapZone m_SpellTrapZone
+  Field field;
+//  Deck m_deck;
 private:
     std::string m_name;
     unsigned m_points;

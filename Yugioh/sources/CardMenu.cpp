@@ -3,39 +3,56 @@
 CardMenu::CardMenu()
 {
     setWindowFlags(Qt::FramelessWindowHint);
-    hide(); // the menu is not visible at default
+    setUpLayout();
+}
+
+void CardMenu::setUpLayout()
+{
+    layout->addWidget(activateButton);
+    layout->addWidget(setButton);
+    layout->addWidget(summonButton);        
+    layout->addWidget(repositionButton);   
+    layout->addWidget(attackButton); 
+    layout->addWidget(attackDirectlyButton);       
 }
 
 void CardMenu::update(QMap<QString,bool> flags)
 {
     if(flags["activate"] == true){
-        layout->addWidget(activateButton);
+        activateButton->show();
     }
     else{
-        layout->removeWidget(activateButton);
+        activateButton->hide();
     }
     if(flags["set"] == true){
-        layout->addWidget(setButton);
+        setButton->show();
     }
     else{
-        layout->removeWidget(setButton);
+        setButton->hide();
     }
     if(flags["summon"] == true){
-        layout->addWidget(summonButton);        
+        summonButton->show();       
     }
     else{
-        layout->removeWidget(summonButton);
+        summonButton->hide();
     }
     if(flags["reposition"] == true){
-        layout->addWidget(repositionButton);
+        repositionButton->show();
     }
     else{
-        layout->removeWidget(repositionButton);
+        repositionButton->hide();
     }
     if(flags["attack"] == true){
-        layout->addWidget(attackButton);        
+        attackButton->show();    
     }
     else{
-        layout->removeWidget(attackButton);
+        attackButton->hide();
     }    
+    //attackDirectly to be implemented later
+    // if(flags["attackDirectly"] == true){
+    //     attackDirectlyButton->show();
+    // }
+    // else{
+    //     attackDirectlyButton->hide();
+    // }
 }

@@ -5,10 +5,11 @@
 //#include "headers/mainwindow.h"
 #include "headers/Deck.h"
 #include "headers/Card.h"
+#include "headers/mainmenu.h"
 #include <iostream>
 #include <QApplication>
 #include "headers/CardMenu.h"
-#include"headers/mainmenu.h"
+
 int main(int argc,char **argv)
 {
   QApplication app(argc, argv);

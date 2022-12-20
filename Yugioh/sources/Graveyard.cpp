@@ -4,9 +4,14 @@
 #include <optional>
 
 Graveyard::Graveyard()
-    : m_x(500), m_y(300) {
+    :m_x(0), m_y(0){}
+
+void Graveyard::setGraveyard(float x, float y)
+{
+    m_x = x;
+    m_y = y;
     setPen(QPen(Qt::white, 2));
-    setBrush(Qt::NoBrush);
+    setBrush(QColor(211,211,211,30));
 }
 
 //NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION

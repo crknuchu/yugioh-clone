@@ -1,11 +1,14 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource>
-    <file>resources/card_back.jpg</file>
-    <file>resources/blue_eyes.jpg</file>
-    <file>resources/field.png</file>
-    <file>resources/field2.png</file>
-    <file>resources/yugioh1.jpg</file>
-    <file>resources/background.jpg</file>
-    <file>resources/space.jpeg</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>resources/pictures/card_back.jpg</file>
+        <file>resources/pictures/blue_eyes.jpg</file>
+        <file>resources/pictures/field.png</file>
+        <file>resources/pictures/field2.png</file>
+        <file>resources/pictures/yugioh1.jpg</file>
+        <file>resources/pictures/background.jpg</file>
+        <file>resources/pictures/space.jpeg</file>
+        <file>resources/pictures/menubackground.png</file>
+        <file>resources/sounds/illusion.mp3</file>
+        <file>resources/pictures/fieldZoneSymbol.png</file>
+    </qresource>
 </RCC>

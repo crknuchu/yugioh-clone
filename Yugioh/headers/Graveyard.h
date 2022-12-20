@@ -11,6 +11,7 @@ public:
     Graveyard();
     Graveyard(Graveyard &);
     Graveyard operator=(Graveyard &);
+    void setGraveyard(float x, float y);
     Graveyard(std::vector<Card*> &initialGraveyard);
     void sendToGraveyard(Card &card);
     std::vector<Card*> getGraveyard() const;
