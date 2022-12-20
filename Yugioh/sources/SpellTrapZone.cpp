@@ -14,7 +14,6 @@ SpellTrapZone::SpellTrapZone(){
 
 SpellTrapZone::~SpellTrapZone()
 {
-    // FIXME: Memory leak!!
     for(auto zone : m_spellTrapZone){
         delete zone;
     }

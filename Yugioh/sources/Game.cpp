@@ -27,6 +27,16 @@ MonsterZone monsterZone = MonsterZone();
 SpellTrapZone spellTrapZone = SpellTrapZone();
 
 
+const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_deserializationMap = {
+    {"WELCOME_MESSAGE",             &Game::deserializeWelcomeMessage},
+    {"FIELD_PLACEMENT",             &Game::deserializeFieldPlacement},
+    {"ADD_CARD_TO_HAND",            &Game::deserializeAddCardToHand},
+    {"BATTLE",                      &Game::deserializeBattle}
+};
+
+
+
+
 Game::Game(Player p1, Player p2, QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow),
@@ -259,7 +269,7 @@ void Game::setupConnections() {
     connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::onEndPhaseButtonClick);
 
     // Networking
-    connect(m_pTcpSocket, &QIODevice::readyRead, this, &Game::onMessageIncoming);
+    connect(m_pTcpSocket, &QIODevice::readyRead, this, &Game::onDataIncoming);
     connect(m_pTcpSocket, &::QAbstractSocket::errorOccurred, this, &Game::onNetworkErrorOccurred);
     connect(ui->btnTestNetwork, &QPushButton::clicked, this, &Game::onTestNetworkButtonClick);
     connect(ui->btnWriteData, &QPushButton::clicked, this, &Game::onWriteDataButtonClick);
@@ -283,9 +293,8 @@ bool Game::eventFilter(QObject *obj, QEvent *event)
 }
 
 // Networking:
-bool Game::writeData(QByteArray &data)
+bool Game::sendDataToServer(QByteArray &data)
 {
-    std::cout << "Data in writeData: " << data.toStdString() << std::endl;
     if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
     {
         // First we send the data's size
@@ -307,6 +316,66 @@ QByteArray Game::QInt32ToQByteArray(qint32 source)
     QDataStream stream(&tmp, QIODevice::ReadWrite);
     stream << source;
     return tmp;
+}
+
+void Game::deserializeWelcomeMessage(QDataStream &deserializationStream)
+{
+    QString welcomeMessage;
+    deserializationStream >> welcomeMessage;
+
+    m_messageFromServer = welcomeMessage;
+    ui->labelMessageFromServer->setText(m_messageFromServer);
+}
+
+void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
+{
+    /* If header was FIELD_PLACEMENT, we will get:
+     * 1) Card's name
+     * 2) Card's type
+     * 3) Number of the zone that the card was placed in
+     */
+
+
+    QString cardName;
+    QString cardType;
+    qint32 zoneNumber;
+    deserializationStream >> cardName
+                          >> cardType
+                          >> zoneNumber;
+
+
+    std::cout << "Card info: " << std::endl;
+    std::cout << "Card name: " << cardName.toStdString() << std::endl;
+    std::cout << "Card type: " << cardType.toStdString() << std::endl;
+    std::cout << "Zone number: " << zoneNumber << std::endl;
+
+
+    // Placeholder
+    /* Here, we will create the card by parsing JSON data that will be found based on card's name
+       For now, we create a random card for testing purposes. */
+
+    MonsterCard *testCard = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                                MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                CardType::MONSTER_CARD, CardLocation::FIELD,
+                                                "Neither player can target Dragon monsters on the field with card effects."
+                                                );
+    testCard->setPos(600, 600);
+    ui->graphicsView->scene()->addItem(testCard);
+
+    // Notify the game that a card was added.
+    emit cardAddedToScene(*testCard);
+
+}
+
+void Game::deserializeAddCardToHand(QDataStream &deserializationStream)
+{
+
+}
+
+void Game::deserializeBattle(QDataStream &deserializationStream)
+{
+
 }
 
 // Slots:
@@ -607,7 +676,6 @@ void Game::onSummonButtonClick(Card &card) {
 
     // Color the free zones so user can select one to place.
     monsterZone.colorFreeZones();
-
 }
 
 void Game::onAttackButtonClick(Card &attackingMonster)
@@ -672,6 +740,23 @@ void Game::onRedZoneClick(Zone *clickedRedZone) {
 
     // FIXME: For some reason, when card is in the zone and we go fullscreen, right border of the zone goes under the card
     card->move(clickedRedZone->m_x, clickedRedZone->m_y);
+
+
+    // Testing serialization
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
+
+
+    // zoneNumber is a placeholder for the number of the zone in which the card was placed
+    // Later,  we will have a method for getting this
+    qint32 zoneNumber = 3;
+    outDataStream << QString("FIELD_PLACEMENT") // header, so that server knows what data to expect after it
+                  << QString::fromStdString(card->getCardName()) // We only send card's name, server will pass it to the other client and then that client will construct the card
+                  << QString::fromStdString(card->getCardTypeString())
+                  << zoneNumber;
+
+    sendDataToServer(buffer);
 }
 
 void Game::onGreenZoneClick(Zone *clickedGreenZone) {
@@ -713,16 +798,21 @@ void Game::onNetworkErrorOccurred(QAbstractSocket::SocketError socketError)
     }
 }
 
-void Game::onMessageIncoming()
+void Game::onDataIncoming()
 {
-    std::cout << "We are in onMessageIncoming" << std::endl;
+    std::cout << "We are in onDataIncoming" << std::endl;
     // Read data that was sent from the server
     m_inDataStream.startTransaction();
 
-    QByteArray nextMessage;
-    m_inDataStream >> nextMessage;
+    // Deserialization
+    // First we need to check what header we have
+    QString header;
+    m_inDataStream >> header;
 
-//    std::cout << "Server Message: " << nextMessage.toStdString() << std::endl;
+    // Then we call the appropriate deserialization method for that header:
+    auto deserializationFunctionPointer = m_deserializationMap.at(header);
+    (this->*deserializationFunctionPointer)(m_inDataStream);
+
     if(!m_inDataStream.commitTransaction())
         return;
 //    if(nextMessage == m_messageFromServer)
@@ -730,9 +820,6 @@ void Game::onMessageIncoming()
 //        QTimer::singleShot(0, this, &Game::onMessageIncoming);
 //        return;
 //    }
-
-    m_messageFromServer = nextMessage;
-    ui->labelMessageFromServer->setText(m_messageFromServer);
 }
 
 void Game::onTestNetworkButtonClick()
@@ -742,8 +829,6 @@ void Game::onTestNetworkButtonClick()
     m_pTcpSocket->abort();
     m_pTcpSocket->connectToHost("localhost" , 8090);
 }
-
-#include <string>
 
 void Game::onWriteDataButtonClick()
 {
@@ -755,17 +840,17 @@ void Game::onWriteDataButtonClick()
 //   outDataStream << "Hello from the client!";
 
    // Testing
-   QString testTrim = QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()).trimmed();
+   QString playerName = QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()).trimmed();
    QVector<int> testArray{1, 2, 3};
 
-   // Serialization
-   outDataStream << testTrim
+
+   outDataStream << playerName
                  << GameExternVars::pCurrentPlayer->getPlayerLifePoints()
                  << testArray;
 
-   if(!writeData(buffer))
+   if(!sendDataToServer(buffer))
     {
-       std::cerr << "Error in writeData function! " << std::endl;
+       std::cerr << "Error in sendDataToServer function! " << std::endl;
        return;
    }
 }

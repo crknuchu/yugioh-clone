@@ -25,21 +25,15 @@ namespace GameExternVars {
 class Game: public QMainWindow
 {
     Q_OBJECT
-
+    using DESERIALIZATION_MEMBER_FUNCTION_POINTER = void(Game::*)(QDataStream &);
 public:
   Game();
   Game(Player p1, Player p2, QWidget *parent = nullptr);  // Why is parent's type QWidget and not QMainWindow?
   ~Game();
 
-
-
   // Public member functions:
   void start();
   GamePhases setGamePhase() const;
-
-
-
-
 
 private:
   Ui::MainWindow *ui;
@@ -75,9 +69,15 @@ private:
   QTcpSocket *m_pTcpSocket = nullptr;
   QDataStream m_inDataStream;
   QString m_messageFromServer;
+  static const std::map<QString, DESERIALIZATION_MEMBER_FUNCTION_POINTER> m_deserializationMap;
 
-  bool writeData(QByteArray &data);
+  bool sendDataToServer(QByteArray &data);
   QByteArray QInt32ToQByteArray(qint32 source); // We use qint32 to ensure the number has 4 bytes
+
+  void deserializeWelcomeMessage(QDataStream &deserializationStream);
+  void deserializeFieldPlacement(QDataStream &deserializationStream);
+  void deserializeAddCardToHand(QDataStream &deserializationStream);
+  void deserializeBattle(QDataStream &deserializationStream);
 
 private slots:
     void onBattlePhaseButtonClick();
@@ -113,7 +113,7 @@ private slots:
     // Networking slots
     // TODO: Separate class ?
     void onNetworkErrorOccurred(QAbstractSocket::SocketError socketError);
-    void onMessageIncoming();
+    void onDataIncoming();
     void onTestNetworkButtonClick();
 
     // Testing
@@ -128,10 +128,5 @@ signals:
     void cardAddedToScene(Card &targetCard);
     void gameEndedAfterBattle(Player &loser);
 };
-
-
-
-
-
 
 #endif // GAME_H
