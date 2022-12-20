@@ -53,6 +53,7 @@ public:
   void sendToGraveyard(Card &);
   void fromGraveyardToHand(Card &);
   void fromGraveyardToField(Card &, Zone &);
+  bool isCardInGrave(Card &c);
   // -----------------------------------------
 
   //MAIN PHASE 2 -> same as MAIN PHASE 1 + XYZ Summon

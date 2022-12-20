@@ -91,6 +91,29 @@ void Player::fromGraveyardToHand(Card &card){
 
 }
 
+bool Player::isCardInGrave(Card &c)
+{
+    for (auto it = this->field.graveyard->cbegin(); it != this->field.graveyard->cend(); it++)
+    {
+        if ((*it) == &c)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+void Player::fromGraveyardToField(Card &card, Zone &zone)
+{
+    if (isCardInGrave(card) == true)
+    {
+        Card *c = this->field.graveyard->removeFromGraveyard(card);
+        //put it back in filed zone
+    }
+}
+
+
 
 // STANDBY PHASE
 void Player::activationSpellTrapCard(Card &card){
