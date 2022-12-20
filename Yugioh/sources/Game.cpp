@@ -900,9 +900,12 @@ void Game::onTestNetworkButtonClick()
 {
     ui->btnTestNetwork->setEnabled(false);
 
+    // Parse the address and the port
+    QString addr = ui->textEditAddress->toPlainText();
+    int port = ui->textEditPort->toPlainText().toInt();
     // Connect to the server
     m_pTcpSocket->abort();
-    m_pTcpSocket->connectToHost("localhost" , 8090);
+    m_pTcpSocket->connectToHost(addr , port);
 
 }
 
@@ -916,6 +919,8 @@ void Game::onWriteDataButtonClick()
    outDataStream.setVersion(QDataStream::Qt_5_15);
    for(int i = 0; i < 5; i++)
    {
+
+
        outDataStream << QString::fromStdString("ADD_CARD_TO_HAND")
                      << QString::fromStdString("OPPONENT");
    }
