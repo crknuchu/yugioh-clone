@@ -29,6 +29,7 @@ SpellTrapZone spellTrapZone = SpellTrapZone();
 
 const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_deserializationMap = {
     {"WELCOME_MESSAGE",             &Game::deserializeWelcomeMessage},
+    {"START_GAME",                  &Game::deserializeStartGame},
     {"FIELD_PLACEMENT",             &Game::deserializeFieldPlacement},
     {"ADD_CARD_TO_HAND",            &Game::deserializeAddCardToHand},
     {"BATTLE",                      &Game::deserializeBattle}
@@ -51,6 +52,11 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     m_inDataStream.setDevice(m_pTcpSocket);
     m_inDataStream.setVersion(QDataStream::Qt_5_15);
 
+
+    // TODO: We need to connect our players to the server in setupConnections.
+
+
+
     // Setup connections:
     setupConnections();
 
@@ -66,33 +72,6 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     // Create a new scene:
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
-
-    // First turn setup at the beginning of the game:
-    firstTurnSetup();
-
-
-    for(auto *zone : monsterZone.m_monsterZone) {
-         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-         ui->graphicsView->scene()->addItem(zone);
-     }
-
-    for(auto *zone : spellTrapZone.m_spellTrapZone) {
-         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-         ui->graphicsView->scene()->addItem(zone);
-    }
-
-    spellTrapZone.colorFreeZones();
-
-    // Label setup:
-    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
-
-    /* TODO: This is only set here and never updated.
-     * We should emit a signal in EffectActivator whenever the player loses/gains health and then catch it with a slot in game and call this line there.
-     */
-
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
 }
 
 Game::Game() {}
@@ -221,6 +200,10 @@ void Game::damagePlayer(Player &targetPlayer, int howMuch)
     newLifePoints > 0 ? targetPlayer.setPlayerLifePoints(newLifePoints) : emit gameEndedAfterBattle(targetPlayer);
 }
 
+
+
+// TODO: This can't happen in game, since we will have 2 clients/game instances which could potentially have different first player. !!
+// We could have a extern var maybe that indicates who is first.
 void Game::firstTurnSetup() {
   // The game decides who will play first:
   if (decideWhoPlaysFirst() == 1)
@@ -242,15 +225,35 @@ void Game::firstTurnSetup() {
 
   // The first one gets 6 cards:
   GameExternVars::pCurrentPlayer->drawCards(6);
+  // Notify the server that cards were drawn
+  // FIXME: This is ugly
+  for(int i = 0; i < 6; i++)
+  {
+      QByteArray buffer;
+      QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+      outDataStream.setVersion(QDataStream::Qt_5_15);
 
-//  std::cout << "Current player's hand: ";
-//  std::vector<Card*> currentPlayerHand = GameExternVars::pCurrentPlayer->hand.getHand();
-//  for(Card* card : currentPlayerHand)
-//      std::cout << card->getCardName() << ", ";
-//  std::cout << std::endl;
+      outDataStream << QString::fromStdString("ADD_CARD_TO_HAND");
+      outDataStream << QString::fromStdString("OPPONENT"); // We tell the opposite player that his opponent (current player in this call) got 6 cards
+
+      sendDataToServer(buffer);
+  }
+
+
 
   // The other one gets 5 cards
   GameExternVars::pOtherPlayer->drawCards(5);
+  for(int i = 0; i < 5; i++)
+  {
+      QByteArray buffer;
+      QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+      outDataStream.setVersion(QDataStream::Qt_5_15);
+
+      outDataStream << QString::fromStdString("ADD_CARD_TO_HAND");
+      outDataStream << QString::fromStdString("MYSELF");
+
+      sendDataToServer(buffer);
+  }
 }
 
 
@@ -258,6 +261,7 @@ void Game::firstTurnSetup() {
 void Game::setupConnections() {
     // Game
     connect(this, &Game::mainWindowResized, this, &Game::onMainWindowResize);
+    connect(this, &Game::gameStarted, this, &Game::onGameStart);
     connect(this, &Game::gamePhaseChanged, this, &Game::onGamePhaseChange);
     connect(this, &Game::turnEnded, this, &Game::onTurnEnd);
     connect(this, &Game::cardAddedToScene, this, &Game::onCardAddedToScene);
@@ -273,6 +277,9 @@ void Game::setupConnections() {
     connect(m_pTcpSocket, &::QAbstractSocket::errorOccurred, this, &Game::onNetworkErrorOccurred);
     connect(ui->btnTestNetwork, &QPushButton::clicked, this, &Game::onTestNetworkButtonClick);
     connect(ui->btnWriteData, &QPushButton::clicked, this, &Game::onWriteDataButtonClick);
+
+
+
 }
 
 bool Game::eventFilter(QObject *obj, QEvent *event)
@@ -327,6 +334,14 @@ void Game::deserializeWelcomeMessage(QDataStream &deserializationStream)
     ui->labelMessageFromServer->setText(m_messageFromServer);
 }
 
+void Game::deserializeStartGame(QDataStream &deserializationStream)
+{
+    std::cout << "We are in deserializeStartGame" << std::endl;
+    // We don't actually have to deserialize something here, only emit a signal that will start the game
+    emit gameStarted();
+
+}
+
 void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
 {
     /* If header was FIELD_PLACEMENT, we will get:
@@ -360,6 +375,10 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
                                                 CardType::MONSTER_CARD, CardLocation::FIELD,
                                                 "Neither player can target Dragon monsters on the field with card effects."
                                                 );
+
+    /* For now, position is hardcoded for testing purposes.
+     * In the future, we will call a method that will put the card that was generated by json
+     * in a zone (which will be determined by provided cardType and zoneNumber) */
     testCard->setPos(600, 600);
     ui->graphicsView->scene()->addItem(testCard);
 
@@ -370,12 +389,58 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
 
 void Game::deserializeAddCardToHand(QDataStream &deserializationStream)
 {
+    /* When player1 adds a card to the hand, game sends a header to the server to indicate that,
+       and then we come here.
+       In order for player2 (who is actually the CURRENT player while we are in this function)
+       to changes in the opponent's (player1) hand, we just need to make other player draw one card.
 
+       TODO: We need to somehow ensure that, for example player1's, decks are in sync, in both game sessions/clients.       !!
+
+        // We don't want this player to see the opponent's hand, so we could potentially change the pixmap to card_back.jpg
+    */
+
+    // We need to check if the cards were given to us or the opponent
+    QString whoGetsTheCards;
+    deserializationStream >> whoGetsTheCards;
+
+    // whoGetsTheCards will be MYSELF only if a player does something that gives a card to his opponent (or for example in firstTurnSetup where its mandatory).
+    whoGetsTheCards == QString::fromStdString("MYSELF") ? GameExternVars::pCurrentPlayer->drawCards(1) : GameExternVars::pOtherPlayer->drawCards(1);
 }
 
 void Game::deserializeBattle(QDataStream &deserializationStream)
 {
 
+}
+
+void Game::onGameStart()
+{
+    std::cout << "Game has started!" << std::endl;
+    // First turn setup at the beginning of the game:
+    firstTurnSetup();
+
+
+    for(auto *zone : monsterZone.m_monsterZone) {
+         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
+         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+         ui->graphicsView->scene()->addItem(zone);
+     }
+
+    for(auto *zone : spellTrapZone.m_spellTrapZone) {
+         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
+         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+         ui->graphicsView->scene()->addItem(zone);
+    }
+
+    spellTrapZone.colorFreeZones();
+
+    // Label setup:
+    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+
+    /* TODO: This is only set here and never updated.
+     * We should emit a signal in EffectActivator whenever the player loses/gains health and then catch it with a slot in game and call this line there.
+     */
+
+    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
 }
 
 // Slots:
@@ -396,7 +461,7 @@ void Game::onBattlePhaseButtonClick()
 void Game::onMainPhase2ButtonClick()
 {
     std::cout << "Main phase 2 button clicked" << std::endl;
-    GamePhaseExternVars::currentGamePhase = GamePhases::MAIN_PHASE2;    
+    GamePhaseExternVars::currentGamePhase = GamePhases::MAIN_PHASE2;
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
     // Disable MP2 button so it can't be clicked again
@@ -452,6 +517,14 @@ void Game::onTurnEnd() {
 
     // The current player draws a card (this is not optional).
     GameExternVars::pCurrentPlayer->drawCards(1);
+
+    // Notify the server
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
+    outDataStream << QString::fromStdString("ADD_CARD_TO_HAND");
+    outDataStream << QString::fromStdString("OPPONENT"); // We tell the opposite player that his opponent (current player in this call) got a card
+    sendDataToServer(buffer);
 
 
 
@@ -809,6 +882,7 @@ void Game::onDataIncoming()
     QString header;
     m_inDataStream >> header;
 
+    std::cout << "Header: " << header.toStdString() << std::endl;
     // Then we call the appropriate deserialization method for that header:
     auto deserializationFunctionPointer = m_deserializationMap.at(header);
     (this->*deserializationFunctionPointer)(m_inDataStream);
@@ -826,28 +900,25 @@ void Game::onTestNetworkButtonClick()
 {
     ui->btnTestNetwork->setEnabled(false);
 
+    // Connect to the server
     m_pTcpSocket->abort();
     m_pTcpSocket->connectToHost("localhost" , 8090);
+
 }
 
 void Game::onWriteDataButtonClick()
 {
-    // WIP
+   // Testing
 
+   GameExternVars::pCurrentPlayer->drawCards(5);
    QByteArray buffer;
    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
    outDataStream.setVersion(QDataStream::Qt_5_15);
-//   outDataStream << "Hello from the client!";
-
-   // Testing
-   QString playerName = QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()).trimmed();
-   QVector<int> testArray{1, 2, 3};
-
-
-   outDataStream << playerName
-                 << GameExternVars::pCurrentPlayer->getPlayerLifePoints()
-                 << testArray;
-
+   for(int i = 0; i < 5; i++)
+   {
+       outDataStream << QString::fromStdString("ADD_CARD_TO_HAND")
+                     << QString::fromStdString("OPPONENT");
+   }
    if(!sendDataToServer(buffer))
     {
        std::cerr << "Error in sendDataToServer function! " << std::endl;

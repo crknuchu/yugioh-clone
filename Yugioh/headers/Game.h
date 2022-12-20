@@ -66,7 +66,7 @@ private:
 
 // Networking:
   // TODO: Separate class?
-  QTcpSocket *m_pTcpSocket = nullptr;
+  QTcpSocket *m_pTcpSocket = nullptr; // TODO: This will probably have to be in GameExternVars so that EffectActivator can see it
   QDataStream m_inDataStream;
   QString m_messageFromServer;
   static const std::map<QString, DESERIALIZATION_MEMBER_FUNCTION_POINTER> m_deserializationMap;
@@ -75,11 +75,13 @@ private:
   QByteArray QInt32ToQByteArray(qint32 source); // We use qint32 to ensure the number has 4 bytes
 
   void deserializeWelcomeMessage(QDataStream &deserializationStream);
+  void deserializeStartGame(QDataStream &deserializationStream);
   void deserializeFieldPlacement(QDataStream &deserializationStream);
   void deserializeAddCardToHand(QDataStream &deserializationStream);
   void deserializeBattle(QDataStream &deserializationStream);
 
 private slots:
+    void onGameStart();
     void onBattlePhaseButtonClick();
     void onMainPhase2ButtonClick();
     void onEndPhaseButtonClick();
@@ -123,6 +125,7 @@ private slots:
 
 signals:
     void mainWindowResized(QResizeEvent *);
+    void gameStarted();
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
     void cardAddedToScene(Card &targetCard);
