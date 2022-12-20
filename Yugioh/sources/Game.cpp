@@ -431,7 +431,11 @@ void Game::onGameStart()
          ui->graphicsView->scene()->addItem(zone);
     }
 
-    spellTrapZone.colorFreeZones();
+    /* We only set that global nullptr when summon btn is clicked, however
+     * we color spell/trap zone here before any button is clicked, so when those
+     * zones are clicked, pCardToBePlacedOnField is still nullptr and so is card and
+     * calling card->getCardType produces a segfault. */
+//    spellTrapZone.colorFreeZones();
 
     // Label setup:
     ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
@@ -792,7 +796,7 @@ void Game::onRedZoneClick(Zone *clickedRedZone) {
     Card* card = GameExternVars::pCardToBePlacedOnField;
 
     // TODO: Move this into separate functions.
-    if(card->getCardType() == CardType::MONSTER_CARD) {
+    if(card->getCardType() == CardType::MONSTER_CARD) { // We have a segfault because this card is nullptr
         monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
         for(auto x : monsterZone.m_monsterZone) {
