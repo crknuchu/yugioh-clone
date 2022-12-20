@@ -123,7 +123,7 @@ void Player::sendToGraveyard(Card &card){
                 this->field.deck.erase(it);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->getCardName()<<" successfully removed from deck"<<std::endl;
-                break;
+                return;
             }
         }
 
@@ -132,7 +132,7 @@ void Player::sendToGraveyard(Card &card){
                 this->field.monsterZone.m_monsterZone.erase(it);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
-                break;
+                return;
             }
         }
 
@@ -141,7 +141,7 @@ void Player::sendToGraveyard(Card &card){
                 this->field.spellTrapZone.m_spellTrapZone.erase(it);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
-                break;
+                return;
             }
         }
 
@@ -150,7 +150,7 @@ void Player::sendToGraveyard(Card &card){
                this->hand.erase(it);
                this->field.graveyard->sendToGraveyard(card);
                std::cout<< (*it)->getCardName() << " succesfully removed from hand"<<std::endl;
-               break;
+               return;
             }
         }
    }
