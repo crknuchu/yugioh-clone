@@ -6,7 +6,7 @@
 #include "headers/SpellTrapZone.h"
 
 #include <iostream>
-#include <random>
+
 #include <map>
 #include <functional>
 
@@ -80,28 +80,6 @@ Game::~Game() {
     delete ui;
     delete scene;
 }
-
-int Game::randomGenerator(const int limit) const {
-  /*
-   * Uniformly-distributed integer random number
-   * generator that produces non-deterministic
-   * random numbers.
-   */
-  std::random_device rd;
-
-  /*
-   *  A Mersenne Twister pseudo-random generator
-   *  of 32-bit numbers with a state size of
-   *  19937 bits.
-   */
-  std::mt19937 gen(rd());
-
-  // Uniform distribution (from 1 to limit)
-  std::uniform_int_distribution<> dis(1, limit);
-  return dis(gen);
-}
-
-int Game::decideWhoPlaysFirst() const { return randomGenerator(2); }
 
 void Game::switchPlayers() {
     Player *tmp = GameExternVars::pCurrentPlayer;
@@ -204,9 +182,9 @@ void Game::damagePlayer(Player &targetPlayer, int howMuch)
 
 // TODO: This can't happen in game, since we will have 2 clients/game instances which could potentially have different first player. !!
 // We could have a extern var maybe that indicates who is first.
-void Game::firstTurnSetup() {
+void Game::firstTurnSetup(qint32 firstToPlay) {
   // The game decides who will play first:
-  if (decideWhoPlaysFirst() == 1)
+  if (firstToPlay == 1)
   {
       GameExternVars::pCurrentPlayer = &m_player1;
       GameExternVars::pOtherPlayer = &m_player2;
@@ -337,8 +315,11 @@ void Game::deserializeWelcomeMessage(QDataStream &deserializationStream)
 void Game::deserializeStartGame(QDataStream &deserializationStream)
 {
     std::cout << "We are in deserializeStartGame" << std::endl;
-    // We don't actually have to deserialize something here, only emit a signal that will start the game
-    emit gameStarted();
+
+    // We need to see who plays first
+    qint32 firstToPlay;
+    deserializationStream >> firstToPlay;
+    emit gameStarted(firstToPlay);
 
 }
 
@@ -399,12 +380,20 @@ void Game::deserializeAddCardToHand(QDataStream &deserializationStream)
         // We don't want this player to see the opponent's hand, so we could potentially change the pixmap to card_back.jpg
     */
 
-    // We need to check if the cards were given to us or the opponent
+    // First we check how many cards do we need to draw
+    qint32 numOfCards;
+    deserializationStream >> numOfCards;
+
+    // Then we check which player draws them
     QString whoGetsTheCards;
     deserializationStream >> whoGetsTheCards;
 
+    std::cout << "Whogetsthecards: " << whoGetsTheCards.toStdString() << std::endl;
+
+    std::cout << "pCurrentplayer: " << GameExternVars::pCurrentPlayer << ", pOtherPlayer: " << GameExternVars::pOtherPlayer << std::endl;
+
     // whoGetsTheCards will be MYSELF only if a player does something that gives a card to his opponent (or for example in firstTurnSetup where its mandatory).
-    whoGetsTheCards == QString::fromStdString("MYSELF") ? GameExternVars::pCurrentPlayer->drawCards(1) : GameExternVars::pOtherPlayer->drawCards(1);
+    whoGetsTheCards == QString::fromStdString("MYSELF") ? GameExternVars::pCurrentPlayer->drawCards(numOfCards) : GameExternVars::pOtherPlayer->drawCards(numOfCards);
 }
 
 void Game::deserializeBattle(QDataStream &deserializationStream)
@@ -412,11 +401,11 @@ void Game::deserializeBattle(QDataStream &deserializationStream)
 
 }
 
-void Game::onGameStart()
+void Game::onGameStart(qint32 firstToPlay)
 {
     std::cout << "Game has started!" << std::endl;
     // First turn setup at the beginning of the game:
-    firstTurnSetup();
+    firstTurnSetup(firstToPlay);
 
 
     for(auto *zone : monsterZone.m_monsterZone) {
@@ -431,19 +420,12 @@ void Game::onGameStart()
          ui->graphicsView->scene()->addItem(zone);
     }
 
-    /* We only set that global nullptr when summon btn is clicked, however
-     * we color spell/trap zone here before any button is clicked, so when those
-     * zones are clicked, pCardToBePlacedOnField is still nullptr and so is card and
-     * calling card->getCardType produces a segfault. */
-//    spellTrapZone.colorFreeZones();
-
     // Label setup:
     ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
 
     /* TODO: This is only set here and never updated.
      * We should emit a signal in EffectActivator whenever the player loses/gains health and then catch it with a slot in game and call this line there.
      */
-
     ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
 }
 
@@ -921,13 +903,11 @@ void Game::onWriteDataButtonClick()
    QByteArray buffer;
    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
    outDataStream.setVersion(QDataStream::Qt_5_15);
-   for(int i = 0; i < 5; i++)
-   {
 
+    outDataStream << QString::fromStdString("ADD_CARD_TO_HAND")
+                  << qint32(5)
+                  << QString::fromStdString("OPPONENT");
 
-       outDataStream << QString::fromStdString("ADD_CARD_TO_HAND")
-                     << QString::fromStdString("OPPONENT");
-   }
    if(!sendDataToServer(buffer))
     {
        std::cerr << "Error in sendDataToServer function! " << std::endl;

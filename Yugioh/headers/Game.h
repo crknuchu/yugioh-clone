@@ -42,14 +42,14 @@ private:
   Player m_player1;  
   Player m_player2;
   int m_currentTurn;
-  int resizeCount = 0; // dirty hack
+  int resizeCount = 0;
 
 
 
   // Private member functions:
   int randomGenerator(const int limit) const;
   int decideWhoPlaysFirst() const;
-  void firstTurnSetup();
+  void firstTurnSetup(qint32 firstToPlay);
   void switchPlayers();
 
   void damageCalculation(Card *attackingMonster, Card *attackedMonster);
@@ -81,7 +81,7 @@ private:
   void deserializeBattle(QDataStream &deserializationStream);
 
 private slots:
-    void onGameStart();
+    void onGameStart(qint32 firstToPlay);
     void onBattlePhaseButtonClick();
     void onMainPhase2ButtonClick();
     void onEndPhaseButtonClick();
@@ -125,7 +125,7 @@ private slots:
 
 signals:
     void mainWindowResized(QResizeEvent *);
-    void gameStarted();
+    void gameStarted(qint32 firstToPlay);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
     void cardAddedToScene(Card &targetCard);
