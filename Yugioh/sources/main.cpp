@@ -7,13 +7,16 @@
 #include <iostream>
 #include <QApplication>
 #include "headers/CardMenu.h"
+#include "headers/Serializer.h"
 
 int main(int argc,char **argv)
 {
   QApplication app(argc, argv);
 
+  Serializer s(":/resources/test.json");
+
    MainMenu m;
-   m.showFullScreen();
+  //  m.showFullScreen();
 
 
 

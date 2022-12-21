@@ -9,5 +9,6 @@
         <file>resources/pictures/space.jpeg</file>
         <file>resources/pictures/menubackground.png</file>
         <file>resources/sounds/illusion.mp3</file>
+        <file>resources/test.json</file>
     </qresource>
 </RCC>

@@ -5,6 +5,7 @@
 #include "headers/EffectActivator.h"
 #include "headers/MonsterZone.h"
 #include "headers/SpellTrapZone.h"
+#include "headers/Serializer.h"
 
 #include <iostream>
 #include <random>
@@ -275,6 +276,10 @@ void Game::onTurnEnd() {
 void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
 //    std::cout << "Window has been resized!" << std::endl;
+    // Json testiranje = new Json("")
+    // Serializer s(":/test.json");
+
+
 
     // Set our private variables to the new window size:
     m_windowWidth = resizeEvent->size().width();

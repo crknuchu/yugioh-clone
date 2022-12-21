@@ -28,7 +28,8 @@ SOURCES += \
         sources/Hand.cpp \
         sources/Player.cpp \
         sources/CardMenu.cpp \
-        sources/MonsterZone.cpp 
+        sources/MonsterZone.cpp \
+        sources/Serializer.cpp
 
 HEADERS += \
     headers/GameSettings.h \
@@ -49,7 +50,8 @@ HEADERS += \
     headers/CardMenu.h \ 
     headers/MonsterZone.h \
     headers/mainmenu.h \
-    headers/Zone.h
+    headers/Zone.h \
+    headers/Serializer.h
 
 RESOURCES += \
         resources.qrc
