@@ -54,11 +54,6 @@ Game::Game(Player p1, Player p2, QWidget *parent)
     m_inDataStream.setDevice(m_pTcpSocket);
     m_inDataStream.setVersion(QDataStream::Qt_5_15);
 
-
-    // TODO: We need to connect our players to the server in setupConnections.
-
-
-
     // Setup connections:
     setupConnections();
 
@@ -125,8 +120,8 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
                  Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
 
         std::cout << "The defender wins!" << std::endl;
-        GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
-        damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
+//        GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
+
 
 
         // Notify the server about the battle outcome                   // TODO: These can probably be simplified or moved into separate functions since they are similar
@@ -138,14 +133,18 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
                       << QString::fromStdString(attacker.getCardName()) // Name of destroyed monster so it can be destroyed in other client's session too
                       << qint32(3); // Number of the monster zone that the monster was in. // Placeholder for now until getZoneNumber() is implemented.   // Is it even needed?
         sendDataToServer(buffer);
+
+
+
+
+        damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
     }
     else if(attackPointsDifference > 0)
     {
         /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard
                  Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
         std::cout << "The attacker wins!" << std::endl;
-        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
-        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
+//        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
 
 
         QByteArray buffer;
@@ -156,13 +155,20 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
                       << QString::fromStdString(defender.getCardName())
                       << qint32(3);
         sendDataToServer(buffer);
+
+
+        std::cout << "Vratili smo se iz sendData" << std::endl;
+
+        // FIXME: Somehow opposite client never gets LP_CHANGE header that we send to the server in this function.
+        // If we place damagePlayer above previous buffer, it does get through but then BATTLE header doesn't.
+        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
     }
     else
     {
         /* This means that both attacking monsters had the same ATK.
          * In that case, both of them get destroyed, but no player takes damage. */
-        GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
-        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
+//        GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
+//        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
 
         std::cout << "Both monsters die!" << std::endl;
         QByteArray buffer;
@@ -187,7 +193,6 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
          * Because the defender is in the DEFENSE position, attacker doesn't
          * get destroyed but the player controlling the attacker still takes damage. */
         std::cout << "The defender wins!" << std::endl;
-        damagePlayer(*GameExternVars::pCurrentPlayer, pointsDifference);
 
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
@@ -195,6 +200,9 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         outDataStream << QString::fromStdString("BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS")
                       << QString::fromStdString("DEFENDER"); // Who won
         sendDataToServer(buffer);
+
+
+        damagePlayer(*GameExternVars::pCurrentPlayer, pointsDifference);
     }
     else if(pointsDifference > 0)
     {
@@ -205,7 +213,7 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard(defender)
                  Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
         std::cout << "The attacker wins!" << std::endl;
-        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
+//        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
 
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
@@ -239,15 +247,6 @@ void Game::damagePlayer(Player &targetPlayer, int howMuch)
     {
         targetPlayer.setPlayerLifePoints(newLifePoints);
         emit lifePointsChanged(targetPlayer);
-
-        // Notify the server about health change.  // TODO: This can probably be a separate function since its used in the onGameEnd slot too.
-        QByteArray buffer;
-        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-        outDataStream.setVersion(QDataStream::Qt_5_15);
-        outDataStream << QString::fromStdString("LP_CHANGE")
-                      << QString::fromStdString(targetPlayer.getPlayerName()) // Whose life points has changed
-                      << qint32(newLifePoints); // New life points
-        sendDataToServer(buffer);
     }
     else
         emit gameEndedAfterBattle(targetPlayer);
@@ -388,8 +387,8 @@ void Game::deserializeWelcomeMessage(QDataStream &deserializationStream)
     QString welcomeMessage;
     deserializationStream >> welcomeMessage;
 
-    m_messageFromServer = welcomeMessage;
-    ui->labelMessageFromServer->setText(m_messageFromServer);
+//    m_messageFromServer = welcomeMessage;
+//    ui->labelMessageFromServer->setText(m_messageFromServer);
 }
 
 void Game::deserializeStartGame(QDataStream &deserializationStream)
@@ -461,7 +460,7 @@ void Game::deserializeAddCardToHand(QDataStream &deserializationStream)
     */
 
     // First we check how many cards do we need to draw
-    qint32 numOfCards;
+    QString numOfCards;
     deserializationStream >> numOfCards;
 
     // Then we check which player draws them
@@ -473,7 +472,7 @@ void Game::deserializeAddCardToHand(QDataStream &deserializationStream)
     std::cout << "pCurrentplayer: " << GameExternVars::pCurrentPlayer << ", pOtherPlayer: " << GameExternVars::pOtherPlayer << std::endl;
 
     // whoGetsTheCards will be MYSELF only if a player does something that gives a card to his opponent (or for example in firstTurnSetup where its mandatory).
-    whoGetsTheCards == QString::fromStdString("MYSELF") ? GameExternVars::pCurrentPlayer->drawCards(numOfCards) : GameExternVars::pOtherPlayer->drawCards(numOfCards);
+    whoGetsTheCards == QString::fromStdString("MYSELF") ? GameExternVars::pCurrentPlayer->drawCards(numOfCards.toInt()) : GameExternVars::pOtherPlayer->drawCards(numOfCards.toInt());
 }
 
 void Game::deserializeBattleBetweenAttackPositionMonsters(QDataStream &deserializationStream)
@@ -559,9 +558,11 @@ void Game::deserializeBattleBetweenDifferentPositionMonsters(QDataStream &deseri
 
 void Game::deserializeLpChange(QDataStream &deserializationStream)
 {
+    std::cout << "We are in deserializeLpChange" << std::endl;
+
     // We need to check whose life points got changed
     QString whoseLifePointsChanged;
-    qint32 newLifePoints;
+    QString newLifePoints;
 
     deserializationStream >> whoseLifePointsChanged
                           >> newLifePoints;
@@ -569,13 +570,17 @@ void Game::deserializeLpChange(QDataStream &deserializationStream)
     // Now we need to actually set the targeted player's lp to newLifePoints
     if (whoseLifePointsChanged.toStdString() == GameExternVars::pCurrentPlayer->getPlayerName())
     {
-        GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints);
-        emit lifePointsChanged(*GameExternVars::pCurrentPlayer);
+        GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints.toInt());
+        ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
     }
     else
     {
-        GameExternVars::pOtherPlayer->setPlayerLifePoints(newLifePoints);
-        emit lifePointsChanged(*GameExternVars::pOtherPlayer);
+        GameExternVars::pOtherPlayer->setPlayerLifePoints(newLifePoints.toInt());
+        ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
+//        ui->labelCurrentPlayerDynamic->setText(QString::fromStdString())
+        // We don't write the other player's health to the label, since label only holds the hp of one currently playing
+        /* Instead:
+         * TODO: We should have a separate label for player 2 that we should set here */
     }
 }
 
@@ -936,6 +941,18 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
 
     // Set the label text to the current turn player's health value
     ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+
+    // TODO: Add other player's label and set it
+
+    // Notify the server about health change.  // TODO: This can probably be a separate function since its used in the onGameEnd slot too.
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
+    outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
+                  << QString::fromStdString(targetPlayer.getPlayerName()).trimmed() // Whose life points has changed
+                  << QString::fromStdString(std::to_string(targetPlayer.getPlayerLifePoints())); // New life points
+    sendDataToServer(buffer);
+
 }
 
 void Game::onGameEnd(Player &loser)
@@ -948,9 +965,9 @@ void Game::onGameEnd(Player &loser)
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
-    outDataStream << QString::fromStdString("LP_CHANGE")
-                  << QString::fromStdString(loser.getPlayerName()) // Whose life points has changed
-                  << qint32(0); // New life points
+    outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
+                  << QString::fromStdString(loser.getPlayerName()).trimmed() // Whose life points has changed
+                  << QString::fromStdString(std::to_string(0)); // New life points
     sendDataToServer(buffer);
 
     // TODO: Stop the game here (or maybe in the server too) somehow!
@@ -1049,26 +1066,34 @@ void Game::onNetworkErrorOccurred(QAbstractSocket::SocketError socketError)
 void Game::onDataIncoming()
 {
     std::cout << "We are in onDataIncoming" << std::endl;
+
     // Read data that was sent from the server
+
+//     Deserialization
+
+
     m_inDataStream.startTransaction();
 
-    // Deserialization
-    // First we need to check what header we have
+    //First we need to check what header we have
     QString header;
     m_inDataStream >> header;
 
     std::cout << "Header: " << header.toStdString() << std::endl;
-    // Then we call the appropriate deserialization method for that header:
-    auto deserializationFunctionPointer = m_deserializationMap.at(header);
-    (this->*deserializationFunctionPointer)(m_inDataStream);
 
     if(!m_inDataStream.commitTransaction())
         return;
-//    if(nextMessage == m_messageFromServer)
-//    {
-//        QTimer::singleShot(0, this, &Game::onMessageIncoming);
-//        return;
-//    }
+
+    if(header == m_currentHeader)
+    {
+        QTimer::singleShot(0, this, &Game::onTestNetworkButtonClick);
+        return;
+    }
+
+    m_currentHeader = header;
+
+    // Then we call the appropriate deserialization method for that header:
+    auto deserializationFunctionPointer = m_deserializationMap.at(m_currentHeader);
+    (this->*deserializationFunctionPointer)(m_inDataStream);
 }
 
 void Game::onTestNetworkButtonClick()
@@ -1093,7 +1118,7 @@ void Game::onWriteDataButtonClick()
    outDataStream.setVersion(QDataStream::Qt_5_15);
 
     outDataStream << QString::fromStdString("ADD_CARD_TO_HAND")
-                  << qint32(5)
+                  << QString::fromStdString(std::to_string(qint32(5)))
                   << QString::fromStdString("OPPONENT");
 
    if(!sendDataToServer(buffer))

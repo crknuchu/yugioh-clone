@@ -66,7 +66,7 @@ private:
   // TODO: Separate class?
     QTcpSocket *m_pTcpSocket = nullptr; // TODO: This will probably have to be in GameExternVars so that EffectActivator can see it
     QDataStream m_inDataStream;
-    QString m_messageFromServer;
+    QString m_currentHeader;
     static const std::map<QString, DESERIALIZATION_MEMBER_FUNCTION_POINTER> m_deserializationMap;
 
     bool sendDataToServer(QByteArray &data);
