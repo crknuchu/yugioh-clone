@@ -57,20 +57,9 @@
       </widget>
      </item>
      <item row="1" column="3">
-      <widget class="QGraphicsView" name="avatarWindow">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="sceneRect">
-        <rectf>
-         <x>0.000000000000000</x>
-         <y>0.000000000000000</y>
-         <width>100.000000000000000</width>
-         <height>100.000000000000000</height>
-        </rectf>
+      <widget class="QLabel" name="avatarWindow">
+       <property name="text">
+        <string>TextLabel</string>
        </property>
       </widget>
      </item>

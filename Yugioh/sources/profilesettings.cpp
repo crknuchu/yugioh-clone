@@ -16,12 +16,11 @@ profileSettings::profileSettings(QWidget *parent) :
 
     setUpConnections();
     ui->sleeveWindow->setBaseSize(400, 500);
-//    ui->sleeveWindow->setMaximumSize(300, 400);
     ui->cancel->setMaximumSize(50, 100);
     ui->save->setMaximumSize(50, 100);
 
     //background
-    QPixmap imageBackG(":/resources/avatars.jpg");
+    QPixmap imageBackG(":/resources/space.jpeg");
     imageBackG = imageBackG.scaled(this->size(), Qt::KeepAspectRatioByExpanding);
     QBrush brush(imageBackG);
     QPalette palette;
@@ -31,7 +30,7 @@ profileSettings::profileSettings(QWidget *parent) :
     //labels
     QPalette textColor;
     textColor.setColor(QPalette::WindowText, Qt::white);
-    textColor.setColor(QPalette::Window, Qt::gray);
+//    textColor.setColor(QPalette::Window, Qt::gray);
 
     ui->lb1->setAutoFillBackground(true);
     ui->lb1->setPalette(textColor);
@@ -47,26 +46,18 @@ profileSettings::profileSettings(QWidget *parent) :
     //sleeves
     QBrush b(Qt::green);
     ui->sleeveWindow->setBackgroundBrush(b);
-//    ui->sleeveWindow->show();
 
-//    cardSleve = ui->sleeveWindow;
-//    cardSleve->setBackgroundBrush(b);
 
     scene = new QGraphicsScene(this);
     ui->sleeveWindow->setScene(scene);
     ui->sleeveWindow->setBackgroundBrush(b);
-//    ui->sleeveWindow->fitInView(ui->sleeveWindow->sceneRect(), Qt::IgnoreAspectRatio);
 
-    QImage avatar(":/resources/yugi.png");
-//    card = card.scaled(ui->sleeveWindow->width(), ui->sleeveWindow->height());
+    QPixmap avatar(":/resources/yugi.png");
 
-    QBrush a(avatar);/*
-    ui->avatarWindow->setBackgroundBrush(a);
-    ui->avatarWindow->show();*/
-    \
-    ui->avatarWindow->setScene(scene);
-    ui->avatarWindow->setBackgroundBrush(a);
-    ui->avatarWindow->fitInView(ui->avatarWindow->sceneRect(), Qt::KeepAspectRatio);
+    ui->avatarWindow->setPixmap(avatar);
+    ui->avatarWindow->setMaximumHeight(200);
+    ui->avatarWindow->setScaledContents(true);
+    ui->avatarWindow->setMaximumWidth(200);
 }
 
 void profileSettings::setUpConnections(){
@@ -87,13 +78,13 @@ profileSettings::~profileSettings()
 }
 
 void profileSettings::changeAvatar(){
-    QPixmap pic(":/resources/avatars.jpg");
+    QPixmap pic(":/resources/kaiba.png");
+    ui->avatarWindow->setPixmap(pic);
 
-
-    pic = pic.scaled(ui->avatarWindow->x()/100 - ui->avatarWindow->width(),
-                     ui->avatarWindow->y()/100 - ui->avatarWindow->height(),
-                     Qt::IgnoreAspectRatio);
-    ui->avatarWindow->setBackgroundBrush(QBrush(pic));
+//    pic = pic.scaled(ui->avatarWindow->x()/100 - ui->avatarWindow->width(),
+//                     ui->avatarWindow->y()/100 - ui->avatarWindow->height(),
+//                     Qt::IgnoreAspectRatio);
+//    ui->avatarWindow->setBackgroundBrush(QBrush(pic));
 }
 
 
