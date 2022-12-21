@@ -45,10 +45,10 @@ private:
     // Generic outcomes that make up card's effects:
     void makeMonstersOfThisTypeUntargetable(const MonsterType &, const UntargetableBy &, const CardLocation &, Player &);
     void returnToHand(Card &, const GamePhases &, Player &);
-    void changeHealthPointsBy(int, Player &);
+    void changeLifePointsBy(int, Player &);
 
 signals:
-    void healthPointsChanged(Player &);
+    void lifePointsChanged(Player &);
     void gameEnded(Player &loser);
 };
 

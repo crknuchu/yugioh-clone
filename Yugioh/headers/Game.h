@@ -27,58 +27,58 @@ class Game: public QMainWindow
     Q_OBJECT
     using DESERIALIZATION_MEMBER_FUNCTION_POINTER = void(Game::*)(QDataStream &);
 public:
-  Game();
-  Game(Player p1, Player p2, QWidget *parent = nullptr);  // Why is parent's type QWidget and not QMainWindow?
-  ~Game();
+    Game();
+    Game(Player p1, Player p2, QWidget *parent = nullptr);  // Why is parent's type QWidget and not QMainWindow?
+    ~Game();
 
-  // Public member functions:
-  void start();
-  GamePhases setGamePhase() const;
+    // Public member functions:
+    void start();
+    GamePhases setGamePhase() const;
 
 private:
-  Ui::MainWindow *ui;
-  QGraphicsScene *scene;
-  GamePhases m_phase;
-  Player m_player1;  
-  Player m_player2;
-  int m_currentTurn;
-  int resizeCount = 0;
+    Ui::MainWindow *ui;
+    QGraphicsScene *scene;
+    GamePhases m_phase;
+    Player m_player1;
+    Player m_player2;
+    int m_currentTurn;
+    int resizeCount = 0;
 
+    // Private member functions:
+    int randomGenerator(const int limit) const;
+    int decideWhoPlaysFirst() const;
+    void firstTurnSetup(qint32 firstToPlay);
+    void switchPlayers();
 
-
-  // Private member functions:
-  int randomGenerator(const int limit) const;
-  int decideWhoPlaysFirst() const;
-  void firstTurnSetup(qint32 firstToPlay);
-  void switchPlayers();
-
-  void damageCalculation(Card *attackingMonster, Card *attackedMonster);
-  void battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
-  void battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
-  void damagePlayer(Player &targetPlayer, int howMuch);
+    void damageCalculation(Card *attackingMonster, Card *attackedMonster);
+    void battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
+    void battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
+    void damagePlayer(Player &targetPlayer, int howMuch);
 
 // QT related stuff:
-  int m_windowWidth;
-  int m_windowHeight;
+    int m_windowWidth;
+    int m_windowHeight;
 
-  void setupConnections();
-  bool eventFilter(QObject *obj, QEvent *event) override;
+    void setupConnections();
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 // Networking:
   // TODO: Separate class?
-  QTcpSocket *m_pTcpSocket = nullptr; // TODO: This will probably have to be in GameExternVars so that EffectActivator can see it
-  QDataStream m_inDataStream;
-  QString m_messageFromServer;
-  static const std::map<QString, DESERIALIZATION_MEMBER_FUNCTION_POINTER> m_deserializationMap;
+    QTcpSocket *m_pTcpSocket = nullptr; // TODO: This will probably have to be in GameExternVars so that EffectActivator can see it
+    QDataStream m_inDataStream;
+    QString m_messageFromServer;
+    static const std::map<QString, DESERIALIZATION_MEMBER_FUNCTION_POINTER> m_deserializationMap;
 
-  bool sendDataToServer(QByteArray &data);
-  QByteArray QInt32ToQByteArray(qint32 source); // We use qint32 to ensure the number has 4 bytes
+    bool sendDataToServer(QByteArray &data);
+    QByteArray QInt32ToQByteArray(qint32 source); // We use qint32 to ensure the number has 4 bytes
 
-  void deserializeWelcomeMessage(QDataStream &deserializationStream);
-  void deserializeStartGame(QDataStream &deserializationStream);
-  void deserializeFieldPlacement(QDataStream &deserializationStream);
-  void deserializeAddCardToHand(QDataStream &deserializationStream);
-  void deserializeBattle(QDataStream &deserializationStream);
+    void deserializeWelcomeMessage(QDataStream &deserializationStream);
+    void deserializeStartGame(QDataStream &deserializationStream);
+    void deserializeFieldPlacement(QDataStream &deserializationStream);
+    void deserializeAddCardToHand(QDataStream &deserializationStream);
+    void deserializeBattleBetweenAttackPositionMonsters(QDataStream &deserializationStream);
+    void deserializeBattleBetweenDifferentPositionMonsters(QDataStream &deserializationStream);
+    void deserializeLpChange(QDataStream &deserializationStream);
 
 private slots:
     void onGameStart(qint32 firstToPlay);
@@ -104,7 +104,7 @@ private slots:
     void onAttackButtonClick(Card &);
 
     // Slots for EffectActivator signal handling
-    void onHealthPointsChange(Player &);
+    void onLifePointsChange(Player &);
     void onGameEnd(Player &); // const?
 
     // Slots for Zone signal handling
@@ -121,8 +121,6 @@ private slots:
     // Testing
     void onWriteDataButtonClick();
 
-
-
 signals:
     void mainWindowResized(QResizeEvent *);
     void gameStarted(qint32 firstToPlay);
@@ -130,6 +128,7 @@ signals:
     void turnEnded();
     void cardAddedToScene(Card &targetCard);
     void gameEndedAfterBattle(Player &loser);
+    void lifePointsChanged(Player &targetPlayer);
 };
 
 #endif // GAME_H

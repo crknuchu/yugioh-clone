@@ -28,11 +28,13 @@ SpellTrapZone spellTrapZone = SpellTrapZone();
 
 
 const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_deserializationMap = {
-    {"WELCOME_MESSAGE",             &Game::deserializeWelcomeMessage},
-    {"START_GAME",                  &Game::deserializeStartGame},
-    {"FIELD_PLACEMENT",             &Game::deserializeFieldPlacement},
-    {"ADD_CARD_TO_HAND",            &Game::deserializeAddCardToHand},
-    {"BATTLE",                      &Game::deserializeBattle}
+    {"WELCOME_MESSAGE",                                 &Game::deserializeWelcomeMessage},
+    {"START_GAME",                                      &Game::deserializeStartGame},
+    {"FIELD_PLACEMENT",                                 &Game::deserializeFieldPlacement},
+    {"ADD_CARD_TO_HAND",                                &Game::deserializeAddCardToHand},
+    {"BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS",         &Game::deserializeBattleBetweenAttackPositionMonsters},
+    {"BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS",      &Game::deserializeBattleBetweenDifferentPositionMonsters},
+    {"LP_CHANGE",                                       &Game::deserializeLpChange}
 };
 
 
@@ -102,13 +104,16 @@ void Game::damageCalculation(Card *attackingMonster, Card *attackedMonster)
     }
     else
     {
-        std::cout << "Battle against a defense position monster begins!" << std::endl;
+        std::cout << "Battle between 2 different position monsters begins!" << std::endl;
         battleBetweenTwoDifferentPositionMonsters(*attacker, *defender);
     }
 }
 
 void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender)
 {
+    /* TODO: We can also send the name of player who initiated the attack to the server,
+             but its always the current player so maybe its not needed. */
+
     int attackPointsDifference = attacker.getAttackPoints() - defender.getAttackPoints();
     if(attackPointsDifference < 0)
     {
@@ -118,26 +123,58 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
 
         /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard
                  Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
+
+        std::cout << "The defender wins!" << std::endl;
         GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
         damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
-        std::cout << "The defender wins!" << std::endl;
+
+
+        // Notify the server about the battle outcome                   // TODO: These can probably be simplified or moved into separate functions since they are similar
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+        outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
+                      << QString::fromStdString("DEFENDER") // Who won
+                      << QString::fromStdString(attacker.getCardName()) // Name of destroyed monster so it can be destroyed in other client's session too
+                      << qint32(3); // Number of the monster zone that the monster was in. // Placeholder for now until getZoneNumber() is implemented.   // Is it even needed?
+        sendDataToServer(buffer);
     }
     else if(attackPointsDifference > 0)
     {
         /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard
                  Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
+        std::cout << "The attacker wins!" << std::endl;
         GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
         damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
-        std::cout << "The attacker wins!" << std::endl;
+
+
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+        outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
+                      << QString::fromStdString("ATTACKER")
+                      << QString::fromStdString(defender.getCardName())
+                      << qint32(3);
+        sendDataToServer(buffer);
     }
     else
     {
         /* This means that both attacking monsters had the same ATK.
          * In that case, both of them get destroyed, but no player takes damage. */
-       GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
-       GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
+        GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
+        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
 
-       std::cout << "Both monsters die!" << std::endl;
+        std::cout << "Both monsters die!" << std::endl;
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+        outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
+                      << QString::fromStdString("NOONE") // Both monsters die
+                      << QString::fromStdString(attacker.getCardName())
+                      << QString::fromStdString(defender.getCardName())
+                      << qint32(3)
+                      << qint32(3);
+        sendDataToServer(buffer);
     }
 }
 
@@ -149,8 +186,15 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         /* This means that the attacker is weaker than the defender.
          * Because the defender is in the DEFENSE position, attacker doesn't
          * get destroyed but the player controlling the attacker still takes damage. */
-        damagePlayer(*GameExternVars::pCurrentPlayer, pointsDifference);
         std::cout << "The defender wins!" << std::endl;
+        damagePlayer(*GameExternVars::pCurrentPlayer, pointsDifference);
+
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+        outDataStream << QString::fromStdString("BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS")
+                      << QString::fromStdString("DEFENDER"); // Who won
+        sendDataToServer(buffer);
     }
     else if(pointsDifference > 0)
     {
@@ -160,24 +204,54 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
 
         /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard(defender)
                  Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
-        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
         std::cout << "The attacker wins!" << std::endl;
+        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
+
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+        outDataStream << QString::fromStdString("BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS")
+                      << QString::fromStdString("ATTACKER")
+                      << QString::fromStdString(defender.getCardName())
+                      << qint32(3);
+        sendDataToServer(buffer);
     }
     else
     {
         // If the pointsDifference is 0 then nothing happens
         std::cout << "No monster dies!" << std::endl;
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+        outDataStream << QString::fromStdString("BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS")
+                      << QString::fromStdString("NOONE");
+        sendDataToServer(buffer);
     }
 
 }
 
 void Game::damagePlayer(Player &targetPlayer, int howMuch)
 {
-    // This assumes that howMuch is negative
-    int newLifePoints = GameExternVars::pCurrentPlayer->getPlayerLifePoints() + howMuch;
-    newLifePoints > 0 ? targetPlayer.setPlayerLifePoints(newLifePoints) : emit gameEndedAfterBattle(targetPlayer);
-}
+    int newLifePoints;
+    howMuch > 0 ?  newLifePoints = targetPlayer.getPlayerLifePoints() - howMuch
+                :  newLifePoints = targetPlayer.getPlayerLifePoints() + howMuch;
+    if(newLifePoints > 0)
+    {
+        targetPlayer.setPlayerLifePoints(newLifePoints);
+        emit lifePointsChanged(targetPlayer);
 
+        // Notify the server about health change.  // TODO: This can probably be a separate function since its used in the onGameEnd slot too.
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+        outDataStream << QString::fromStdString("LP_CHANGE")
+                      << QString::fromStdString(targetPlayer.getPlayerName()) // Whose life points has changed
+                      << qint32(newLifePoints); // New life points
+        sendDataToServer(buffer);
+    }
+    else
+        emit gameEndedAfterBattle(targetPlayer);
+}
 
 
 // TODO: This can't happen in game, since we will have 2 clients/game instances which could potentially have different first player. !!
@@ -204,6 +278,11 @@ void Game::firstTurnSetup(qint32 firstToPlay) {
   // The first one gets 6 cards:
   GameExternVars::pCurrentPlayer->drawCards(6);
   // Notify the server that cards were drawn
+
+
+
+
+
   // FIXME: This is ugly
 //  for(int i = 0; i < 6; i++)
 //  {
@@ -244,6 +323,7 @@ void Game::setupConnections() {
     connect(this, &Game::turnEnded, this, &Game::onTurnEnd);
     connect(this, &Game::cardAddedToScene, this, &Game::onCardAddedToScene);
     connect(this, &Game::gameEndedAfterBattle, this, &Game::onGameEnd); // Same slot for both game endings (one in EffectActivator and one here)
+    connect(this, &Game::lifePointsChanged, this, &Game::onLifePointsChange);
 
     // Buttons
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
@@ -396,9 +476,107 @@ void Game::deserializeAddCardToHand(QDataStream &deserializationStream)
     whoGetsTheCards == QString::fromStdString("MYSELF") ? GameExternVars::pCurrentPlayer->drawCards(numOfCards) : GameExternVars::pOtherPlayer->drawCards(numOfCards);
 }
 
-void Game::deserializeBattle(QDataStream &deserializationStream)
+void Game::deserializeBattleBetweenAttackPositionMonsters(QDataStream &deserializationStream)
 {
+    std::cout << "Battle between 2 attacking monsters begins!" << std::endl;
+    // We first check who won ("ATTACKER", "DEFENDER", "NOONE")
+    QString whoWon;
+    deserializationStream >> whoWon;
 
+    // If whoWon was NOONE, then both monsters got destroyed
+    if(whoWon == QString::fromStdString("NOONE"))
+    {
+        QString playerWhoInitiatedAttack, attackerCardName, defenderCardName;
+        qint32 attackerZoneNumber, defenderZoneNumber;
+
+        deserializationStream >> playerWhoInitiatedAttack
+                              >> attackerCardName
+                              >> defenderCardName
+                              >> attackerZoneNumber
+                              >> defenderZoneNumber;
+
+        std::cout << "Both monsters die!" << std::endl;
+
+        // TODO: Reconstruct the Card objects from card names
+            /* Is this even needed? They will already be reconstructed when we deserialize the summons,
+             * so we could just do destroyMonster() probably, after we get the pointer to both monsters */
+
+
+        // TODO: Call destroyMonster() that will be implemented, for both monsters.
+    }
+    else if(whoWon == QString::fromStdString("ATTACKER"))
+    {
+        QString defenderCardName;
+        qint32 defenderZoneNumber;
+
+        deserializationStream >> defenderCardName
+                              >> defenderZoneNumber;
+
+        std::cout << "The attacker wins!" << std::endl;
+        // TODO: get a pointer to the defender
+        // TODO: currentPlayer->destroyMonster(defender)
+    }
+    else
+    {
+        QString attackerCardName;
+        qint32 attackerZoneNumber;
+
+        deserializationStream >> attackerCardName
+                              >> attackerZoneNumber;
+
+        std::cout << "The defender wins!" << std::endl;
+        // TODO: get a pointer to the attacker
+        // TODO: otherPlayer->destroyMonster(attacker)
+    }
+}
+
+void Game::deserializeBattleBetweenDifferentPositionMonsters(QDataStream &deserializationStream)
+{
+    std::cout << "Battle between 2 different position monsters begins!" << std::endl;
+    // We first check who won ("ATTACKER", "DEFENDER", "NOONE")
+    QString whoWon;
+    deserializationStream >> whoWon;
+
+    // If whoWon was NOONE, then both monsters got destroyed
+    if(whoWon == QString::fromStdString("NOONE"))
+        std::cout << "No one wins!" << std::endl;
+    else if(whoWon == QString::fromStdString("ATTACKER"))
+    {
+        QString defenderCardName;
+        qint32 defenderZoneNumber;
+
+        deserializationStream >> defenderCardName
+                              >> defenderZoneNumber;
+
+        std::cout << "The attacker wins!" << std::endl;
+
+        // TODO: get a pointer to the defender
+        // TODO: currentPlayer->destroyMonster(defender)
+    }
+    else
+        std::cout << "The defender wins!" << std::endl;
+}
+
+void Game::deserializeLpChange(QDataStream &deserializationStream)
+{
+    // We need to check whose life points got changed
+    QString whoseLifePointsChanged;
+    qint32 newLifePoints;
+
+    deserializationStream >> whoseLifePointsChanged
+                          >> newLifePoints;
+
+    // Now we need to actually set the targeted player's lp to newLifePoints
+    if (whoseLifePointsChanged.toStdString() == GameExternVars::pCurrentPlayer->getPlayerName())
+    {
+        GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints);
+        emit lifePointsChanged(*GameExternVars::pCurrentPlayer);
+    }
+    else
+    {
+        GameExternVars::pOtherPlayer->setPlayerLifePoints(newLifePoints);
+        emit lifePointsChanged(*GameExternVars::pOtherPlayer);
+    }
 }
 
 void Game::onGameStart(qint32 firstToPlay)
@@ -567,7 +745,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     {
         std::cout << "We are in the fullscreen mode" << std::endl;
 
-
         // Set our private variables to the new window size:
         m_windowWidth = resizeEvent->size().width();
         m_windowHeight = resizeEvent->size().height();
@@ -624,21 +801,20 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 
 
 
-
-
-
-
-
-
         // Testing green zones
-        monsterZone.placeInMonsterZone(monsterCard1, monsterZone.m_monsterZone[1]);
+        MonsterCard *monsterCard2 = new MonsterCard("test", 1700, 2500, 4,
+                                                    MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                    MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                    CardType::MONSTER_CARD, CardLocation::FIELD,
+                                                    "test"
+                                                    );
+        monsterZone.placeInMonsterZone(monsterCard2, monsterZone.m_monsterZone[1]);
     }
 }
 
 
 void Game::onCardSelect(Card *card)
 {
-    std::cout << "A card was added to the scene!" << std::endl;
     std::cout << "Card name: " << card->getCardName() << std::endl;
 
     // Pseudo-code
@@ -666,6 +842,8 @@ void Game::onCardSelect(Card *card)
         onAttackButtonClick(*card);
     });
 
+
+    // FIXME: After menu is closed once, 2 clicks are needed to get it to be shown again
     if(card->cardMenu->visible == false)
     {
         card->cardMenu->show();
@@ -704,7 +882,7 @@ void Game::onActivateButtonClick(const Card &card)
     EffectActivator effectActivator;
 
     // We connect every signal from EffectActivator to our slots in Game:
-    connect(&effectActivator, &EffectActivator::healthPointsChanged, this, &Game::onHealthPointsChange);
+    connect(&effectActivator, &EffectActivator::lifePointsChanged, this, &Game::onLifePointsChange);
     connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
 
     // Activate the card's effect
@@ -752,7 +930,7 @@ void Game::onAttackButtonClick(Card &attackingMonster)
 
 /* TODO: This should accept the targetPlayer as an argument, because otherwise we always print currentPlayer's hp,
          even if it was other player's health that had changed. */
-void Game::onHealthPointsChange(Player &targetPlayer) // const?
+void Game::onLifePointsChange(Player &targetPlayer) // const?
 {
     std::cout << "Current health points for player " << targetPlayer.getPlayerName() << " : "<< targetPlayer.getPlayerLifePoints() << std::endl;
 
@@ -766,7 +944,16 @@ void Game::onGameEnd(Player &loser)
     ui->labelHealthPointsDynamic->setText(QString::fromStdString("0"));
     std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost because his health points reached 0 !" << std::endl;
 
-    // TODO: Stop the game here somehow!
+    // Notify the server
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
+    outDataStream << QString::fromStdString("LP_CHANGE")
+                  << QString::fromStdString(loser.getPlayerName()) // Whose life points has changed
+                  << qint32(0); // New life points
+    sendDataToServer(buffer);
+
+    // TODO: Stop the game here (or maybe in the server too) somehow!
 }
 
 void Game::onSetButtonClick(const Card &card)
@@ -821,6 +1008,10 @@ void Game::onRedZoneClick(Zone *clickedRedZone) {
 void Game::onGreenZoneClick(Zone *clickedGreenZone) {
     std::cout << "Green zone was clicked!" << std::endl;
 
+    // Disable attack button for the attacker
+    GameExternVars::pAttackingMonster->cardMenu->attackButton->setVisible(false);
+
+
     // TODO: MonsterCard instead of Card?
     Card* attackedMonster = clickedGreenZone->m_pCard;
 
@@ -829,8 +1020,6 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 
     // Do the damage calculation
     damageCalculation(GameExternVars::pAttackingMonster, attackedMonster);
-
-
 }
 
 void Game::onNetworkErrorOccurred(QAbstractSocket::SocketError socketError)
@@ -898,7 +1087,6 @@ void Game::onTestNetworkButtonClick()
 void Game::onWriteDataButtonClick()
 {
    // Testing
-
    GameExternVars::pCurrentPlayer->drawCards(5);
    QByteArray buffer;
    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
