@@ -20,6 +20,7 @@ enum class avatars {
     KAIBA
 };
 
+extern sleeves currentSleeve;
 extern avatars currentAvatar;
 
 class profileSettings : public QWidget
@@ -39,7 +40,8 @@ private:
 
 private slots:
     void changeAvatar();
-    void changeSleeve();
+    void changeSleeveNext();
+    void changeSleevePrevious();
     void undoChanges();
     void saveChanges();
 };

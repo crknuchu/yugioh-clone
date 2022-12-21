@@ -6,6 +6,7 @@
 #include "QGraphicsView"
 #include <iostream>
 avatars currentAvatar;
+sleeves currentSleeve;
 
 profileSettings::profileSettings(QWidget *parent) :
     QWidget(parent),
@@ -46,6 +47,7 @@ profileSettings::profileSettings(QWidget *parent) :
     //sleeves
     QBrush b(Qt::green);
     ui->sleeveWindow->setBackgroundBrush(b);
+    currentSleeve = sleeves::GREEN;
 
 
     scene = new QGraphicsScene(this);
@@ -65,8 +67,8 @@ void profileSettings::setUpConnections(){
     connect(ui->nextAvatar, &QPushButton::clicked, this, &profileSettings::changeAvatar);
     connect(ui->lastAvatar, &QPushButton::clicked, this, &profileSettings::changeAvatar);
 
-    connect(ui->nextSleeve, &QPushButton::clicked, this, &profileSettings::changeSleeve);
-    connect(ui->lastSleeve, &QPushButton::clicked, this, &profileSettings::changeSleeve);
+    connect(ui->nextSleeve, &QPushButton::clicked, this, &profileSettings::changeSleeveNext);
+    connect(ui->lastSleeve, &QPushButton::clicked, this, &profileSettings::changeSleevePrevious);
 
     connect(ui->save, &QPushButton::clicked, this, &profileSettings::saveChanges);
     connect(ui->save, &QPushButton::clicked, this, &profileSettings::undoChanges);
@@ -86,7 +88,7 @@ void profileSettings::changeAvatar(){
             ui->avatarWindow->clear();
             ui->avatarWindow->setPixmap(pic1);
             currentAvatar = avatars::YUGI;
-            std::cout<<"promena 1"<<std::endl;
+//            std::cout<<"promena 1"<<std::endl;
         break;
            }
         case(avatars::YUGI):{
@@ -94,7 +96,7 @@ void profileSettings::changeAvatar(){
                 ui->avatarWindow->clear();
                 ui->avatarWindow->setPixmap(pic);
                 currentAvatar = avatars::KAIBA;
-                std::cout<<"promena 2"<<std::endl;
+//                std::cout<<"promena 2"<<std::endl;
                 break;
         }
     }
@@ -102,9 +104,67 @@ void profileSettings::changeAvatar(){
 }
 
 
-void profileSettings::changeSleeve(){
-    ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::red));
+void profileSettings::changeSleeveNext(){
+    switch(currentSleeve){
+        case(sleeves::BLACK):{
+            ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::black));
+            currentSleeve = sleeves::RED;
+            break;
+     }
+        case(sleeves::RED):{
+            ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::red));
+            currentSleeve = sleeves::WHITE;
+            break;
+     }
+        case(sleeves::WHITE):{
+            ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::white));
+            currentSleeve = sleeves::GREEN;
+            break;
+     }
+        case(sleeves::GREEN):{
+            ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::green));
+            currentSleeve = sleeves::BLUE;
+            break;
+     }
+        case(sleeves::BLUE):{
+            ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::blue));
+            currentSleeve = sleeves::BLACK;
+            break;
+     }
+    }
 }
+
+void profileSettings::changeSleevePrevious(){
+    switch(currentSleeve){
+        case(sleeves::BLACK):{
+            ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::black));
+            currentSleeve = sleeves::BLUE;
+            break;
+     }
+        case(sleeves::RED):{
+            ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::red));
+            currentSleeve = sleeves::BLACK;
+            break;
+     }
+        case(sleeves::WHITE):{
+            ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::white));
+            currentSleeve = sleeves::RED;
+            break;
+     }
+        case(sleeves::GREEN):{
+            ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::green));
+            currentSleeve = sleeves::WHITE;
+            break;
+     }
+        case(sleeves::BLUE):{
+            ui->sleeveWindow->setBackgroundBrush(QBrush(Qt::blue));
+            currentSleeve = sleeves::GREEN;
+            break;
+     }
+    }
+}
+
+
 
 void profileSettings::saveChanges(){}
 
