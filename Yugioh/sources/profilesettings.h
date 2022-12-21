@@ -15,6 +15,12 @@ enum class sleeves{
     BLUE
 };
 
+enum class avatars {
+    YUGI,
+    KAIBA
+};
+
+extern avatars currentAvatar;
 
 class profileSettings : public QWidget
 {

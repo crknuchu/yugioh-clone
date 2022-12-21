@@ -4,8 +4,8 @@
 #include "QGraphicsPixmapItem"
 #include "QGraphicsItem"
 #include "QGraphicsView"
-
-
+#include <iostream>
+avatars currentAvatar;
 
 profileSettings::profileSettings(QWidget *parent) :
     QWidget(parent),
@@ -53,6 +53,7 @@ profileSettings::profileSettings(QWidget *parent) :
     ui->sleeveWindow->setBackgroundBrush(b);
 
     QPixmap avatar(":/resources/yugi.png");
+    currentAvatar = avatars::YUGI;
 
     ui->avatarWindow->setPixmap(avatar);
     ui->avatarWindow->setMaximumHeight(200);
@@ -78,13 +79,26 @@ profileSettings::~profileSettings()
 }
 
 void profileSettings::changeAvatar(){
-    QPixmap pic(":/resources/kaiba.png");
-    ui->avatarWindow->setPixmap(pic);
 
-//    pic = pic.scaled(ui->avatarWindow->x()/100 - ui->avatarWindow->width(),
-//                     ui->avatarWindow->y()/100 - ui->avatarWindow->height(),
-//                     Qt::IgnoreAspectRatio);
-//    ui->avatarWindow->setBackgroundBrush(QBrush(pic));
+    switch(currentAvatar){
+        case(avatars::KAIBA):{
+            QPixmap pic1(":/resources/kaiba.png");
+            ui->avatarWindow->clear();
+            ui->avatarWindow->setPixmap(pic1);
+            currentAvatar = avatars::YUGI;
+            std::cout<<"promena 1"<<std::endl;
+        break;
+           }
+        case(avatars::YUGI):{
+                QPixmap pic(":/resources/yugi.png");
+                ui->avatarWindow->clear();
+                ui->avatarWindow->setPixmap(pic);
+                currentAvatar = avatars::KAIBA;
+                std::cout<<"promena 2"<<std::endl;
+                break;
+        }
+    }
+
 }
 
 
