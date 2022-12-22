@@ -277,7 +277,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
 //    std::cout << "Window has been resized!" << std::endl;
     // Json testiranje = new Json("")
-    // Serializer s(":/test.json");
+    Serializer s(":/resources/kaiba.json");
 
 
 

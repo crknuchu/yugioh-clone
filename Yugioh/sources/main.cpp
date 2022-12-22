@@ -13,7 +13,7 @@ int main(int argc,char **argv)
 {
   QApplication app(argc, argv);
 
-  Serializer s(":/resources/test.json");
+  Serializer s(":/resources/kaiba.json");
 
    MainMenu m;
   //  m.showFullScreen();
