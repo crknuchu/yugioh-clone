@@ -10,12 +10,14 @@ class Zone : public QObject, public QGraphicsRectItem {
 
     Q_OBJECT
 public:
+    Zone(bool);
     Zone(float x, float y);
     ~Zone();
     bool isEmpty();
     void putInZone(Card* card);
     float getWidth() const;
     float getHeight() const;
+    void setCoordinates(float, float);
     void mousePressEvent(QGraphicsSceneMouseEvent* event) override;
     QRectF boundingRect() const override;
     QPainterPath shape() const override;
@@ -29,6 +31,7 @@ private:
     float m_width = 100;
     float m_x;
     float m_y;
+    bool m_isFieldZone = false;
 };
 
 #endif // ZONE_H

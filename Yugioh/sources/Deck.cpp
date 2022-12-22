@@ -6,7 +6,6 @@
 
 Deck::Deck(){}
 
-
 Deck::Deck(const std::string &pathToDeck, std::vector<Card*> &deck)
     :CardList(deck){
     for(auto card : m_cardList){
@@ -18,6 +17,19 @@ std::vector<Card*> Deck::getDeck() const{
     return m_cardList;
 }
 
+void Deck::setDeck(float x, float y, int playerNumber) {
+    float gap = 2;
+    for(int i = 0; i < 5; i++) { //for now its hardcoded but needs to be deck.size / 4
+        MonsterCard* placeholderCard = new MonsterCard("placeholder", 0,0,1,MonsterType::AQUA,
+                                          MonsterKind::NORMAL_MONSTER, MonsterAttribute::DARK,
+                                          false, Position::DEFENSE, true, CardType::MONSTER_CARD,
+                                          CardLocation::DECK, "placeholder",":/resources/pictures/card_back.jpg", false);
+
+        placeholderCard->setPos(x,y);
+        uiDeck.push_back(placeholderCard);
+        playerNumber == 1 ? x += gap : x-=gap;
+    }
+}
 
 Card* Deck::draw(){
     Card* drawnCard = m_cardList.front();

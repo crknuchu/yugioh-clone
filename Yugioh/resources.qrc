@@ -16,5 +16,6 @@
         <file>resources/pictures/gyakuteno_megami.jpg</file>
         <file>resources/pictures/judge_man.jpg</file>
         <file>resources/pictures/swordstalker.jpg</file>
+        <file>resources/pictures/fieldZoneSymbol.png</file>
     </qresource>
 </RCC>

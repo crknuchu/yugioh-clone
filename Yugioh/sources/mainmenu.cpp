@@ -25,7 +25,7 @@ MainMenu::MainMenu(QWidget *parent) :
     this->setPalette(palette);
     QMediaPlayer * music = new QMediaPlayer();
     music->setMedia(QUrl("qrc:/resources/sounds/illusion.mp3"));
-    music->play();
+    // music->play();
 
 
 }
@@ -38,11 +38,10 @@ MainMenu::~MainMenu()
 void MainMenu::on_pushButton_clicked()
 {
 
-    //Player player1("Nikola");
-    //Player player2("Milan");
-    //game = new Game(player1,player2);
-    //Game game(player1, player2);
-    //game->show();
+    Player* player1 = new Player("Nikola");
+    Player* player2 = new Player("Milan");
+    m_pGame = new Game(*player1, *player2);
+    m_pGame->showFullScreen();
 }
 
 
@@ -63,7 +62,7 @@ void MainMenu::on_pushButton_5_clicked()
 
 void MainMenu::setGame(Game *newGame)
 {
-    game = newGame;
+    m_pGame = newGame;
 }
 
 
