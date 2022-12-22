@@ -13,12 +13,13 @@ int main(int argc,char **argv)
 {
   QApplication app(argc, argv);
 
-  Serializer s(":/resources/kaiba.json");
+  Serializer s;
+  s.loadFromJson(":/resources/kaiba.json");
+  for(auto card : s.getCards())
+    qWarning() << card;
 
-   MainMenu m;
+  //  MainMenu m;
   //  m.showFullScreen();
-
-
 
   app.exec();
   return 0;

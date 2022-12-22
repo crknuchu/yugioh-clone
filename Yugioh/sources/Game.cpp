@@ -276,10 +276,6 @@ void Game::onTurnEnd() {
 void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 {
 //    std::cout << "Window has been resized!" << std::endl;
-    // Json testiranje = new Json("")
-    Serializer s(":/resources/kaiba.json");
-
-
 
     // Set our private variables to the new window size:
     m_windowWidth = resizeEvent->size().width();
