@@ -153,15 +153,18 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
         outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
                       << QString::fromStdString("ATTACKER")
                       << QString::fromStdString(defender.getCardName())
-                      << qint32(3);
+                      << qint32(3)
+                      << qint32(attackPointsDifference);
         sendDataToServer(buffer);
 
 
-        std::cout << "Vratili smo se iz sendData" << std::endl;
+        std::cout << "We are back from sendData" << std::endl;
 
+
+        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
         // FIXME: Somehow opposite client never gets LP_CHANGE header that we send to the server in this function.
         // If we place damagePlayer above previous buffer, it does get through but then BATTLE header doesn't.
-        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
+//        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
     }
     else
     {
@@ -222,6 +225,7 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
                       << QString::fromStdString("ATTACKER")
                       << QString::fromStdString(defender.getCardName())
                       << qint32(3);
+
         sendDataToServer(buffer);
     }
     else
@@ -507,13 +511,17 @@ void Game::deserializeBattleBetweenAttackPositionMonsters(QDataStream &deseriali
     {
         QString defenderCardName;
         qint32 defenderZoneNumber;
-
+        qint32 attackPointsDifference;
         deserializationStream >> defenderCardName
-                              >> defenderZoneNumber;
+                              >> defenderZoneNumber
+                              >> attackPointsDifference;
 
-        std::cout << "The attacker wins!" << std::endl;
+
+        std::cout << "The opponent's attacker monster wins!" << std::endl;
         // TODO: get a pointer to the defender
         // TODO: currentPlayer->destroyMonster(defender)
+
+        damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
     }
     else
     {
@@ -940,18 +948,24 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
     std::cout << "Current health points for player " << targetPlayer.getPlayerName() << " : "<< targetPlayer.getPlayerLifePoints() << std::endl;
 
     // Set the label text to the current turn player's health value
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(targetPlayer.getPlayerLifePoints())));
 
     // TODO: Add other player's label and set it
 
-    // Notify the server about health change.  // TODO: This can probably be a separate function since its used in the onGameEnd slot too.
-    QByteArray buffer;
-    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-    outDataStream.setVersion(QDataStream::Qt_5_15);
-    outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
-                  << QString::fromStdString(targetPlayer.getPlayerName()).trimmed() // Whose life points has changed
-                  << QString::fromStdString(std::to_string(targetPlayer.getPlayerLifePoints())); // New life points
-    sendDataToServer(buffer);
+
+
+    // Notify the server about health change.
+
+
+    // FIXME: If this is uncommented, we get problems with consecutive writes to the server
+
+//    QByteArray buffer;
+//    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+//    outDataStream.setVersion(QDataStream::Qt_5_15);
+//    outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
+//                  << QString::fromStdString(targetPlayer.getPlayerName()).trimmed() // Whose life points has changed
+//                  << QString::fromStdString(std::to_string(targetPlayer.getPlayerLifePoints())); // New life points
+//    sendDataToServer(buffer);
 
 }
 
