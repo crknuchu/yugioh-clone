@@ -47,6 +47,7 @@ profileSettings::profileSettings(QWidget *parent) :
     //sleeves
     QBrush b(Qt::green);
     ui->sleeveWindow->setBackgroundBrush(b);
+    ui->sleeveWindow->setStyleSheet("border: 5px solid grey");
     currentSleeve = sleeves::GREEN;
 
 
@@ -57,6 +58,7 @@ profileSettings::profileSettings(QWidget *parent) :
     QPixmap avatar(":/resources/yugi.png");
     currentAvatar = avatars::YUGI;
 
+    ui->avatarWindow->setStyleSheet("border: 3px solid grey");
     ui->avatarWindow->setPixmap(avatar);
     ui->avatarWindow->setMaximumHeight(200);
     ui->avatarWindow->setScaledContents(true);
