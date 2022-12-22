@@ -31,6 +31,7 @@ float Zone::getHeight() const {
 
 void Zone::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 
+    std::cout << "Zone was clicked !" << std::endl;
     auto zoneColor = this->brush().color();
     if(zoneColor == Qt::red) {
         emit zoneRedAndClicked(this);

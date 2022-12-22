@@ -52,6 +52,7 @@ Game::Game(Player p1, Player p2, QWidget *parent)
 
     // Setup data stream
     m_inDataStream.setDevice(m_pTcpSocket);
+
     m_inDataStream.setVersion(QDataStream::Qt_5_15);
 
     // Setup connections:
@@ -285,6 +286,11 @@ void Game::firstTurnSetup(qint32 firstToPlay) {
 
   // TODO (Check): There is no need to notify the server about these draws since both players do them in sync
 
+
+  // Change the game phase to main phase
+  GamePhaseExternVars::currentGamePhase = GamePhases::MAIN_PHASE1;
+  emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
+
 }
 
 
@@ -336,7 +342,7 @@ bool Game::sendDataToServer(QByteArray &data)
         // First we send the data's size
         m_pTcpSocket->write(QInt32ToQByteArray(data.size()));
         // Then we write the actual data
-        m_pTcpSocket->write(data);
+        m_pTcpSocket->write(data); // data.right(data.size())?
         return m_pTcpSocket->waitForBytesWritten();
     }
     else
@@ -752,6 +758,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                                                     "Neither player can target Dragon monsters on the field with card effects."
                                                     );
         monsterCard1->setPos(450, 450);
+        monsterCard1->setZValue(5);
         ui->graphicsView->scene()->addItem(monsterCard1);
 
         // Notify the game that a card was added.
@@ -1076,11 +1083,11 @@ void Game::onDataIncoming()
     if(!m_inDataStream.commitTransaction())
         return;
 
-    if(header == m_currentHeader)
-    {
-        QTimer::singleShot(0, this, &Game::onTestNetworkButtonClick);
-        return;
-    }
+//    if(header == m_currentHeader)
+//    {
+//        QTimer::singleShot(0, this, &Game::onTestNetworkButtonClick);
+//        return;
+//    }
 
     m_currentHeader = header;
 

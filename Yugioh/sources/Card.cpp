@@ -100,6 +100,7 @@ void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
 }
 
 void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
+    std::cout << "Card " << this->getCardName() << " was clicked!" << std::endl;
     if(event->buttons() & Qt::LeftButton)
     {
        emit cardSelected(this);
