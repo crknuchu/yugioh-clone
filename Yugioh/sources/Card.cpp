@@ -3,14 +3,15 @@
 #include <iterator>
 #include <iostream>
 #include "headers/CardMenu.h"
-Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent)
-    : QGraphicsPixmapItem(parent)
-    ,cardName(cardName)
+Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath)
+    :cardName(cardName)
     ,cardType(cardType)
     ,cardLocation(cardLocation)
     ,cardDescription(cardDescription)
+    ,imagePath(imagePath)
 {
-    QPixmap pixmap(":/resources/pictures/blue_eyes.jpg");
+    QPixmap pixmap;
+    pixmap.load(QString::fromStdString(imagePath));
     pixmap = pixmap.scaled(QSize(200,150), Qt::KeepAspectRatio); //pixmap size needs to not be hardcoded
     height = pixmap.height();
     width = pixmap.width();

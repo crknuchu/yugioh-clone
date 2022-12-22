@@ -11,7 +11,8 @@
             "race":"Spellcaster",
             "attribute":"DARK",
             "archetype":"Dark Magician",
-            "ammount":3
+            "ammount":3,
+            "image":":/resources/pictures/dark_magician.jpg"
         }
         ,
         {
@@ -25,7 +26,8 @@
             "race":"Dragon",
             "attribute":"LIGHT",
             "archetype":"Blue-Eyes",
-            "ammount":3
+            "ammount":3,
+            "image":":/resources/pictures/blue_eyes.jpg"
         }
         ,
         {
@@ -39,7 +41,8 @@
             "race":"Warrior",
             "attribute":"EARTH",
             "archetype":"N/A",
-            "ammount":3
+            "ammount":3,
+            "image":":/resources/pictures/judge_man.jpg"
         }
         ,
         {
@@ -53,7 +56,8 @@
             "race":"Warrior",
             "attribute":"Dark",
             "archetype":"N/A",
-            "ammount":3
+            "ammount":3,
+            "image":":/resources/pictures/swordstalker.jpg"
         }
         ,
         {
@@ -67,7 +71,8 @@
             "race":"Fairy",
             "attribute":"LIGHT",
             "archetype":"N/A",
-            "ammount":3
+            "ammount":3,
+            "image":":/resources/pictures/gyakuteno_megami.jpg"
         }
         ,
         {
@@ -76,7 +81,8 @@
             "type":"Spell Card",
             "desc":"Increase the ATK and DEF of a Fiend-Type monster equipped with this card by 300 points",
             "race":"NORMAL SPELL",
-            "ammount":3
+            "ammount":3,
+            "image":":/resources/pictures/dark_energy.jpg"
         }
         ,
         {
@@ -85,7 +91,8 @@
             "type":"Trap Card",
             "desc":"Increase the DEF of 1 face-up monster on the field by 500 points until the end of this turn",
             "race":"NORMAL TRAP",
-            "ammount":3
+            "ammount":3,
+            "image":":/resources/pictures/castle_walls.jpg"
         }
     ]
 }

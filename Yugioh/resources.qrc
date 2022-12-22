@@ -10,5 +10,11 @@
         <file>resources/pictures/menubackground.png</file>
         <file>resources/sounds/illusion.mp3</file>
         <file>resources/kaiba.json</file>
+        <file>resources/pictures/castle_walls.jpg</file>
+        <file>resources/pictures/dark_energy.jpg</file>
+        <file>resources/pictures/dark_magician.jpg</file>
+        <file>resources/pictures/gyakuteno_megami.jpg</file>
+        <file>resources/pictures/judge_man.jpg</file>
+        <file>resources/pictures/swordstalker.jpg</file>
     </qresource>
 </RCC>

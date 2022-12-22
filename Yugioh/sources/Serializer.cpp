@@ -32,6 +32,7 @@ void Serializer::loadFromJson(QString s)
             cardType = CardType::MONSTER_CARD;
             const std::string name = item.toObject()["name"].toString().toStdString();
             const std::string desc = item.toObject()["desc"].toString().toStdString();
+            const std::string imagePath = item.toObject()["image"].toString().toStdString();
             int atk = item.toObject()["atk"].toInt();
             int def = item.toObject()["def"].toInt();
             int level = item.toObject()["level"].toInt();
@@ -39,7 +40,7 @@ void Serializer::loadFromJson(QString s)
             MonsterAttribute attribute = Maps::stringToMonsterAttribute[item.toObject()["attribute"].toString()];
             MonsterType type = Maps::stringToMonsterType[item.toObject()["archetype"].toString()];
             
-            MonsterCard *monsterCard = new MonsterCard(name,atk,def,level,type,race,attribute,false,Position::NONE,false,cardType,CardLocation::DECK,desc,false);
+            MonsterCard *monsterCard = new MonsterCard(name,atk,def,level,type,race,attribute,false,Position::NONE,false,cardType,CardLocation::DECK,desc,imagePath,false);
             arrayOfCards.push_back(monsterCard);
         }
         else if(item.toObject()["type"].toString() == "Spell Card"){
@@ -47,18 +48,20 @@ void Serializer::loadFromJson(QString s)
             cardType = CardType::SPELL_CARD;
             const std::string name = item.toObject()["name"].toString().toStdString();
             const std::string desc = item.toObject()["desc"].toString().toStdString();
+            const std::string imagePath = item.toObject()["image"].toString().toStdString();
             SpellType spellType = Maps::stringToSpellType[item.toObject()["race"].toString()];
 
-            SpellCard *spellCard = new SpellCard(spellType,name,cardType,CardLocation::DECK,desc,false); 
+            SpellCard *spellCard = new SpellCard(spellType,name,cardType,CardLocation::DECK,desc,imagePath,false); 
             arrayOfCards.push_back(spellCard);
         }
         else{
             cardType = CardType::TRAP_CARD;
             const std::string name = item.toObject()["name"].toString().toStdString();
             const std::string desc = item.toObject()["desc"].toString().toStdString();
+            const std::string imagePath = item.toObject()["image"].toString().toStdString();
             TrapType trapType = Maps::stringToTrapType[item.toObject()["race"].toString()];
         
-            TrapCard *trapCard = new TrapCard(trapType,name,cardType,CardLocation::DECK,desc,false,false);
+            TrapCard *trapCard = new TrapCard(trapType,name,cardType,CardLocation::DECK,desc,imagePath,false,false);
             arrayOfCards.push_back(trapCard);
         }
 

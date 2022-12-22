@@ -1,7 +1,7 @@
 #include "headers/Trapcard.h"
 
-TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active,bool setThisTurn)
-    : Card(cardName, cardType, cardLocation, cardDescription)
+TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool active,bool setThisTurn)
+    : Card(cardName, cardType, cardLocation, cardDescription,imagePath)
     ,trapType(type)
     ,setThisTurn(setThisTurn)
     ,active(active)

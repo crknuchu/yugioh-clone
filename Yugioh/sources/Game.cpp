@@ -293,8 +293,8 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                                                 MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                                 MonsterAttribute::DARK, false, Position::ATTACK, false,
                                                 CardType::MONSTER_CARD, CardLocation::HAND,
-                                                "Neither player can target Dragon monsters on the field with card effects."
-                                                );
+                                                "Neither player can target Dragon monsters on the field with card effects.",
+                                                ":/resources/pictures/blue_eyes.jpg");
 
     for(auto *zone : monsterZone.m_monsterZone) {
          connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClicked);
@@ -448,12 +448,14 @@ void Game::onRedZoneClicked(Zone * clickedRedZone) {
     MonsterCard* globalMonsterCard1 = new MonsterCard("Sibirski Plavac", 3000, 2500, 4, MonsterType::DRAGON,
                                                 MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
                                                 true, Position::ATTACK, false,
-                                                CardType::MONSTER_CARD, CardLocation::HAND, "Opis", false
+                                                CardType::MONSTER_CARD, CardLocation::HAND, "Opis",
+                                                ":/resources/pictures/blue_eyes.jpg",
+                                                false
                                                );
 
     SpellCard* globalSpellCard = new SpellCard(SpellType::NORMAL_SPELL, "Dark Hole",
                                                CardType::SPELL_CARD, CardLocation::HAND,
-                                               " Destroy all monsters on the field. ", true);
+                                               " Destroy all monsters on the field. ",":/resources/pictures/blue_eyes.jpg", true);
 
     Card* card = globalSpellCard;
     if(card->getCardType() == CardType::MONSTER_CARD) {

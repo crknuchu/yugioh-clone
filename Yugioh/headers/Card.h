@@ -85,11 +85,12 @@ public:
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
-    Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent = 0);
+    Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath);
     std::string cardName;
     CardType cardType;
     CardLocation cardLocation;
     std::string cardDescription;
+    std::string imagePath;
     //cardImage
     // CardMenu *cardMenu = new CardMenu(this);
     

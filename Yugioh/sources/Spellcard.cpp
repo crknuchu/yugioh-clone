@@ -1,7 +1,7 @@
 #include "headers/Spellcard.h"
 
-SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active)
-    : Card(cardName, cardType, cardLocation, cardDescription)
+SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool active)
+    : Card(cardName, cardType, cardLocation, cardDescription,imagePath)
     ,type(type)
     ,active(active)
 {}
