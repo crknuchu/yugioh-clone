@@ -108,8 +108,22 @@ void Player::fromGraveyardToField(Card &card, Zone &zone)
 {
     if (isCardInGrave(card) == true)
     {
-        Card *c = this->field.graveyard->removeFromGraveyard(card);
+        this->field.graveyard->removeFromGraveyard(card); // this function return removed card,
+                                                                // but in this case we dont need it
         //put it back in filed zone
+        if (dynamic_cast<MonsterCard *>(&card) != nullptr)
+        {
+            this->field.monsterZone.colorFreeZones();
+        }
+        else if (dynamic_cast<SpellTrapZone *>(&card) != nullptr)
+        {
+            this->field.spellTrapZone.colorFreeZones();
+        }
+    }
+    else
+    {
+        std::cerr<<card.getCardName()<<" not in graveyard"<<std::endl;
+        return;
     }
 }
 
