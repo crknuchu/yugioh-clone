@@ -214,8 +214,8 @@ void MonsterCard::setCardMenu(){
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
 
     if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
-        flagMap.insert("set",true);
-        flagMap.insert("summon",true);
+        flagMap.insert("set", true);
+        flagMap.insert("summon", true);
     }
     if(cardLocation == CardLocation::FIELD  && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1|| GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("reposition",true);

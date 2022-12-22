@@ -131,11 +131,9 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
         outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
                       << QString::fromStdString("DEFENDER") // Who won
                       << QString::fromStdString(attacker.getCardName()) // Name of destroyed monster so it can be destroyed in other client's session too
-                      << qint32(3); // Number of the monster zone that the monster was in. // Placeholder for now until getZoneNumber() is implemented.   // Is it even needed?
+                      << qint32(3) // Number of the monster zone that the monster was in. // Placeholder for now until getZoneNumber() is implemented.   // Is it even needed?
+                      << qint32(attackPointsDifference);
         sendDataToServer(buffer);
-
-
-
 
         damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
     }
@@ -201,7 +199,8 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
         outDataStream << QString::fromStdString("BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS")
-                      << QString::fromStdString("DEFENDER"); // Who won
+                      << QString::fromStdString("DEFENDER") // Who won
+                      << qint32(pointsDifference);
         sendDataToServer(buffer);
 
 
@@ -280,40 +279,12 @@ void Game::firstTurnSetup(qint32 firstToPlay) {
 
   // The first one gets 6 cards:
   GameExternVars::pCurrentPlayer->drawCards(6);
-  // Notify the server that cards were drawn
-
-
-
-
-
-  // FIXME: This is ugly
-//  for(int i = 0; i < 6; i++)
-//  {
-//      QByteArray buffer;
-//      QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-//      outDataStream.setVersion(QDataStream::Qt_5_15);
-
-//      outDataStream << QString::fromStdString("ADD_CARD_TO_HAND");
-//      outDataStream << QString::fromStdString("OPPONENT"); // We tell the opposite player that his opponent (current player in this call) got 6 cards
-
-//      sendDataToServer(buffer);
-//  }
-
-
 
   // The other one gets 5 cards
   GameExternVars::pOtherPlayer->drawCards(5);
-//  for(int i = 0; i < 5; i++)
-//  {
-//      QByteArray buffer;
-//      QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-//      outDataStream.setVersion(QDataStream::Qt_5_15);
 
-//      outDataStream << QString::fromStdString("ADD_CARD_TO_HAND");
-//      outDataStream << QString::fromStdString("MYSELF");
+  // TODO (Check): There is no need to notify the server about these draws since both players do them in sync
 
-//      sendDataToServer(buffer);
-//  }
 }
 
 
@@ -338,9 +309,6 @@ void Game::setupConnections() {
     connect(m_pTcpSocket, &::QAbstractSocket::errorOccurred, this, &Game::onNetworkErrorOccurred);
     connect(ui->btnTestNetwork, &QPushButton::clicked, this, &Game::onTestNetworkButtonClick);
     connect(ui->btnWriteData, &QPushButton::clicked, this, &Game::onWriteDataButtonClick);
-
-
-
 }
 
 bool Game::eventFilter(QObject *obj, QEvent *event)
@@ -516,22 +484,26 @@ void Game::deserializeBattleBetweenAttackPositionMonsters(QDataStream &deseriali
                               >> defenderZoneNumber
                               >> attackPointsDifference;
 
-
         std::cout << "The opponent's attacker monster wins!" << std::endl;
         // TODO: get a pointer to the defender
         // TODO: currentPlayer->destroyMonster(defender)
 
-        damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
+        // We damage the other player (which is in this case us (client 2), because we are here only if we aren't the one that plays currently)
+        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
     }
     else
     {
         QString attackerCardName;
         qint32 attackerZoneNumber;
-
+        qint32 attackPointsDifference;
         deserializationStream >> attackerCardName
-                              >> attackerZoneNumber;
-
+                              >> attackerZoneNumber
+                              >> attackPointsDifference;
         std::cout << "The defender wins!" << std::endl;
+
+        // Damage the one that initiated the attack (the one whose turn we are in currently)
+        damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
+
         // TODO: get a pointer to the attacker
         // TODO: otherPlayer->destroyMonster(attacker)
     }
@@ -561,7 +533,14 @@ void Game::deserializeBattleBetweenDifferentPositionMonsters(QDataStream &deseri
         // TODO: currentPlayer->destroyMonster(defender)
     }
     else
+    {
+        qint32 pointsDifference;
+        deserializationStream >> pointsDifference;
+
         std::cout << "The defender wins!" << std::endl;
+
+        damagePlayer(*GameExternVars::pCurrentPlayer, pointsDifference);
+    }
 }
 
 void Game::deserializeLpChange(QDataStream &deserializationStream)
@@ -817,7 +796,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         // Testing green zones
         MonsterCard *monsterCard2 = new MonsterCard("test", 1700, 2500, 4,
                                                     MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                    MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                    MonsterAttribute::DARK, false, Position::DEFENSE, false,
                                                     CardType::MONSTER_CARD, CardLocation::FIELD,
                                                     "test"
                                                     );
