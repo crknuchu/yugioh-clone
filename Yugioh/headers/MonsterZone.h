@@ -12,7 +12,9 @@ public:
     ~MonsterZone();
     void setMonsterZone(float x, float y);
     void placeInMonsterZone(Card*, Zone*);
+    void placeInMonsterZone(Card*, int);
     MonsterCard* removeFromMonsterZone(Zone*);
+    void removeFromMonsterZone(int);
     float getWidth() const;
     bool isFull() const;
     void colorFreeZones();

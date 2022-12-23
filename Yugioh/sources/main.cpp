@@ -15,8 +15,8 @@ int main(int argc,char **argv)
   for(auto card : s.getCards())
     qWarning() <<  QString::fromStdString(card->getCardName());
 
-  //  MainMenu m;
-  //  m.showFullScreen();
+    MainMenu m;
+    m.showFullScreen();
 
   app.exec();
   return 0;
