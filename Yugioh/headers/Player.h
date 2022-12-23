@@ -42,8 +42,8 @@ public:
   // ----------------------------------------------------------------------------------------------------------------
 
   //MAIN PHASE 1 
-  void setCardPosition();
-  void putCardOnField(Card &);
+  void setCardPosition(); // don't need to do it
+  void putCardOnField(Card &); //same as above
   // ------------------------------------------
 
   //BATTLE PHASE
