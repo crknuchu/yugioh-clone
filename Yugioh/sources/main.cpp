@@ -42,13 +42,13 @@ int main(int argc,char **argv)
   player1.drawCards(1);
   player1.drawCards(1);
   player1.drawCards(1);
-//  game.showFullScreen();
+  game.showFullScreen();
    profileSettings p;
    //   p.resize(500, 500);
    p.setMinimumWidth(1024);
    p.setMinimumHeight(711);
    p.setMaximumHeight(711);
    p.setMaximumWidth(1024);
-   p.show();
+//   p.show();
   return app.exec();
 }

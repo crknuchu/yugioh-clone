@@ -73,7 +73,7 @@ void profileSettings::setUpConnections(){
     connect(ui->lastSleeve, &QPushButton::clicked, this, &profileSettings::changeSleevePrevious);
 
     connect(ui->save, &QPushButton::clicked, this, &profileSettings::saveChanges);
-    connect(ui->save, &QPushButton::clicked, this, &profileSettings::undoChanges);
+    connect(ui->cancel, &QPushButton::clicked, this, &profileSettings::undoChanges);
 }
 
 
@@ -90,7 +90,7 @@ void profileSettings::changeAvatar(){
             ui->avatarWindow->clear();
             ui->avatarWindow->setPixmap(pic1);
             currentAvatar = avatars::YUGI;
-//            std::cout<<"promena 1"<<std::endl;
+            std::cout<<"YUGI"<<std::endl;
         break;
            }
         case(avatars::YUGI):{
@@ -98,7 +98,7 @@ void profileSettings::changeAvatar(){
                 ui->avatarWindow->clear();
                 ui->avatarWindow->setPixmap(pic);
                 currentAvatar = avatars::KAIBA;
-//                std::cout<<"promena 2"<<std::endl;
+                std::cout<<"KAIBA"<<std::endl;
                 break;
         }
     }
@@ -168,6 +168,24 @@ void profileSettings::changeSleevePrevious(){
 
 
 
-void profileSettings::saveChanges(){}
+void profileSettings::saveChanges(){
+    switch(currentAvatar){
+        case(avatars::YUGI):{
+            std::cout<<"YUGI"<<std::endl;
+            break;
+        }
+        case(avatars::KAIBA)
+        :{
+            std::cout<<"KAIBA"<<std::endl;
+        }
 
-void profileSettings::undoChanges(){}
+    }
+
+    close();
+}
+
+void profileSettings::undoChanges(){
+    currentAvatar = avatars::YUGI;
+    currentSleeve = sleeves::BLACK;
+    close();
+}
