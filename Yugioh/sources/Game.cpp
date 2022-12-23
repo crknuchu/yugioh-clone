@@ -5,6 +5,7 @@
 #include "headers/EffectActivator.h"
 #include "headers/Field.h"
 #include "headers/Hand.h"
+#include "sources/profilesettings.h"
 
 #include <iostream>
 #include <random>
@@ -355,6 +356,48 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
          *  1) Flags
          *  2) ?
          */
+        currentAvatar = avatars::KAIBA;
+        switch(currentAvatar)
+        {
+            case(avatars::YUGI):{
+                QPixmap avatar(":/resources/pictures/yugi.png");
+
+
+                ui->avatarPlayer->setStyleSheet("border: 1px solid grey");
+                ui->avatarPlayer->setPixmap(avatar);
+                ui->avatarPlayer->setScaledContents(true);
+                ui->avatarPlayer->setMaximumHeight(200);
+                ui->avatarPlayer->setMaximumWidth(200);
+                ui->avatarPlayer->setAlignment(Qt::AlignCenter);
+                ui->namePlayer->setText(QString::fromUtf8(this->m_player1.getPlayerName()));
+    //
+            }
+            case (avatars::KAIBA):{
+                QPixmap avatar(":/resources/pictures/kaiba.png");
+
+
+                ui->avatarPlayer->setStyleSheet("border: 1px solid grey");
+                ui->avatarPlayer->setPixmap(avatar);
+                ui->avatarPlayer->setScaledContents(true);
+                ui->avatarPlayer->setMaximumHeight(200);
+                ui->avatarPlayer->setMaximumWidth(200);
+                ui->avatarPlayer->setAlignment(Qt::AlignCenter);
+                ui->namePlayer->setText(QString::fromUtf8(this->m_player1.getPlayerName()));
+            }
+        }
+//        ui->avatarPlayer->setBaseSize(200, 250);
+        ui->progressBar->setValue(6000);
+
+//        else
+//        {
+//            QPixmap avatar(":/resource/pictures/kaiba.png");
+//            ui->avatarLabel->setPixmap(avatar);
+//            ui->avatarLabel->setScaledContents(true);
+//        }
+//        ui->avatarLabel->setText("Cascsacsasa");
+
+
+
         m_player1.field.setField(1, viewAndSceneWidth,m_windowHeight);
         for(auto z :    m_player1.field.monsterZone.m_monsterZone) {
             ui->graphicsView->scene()->addItem(z);

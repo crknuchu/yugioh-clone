@@ -42,6 +42,7 @@ int main(int argc,char **argv)
   player1.drawCards(1);
   player1.drawCards(1);
   player1.drawCards(1);
+
   game.showFullScreen();
    profileSettings p;
    //   p.resize(500, 500);
