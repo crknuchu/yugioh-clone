@@ -8,7 +8,8 @@ MonsterZone::MonsterZone(){
 
 MonsterZone::~MonsterZone()
 {
-    for(Zone* zone : m_monsterZone) {
+    for(Zone* zone : m_monsterZone)
+    {
         delete zone;
     }
 
@@ -33,6 +34,11 @@ MonsterCard* MonsterZone::removeFromMonsterZone(Zone* targetedZone) {
     return card;
 }
 
+void MonsterZone::removeFromMonsterZone(int zoneNumber) {
+    Zone* zone = m_monsterZone[zoneNumber];
+    removeFromMonsterZone(zone);
+}
+
 
 void MonsterZone::placeInMonsterZone(Card *card, Zone* zone){
 
@@ -50,6 +56,19 @@ void MonsterZone::placeInMonsterZone(Card *card, Zone* zone){
         return;
     }
 }
+
+void MonsterZone::placeInMonsterZone(Card *card, int zoneNumber)
+{
+    if(zoneNumber < 1 || zoneNumber > 5) {
+        std::cout << "Invalid zone number" << std::endl;
+        return;
+    }
+
+    Zone* zone = m_monsterZone[zoneNumber - 1];
+    placeInMonsterZone(card, zone);
+}
+
+
 
 void MonsterZone::colorFreeZones() {
     for(Zone *zone : m_monsterZone) {

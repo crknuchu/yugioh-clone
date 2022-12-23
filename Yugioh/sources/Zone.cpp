@@ -35,14 +35,17 @@ void Zone::setCoordinates(float x, float y) {
     m_y = y;
 }
 
+#include <iostream>
+
 void Zone::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 
-    if(this->brush().color() != Qt::red) {
-        return;
+    QColor zoneColor = this->brush().color();
+    if(zoneColor == Qt::red) {
+        emit zoneRedAndClicked(this);
     }
-
-    emit zoneRedAndClicked(this);
-//    QGraphicsRectItem::mousePressEvent(event);
+    else if(zoneColor == Qt::green) {
+        emit zoneGreenAndClicked(this);
+    }
 }
 
 QRectF Zone::boundingRect() const

@@ -5,7 +5,6 @@
 #include <random>
 
 Deck::Deck(){}
-
 Deck::Deck(const std::string &pathToDeck, std::vector<Card*> &deck)
     :CardList(deck){
     for(auto card : m_cardList){

@@ -40,7 +40,7 @@ void SpellCard::setCardMenu(){
 
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
 
-    if(cardLocation == CardLocation::HAND && (GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE1 || GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE2)){
+    if(cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)){
         flagMap.insert("set",true);
         flagMap.insert("activate",true);
     }

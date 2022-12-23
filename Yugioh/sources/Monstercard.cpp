@@ -21,6 +21,16 @@ MonsterCard::~MonsterCard()
 
 }
 
+
+const std::map<Position, std::string> MonsterCard::positionEnumToString{
+    {Position::ATTACK,  "ATTACK"},
+    {Position::DEFENSE, "DEFENSE"},
+    {Position::NONE,    "NONE"}
+};
+
+
+
+
 int MonsterCard::getAttackPoints() const
 {
     return attackPoints;
@@ -145,6 +155,11 @@ int MonsterCard::getLevel() const
     return level;
 }
 
+Position MonsterCard::getPosition() const
+{
+    return position;
+}
+
 void MonsterCard::setAttackPoints(int newAttackPoints)
 {
     attackPoints = newAttackPoints;
@@ -155,25 +170,37 @@ void MonsterCard::setDefensePoints(int newDefensePoints)
     defensePoints = newDefensePoints;
 }
 
-void MonsterCard::increaseAttackPoints(int points)
+void MonsterCard::increaseAttackPoints(int increaseBy)
 {
-    int newPoints = this->attackPoints+points;
-    this->setAttackPoints(newPoints);
-}
-void MonsterCard::muliplyAttackPoints(int coef)
-{
-    int newPoints = this->attackPoints*coef;
+    int newPoints = this->attackPoints + increaseBy;
     this->setAttackPoints(newPoints);
 }
 
-void MonsterCard::increaseDefensePoints(int points)
+void MonsterCard::decreaseAttackPoints(int decreaseBy) {
+    int newPoints = this->attackPoints - decreaseBy;
+    this->setAttackPoints(newPoints);
+}
+
+void MonsterCard::multiplyAttackPoints(float multiplyBy)
 {
-    int newPoints = this->defensePoints+points;
+    int newPoints = this->attackPoints * multiplyBy;
+    this->setAttackPoints(newPoints);
+}
+
+void MonsterCard::increaseDefensePoints(int increaseBy)
+{
+    int newPoints = this->defensePoints + increaseBy;
     this->setDefensePoints(newPoints);
 }
-void MonsterCard::muliplyDefensePoints(int coef)
+
+void MonsterCard::decreaseDefensePoints(int decreaseBy) {
+    int newPoints = this->defensePoints - decreaseBy;
+    this->setDefensePoints(newPoints);
+}
+
+void MonsterCard::multiplyDefensePoints(float multiplyBy)
 {
-    int newPoints = this->defensePoints*coef;
+    int newPoints = this->defensePoints * multiplyBy;
     this->setDefensePoints(newPoints);
 
 }
@@ -198,17 +225,17 @@ bool MonsterCard::specialSummon(Position s){
 void MonsterCard::setCardMenu(){
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
 
-    if (cardLocation == CardLocation::HAND && (GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE1 || GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE2) && summonedThisTurn == false){
+    if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("set",true);
         flagMap.insert("summon",true);
     }
-    if(cardLocation == CardLocation::FIELD  && (GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE1|| GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE2) && summonedThisTurn == false){
+    if(cardLocation == CardLocation::FIELD  && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1|| GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("reposition",true);
     }
     if(monsterKind == MonsterKind::EFFECT_MONSTER){
         flagMap.insert("activate",true);
     }
-    if(cardLocation == CardLocation::FIELD  && GamePhase::currentGamePhase == GamePhasesEnum::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){
+    if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){
         flagMap.insert("attack",true);
         flagMap.insert("summon",true);
     }
