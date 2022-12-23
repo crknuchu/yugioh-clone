@@ -21,7 +21,7 @@ profileSettings::profileSettings(QWidget *parent) :
     ui->save->setMaximumSize(50, 100);
 
     //background
-    QPixmap imageBackG(":/resources/space.jpeg");
+    QPixmap imageBackG(":/resources/pictures/space.jpeg");
     imageBackG = imageBackG.scaled(this->size(), Qt::KeepAspectRatioByExpanding);
     QBrush brush(imageBackG);
     QPalette palette;
@@ -55,7 +55,7 @@ profileSettings::profileSettings(QWidget *parent) :
     ui->sleeveWindow->setScene(scene);
     ui->sleeveWindow->setBackgroundBrush(b);
 
-    QPixmap avatar(":/resources/yugi.png");
+    QPixmap avatar(":/resources/pictures/yugi.png");
     currentAvatar = avatars::YUGI;
 
     ui->avatarWindow->setStyleSheet("border: 3px solid grey");
@@ -86,7 +86,7 @@ void profileSettings::changeAvatar(){
 
     switch(currentAvatar){
         case(avatars::KAIBA):{
-            QPixmap pic1(":/resources/kaiba.png");
+            QPixmap pic1(":/resources/pictures/kaiba.png");
             ui->avatarWindow->clear();
             ui->avatarWindow->setPixmap(pic1);
             currentAvatar = avatars::YUGI;
@@ -94,7 +94,7 @@ void profileSettings::changeAvatar(){
         break;
            }
         case(avatars::YUGI):{
-                QPixmap pic(":/resources/yugi.png");
+                QPixmap pic(":/resources/pictures/yugi.png");
                 ui->avatarWindow->clear();
                 ui->avatarWindow->setPixmap(pic);
                 currentAvatar = avatars::KAIBA;

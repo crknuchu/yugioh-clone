@@ -2,18 +2,32 @@
 #include "ui_mainmenu.h"
 #include "headers/Game.h"
 #include "headers/Player.h"
- #include <QDir>
+#include "headers/GameSettings.h"
+#include <QDir>
+#include <QScreen>
+#include <QMediaPlayer>
+
+
 MainMenu::MainMenu(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainMenu)
 {
     ui->setupUi(this);
-    QPixmap bkgnd(":/resources/yugioh1.jpg");
-    //bkgnd.devicePixelRatioFScale();
-    bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
+    QPixmap bkgnd(":/resources/pictures/menubackground.png");
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect  screenGeometry = screen->geometry();
+    int height = screenGeometry.height();
+    int width = screenGeometry.width();
+
+    bkgnd = bkgnd.scaled(width,height, Qt::KeepAspectRatioByExpanding);
     QPalette palette;
     palette.setBrush(QPalette::Window, bkgnd);
     this->setPalette(palette);
+    QMediaPlayer * music = new QMediaPlayer();
+    music->setSource(QUrl("qrc:/resources/sounds/illusion.mp3")); // in qt5 is setMedia()
+    music->play();
+
+
 }
 
 MainMenu::~MainMenu()
@@ -24,11 +38,10 @@ MainMenu::~MainMenu()
 void MainMenu::on_pushButton_clicked()
 {
 
-    //Player player1("Nikola");
-    //Player player2("Milan");
-    //game = new Game(player1,player2);
-    //Game game(player1, player2);
-    //game->show();
+    Player* player1 = new Player("Nikola");
+    Player* player2 = new Player("Milan");
+    m_pGame = new Game(*player1, *player2);
+    m_pGame->showFullScreen();
 }
 
 
@@ -44,4 +57,18 @@ void MainMenu::on_pushButton_5_clicked()
     gameSettings->show();
 
 }
+
+
+
+void MainMenu::setGame(Game *newGame)
+{
+    m_pGame = newGame;
+}
+
+
+
+
+
+
+
 

@@ -9,25 +9,23 @@
 #include <vector>
 #include "Monstercard.h"
 #include "Monstercard.h"
-#include "SpellTrapZone.h"
+//#include "SpellTrapZone.h"
 #include "Hand.h"
 #include "Deck.h"
 
-#include "Graveyard.h"
-#include "MonsterZone.h"
-#include "SpellTrapZone.h"
-
+//#include "Graveyard.h"
+//#include "MonsterZone.h"
+//#include "SpellTrapZone.h"
+#include "Field.h"
 
 class Player{ 
 
 public:
   Player();
-  ~Player() {
-
-  };
-  Player(std::string playerName,int points = 8000) : m_graveyard(Graveyard()),
-      m_monsterZone(MonsterZone()), m_SpellTrapZone(SpellTrapZone()), m_hand(Hand()),
-      m_deck(Deck()) , m_name(playerName), m_points(points){};
+  Player(Player &);
+  ~Player() {};
+  Player operator=(Player &);
+  Player(std::string playerName,int points = 8000);
   //DRAW PHASE
   void drawCards(unsigned int numOfCards); //done
   void drawCards();
@@ -44,14 +42,18 @@ public:
   // ----------------------------------------------------------------------------------------------------------------
 
   //MAIN PHASE 1 
-  void setCardPosition();
+  void setCardPosition(); // don't need to do it
+  void putCardOnField(Card &); //same as above
   // ------------------------------------------
 
   //BATTLE PHASE
   int checkOpponentGround(Player &opponent);
   // std::vector<MonsterCard *> tableMonsterCards(const Player &opponent); //check vector size before attack
   void attackOpponent(MonsterCard a, Player &opponent);
-
+  void sendToGraveyard(Card &);
+  void fromGraveyardToHand(Card &);
+  void fromGraveyardToField(Card &, Zone &);
+  bool isCardInGrave(Card &c);
   // -----------------------------------------
 
   //MAIN PHASE 2 -> same as MAIN PHASE 1 + XYZ Summon
@@ -70,14 +72,22 @@ public:
   unsigned getPlayerPoints();
   void setPoints(unsigned points);
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
-  Graveyard m_graveyard;
-  MonsterZone m_monsterZone;
-  SpellTrapZone m_SpellTrapZone;
-  Hand m_hand;
-  Deck m_deck;
+// DON'T NEED THIS OBJECTS, HAVE ON FIELD INSTEAD
+//  Graveyard graveyard;
+//  MonsterZone monsterZone;
+//  SpellTrapZone spellTrapZone;
+  Hand hand;
+//  Deck deck;
+
+
   unsigned doDirectDamage(unsigned);
   void addPoints(unsigned);
   void setDeck(Deck &);
+//  Graveyard* m_graveyard;
+//  MonsterZone m_monsterZone;
+//  SpellTrapZone m_SpellTrapZone
+  Field field;
+//  Deck m_deck;
 private:
     std::string m_name;
     unsigned m_points;

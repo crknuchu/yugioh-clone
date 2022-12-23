@@ -6,10 +6,13 @@ MOC_DIR = build
 RCC_DIR = build
 UI_DIR = build
 
-QT += \
-        widgets
+QT +=   widgets \
+        multimedia
 
 SOURCES += \
+        sources/BotPlayer.cpp \
+        sources/Field.cpp \
+        sources/FieldZone.cpp \
         sources/GameSettings.cpp \
         sources/mainmenu.cpp \
         sources/Card.cpp \
@@ -32,6 +35,8 @@ SOURCES += \
         sources/profilesettings.cpp
 
 HEADERS += \
+    headers/Field.h \
+    headers/FieldZone.h \
     headers/GameSettings.h \
     headers/Card.h \
     headers/EffectActivator.h \
@@ -51,7 +56,8 @@ HEADERS += \
     sources/profilesettings.h \
     headers/MonsterZone.h \
     headers/mainmenu.h \
-    headers/Zone.h
+    headers/Zone.h \
+    sources/BotPlayer.h
 
 RESOURCES += \
         resources.qrc

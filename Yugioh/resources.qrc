@@ -1,14 +1,17 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/card_back.jpg</file>
-        <file>resources/blue_eyes.jpg</file>
-        <file>resources/field.png</file>
-        <file>resources/field2.png</file>
-        <file>resources/yugioh1.jpg</file>
-        <file>resources/background.jpg</file>
-        <file>resources/space.jpeg</file>
-        <file>resources/avatars.jpg</file>
-        <file>resources/yugi.png</file>
-        <file>resources/kaiba.png</file>
+        <file>resources/pictures/card_back.jpg</file>
+        <file>resources/pictures/blue_eyes.jpg</file>
+        <file>resources/pictures/field.png</file>
+        <file>resources/pictures/field2.png</file>
+        <file>resources/pictures/yugioh1.jpg</file>
+        <file>resources/pictures/background.jpg</file>
+        <file>resources/pictures/space.jpeg</file>
+        <file>resources/pictures/menubackground.png</file>
+        <file>resources/sounds/illusion.mp3</file>
+        <file>resources/pictures/fieldZoneSymbol.png</file>
+        <file>resources/pictures/avatars.jpg</file>
+        <file>resources/pictures/yugi.png</file>
+        <file>resources/pictures/kaiba.png</file>
     </qresource>
 </RCC>

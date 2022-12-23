@@ -51,7 +51,9 @@ public:
   Game();
   Game(Player p1, Player p2, QWidget *parent = nullptr);  // Why is parent's type QWidget and not QMainWindow?
   ~Game();
-
+  int lifePoints = 4000;
+  int numberOfCards = 5;
+  int timePerMove = 5;
 
 
   // Public member functions:
@@ -59,6 +61,15 @@ public:
   GamePhasesEnum getGamePhase() const;
 
 
+
+  int getLifePoints() const;
+  void setLifePoints(int newLifePoints);
+
+  int getNumberOfCards() const;
+  void setNumberOfCards(int newNumberOfCards);
+
+  int getTimePerMove() const;
+  void setTimePerMove(int newTimePerMove);
 
 private:
   Ui::MainWindow *ui;
@@ -69,12 +80,12 @@ private:
   Player *m_pCurrentPlayer;
   Player *m_pOtherPlayer;
   int m_currentTurn;
-
+  int counter = 0;
 
   // Private member functions:
   int randomGenerator(const int limit) const;
   int decideWhoPlaysFirst() const;
-  void firstTurnSetup();
+  void firstTurnSetup(float, float);
   void switchPlayers();
 
 // QT related stuff:

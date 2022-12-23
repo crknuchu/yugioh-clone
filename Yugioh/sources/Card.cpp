@@ -10,7 +10,7 @@ Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLoca
     ,cardLocation(cardLocation)
     ,cardDescription(cardDescription)
 {
-    QPixmap pixmap(":/resources/blue_eyes.jpg");
+    QPixmap pixmap(":/resources/pictures/card_back.jpg");
     pixmap = pixmap.scaled(QSize(200,150), Qt::KeepAspectRatio); //pixmap size needs to not be hardcoded
     height = pixmap.height();
     width = pixmap.width();
@@ -42,7 +42,7 @@ std::string Card::getCardLocationString() const
     case CardLocation::GRAVEYARD:
         return "graveyard";
     case CardLocation::FIELD:
-        return "fiels";
+        return "field";
     default:
         return "error:unsupported card location";
     }
@@ -100,15 +100,11 @@ void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
 }
 
 void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
-    if(cardMenu->visible == false){
+    if(cardMenu->isVisible() == false){
         cardMenu->show();
-        cardMenu->visible = true;
-        // QMap<QString,bool> x;
-        // cardMenu->update(x);
     }
     else{
         cardMenu->hide();
-        cardMenu->visible = false;
     }
 }
 

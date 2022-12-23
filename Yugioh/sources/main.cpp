@@ -5,18 +5,21 @@
 //#include "headers/mainwindow.h"
 #include "headers/Deck.h"
 #include "headers/Card.h"
+#include "headers/mainmenu.h"
 #include <iostream>
 #include <QApplication>
 #include "headers/CardMenu.h"
 #include"headers/mainmenu.h"
 #include "headers/profilesettings.h"
+#include "BotPlayer.h"
+
 int main(int argc,char **argv)
 {
   QApplication app(argc, argv);
 
 
   Player player1("Nikola");
-  Player player2("Milan");
+  BotPlayer player2("Bot");
   MonsterCard* globalMonsterCard1 = new MonsterCard("Sibirski Plavac", 3000, 2500, 4, MonsterType::DRAGON,
                                               MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT,
                                               true, Position::ATTACK, false,
@@ -34,7 +37,6 @@ int main(int argc,char **argv)
     //MainMenu m;
       //m.show();
   player1.setDeck(*d);
-
   Game game(player1, player2);
 
   player1.drawCards(1);

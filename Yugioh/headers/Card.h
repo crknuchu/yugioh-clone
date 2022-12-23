@@ -82,6 +82,8 @@ public:
     QMap<QString,bool> tmp;
 
     CardMenu *cardMenu = new CardMenu();
+    float height;
+    float width;//only for testing purposes
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
@@ -100,8 +102,7 @@ private:
 //    std::string cardName = "";
     // TODO: Remove this
     std::string owner = "";
-    float height;
-    float width;
+
 
 
 //signals:

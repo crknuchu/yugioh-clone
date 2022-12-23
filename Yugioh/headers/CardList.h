@@ -2,9 +2,10 @@
 #define CARDLIST_H
 
 #include <vector>
+#include <QVector>
 #include "Card.h"
 
-class CardList {
+class CardList : public QVector<Card*> {
 public:
     virtual ~CardList() = default;
 protected:
