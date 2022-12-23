@@ -79,6 +79,7 @@ private:
     void deserializeBattleBetweenAttackPositionMonsters(QDataStream &deserializationStream);
     void deserializeBattleBetweenDifferentPositionMonsters(QDataStream &deserializationStream);
     void deserializeLpChange(QDataStream &deserializationStream);
+    void deserializeDeserializationFinished(QDataStream &deserializationStream);
 
 private slots:
     void onGameStart(qint32 firstToPlay, qint32 clientID);
@@ -129,6 +130,7 @@ signals:
     void cardAddedToScene(Card &targetCard);
     void gameEndedAfterBattle(Player &loser);
     void lifePointsChanged(Player &targetPlayer);
+    void deserializationFinished();
 };
 
 #endif // GAME_H

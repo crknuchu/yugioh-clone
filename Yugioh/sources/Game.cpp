@@ -34,7 +34,8 @@ const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_d
     {"ADD_CARD_TO_HAND",                                &Game::deserializeAddCardToHand},
     {"BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS",         &Game::deserializeBattleBetweenAttackPositionMonsters},
     {"BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS",      &Game::deserializeBattleBetweenDifferentPositionMonsters},
-    {"LP_CHANGE",                                       &Game::deserializeLpChange}
+    {"LP_CHANGE",                                       &Game::deserializeLpChange},
+    {"DESERIALIZATION_FINISHED",                        &Game::deserializeDeserializationFinished}
 };
 
 
@@ -146,15 +147,28 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
 //        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
 
 
+        /* We want to notify the server about the battle outcome.
+         * We also have to use QEventLoop to make this client wait until client 2 sends DESERIALIZATION_FINISHED
+         *  (which will get sent to this client by the server) by making it loop until its built-in slot quit() is
+         *  triggered by our deserializationFinished signal.
+         *
+         *  IMPORTANT: In theory its possible that deserializationFinished is emitted before we enter loop.exec(),
+         *  which would leave us in an infinite loop, but that will practically never happen since that signal
+         *  is emitted after a lot of other operations (send to server -> relay to another client -> send back -> emit)
+         *  so we will always enter the loop before that.
+         *
+         *  TODO: We can make sure that this won't happen by using singleshot QTimer instead of a standard emit call */
+        QEventLoop loop;
+        connect(this, &Game::deserializationFinished, &loop, &QEventLoop::quit);
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
         outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
                       << QString::fromStdString("ATTACKER")
                       << QString::fromStdString(defender.getCardName())
-                      << qint32(3)
-                      << qint32(attackPointsDifference);
+                      << qint32(3);
         sendDataToServer(buffer);
+        loop.exec();
 
 
         std::cout << "We are back from sendData" << std::endl;
@@ -273,11 +287,14 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID) {
       GameExternVars::pOtherPlayer = &m_player1;
   }
 
-  // TODO: Disable UI for one of the players (for now lets say that its client with id 2)
+
+  // Disable UI for second player until its his turn.
   if(clientID == 2)
   {
       this->ui->btnBattlePhase->setEnabled(false);
       this->ui->btnEndPhase->setEnabled(false);
+
+      // TODO: Disable clicks on the cards if its possible, or at least disable card menu for every card that this player has.
   }
 
 
@@ -391,7 +408,6 @@ void Game::deserializeStartGame(QDataStream &deserializationStream)
     std::cout << "deserializeStartGame clientID: " << clientID << std::endl;
 
     emit gameStarted(firstToPlay, clientID);
-
 }
 
 void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
@@ -504,6 +520,15 @@ void Game::deserializeBattleBetweenAttackPositionMonsters(QDataStream &deseriali
         // TODO: get a pointer to the defender
         // TODO: currentPlayer->destroyMonster(defender)
 
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+
+        outDataStream << QString::fromStdString("DESERIALIZATION_FINISHED");
+        sendDataToServer(buffer);
+
+
+
         // We damage the other player (which is in this case us (client 2), because we are here only if we aren't the one that plays currently)
         damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
     }
@@ -547,6 +572,15 @@ void Game::deserializeBattleBetweenDifferentPositionMonsters(QDataStream &deseri
 
         // TODO: get a pointer to the defender
         // TODO: currentPlayer->destroyMonster(defender)
+
+
+        // Notify the server that deserialization is finished
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+
+        outDataStream << QString::fromStdString("DESERIALIZATION_FINISHED");
+        sendDataToServer(buffer);
     }
     else
     {
@@ -585,6 +619,11 @@ void Game::deserializeLpChange(QDataStream &deserializationStream)
         /* Instead:
          * TODO: We should have a separate label for player 2 that we should set here */
     }
+}
+
+void Game::deserializeDeserializationFinished(QDataStream &deserializationStream)
+{
+    emit deserializationFinished();
 }
 
 void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
@@ -816,7 +855,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         // Testing green zones
         MonsterCard *monsterCard2 = new MonsterCard("test", 1700, 2500, 4,
                                                     MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                    MonsterAttribute::DARK, false, Position::DEFENSE, false,
+                                                    MonsterAttribute::DARK, false, Position::ATTACK, false,
                                                     CardType::MONSTER_CARD, CardLocation::FIELD,
                                                     "test"
                                                     );
@@ -954,17 +993,13 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
 
 
     // Notify the server about health change.
-
-
-    // FIXME: If this is uncommented, we get problems with consecutive writes to the server
-
-//    QByteArray buffer;
-//    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-//    outDataStream.setVersion(QDataStream::Qt_5_15);
-//    outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
-//                  << QString::fromStdString(targetPlayer.getPlayerName()).trimmed() // Whose life points has changed
-//                  << QString::fromStdString(std::to_string(targetPlayer.getPlayerLifePoints())); // New life points
-//    sendDataToServer(buffer);
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
+    outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
+                  << QString::fromStdString(targetPlayer.getPlayerName()).trimmed() // Whose life points has changed
+                  << QString::fromStdString(std::to_string(targetPlayer.getPlayerLifePoints())); // New life points
+    sendDataToServer(buffer);
 
 }
 
@@ -1099,6 +1134,10 @@ void Game::onDataIncoming()
 //        QTimer::singleShot(0, this, &Game::onTestNetworkButtonClick);
 //        return;
 //    }
+
+
+    /* TODO: Send OK to the server to give it a sign that we read whole data that it sent to us.
+             Should we do it now or at the end of deserialization? */
 
     m_currentHeader = header;
 
