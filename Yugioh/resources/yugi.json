@@ -1,0 +1,655 @@
+{
+        "data":[
+        {
+            "id":0,
+            "name":"Dark Magician",
+            "type":"Effect Monster",
+            "desc":"The ultimate wizard in terms of attack and defense.",
+            "atk":2500,
+            "def":2100,
+            "level":7,
+            "race":"Spellcaster",
+            "attribute":"DARK",
+            "archetype":"Dark Magician",
+            "ammount":3,
+            "image":":/resources/pictures/DarkMagician.jpg"
+        }
+        ,
+        {
+            "id":1,
+            "name":"Gaia The Fierce Knight",
+            "type":"Normal Monster",
+            "desc":"A knight whose horse travels faster than the wind. His battle-charge is a force to be reckoned with.",
+            "atk":2300,
+            "def":2100,
+            "level":7,
+            "race":"Warrior",
+            "attribute":"Earth",
+            "archetype":"Gaia The Fierce Knight",
+            "ammount":3,
+            "image":":/resources/pictures/GaiaTheFierceKnight.jpg"
+        }
+        ,
+        {
+            "id":2,
+            "name":"Summoned Skull",
+            "type":"Normal Monster",
+            "desc":"A fiend with dark powers for confusing the enemy. Among the Fiend-Type monsters, this monster boasts considerable force.
+            (This card is always treated as an Archfiend card.)",
+            "atk":2500,
+            "def":1200,
+            "level":6,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"Archfiend",
+            "ammount":3,
+            "image":":/resources/pictures/SummonedSkull.jpg"
+        }
+        ,
+        {
+            "id":3,
+            "name":"Curse of Dragon",
+            "type":"Normal Monster",
+            "desc":"A wicked dragon that taps into dark forces to execute a powerful attack.",
+            "atk":2000,
+            "def":1500,
+            "level":5,
+            "race":"Dragon",
+            "attribute":"DARK",
+            "archetype":"Gaia The Fierce Knight",
+            "ammount":3,
+            "image":":/resources/pictures/CurseofDragon.jpg"
+        }
+        ,
+        {
+            "id":4,
+            "name":"Ansatsu",
+            "type":"Normal Monster",
+            "desc":"A silent and deadly warrior specializing in assassinations.",
+            "atk":1700,
+            "def":1200,
+            "level":5,
+            "race":"Warrior",
+            "attribute":"Earth",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/Ansatsu.jpg"
+        }
+        ,
+        {
+            "id":5,
+            "name":"Doma The Angel of Silence",
+            "type":"Normal Monster",
+            "desc":"This fairy rules over the end of existence.",
+            "atk":1600,
+            "def":1400,
+            "level":5,
+            "race":"Fairy",
+            "attribute":"DARK",
+            "archetype":"Fairy",
+            "ammount":3,
+            "image":":/resources/pictures/DomaTheAngelofSilence.jpg"
+        }
+        ,
+        {
+            "id":6,
+            "name":"Neo the Magic Swordsman",
+            "type":"Normal Monster",
+            "desc":"A dimensional drifter who not only practices sorcery, but is also a sword and martial arts master.",
+            "atk":1700,
+            "def":1000,
+            "level":4,
+            "race":"Spellcaster",
+            "attribute":"LIGHT",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/NeotheMagicSwordsman.jpg"
+        }
+        ,
+        {
+            "id":7,
+            "name":"Man-Eating Treasure Chest",
+            "type":"Normal Monster",
+            "desc":"A monster disguised as a treasure chest that is known to attack the unwary adventurer.",
+            "atk":1600,
+            "def":1000,
+            "level":4,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/Man-EatingTreasureChest.jpg"
+        }
+        ,
+        {
+            "id":8,
+            "name":"Great White",
+            "type":"Normal Monster",
+            "desc":"A giant white shark with razor-sharp teeth.",
+            "atk":1600,
+            "def":800,
+            "level":4,
+            "race":"Fish",
+            "attribute":"Wather",
+            "archetype":" Shark",
+            "ammount":3,
+            "image":":/resources/pictures/GreatWhite.jpg"
+        }
+        ,
+        {
+            "id":9,
+            "name":"Baron of the Fiend Sword",
+            "type":"Normal Monster",
+            "desc":"",
+            "atk":1550,
+            "def":800,
+            "level":4,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/BaronoftheFiendSword.jpg"
+        }
+        ,
+        {
+            "id":10,
+            "name":"Mystic Clown",
+            "type":"Normal Monster",
+            "desc":"Nothing can stop the mad attack of this powerful creature.",
+            "atk":1500,
+            "def":1000,
+            "level":4,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/MysticClown.jpg"
+        }
+        ,
+        {
+            "id":11,
+            "name":"Sorcerer of the Doomed",
+            "type":"Normal Monster",
+            "desc":"A slave of the dark arts, this sorcerer is a master of life-extinguishing spells.",
+            "atk":1450,
+            "def":1200,
+            "level":4,
+            "race":"Spellcaster",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/SorcereroftheDoomed.jpg"
+        }
+        ,
+        {
+            "id":12,
+            "name":"Ancient Elf",
+            "type":"Normal Monster",
+            "desc":"This elf is rumored to have lived for thousands of years. He leads an army of spirits against his enemies.",
+            "atk":1450,
+            "def":1200,
+            "level":4,
+            "race":"Spellcaster",
+            "attribute":"LIGHT",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/AncientElf.jpg"
+        }
+        ,
+        {
+            "id":13,
+            "name":"Witty Phantom",
+            "type":"Normal Monster",
+            "desc":"Dressed in a night-black tuxedo, this creature presides over the darkness.",
+            "atk":1400,
+            "def":1300,
+            "level":4,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/WittyPhantom.jpg"
+        }
+        ,
+        {
+            "id":14,
+            "name":"Winged Dragon Guardian of the Fortress 1",
+            "type":"Normal Monster",
+            "desc":"A dragon commonly found guarding mountain fortresses. Its signature attack is a sweeping dive from out of the blue.",
+            "atk":1400,
+            "def":1200,
+            "level":4,
+            "race":"Dragon",
+            "attribute":"Wind",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/WingedDragonGuardianoftheFortress1.jpg"
+        }
+        ,
+        {
+            "id":15,
+            "name":"Celtic Guardian",
+            "type":"Normal Monster",
+            "desc":"An elf who learned to wield a sword, he baffles enemies with lightning-swift attacks.",
+            "atk":1400,
+            "def":1200,
+            "level":4,
+            "race":"Warrior",
+            "attribute":"EARTH",
+            "archetype":"Celtic Guard",
+            "ammount":3,
+            "image":":/resources/pictures/CelticGuardian.jpg"
+        }
+        ,
+        {
+            "id":16,
+            "name":"Feral Imp",
+            "type":"Normal Monster",
+            "desc":"A playful little fiend that lurks in the dark, waiting to attack an unwary enemy.",
+            "atk":1300,
+            "def":1400,
+            "level":4,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/FeralImp.jpg"
+        }
+        ,
+        {
+            "id":17,
+            "name":"Magical Ghost",
+            "type":"Normal Monster",
+            "desc":"This creature casts a spell of terror and confusion just before attacking its enemies.",
+            "atk":1300,
+            "def":1400,
+            "level":4,
+            "race":"Zombie",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/MagicalGhost.jpg"
+        }
+        ,
+        {
+            "id":18,
+            "name":"Beaver Warrior",
+            "type":"Normal Monster",
+            "desc":"What this creature lacks in size it makes up for in defense when battling in the prairie.",
+            "atk":1200,
+            "def":1500,
+            "level":4,
+            "race":"Beast-Warrior",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/BeaverWarrior.jpg"
+        }
+        ,
+        {
+            "id":19,
+            "name":"Mystical Elf",
+            "type":"Normal Monster",
+            "desc":"A delicate elf that lacks offense, but has a terrific defense backed by mystical power.",
+            "atk":800,
+            "def":2000,
+            "level":4,
+            "race":"Spellcaster",
+            "attribute":"LIGHT",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/MysticalElf.jpg"
+        }
+        ,
+        {
+            "id":20,
+            "name":"DragonZombie",
+            "type":"Normal Monster",
+            "desc":"A dragon revived by sorcery. Its breath is highly corrosive.",
+            "atk":1600,
+            "def":0,
+            "level":3,
+            "race":"Zombie",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/DragonZombie.jpg"
+        }
+        ,
+        {
+            "id":21,
+            "name":"Giant Solider of Stone",
+            "type":"Normal Monster",
+            "desc":"A giant warrior made of stone. A punch from this creature has earth-shaking results.",
+            "atk":1300,
+            "def":2000,
+            "level":3,
+            "race":"Rock",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/GiantSoldierofStone.jpg"
+        }
+        ,
+        {
+            "id":22,
+            "name":"Mammoth Graveyard",
+            "type":"Normal Monster",
+            "desc":"A mammoth that protects the graves of its pack and is absolutely merciless when facing grave-robbers.",
+            "atk":1300,
+            "def":2000,
+            "level":3,
+            "race":"Rock",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/MammothGraveyard.jpg"
+        }
+        ,
+        {
+            "id":23,
+            "name":"Silver Fang",
+            "type":"Normal Monster",
+            "desc":"A snow wolf that's beautiful to the eye, but absolutely vicious in battle.",
+            "atk":1300,
+            "def":2000,
+            "level":3,
+            "race":"ROCK",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/SilverFang.jpg"
+        }
+        ,
+        {
+            "id":24,
+            "name":"Claw Reacher",
+            "type":"Normal Monster",
+            "desc":"Stretching arms and razor-sharp claws make this monster a formidable opponent.",
+            "atk":1000,
+            "def":800,
+            "level":3,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/ClawReacher.jpg"
+        }
+        ,
+        {
+            "id":25,
+            "name":"The Stern Mystic",
+            "type":"Effect Monster",
+            "desc":"FLIP: Reveal all face-down cards on the field (Flip Effects are not activated), then return them to their original positions.",
+            "atk":1500,
+            "def":1200,
+            "level":4,
+            "race":"Spellcaster",
+            "attribute":"LIGHT",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/TheSternMystic.jpg"
+        }
+        ,
+        {
+            "id":26,
+            "name":"Wall of Illusion",
+            "type":"Effect Monster",
+            "desc":"If this card is attacked by a monster, after damage calculation: Return that monster to the hand.",
+            "atk":1000,
+            "def":1850,
+            "level":4,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/Wallofillusion.jpg"
+        }
+        ,
+        {
+            "id":27,
+            "name":"Trap Master",
+            "type":"Effect Monster",
+            "desc":"",
+            "atk":500,
+            "def":1100,
+            "level":3,
+            "race":"Warrior",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/TrapMaster.jpg"
+        }
+        ,
+        {
+            "id":28,
+            "name":"Man-Eater Bug",
+            "type":"Effect Monster",
+            "desc":"FLIP: Target 1 monster on the field; destroy it.",
+            "atk":450,
+            "def":600,
+            "level":2,
+            "race":"Insect",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/Man-EaterBug.jpg"
+        }
+        ,
+        {
+            "id":29,
+            "name":"Change of Heart",
+            "type":"Spell Card",
+            "desc":"Target 1 monster your opponent controls; take control of it until the End Phase.",
+            "race":"NORMAL SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/ChangeofHeart.jpg"
+        }
+        ,
+        {
+            "id":30,
+            "name":"De-Spell",
+            "type":"Spell Card",
+            "desc":"Target 1 face-up Spell, or 1 Set Spell/Trap, on the field; destroy that target if it is a Spell. (If the target is Set, reveal it.)",
+            "race":"NORMAL SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/De-Spell.jpg"
+        }
+        ,
+        {
+            "id":31,
+            "name":"Remove Trap",
+            "type":"Spell Card",
+            "desc":"Select 1 face-up Trap Card on the field and destroy it.",
+            "race":"NORMAL SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/RemoveTrap.jpg"
+        }
+        ,
+        {
+            "id":32,
+            "name":"Dark Hole",
+            "type":"Spell Card",
+            "desc":"Destroy all monsters on the field.",
+            "race":"NORMAL SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/DarkHole.jpg"
+        }
+        ,
+        {
+            "id":33,
+            "name":"Fissure",
+            "type":"Spell Card",
+            "desc":"Destroy the 1 face-up monster your opponent controls that has the lowest ATK (your choice, if tied).",
+            "race":"NORMAL SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/Fissure.jpg"
+        }
+        ,
+        {
+            "id":34,
+            "name":"Soul Exchange",
+            "type":"Spell Card",
+            "desc":"Target 1 monster your opponent controls; this turn, if you Tribute a monster, you must Tribute that target, as if you controlled it. You cannot conduct your Battle Phase the turn you activate this card.",
+            "race":"NORMAL SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/SoulExchange.jpg"
+        }
+        ,
+        {
+            "id":35,
+            "name":"Card Destruction",
+            "type":"Spell` Card",
+            "desc":"Both players discard as many cards as possible from their hands, then each player draws the same number of cards they discarded.",
+            "race":"NORMAL SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/CardDestruction.jpg"
+        }
+        ,
+        {
+            "id":36,
+            "name":"Monster Reborn",
+            "type":"Spell Card",
+            "desc":"Target 1 monster in either GY; Special Summon it.",
+            "race":"NORMAL SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/MonsterReborn.jpg"
+        }
+        ,
+        {
+            "id":37,
+            "name":"Dian Keto the Cure Master",
+            "type":"Spell Card",
+            "desc":"Increase your Life Points by 1000 points.",
+            "race":"NORMAL SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/DianKetotheCureMaster.jpg"
+        }
+        ,
+        {
+            "id":38,
+            "name":"Last Will",
+            "type":"Spell Card",
+            "desc":"If a monster on your side of the field was sent to your Graveyard this turn, you can Special Summon 1 monster with an ATK of 1500 points or less from your Deck once during this turn. Then shuffle your Deck.",
+            "race":"NORMAL SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/LastWill.jpg"
+        }
+        ,
+        {
+            "id":39,
+            "name":"Sword of Dark Destruction",
+            "type":"Spell Card",
+            "desc":"Equip only to a DARK monster. It gains 400 ATK and loses 200 DEF.",
+            "race":"EQUIP SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/SwordofDarkDestruction.jpg"
+        }
+        ,
+        {
+            "id":40,
+            "name":"Book of Secret Arts",
+            "type":"Spell Card",
+            "desc":"A Spellcaster-Type monster equipped with this card increases its ATK and DEF by 300 points.",
+            "race":"EQUIP SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/BookofSecretArts.jpg"
+        }
+        ,
+        {
+            "id":41,
+            "name":"Yami",
+            "type":"Spell Card",
+            "desc":"All Fiend and Spellcaster monsters on the field gain 200 ATK/DEF, also all Fairy monsters on the field lose 200 ATK/DEF.",
+            "race":"FIELD SPELL",
+            "ammount":3,
+            "image":":/resources/pictures/Yami.jpg"
+        }
+        ,
+        {
+            "id":42,
+            "name":"Castle Walls",
+            "type":"Trap Card",
+            "desc":"Increase the DEF of 1 face-up monster on the field by 500 points until the end of this turn",
+            "race":"NORMAL TRAP",
+            "ammount":2,
+            "image":":/resources/pictures/CastleWalls.jpg"
+        }
+        ,
+        {
+            "id":43,
+            "name":"Reverse Trap",
+            "type":"Trap Card",
+            "desc":"Until the End Phase, all effects that add or subtract ATK or DEF are reversed. (Additions now subtract, and subtractions now add, instead. Multiplications and divisions, including halving/doubling, are not affected.)",
+            "race":"NORMAL TRAP",
+            "ammount":2,
+            "image":":/resources/pictures/ReverseTrap.jpg"
+        }
+        ,
+        {
+            "id":44,
+            "name":"Trap Hole",
+            "type":"Trap Card",
+            "desc":"When your opponent Normal or Flip Summons 1 monster with 1000 or more ATK: Target that monster; destroy that target.",
+            "race":"NORMAL TRAP",
+            "ammount":2,
+            "image":":/resources/pictures/TrapHole.jpg"
+        }
+        ,
+        {
+            "id":45,
+            "name":"Waboku",
+            "type":"Trap Card",
+            "desc":"You take no battle damage from your opponent's monsters this turn. Your monsters cannot be destroyed by battle this turn.",
+            "race":"NORMAL TRAP",
+            "ammount":2,
+            "image":":/resources/pictures/Waboku.jpg"
+        }
+        ,
+        {
+            "id":46,
+            "name":"Reinforcements",
+            "type":"Trap Card",
+            "desc":"Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+            "race":"NORMAL TRAP",
+            "ammount":2,
+            "image":":/resources/pictures/Reinforcements.jpg"
+        }
+        ,
+        {
+            "id":47,
+            "name":"Two-Pronged Attack",
+            "type":"Trap Card",
+            "desc":"Select and destroy 2 of your monsters and 1 of your opponent's monsters.",
+            "race":"NORMAL TRAP",
+            "ammount":2,
+            "image":":/resources/pictures/Two-ProngedAttack.jpg"
+        }
+        ,
+        {
+            "id":48,
+            "name":"Ultimate Offering",
+            "type":"Trap Card",
+            "desc":"During your Main Phase or your opponent's Battle Phase: You can pay 500 Life Points; immediately after this effect resolves, Normal Summon/Set 1 monster.",
+            "race":"CONTINUOUS TRAP",
+            "ammount":2,
+            "image":":/resources/pictures/UltimateOffering.jpg"
+        }
+        ,
+        {
+            "id":49,
+            "name":"Dragon Capture Jar",
+            "type":"Trap Card",
+            "desc":"Change all face-up Dragon-Type monsters on the field to Defense Position, also they cannot change their battle positions.",
+            "race":"CONTINUOUS TRAP",
+            "ammount":2,
+            "image":":/resources/pictures/DragonCaptureJar.jpg"
+        }
+
+
+
+    ]
+}
+
+
+

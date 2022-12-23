@@ -11,7 +11,7 @@ int main(int argc,char **argv)
   QApplication app(argc, argv);
 
   Serializer s;
-  s.loadFromJson(":/resources/kaiba.json");
+  s.loadFromJson(":/resources/yugi.json");
   for(auto card : s.getCards())
     qWarning() <<  QString::fromStdString(card->getCardName());
 
