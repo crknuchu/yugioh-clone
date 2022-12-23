@@ -25,8 +25,11 @@ Card *GameExternVars::pAttackingMonster = nullptr;
 // QMainWindow != Ui::MainWindow
 
 // Class definitions:
-Game::Game(Player p1, Player p2, QWidget *parent)
+Game::Game(Player p1, Player p2,int lifePoints,int numberOfCards ,int timePerMove,QWidget *parent )
     : QMainWindow(parent),
+      lifePoints(lifePoints),
+      numberOfCards(numberOfCards),
+      timePerMove(timePerMove),
       ui(new Ui::MainWindow),
       m_player1(p1),
       m_player2(p2)

@@ -35,7 +35,7 @@ MainMenu::~MainMenu()
     delete ui;
 }
 
-void MainMenu::on_pushButton_clicked()
+void MainMenu::on_start_clicked()
 {
 
     Player* player1 = new Player("Nikola");
@@ -62,13 +62,34 @@ void MainMenu::on_pushButton_5_clicked()
 
 void MainMenu::setGame(Game *newGame)
 {
-    m_pGame = newGame;
+    game = newGame;
 }
 
+void MainMenu::updateValues()
+{
+    //to do save as json file?
+    if(!this->game)
+    {
+    this->game->setLifePoints(gameSetting->getLifePoints());
+    this->game->setNumberOfCards(game->getNumberOfCards());
+    this->game->setTimePerMove(game->getTimePerMove());
+    }
+}
+
+void MainMenu::on_gameSettings_clicked()
+{
+    gameSetting = new GameSettings();
+    gameSetting->show();
+
+    connect(gameSetting,&GameSettings::okButtonClicked, this, &MainMenu::updateValues);
 
 
 
+void MainMenu::on_gameSettings_clicked()
+{
+    gameSetting = new GameSettings();
+    gameSetting->show();
 
-
+    connect(gameSetting,&GameSettings::okButtonClicked, this, &MainMenu::updateValues);
 
 

@@ -1,6 +1,6 @@
 #include "headers/GameSettings.h"
 #include "ui_GameSettings.h"
-
+#include <iostream>
 GameSettings::GameSettings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::GameSettings)
@@ -19,6 +19,7 @@ GameSettings::GameSettings(QWidget *parent) :
     ui->SetLifepoints->addItem("10000");
     ui->SetLifepoints->addItem("16000");
 
+
     ui->SetTimePerMove->addItem("3");
     ui->SetTimePerMove->addItem("5");
     ui->SetTimePerMove->addItem("10");
@@ -32,6 +33,10 @@ GameSettings::GameSettings(QWidget *parent) :
     ui->SetInitialNumberOfCards->addItem("9");
     ui->SetInitialNumberOfCards->addItem("10");
 
+    connect(ui->okButton , &QPushButton::clicked , this, &GameSettings::onOkButtonClick);
+
+    connect(ui->leaveButton, &QPushButton::clicked, this, &GameSettings::onLeaveButtonClick);
+
 }
 
 GameSettings::~GameSettings()
@@ -39,33 +44,124 @@ GameSettings::~GameSettings()
     delete ui;
 }
 
-void GameSettings::on_SetLifepoints_currentIndexChanged(int index)
+int GameSettings::getTimePerMove() const
 {
-    lifePoints = index;
+    return timePerMove;
+}
+
+void GameSettings::setTimePerMove(int newTimePerMove)
+{
+    timePerMove = newTimePerMove;
+}
+
+int GameSettings::getNumberOfCards() const
+{
+    return numberOfCards;
+}
+
+int GameSettings::getLifePoints() const
+{
+    return lifePoints;
+}
+
+void GameSettings::setLifePoints(int newLifePoints){
+    lifePoints = newLifePoints;
+}
+
+void GameSettings::setNumberOfCards(int newNumberOfCards)
+{
+    numberOfCards = newNumberOfCards;
 }
 
 
-void GameSettings::on_SetTimePerMove_currentIndexChanged(int index)
+
+void GameSettings::onSetLifepointsCurrentIndexChanged(int index)
 {
-    timePerMove = index;
+    switch (index) {
+    case 0:
+        lifePoints = 2000;
+        break;
+    case 1:
+        lifePoints = 4000;
+        break;
+    case 2:
+        lifePoints = 8000;
+        break;
+    case 3:
+        lifePoints = 10000;
+        break;
+    case 4:
+        lifePoints = 16000;
+        break;
+    default:
+        lifePoints = 4000;
+        break;
+    }
 }
 
 
-void GameSettings::on_SetInitialNumberOfCards_currentIndexChanged(int index)
+void GameSettings::onSetTimePerMoveCurrentIndexChanged(int index)
 {
-    numberOfCards = index;
+    switch (index) {
+    case 0:
+        timePerMove = 3;
+        break;
+    case 1:
+        timePerMove = 5;
+        break;
+    case 2:
+        timePerMove =10;
+        break;
+    case 3:
+        timePerMove= 20;
+        break;
+    case 4:
+        timePerMove = 30;
+        break;
+    default:
+        timePerMove = 5;
+        break;
+    }
 }
 
 
-//void GameSettings::on_Back_accepted()
-//{
-    //TO DO
-     //  save changes
-//}
-
-
-void GameSettings::on_Back_rejected()
+void GameSettings::onSetInitialNumberOfCardsCurrentIndexChanged(int index)
 {
+    switch (index) {
+    case 0:
+        numberOfCards = 5;
+        break;
+    case 1:
+        numberOfCards = 6;
+        break;
+    case 2:
+        numberOfCards =7;
+        break;
+    case 3:
+        numberOfCards= 8;
+        break;
+    case 4:
+        numberOfCards = 9;
+        break;
+    case 5:
+        numberOfCards = 10;
+        break;
+    default:
+        numberOfCards = 5;
+        break;
+    }
+
+}
+
+
+
+void GameSettings::onOkButtonClick()
+{
+    emit okButtonClicked();
+    std:: cout << "ssss" << std:: endl ;
     close();
 }
 
+void GameSettings::onLeaveButtonClick(){
+    close();
+}

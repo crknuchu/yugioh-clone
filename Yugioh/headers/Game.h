@@ -47,11 +47,11 @@ class Game: public QMainWindow
 
 public:
   Game();
-  Game(Player p1, Player p2, QWidget *parent = nullptr);  // Why is parent's type QWidget and not QMainWindow?
+  Game(Player p1, Player p2,int lifePoints = 4000,int numberOfCards = 5 ,int timePerMove = 5,QWidget *parent = nullptr );  // Why is parent's type QWidget and not QMainWindow?
   ~Game();
-  int lifePoints = 4000;
-  int numberOfCards = 5;
-  int timePerMove = 5;
+  int lifePoints ;
+  int numberOfCards ;
+  int timePerMove ;
 
 
   // Public member functions:
