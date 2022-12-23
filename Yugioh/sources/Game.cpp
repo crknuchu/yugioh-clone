@@ -20,7 +20,7 @@ Player *GameExternVars::pCurrentPlayer = nullptr;
 Player *GameExternVars::pOtherPlayer = nullptr;
 Card *GameExternVars::pCardToBePlacedOnField = nullptr;
 Card *GameExternVars::pAttackingMonster = nullptr;
-
+int GameExternVars::clientID = -1;
 
 // Placeholders
 MonsterZone monsterZone = MonsterZone();
@@ -293,7 +293,7 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID) {
 
 
   // Disable UI for second player until its his turn.
-  if(clientID == 2)
+  if(clientID != firstToPlay)
   {
       this->ui->btnBattlePhase->setEnabled(false);
       this->ui->btnEndPhase->setEnabled(false);

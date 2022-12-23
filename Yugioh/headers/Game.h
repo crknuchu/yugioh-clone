@@ -20,6 +20,7 @@ namespace GameExternVars {
     extern Player *pOtherPlayer;
     extern Card *pCardToBePlacedOnField;
     extern Card *pAttackingMonster;
+    extern int clientID;
 }
 
 class Game: public QMainWindow
