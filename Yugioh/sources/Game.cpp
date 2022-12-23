@@ -257,9 +257,10 @@ void Game::damagePlayer(Player &targetPlayer, int howMuch)
 }
 
 
-// TODO: This can't happen in game, since we will have 2 clients/game instances which could potentially have different first player. !!
-// We could have a extern var maybe that indicates who is first.
-void Game::firstTurnSetup(qint32 firstToPlay) {
+
+
+void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID) {
+    std::cout << "Client id: " << clientID << std::endl;
   // The game decides who will play first:
   if (firstToPlay == 1)
   {
@@ -272,8 +273,17 @@ void Game::firstTurnSetup(qint32 firstToPlay) {
       GameExternVars::pOtherPlayer = &m_player1;
   }
 
-  std::cout << "The first one to play is " << GameExternVars::pCurrentPlayer->getPlayerName() << std::endl;
+  // TODO: Disable UI for one of the players (for now lets say that its client with id 2)
+  if(clientID == 2)
+  {
+      this->ui->btnBattlePhase->setEnabled(false);
+      this->ui->btnEndPhase->setEnabled(false);
+  }
 
+
+
+
+  std::cout << "The first one to play is " << GameExternVars::pCurrentPlayer->getPlayerName() << std::endl;
   m_currentTurn = 1;
   GamePhaseExternVars::currentGamePhase = GamePhases::DRAW_PHASE;
   emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
@@ -366,7 +376,7 @@ void Game::deserializeWelcomeMessage(QDataStream &deserializationStream)
     deserializationStream >> welcomeMessage;
 
 //    m_messageFromServer = welcomeMessage;
-//    ui->labelMessageFromServer->setText(m_messageFromServer);
+    ui->labelMessageFromServer->setText(welcomeMessage);
 }
 
 void Game::deserializeStartGame(QDataStream &deserializationStream)
@@ -374,9 +384,13 @@ void Game::deserializeStartGame(QDataStream &deserializationStream)
     std::cout << "We are in deserializeStartGame" << std::endl;
 
     // We need to see who plays first
-    qint32 firstToPlay;
-    deserializationStream >> firstToPlay;
-    emit gameStarted(firstToPlay);
+    qint32 firstToPlay, clientID;
+
+    deserializationStream >> firstToPlay
+                          >> clientID;
+    std::cout << "deserializeStartGame clientID: " << clientID << std::endl;
+
+    emit gameStarted(firstToPlay, clientID);
 
 }
 
@@ -387,8 +401,6 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
      * 2) Card's type
      * 3) Number of the zone that the card was placed in
      */
-
-
     QString cardName;
     QString cardType;
     qint32 zoneNumber;
@@ -396,12 +408,10 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
                           >> cardType
                           >> zoneNumber;
 
-
     std::cout << "Card info: " << std::endl;
     std::cout << "Card name: " << cardName.toStdString() << std::endl;
     std::cout << "Card type: " << cardType.toStdString() << std::endl;
     std::cout << "Zone number: " << zoneNumber << std::endl;
-
 
     // Placeholder
     /* Here, we will create the card by parsing JSON data that will be found based on card's name
@@ -577,11 +587,14 @@ void Game::deserializeLpChange(QDataStream &deserializationStream)
     }
 }
 
-void Game::onGameStart(qint32 firstToPlay)
+void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
 {
+    std::cout << "clientID in onGameStart: " << clientID << std::endl;
+
+
     std::cout << "Game has started!" << std::endl;
     // First turn setup at the beginning of the game:
-    firstTurnSetup(firstToPlay);
+    firstTurnSetup(firstToPlay, clientID);
 
 
     for(auto *zone : monsterZone.m_monsterZone) {
@@ -1070,8 +1083,6 @@ void Game::onDataIncoming()
     // Read data that was sent from the server
 
 //     Deserialization
-
-
     m_inDataStream.startTransaction();
 
     //First we need to check what header we have
@@ -1106,7 +1117,6 @@ void Game::onTestNetworkButtonClick()
     // Connect to the server
     m_pTcpSocket->abort();
     m_pTcpSocket->connectToHost(addr , port);
-
 }
 
 void Game::onWriteDataButtonClick()

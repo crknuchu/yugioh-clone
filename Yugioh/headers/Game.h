@@ -47,7 +47,7 @@ private:
     // Private member functions:
     int randomGenerator(const int limit) const;
     int decideWhoPlaysFirst() const;
-    void firstTurnSetup(qint32 firstToPlay);
+    void firstTurnSetup(qint32 firstToPlay, qint32 clientID);
     void switchPlayers();
 
     void damageCalculation(Card *attackingMonster, Card *attackedMonster);
@@ -81,7 +81,7 @@ private:
     void deserializeLpChange(QDataStream &deserializationStream);
 
 private slots:
-    void onGameStart(qint32 firstToPlay);
+    void onGameStart(qint32 firstToPlay, qint32 clientID);
     void onBattlePhaseButtonClick();
     void onMainPhase2ButtonClick();
     void onEndPhaseButtonClick();
@@ -123,7 +123,7 @@ private slots:
 
 signals:
     void mainWindowResized(QResizeEvent *);
-    void gameStarted(qint32 firstToPlay);
+    void gameStarted(qint32 firstToPlay, qint32 clientID);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
     void cardAddedToScene(Card &targetCard);
