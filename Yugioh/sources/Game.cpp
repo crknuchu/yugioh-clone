@@ -156,11 +156,20 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/blue_eyes.jpg"
                                               );
+  MonsterCard* monsterCard3 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                              MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                              MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                              CardType::MONSTER_CARD, CardLocation::HAND,
+                                              "Neither player can target Dragon monsters on the field with card effects.",
+                                              ":/resources/pictures/blue_eyes.jpg"
+                                              );
   ui->graphicsView->scene()->addWidget(monsterCard1->cardMenu);
   ui->graphicsView->scene()->addWidget(monsterCard2->cardMenu);
   ui->graphicsView->scene()->addItem(monsterCard1);
   ui->graphicsView->scene()->addItem(monsterCard2);
+  ui->graphicsView->scene()->addItem(monsterCard3);
   hand.setHandCoordinates(windowWidth, windowHeight);
+  m_pCurrentPlayer->field.monsterZone.placeInMonsterZone(monsterCard3, 2); //testing purposes
   hand.addToHand(*monsterCard1);
   hand.addToHand(*monsterCard2);
 }
