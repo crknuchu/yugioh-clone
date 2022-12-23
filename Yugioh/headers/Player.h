@@ -18,49 +18,45 @@
 #include "SpellTrapZone.h"
 #include "GamePhase.h"
 
-class Player {
-//    Q_OBJECT
+#include "Hand.h"
+#include "Deck.h"
+
+#include "Graveyard.h"
+#include "MonsterZone.h"
+#include "SpellTrapZone.h"
+
+
+
+class Player{ 
+
 public:
   Player();
-  ~Player();
   Player(std::string playerName,int points = 8000);
-  //DRAW PHASE
-  void drawCards(unsigned int numOfCards); //done
-  void activationSpellCard(Card &); 
-  void activationTrapCard(Card &);
-  // ------------------------------------------
+  ~Player();
 
-  //STANDBYPHASE
-  void automaticallyActivationSBPhase(); //stanby phase
-  // ------------------------------------------
-
-  //MAIN PHASE 1 
-  void automaticallyActivationMPhase(); // mainPhase
-  void setCardPosition();
-  // ------------------------------------------
-
-  //BATTLE PHASE
-  int checkOpponentGround(Player &opponent) const;
-  // std::vector<MonsterCard *> tableMonsterCards(const Player &opponent); //check vector size before attack
-  void attackOpponent(Game &game, MonsterCard a, Player &opponent);
-
-  // -----------------------------------------
 
   std::string getPlayerName() const;
   unsigned getPlayerLifePoints() const;
+
+  void setPoints(unsigned points);
+
+  void drawCards(unsigned int numOfCards);
+
   void setPlayerLifePoints(unsigned points);
-  bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
+
   Graveyard graveyard;
   MonsterZone monsterZone;
   SpellTrapZone spellTrapZone;
   Hand hand;
   Deck deck;
+
+  bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
+
+
 private:
     std::string m_name;
     unsigned m_points;
 
-//signals:
-//    void gameEndedNoCardsLeft(Player &loser);
 };
 
 // std::istream &operator>>(std::istream &in, Player &p);

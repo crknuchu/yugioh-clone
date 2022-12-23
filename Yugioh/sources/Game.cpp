@@ -231,6 +231,29 @@ void Game::firstTurnSetup() {
 //      std::cout << card->getCardName() << ", ";
 //  std::cout << std::endl;
 
+  //---- Placeholders for EffectActivator testing
+    Card* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                              MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                              MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                              CardType::MONSTER_CARD, CardLocation::HAND,
+                                              "Neither player can target Dragon monsters on the field with card effects."
+                                              );
+
+    Card* monsterCard2 = new MonsterCard("Blue-eyes White Dragon", 3000, 2500, 4,
+                                              MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER,
+                                              MonsterAttribute::LIGHT, false, Position::ATTACK, false,
+                                              CardType::MONSTER_CARD, CardLocation::HAND,
+                                              ""
+                                              );
+
+    GameExternVars::pCurrentPlayer->hand.addToHand(*monsterCard1);
+    GameExternVars::pCurrentPlayer->hand.addToHand(*monsterCard2);
+
+    std::cout << "Current player's hand: " << std::endl;
+    for(auto card : GameExternVars::pCurrentPlayer->hand.getHand())
+        std::cout << card->getCardName() << std::endl;
+  //----
+
   // The other one gets 5 cards
   GameExternVars::pOtherPlayer->drawCards(5);
 }
@@ -514,7 +537,7 @@ void Game::onCardHoverLeave(Card &card)
 
 
 // Slots for card menu UI
-void Game::onActivateButtonClick(const Card &card)
+void Game::onActivateButtonClick(Card &card)
 {
     std::cout << "Activate button clicked on card " << card.getCardName() << std::endl;
 
@@ -522,7 +545,7 @@ void Game::onActivateButtonClick(const Card &card)
     const std::string cardName = card.getCardName();
 
     // Effect activator is needed for effect handling
-    EffectActivator effectActivator;
+    EffectActivator effectActivator(card);
 
     // We connect every signal from EffectActivator to our slots in Game:
     connect(&effectActivator, &EffectActivator::healthPointsChanged, this, &Game::onHealthPointsChange);

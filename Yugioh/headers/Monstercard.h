@@ -81,14 +81,14 @@ public:
     void setAttackPoints(int newAttackPoints);
     void setDefensePoints(int newDefensePoints);
 
-
-
     //methods to be called with the appropriate spell/trap card
-    void increaseAttackPoints(int points);
-    void muliplyAttackPoints(int coef);
+    void increaseAttackPoints(int increaseBy);
+    void decreaseAttackPoints(int decreaseBy);
+    void multiplyAttackPoints(float multiplyBy);
 
-    void increaseDefensePoints(int points);
-    void muliplyDefensePoints(int coef);
+    void increaseDefensePoints(int increaseBy);
+    void decreaseDefensePoints(int decreaseBy);
+    void multiplyDefensePoints(float multiplyBy);
 
     bool normalSummon(Position position);
     bool specialSummon(Position position);

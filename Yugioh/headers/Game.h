@@ -109,7 +109,7 @@ private slots:
 
 
     // Slots for CardMenu signal handling
-    void onActivateButtonClick(const Card &);
+    void onActivateButtonClick(Card &);
     void onSetButtonClick(const Card &);
     void onSummonButtonClick(Card &);
     void onAttackButtonClick(Card &);

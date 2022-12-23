@@ -4,7 +4,6 @@
 #include <optional>
 
 Graveyard::Graveyard(){}
-
 Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
     :CardList(initialGraveyard)
 {
@@ -12,6 +11,7 @@ Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
         std::cout << x->getCardName() << " ";
     }
 }
+Graveyard::~Graveyard(){}
 
 void Graveyard::sendToGraveyard(Card &card) {
     m_cardList.push_back(&card);
@@ -23,7 +23,7 @@ std::vector<Card*> Graveyard::getGraveyard() const{
 
 Card* Graveyard::removeFromGraveyard(Card &card)
 {
-   auto it = std::find(m_cardList.begin(), m_cardList.end(), &card);
+    auto it = std::find(m_cardList.begin(), m_cardList.end(), &card);
     m_cardList.erase(it);
     return &card;
 }

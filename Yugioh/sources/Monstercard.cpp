@@ -170,25 +170,37 @@ void MonsterCard::setDefensePoints(int newDefensePoints)
     defensePoints = newDefensePoints;
 }
 
-void MonsterCard::increaseAttackPoints(int points)
+void MonsterCard::increaseAttackPoints(int increaseBy)
 {
-    int newPoints = this->attackPoints+points;
-    this->setAttackPoints(newPoints);
-}
-void MonsterCard::muliplyAttackPoints(int coef)
-{
-    int newPoints = this->attackPoints*coef;
+    int newPoints = this->attackPoints + increaseBy;
     this->setAttackPoints(newPoints);
 }
 
-void MonsterCard::increaseDefensePoints(int points)
+void MonsterCard::decreaseAttackPoints(int decreaseBy) {
+    int newPoints = this->attackPoints - decreaseBy;
+    this->setAttackPoints(newPoints);
+}
+
+void MonsterCard::multiplyAttackPoints(float multiplyBy)
 {
-    int newPoints = this->defensePoints+points;
+    int newPoints = this->attackPoints * multiplyBy;
+    this->setAttackPoints(newPoints);
+}
+
+void MonsterCard::increaseDefensePoints(int increaseBy)
+{
+    int newPoints = this->defensePoints + increaseBy;
     this->setDefensePoints(newPoints);
 }
-void MonsterCard::muliplyDefensePoints(int coef)
+
+void MonsterCard::decreaseDefensePoints(int decreaseBy) {
+    int newPoints = this->defensePoints - decreaseBy;
+    this->setDefensePoints(newPoints);
+}
+
+void MonsterCard::multiplyDefensePoints(float multiplyBy)
 {
-    int newPoints = this->defensePoints*coef;
+    int newPoints = this->defensePoints * multiplyBy;
     this->setDefensePoints(newPoints);
 
 }

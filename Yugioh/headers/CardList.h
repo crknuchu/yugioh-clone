@@ -4,7 +4,8 @@
 #include <vector>
 #include "Card.h"
 
-class CardList : public QVector<Card*> {
+class CardList : public QVector<Card*>
+{
 public:
     virtual ~CardList() = default;
 protected:

@@ -12,8 +12,6 @@ Player::~Player()
     std::cout << "We are in Player destructor because of player " << this->getPlayerName() << std::endl;
 }
 
-
-
 std::string Player::getPlayerName() const{
     return this->m_name;
 }
@@ -53,25 +51,25 @@ std::ostream &operator<<(std::ostream &out, Player &p){
 
 
 
-int Player::checkOpponentGround(Player &opponent) const {
-    // return opponent.m_tableMonsterCards.getMonsterZone().size();
-}
-void Player::attackOpponent(Game &game, MonsterCard m, Player &opponent){
+//int Player::checkOpponentGround(Player &opponent) const {
+//    // return opponent.m_tableMonsterCards.getMonsterZone().size();
+//}
+//void Player::attackOpponent(Game &game, MonsterCard m, Player &opponent){
 
-    // if (game.getGamePhase() == GamePhases::BATTLE_PHASE){   
-    //     if (m.getCardType() == CardType::MONSTER_CARD){
-    //         if (0 == checkOpponentGround(opponent)){
-    //             opponent.setPlayerLifePoints(m.getAttackPoints());
-    //         }
-    //     }
-    //     else {
-    //         //TODO
-    //         //pick opponent card to fight()
-    //     }
-    // }
-    // else {
-    //     std::cerr<<"incompatibile game phase, can't attack at this moment"<<std::endl;
-    // }
+//    // if (game.getGamePhase() == GamePhases::BATTLE_PHASE){
+//    //     if (m.getCardType() == CardType::MONSTER_CARD){
+//    //         if (0 == checkOpponentGround(opponent)){
+//    //             opponent.setPlayerLifePoints(m.getAttackPoints());
+//    //         }
+//    //     }
+//    //     else {
+//    //         //TODO
+//    //         //pick opponent card to fight()
+//    //     }
+//    // }
+//    // else {
+//    //     std::cerr<<"incompatibile game phase, can't attack at this moment"<<std::endl;
+//    // }
 
-}
+//}
 
