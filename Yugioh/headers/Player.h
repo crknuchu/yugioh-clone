@@ -26,8 +26,8 @@ public:
   ~Player() {
 
   };
-  Player(std::string playerName,int points = 8000) : m_name(playerName), m_points(points),
-    m_hand(Hand()), field(Field()){};
+  Player(std::string playerName,int points = 8000) : m_hand(Hand()), field(Field()),
+      m_name(playerName), m_points(points){};
   //DRAW PHASE
   void drawCards(unsigned int numOfCards); //done
   void activationSpellCard(Card &); 
@@ -43,38 +43,16 @@ public:
   void setCardPosition();
   // ------------------------------------------
 
-  //BATTLE PHASE
-  int checkOpponentGround(Player &opponent) const;
-  // std::vector<MonsterCard *> tableMonsterCards(const Player &opponent); //check vector size before attack
-  void attackOpponent(Game &game, MonsterCard a, Player &opponent);
-
-  // -----------------------------------------
-
-  //MAIN PHASE 2 -> same as MAIN PHASE 1 + XYZ Summon
-  void XYZSummon();
-  // -----------------------------------------
-
-  //END PHASE
-
-  //TODO
-  // add missing methods
-  
-  //
-
-
   std::string getPlayerName() const;
-  unsigned getPlayerPoints();
-  void setPoints(unsigned points);
+  unsigned getPlayerLifePoints() const;
+  void setPlayerLifePoints(unsigned points);
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
-//  Graveyard* m_graveyard;
-//  MonsterZone m_monsterZone;
-//  SpellTrapZone m_SpellTrapZone;
   Hand m_hand;
   Field field;
-//  Deck m_deck;
 private:
     std::string m_name;
     unsigned m_points;
+
 };
 
 // std::istream &operator>>(std::istream &in, Player &p);

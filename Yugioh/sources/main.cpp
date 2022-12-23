@@ -2,6 +2,7 @@
 #include "headers/Game.h"
 #include "headers/mainmenu.h"
 #include <iostream>
+
 #include <QApplication>
 #include "headers/CardMenu.h"
 #include "headers/Serializer.h"

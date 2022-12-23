@@ -8,7 +8,8 @@ MonsterZone::MonsterZone(){
 
 MonsterZone::~MonsterZone()
 {
-    for(Zone* zone : m_monsterZone) {
+    for(Zone* zone : m_monsterZone)
+    {
         delete zone;
     }
 
