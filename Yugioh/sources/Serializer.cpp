@@ -1,5 +1,5 @@
 #include "headers/Serializer.h"
-
+#include <iostream>
 Serializer::Serializer()
 {
 
@@ -50,7 +50,6 @@ void Serializer::loadFromJson(QString s)
             const std::string desc = item.toObject()["desc"].toString().toStdString();
             const std::string imagePath = item.toObject()["image"].toString().toStdString();
             SpellType spellType = Maps::stringToSpellType[item.toObject()["race"].toString()];
-
             SpellCard *spellCard = new SpellCard(spellType,name,cardType,CardLocation::DECK,desc,imagePath,false); 
             arrayOfCards.push_back(spellCard);
         }

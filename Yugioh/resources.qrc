@@ -10,12 +10,56 @@
         <file>resources/pictures/menubackground.png</file>
         <file>resources/sounds/illusion.mp3</file>
         <file>resources/kaiba.json</file>
-        <file>resources/pictures/castle_walls.jpg</file>
         <file>resources/pictures/dark_energy.jpg</file>
         <file>resources/pictures/dark_magician.jpg</file>
         <file>resources/pictures/gyakuteno_megami.jpg</file>
         <file>resources/pictures/judge_man.jpg</file>
         <file>resources/pictures/swordstalker.jpg</file>
         <file>resources/pictures/fieldZoneSymbol.png</file>
+        <file>resources/pictures/AncientTelescope.jpg</file>
+        <file>resources/pictures/D.Human.jpg</file>
+        <file>resources/pictures/LaJinntheMysticalGenieoftheLamp.jpg</file>
+        <file>resources/pictures/Reinforcements.jpg</file>
+        <file>resources/pictures/TheFluteofSummoningDragon.jpg</file>
+        <file>resources/pictures/RemoveTrap.jpg</file>
+        <file>resources/pictures/TheInexperiencedSpy.jpg</file>
+        <file>resources/pictures/BattleOx.jpg</file>
+        <file>resources/pictures/CastleWalls.jpg</file>
+        <file>resources/pictures/ReverseTrap.jpg</file>
+        <file>resources/pictures/TheWickedWormBeast.jpg</file>
+        <file>resources/pictures/MasterExpert.jpg</file>
+        <file>resources/pictures/RogueDoll.jpg</file>
+        <file>resources/pictures/TrapHole.jpg</file>
+        <file>resources/pictures/Fissure.jpg</file>
+        <file>resources/pictures/RudeKaiser.jpg</file>
+        <file>resources/pictures/TrapMaster.jpg</file>
+        <file>resources/pictures/Ryu-Kishin.jpg</file>
+        <file>resources/pictures/Two-ProngedAttack.jpg</file>
+        <file>resources/pictures/DarkAssailant.jpg</file>
+        <file>resources/pictures/HaneHane.jpg</file>
+        <file>resources/pictures/MonsterReborn.jpg</file>
+        <file>resources/pictures/Ryu-KishinPowered.jpg</file>
+        <file>resources/pictures/UltimateOffering.jpg</file>
+        <file>resources/pictures/Hitotsu-MeGiant.jpg</file>
+        <file>resources/pictures/MysteriousPuppeteer.jpg</file>
+        <file>resources/pictures/SkullRedBird.jpg</file>
+        <file>resources/pictures/UnknownWarriorofFiend.jpg</file>
+        <file>resources/pictures/DarkHole.jpg</file>
+        <file>resources/pictures/Invigoration.jpg</file>
+        <file>resources/pictures/MysticClown.jpg</file>
+        <file>resources/pictures/Sogen.jpg</file>
+        <file>resources/pictures/Uraby.jpg</file>
+        <file>resources/pictures/MysticHorseman.jpg</file>
+        <file>resources/pictures/DarkTitanofTerror.jpg</file>
+        <file>resources/pictures/JustDesserts.jpg</file>
+        <file>resources/pictures/OgreoftheBlackShadow.jpg</file>
+        <file>resources/pictures/DeSpell.jpg</file>
+        <file>resources/pictures/Kojikocy.jpg</file>
+        <file>resources/pictures/LordofD.jpg</file>
+        <file>resources/pictures/Ookazi.jpg</file>
+        <file>resources/pictures/DestroyerGolem.jpg</file>
+        <file>resources/pictures/KoumoriDragon.jpg</file>
+        <file>resources/pictures/PaleBeast.jpg</file>
+        <file>resources/pictures/TerratheTerrible.jpg</file>
     </qresource>
 </RCC>
