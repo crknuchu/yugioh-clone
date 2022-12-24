@@ -76,3 +76,13 @@ void MainMenu::updateValues()
 }
 
 
+
+
+
+
+void MainMenu::on_btnDeckSettings_clicked()
+{
+    m_pDeckSettings = new deckSettings();
+    m_pDeckSettings->show();
+}
+

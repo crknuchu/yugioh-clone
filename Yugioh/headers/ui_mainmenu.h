@@ -32,11 +32,11 @@ public:
     QSpacerItem *verticalSpacer;
     QPushButton *btnStart;
     QSpacerItem *verticalSpacer_2;
-    QPushButton *btnDeckSettings;
+    QPushButton *btnProfileSettings;
     QSpacerItem *verticalSpacer_3;
     QPushButton *btnGameSettings;
     QSpacerItem *verticalSpacer_4;
-    QPushButton *btnProfileSettings;
+    QPushButton *btnDeckSettings;
     QSpacerItem *verticalSpacer_5;
     QPushButton *btnQuit;
     QStatusBar *statusbar;
@@ -156,9 +156,9 @@ public:
         MainMenu->setWindowTitle(QCoreApplication::translate("MainMenu", "MainWindow", nullptr));
         label->setText(QCoreApplication::translate("MainMenu", "Yu-Gi-Oh!", nullptr));
         btnStart->setText(QCoreApplication::translate("MainMenu", "START", nullptr));
-        btnDeckSettings->setText(QCoreApplication::translate("MainMenu", "PROFILE SETTINGS", nullptr));
+        btnDeckSettings->setText(QCoreApplication::translate("MainMenu", "DECK SETTINGS", nullptr));
         btnGameSettings->setText(QCoreApplication::translate("MainMenu", "GAME SETTINGS", nullptr));
-        btnProfileSettings->setText(QCoreApplication::translate("MainMenu", "DECK SETTINGS", nullptr));
+        btnProfileSettings->setText(QCoreApplication::translate("MainMenu", "PROFILE SETTINGS", nullptr));
         btnQuit->setText(QCoreApplication::translate("MainMenu", "QUIT", nullptr));
     } // retranslateUi
 
