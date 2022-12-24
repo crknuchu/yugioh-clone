@@ -94,12 +94,15 @@ void Game::switchPlayers() {
     GameExternVars::currentTurnClientID == 1 ? GameExternVars::currentTurnClientID = 2 : GameExternVars::currentTurnClientID = 1;
 
     // Notify the server about the new turn beginning:
+    QEventLoop blockingLoop;
+    connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
     outDataStream << QString::fromStdString("NEW_TURN")
                   << GameExternVars::currentTurnClientID; // We tell the opposite player that his opponent (current player in this call) got a card
     sendDataToServer(buffer);
+    blockingLoop.exec();
 }
 
 void Game::damageCalculation(Card *attackingMonster, Card *attackedMonster)
@@ -201,6 +204,9 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
 //        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
 
         std::cout << "Both monsters die!" << std::endl;
+
+        QEventLoop blockingLoop;
+        connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
@@ -211,6 +217,7 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
                       << qint32(3)
                       << qint32(3);
         sendDataToServer(buffer);
+        blockingLoop.exec();
     }
 }
 
@@ -249,6 +256,8 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         std::cout << "The attacker wins!" << std::endl;
 //        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
 
+        QEventLoop blockingLoop;
+        connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
@@ -256,19 +265,23 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
                       << QString::fromStdString("ATTACKER")
                       << QString::fromStdString(defender.getCardName())
                       << qint32(3);
-
         sendDataToServer(buffer);
+        blockingLoop.exec();
     }
     else
     {
         // If the pointsDifference is 0 then nothing happens
         std::cout << "No monster dies!" << std::endl;
+
+        QEventLoop blockingLoop;
+        connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
         outDataStream << QString::fromStdString("BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS")
                       << QString::fromStdString("NOONE");
         sendDataToServer(buffer);
+        blockingLoop.exec();
     }
 
 }
@@ -311,34 +324,31 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID) {
 
   // Disable UI for second player until its his turn.
     // TODO: Move this into a separate function since its used in onTurnEnd too.
-  if(m_clientID != GameExternVars::currentTurnClientID)
-  {
+    if(m_clientID != GameExternVars::currentTurnClientID)
+    {
       this->ui->btnBattlePhase->setEnabled(false);
       this->ui->btnEndPhase->setEnabled(false);
 
       // TODO: Disable clicks on the cards if its possible, or at least disable card menu for every card that this player has.
-  }
+    }
 
 
+    std::cout << "The first one to play is " << GameExternVars::pCurrentPlayer->getPlayerName() << std::endl;
+    m_currentTurn = 1;
 
+    GamePhaseExternVars::currentGamePhase = GamePhases::DRAW_PHASE;
+    ui->labelGamePhase->setText(QString::fromStdString("DRAW PHASE")); // We hardcode it here since both clients are in sync here
 
+    // The first one gets 6 cards:
+    GameExternVars::pCurrentPlayer->drawCards(6);
+    // The other one gets 5 cards
+    GameExternVars::pOtherPlayer->drawCards(5);
 
-  std::cout << "The first one to play is " << GameExternVars::pCurrentPlayer->getPlayerName() << std::endl;
-  m_currentTurn = 1;
+    GamePhaseExternVars::currentGamePhase = GamePhases::STANDBY_PHASE;
+    ui->labelGamePhase->setText(QString::fromStdString("STANDBY PHASE"));
 
-  GamePhaseExternVars::currentGamePhase = GamePhases::DRAW_PHASE;
-  ui->labelGamePhase->setText(QString::fromStdString("DRAW PHASE")); // We hardcode it here since both clients are in sync here
-
-  // The first one gets 6 cards:
-  GameExternVars::pCurrentPlayer->drawCards(6);
-  // The other one gets 5 cards
-  GameExternVars::pOtherPlayer->drawCards(5);
-
-  GamePhaseExternVars::currentGamePhase = GamePhases::STANDBY_PHASE;
-  ui->labelGamePhase->setText(QString::fromStdString("STANDBY PHASE"));
-
-  GamePhaseExternVars::currentGamePhase = GamePhases::MAIN_PHASE1;
-  ui->labelGamePhase->setText(QString::fromStdString("MAIN PHASE 1"));
+    GamePhaseExternVars::currentGamePhase = GamePhases::MAIN_PHASE1;
+    ui->labelGamePhase->setText(QString::fromStdString("MAIN PHASE 1"));
 }
 
 
@@ -670,17 +680,28 @@ void Game::deserializeNewTurn(QDataStream &deserializationStream)
     qint32 newTurnClientID;
     deserializationStream >> newTurnClientID;
 
+    // Switch pointers for this client too.
+        /* TODO: This can be a separate function since same code is used in switchPlayers(),
+                 yet we can't call switchPlayers because we don't want to send a NEW_TURN header */
+    Player *tmp = GameExternVars::pCurrentPlayer;
+    GameExternVars::pCurrentPlayer = GameExternVars::pOtherPlayer;
+    GameExternVars::pOtherPlayer = tmp;
+
+    std::cout << "Current player is: " << *GameExternVars::pCurrentPlayer << std::endl;
+    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+
+    // Update currentTurnClientID
+    GameExternVars::currentTurnClientID = newTurnClientID;
+
     // Reset/Reenable his buttons:
     ui->btnBattlePhase->setEnabled(true);
     ui->btnMainPhase2->setEnabled(false);
     ui->btnEndPhase->setEnabled(true);
 
-
     // Notify the server that deserialization is finished
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
-
     outDataStream << QString::fromStdString("DESERIALIZATION_FINISHED");
     sendDataToServer(buffer);
 }
@@ -799,13 +820,10 @@ void Game::onTurnEnd() {
     GamePhaseExternVars::currentGamePhase = GamePhases::DRAW_PHASE;
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
-
-
     // The current player draws a card (this is not optional).
     GameExternVars::pCurrentPlayer->drawCards(1);
 
     // Notify the server
-
     QEventLoop blockingLoop;
     connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
     QByteArray buffer;
@@ -827,8 +845,6 @@ void Game::onTurnEnd() {
     /* ... Something may happen here due to effects (maybe we should call checkEffects()
      or something similar that will check if there are effects to be activated in SP */
 
-
-
     // The standby phase ends and the main phase 1 begins (this is not optional).
     GamePhaseExternVars::currentGamePhase = GamePhases::MAIN_PHASE1;
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
@@ -841,7 +857,6 @@ void Game::onTurnEnd() {
 
     /* FIXME:
         1) Sometimes both client's buttons are greyed out?
-        2) It seems something goes bad in second turn when End Phase is clicked
     */
 
 }
