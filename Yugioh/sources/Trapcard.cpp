@@ -1,7 +1,7 @@
 #include "headers/Trapcard.h"
 
-TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active,bool setThisTurn)
-    : Card(cardName, cardType, cardLocation, cardDescription)
+TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool active,bool setThisTurn)
+    : Card(cardName, cardType, cardLocation, cardDescription,imagePath)
     ,trapType(type)
     ,setThisTurn(setThisTurn)
     ,active(active)
@@ -35,7 +35,7 @@ void TrapCard::activateTrap()
 void TrapCard::setCardMenu(){
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
 
-    if(cardLocation == CardLocation::HAND && (GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE1 || GamePhase::currentGamePhase == GamePhasesEnum::MAIN_PHASE2)){
+    if(cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)){
         flagMap.insert("set",true);
         flagMap.insert("activate",true);
     }

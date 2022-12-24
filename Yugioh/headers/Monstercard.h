@@ -3,6 +3,7 @@
 
 #include "headers/Card.h"
 #include "headers/GamePhase.h"
+#include <map>
 
 enum class MonsterKind
 {
@@ -64,7 +65,7 @@ public:
 
     MonsterCard( const std::string &cardName,int attackPoints, int defensePoints, int level, MonsterType type,
                  MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack,
-                 CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn = false);
+                 CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool summonedThisTurn = false);
     virtual ~MonsterCard();
 
     int getAttackPoints() const;
@@ -76,24 +77,27 @@ public:
     MonsterAttribute getAttribute() const;
     std::string getAttributeString() const;
     int getLevel() const;
+    Position getPosition() const;
 
     void setAttackPoints(int newAttackPoints);
     void setDefensePoints(int newDefensePoints);
 
-
-
     //methods to be called with the appropriate spell/trap card
-    void increaseAttackPoints(int points);
-    void muliplyAttackPoints(int coef);
+    void increaseAttackPoints(int increaseBy);
+    void decreaseAttackPoints(int decreaseBy);
+    void multiplyAttackPoints(float multiplyBy);
 
-    void increaseDefensePoints(int points);
-    void muliplyDefensePoints(int coef);
+    void increaseDefensePoints(int increaseBy);
+    void decreaseDefensePoints(int decreaseBy);
+    void multiplyDefensePoints(float multiplyBy);
 
     bool normalSummon(Position position);
     bool specialSummon(Position position);
 
 
     void setCardMenu() override;
+
+    static const std::map<Position, std::string> positionEnumToString;
 
 protected:
     int attackPoints;

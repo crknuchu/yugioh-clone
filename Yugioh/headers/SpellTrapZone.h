@@ -13,7 +13,9 @@ public:
     ~SpellTrapZone();
     void setSpellTrapZone(float x, float y);
     void placeInSpellTrapZone(Card*, Zone*);
+    void placeInSpellTrapZone(Card*, int);
     Card* removeFromSpellTrapZone(Zone*);
+    void removeFromSpellTrapZone(int);
     bool isFull() const;
     void colorFreeZones();
     void colorOccupiedZones();

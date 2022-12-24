@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QGraphicsSceneHoverEvent>
+#include <QEvent>
 #include <QMap>
 #include <QString>
 

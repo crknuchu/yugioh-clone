@@ -26,6 +26,7 @@ MainMenu::MainMenu(QWidget *parent) :
     QMediaPlayer * music = new QMediaPlayer();
     music->setSource(QUrl("qrc:/resources/sounds/illusion.mp3")); // in qt5 is setMedia()
     music->play();
+    // music->play();
 
 
 }

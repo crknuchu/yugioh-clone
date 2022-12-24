@@ -2,7 +2,7 @@
 #include "headers/GamePhase.h"
 Player::Player(){}
 
-Player::Player(std::string playerName, int points) : hand(Hand()), field(Field()), m_name(playerName), m_points(points){};
+Player::Player(std::string playerName, int points) : m_hand(Hand()), field(Field()), m_name(playerName), m_points(points){};
 
 //NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
 Player::Player(Player &p){
@@ -20,7 +20,7 @@ std::string Player::getPlayerName() const{
     return this->m_name;
 }
 
-unsigned Player::getPlayerPoints(){
+unsigned Player::getPlayerLifePoints() const {
     return this->m_points;
 }
 
@@ -39,8 +39,10 @@ void Player::addPoints(unsigned points){
 void Player::setDeck(Deck &d) {
     this->field.deck = d;
 }
-
-//DRAW PHASE 
+void Player::setPlayerLifePoints(unsigned newHealthPoints)
+{
+    m_points = newHealthPoints;
+}
 
 void Player::drawCards(unsigned int numOfCards) {
     //TODO refactor
@@ -55,7 +57,7 @@ void Player::drawCards(unsigned int numOfCards) {
     else{
         std::vector<Card*> newCards = this->field.deck.draw(numOfCards);
         for (unsigned i = 0; i < newCards.size(); i++){
-            this->hand.addToHand(*newCards[i]);
+            this->m_hand.addToHand(*newCards[i]);
         }
         std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
     }
@@ -77,7 +79,7 @@ void Player::fromGraveyardToHand(Card &card){
         if ((*it) == &card) {
             cardInGrave = 1;
             this->field.graveyard->erase(it);
-            this->hand.addToHand(card);
+            this->m_hand.addToHand(card);
             return;
         }
     }
@@ -182,9 +184,9 @@ void Player::sendToGraveyard(Card &card){
             }
         }
 
-        for (auto it = this->hand.cbegin(); it != this->hand.cend(); it++){
+        for (auto it = this->m_hand.cbegin(); it != this->m_hand.cend(); it++){
             if ((*it) == &card){
-               this->hand.erase(it);
+               this->m_hand.erase(it);
                this->field.graveyard->sendToGraveyard(card);
                std::cout<< (*it)->getCardName() << " succesfully removed from hand"<<std::endl;
                return;
@@ -217,8 +219,8 @@ int Player::checkOpponentGround(Player &opponent) {
 
 void Player::attackOpponent(MonsterCard a, Player &opponent){
 
-    GamePhasesEnum tmpPhase = GamePhase::currentGamePhase;
-    if (tmpPhase == GamePhasesEnum::BATTLE_PHASE){
+    GamePhases tmpPhase = GamePhaseExternVars::currentGamePhase;
+    if (tmpPhase == GamePhases::BATTLE_PHASE){
         if (checkOpponentGround(opponent) == 0){
             opponent.setPoints(a.getAttackPoints());
         }
@@ -239,14 +241,33 @@ bool Player::operator==(const Player &other) const {
     return this->getPlayerName() == other.getPlayerName();
 }
 
-// std::istream &operator>>(std::istream &in, Player &p){
-//     char c; //for space/comma reading
-//     in >>  >> c >> p.points;
-//     return in;
-// }
-
 std::ostream &operator<<(std::ostream &out, Player &p){
-    return out << "Player name: " << p.getPlayerName() << ", points " << p.getPlayerPoints()<<std::endl;
+    return out << "Player name: " << p.getPlayerName() << ", points " << p.getPlayerLifePoints()<<std::endl;
 }
 
+
+
+
+
+//int Player::checkOpponentGround(Player &opponent) const {
+//    // return opponent.m_tableMonsterCards.getMonsterZone().size();
+//}
+//void Player::attackOpponent(Game &game, MonsterCard m, Player &opponent){
+
+//    // if (game.getGamePhase() == GamePhases::BATTLE_PHASE){
+//    //     if (m.getCardType() == CardType::MONSTER_CARD){
+//    //         if (0 == checkOpponentGround(opponent)){
+//    //             opponent.setPlayerLifePoints(m.getAttackPoints());
+//    //         }
+//    //     }
+//    //     else {
+//    //         //TODO
+//    //         //pick opponent card to fight()
+//    //     }
+//    // }
+//    // else {
+//    //     std::cerr<<"incompatibile game phase, can't attack at this moment"<<std::endl;
+//    // }
+
+//}
 

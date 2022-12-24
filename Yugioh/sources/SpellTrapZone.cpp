@@ -30,6 +30,11 @@ Card* SpellTrapZone::removeFromSpellTrapZone(Zone* targetedZone) {
     return card;
 }
 
+void SpellTrapZone::removeFromSpellTrapZone(int zoneNumber) {
+    Zone* zone = m_spellTrapZone[zoneNumber];
+    removeFromSpellTrapZone(zone);
+}
+
 void SpellTrapZone::placeInSpellTrapZone(Card *card, Zone* zone){
 
     if(!zone->isEmpty()) {
@@ -49,6 +54,17 @@ void SpellTrapZone::placeInSpellTrapZone(Card *card, Zone* zone){
         std::cout << "Only spell or trap cards can be put in spell/trap zone" << std::endl;
         return;
     }
+}
+
+void SpellTrapZone::placeInSpellTrapZone(Card *card, int zoneNumber)
+{
+    if(zoneNumber < 1 || zoneNumber > 5) {
+        std::cout << "Invalid zone number" << std::endl;
+        return;
+    }
+
+    Zone* zone = m_spellTrapZone[zoneNumber - 1];
+    placeInSpellTrapZone(card, zone);
 }
 
 void SpellTrapZone::colorFreeZones() {
