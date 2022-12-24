@@ -35,7 +35,6 @@ MainMenu::~MainMenu()
     delete ui;
     delete m_pGame;
     delete m_pGameSettings;
-    // TODO:  delete this; ?
 }
 
 void MainMenu::on_btnStart_clicked()

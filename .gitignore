@@ -1,6 +1,5 @@
 qrc_resources.cpp
 qrc_resources.o
-Yugioh/compile_ui.sh
 build-Yugioh-Desktop-Debug/
 Yugioh/Yugioh.pro.user
 Yugioh/a.out
