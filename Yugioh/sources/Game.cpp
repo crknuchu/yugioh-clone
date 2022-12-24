@@ -187,14 +187,7 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
         sendDataToServer(buffer);
         blockingLoop.exec();
 
-
-        std::cout << "We are back from sendData" << std::endl;
-
-
         damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
-        // FIXME: Somehow opposite client never gets LP_CHANGE header that we send to the server in this function.
-        // If we place damagePlayer above previous buffer, it does get through but then BATTLE header doesn't.
-//        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
     }
     else
     {
@@ -626,7 +619,7 @@ void Game::deserializeLpChange(QDataStream &deserializationStream)
 
     // We need to check whose life points got changed
     QString whoseLifePointsChanged;
-    QString newLifePoints;
+    qint32 newLifePoints;
 
     deserializationStream >> whoseLifePointsChanged
                           >> newLifePoints;
@@ -634,17 +627,13 @@ void Game::deserializeLpChange(QDataStream &deserializationStream)
     // Now we need to actually set the targeted player's lp to newLifePoints
     if (whoseLifePointsChanged.toStdString() == GameExternVars::pCurrentPlayer->getPlayerName())
     {
-        GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints.toInt());
+        GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints);
         ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
     }
     else
     {
-        GameExternVars::pOtherPlayer->setPlayerLifePoints(newLifePoints.toInt());
+        GameExternVars::pOtherPlayer->setPlayerLifePoints(newLifePoints);
         ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
-//        ui->labelCurrentPlayerDynamic->setText(QString::fromStdString())
-        // We don't write the other player's health to the label, since label only holds the hp of one currently playing
-        /* Instead:
-         * TODO: We should have a separate label for player 2 that we should set here */
     }
 }
 
@@ -1092,7 +1081,7 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
     outDataStream.setVersion(QDataStream::Qt_5_15);
     outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
                   << QString::fromStdString(targetPlayer.getPlayerName()).trimmed() // Whose life points has changed
-                  << QString::fromStdString(std::to_string(targetPlayer.getPlayerLifePoints())); // New life points
+                  << qint32(targetPlayer.getPlayerLifePoints()); // New life points
     sendDataToServer(buffer);
 
 }
@@ -1109,7 +1098,7 @@ void Game::onGameEnd(Player &loser)
     outDataStream.setVersion(QDataStream::Qt_5_15);
     outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
                   << QString::fromStdString(loser.getPlayerName()).trimmed() // Whose life points has changed
-                  << QString::fromStdString(std::to_string(0)); // New life points
+                  << qint32(0); // New life points
     sendDataToServer(buffer);
 
     // TODO: Stop the game here (or maybe in the server too) somehow!
