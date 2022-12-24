@@ -23,21 +23,20 @@ public:
 
 
 private slots:
-    void on_start_clicked();
+    void on_btnStart_clicked();
 
-    void on_quit_clicked();
+    void on_btnQuit_clicked();
 
-    void on_gameSettings_clicked();
+    void on_btnGameSettings_clicked();
 
-     void updateValues();
+    void updateValues();
 
 
 
 private:
-    GameSettings *gameSetting;
     Ui::MainMenu *ui;
     Game *m_pGame;
-    GameSettings *gameSettings;
+    GameSettings *m_pGameSettings;
 };
 
 

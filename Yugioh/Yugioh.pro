@@ -50,12 +50,13 @@ HEADERS += \
     headers/Graveyard.h \
     headers/Hand.h \
     headers/Player.h \
-    headers/ui_mainwindow.h \
     headers/CardMenu.h \ 
     headers/MonsterZone.h \
     headers/mainmenu.h \
     headers/Zone.h \
-    headers/Serializer.h
+    headers/Serializer.h \
+    headers/ui_mainwindow.h \
+    headers/ui_mainmenu.h
 
 RESOURCES += \
         resources.qrc

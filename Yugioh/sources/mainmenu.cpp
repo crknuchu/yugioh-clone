@@ -1,5 +1,5 @@
 #include "headers/mainmenu.h"
-#include "ui_mainmenu.h"
+#include "headers/ui_mainmenu.h"
 #include "headers/Game.h"
 #include "headers/Player.h"
 #include "headers/GameSettings.h"
@@ -33,11 +33,13 @@ MainMenu::MainMenu(QWidget *parent) :
 MainMenu::~MainMenu()
 {
     delete ui;
+    delete m_pGame;
+    delete m_pGameSettings;
+    // TODO:  delete this; ?
 }
 
-void MainMenu::on_start_clicked()
+void MainMenu::on_btnStart_clicked()
 {
-
     Player* player1 = new Player("Nikola");
     Player* player2 = new Player("Milan");
     m_pGame = new Game(*player1, *player2);
@@ -45,51 +47,33 @@ void MainMenu::on_start_clicked()
 }
 
 
-void MainMenu::on_pushButton_4_clicked()
+void MainMenu::on_btnQuit_clicked()
 {
     close();
 }
 
-
-void MainMenu::on_pushButton_5_clicked()
+void MainMenu::on_btnGameSettings_clicked()
 {
-    gameSettings = new GameSettings();
-    gameSettings->show();
+    m_pGameSettings = new GameSettings();
+    m_pGameSettings->show();
 
+    connect(m_pGameSettings, &GameSettings::okButtonClicked, this, &MainMenu::updateValues);
 }
-
-
 
 void MainMenu::setGame(Game *newGame)
 {
-    game = newGame;
+    m_pGame = newGame;
 }
 
 void MainMenu::updateValues()
 {
     //to do save as json file?
-    if(!this->game)
+    if(!m_pGame)
     {
-    this->game->setLifePoints(gameSetting->getLifePoints());
-    this->game->setNumberOfCards(game->getNumberOfCards());
-    this->game->setTimePerMove(game->getTimePerMove());
+        m_pGame->setLifePoints(m_pGameSettings->getLifePoints());
+        m_pGame->setNumberOfCards(m_pGame->getNumberOfCards());
+        m_pGame->setTimePerMove(m_pGame->getTimePerMove());
     }
 }
-
-void MainMenu::on_gameSettings_clicked()
-{
-    gameSetting = new GameSettings();
-    gameSetting->show();
-
-    connect(gameSetting,&GameSettings::okButtonClicked, this, &MainMenu::updateValues);
-
-
-
-void MainMenu::on_gameSettings_clicked()
-{
-    gameSetting = new GameSettings();
-    gameSetting->show();
-
-    connect(gameSetting,&GameSettings::okButtonClicked, this, &MainMenu::updateValues);
 
 
