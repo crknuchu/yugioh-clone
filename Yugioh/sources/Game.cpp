@@ -481,12 +481,12 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         m_player1.field.setField(1, viewAndSceneWidth,m_windowHeight);
         for(auto zone :    m_player1.field.monsterZone.m_monsterZone) {
             connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onGreenZoneClick);
+            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
             ui->graphicsView->scene()->addItem(zone);
         }
         for(auto zone : m_player1.field.spellTrapZone.m_spellTrapZone) {
             connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onGreenZoneClick);
+            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
             ui->graphicsView->scene()->addItem(zone);
         }
         for(auto c : m_player1.field.deck.uiDeck) {
@@ -498,12 +498,12 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         m_player2.field.setField(2, viewAndSceneWidth,m_windowHeight);
         for(auto zone :    m_player2.field.monsterZone.m_monsterZone) {
             connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onGreenZoneClick);
+            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
             ui->graphicsView->scene()->addItem(zone);
         }
         for(auto zone : m_player2.field.spellTrapZone.m_spellTrapZone) {
             connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onGreenZoneClick);
+            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
             ui->graphicsView->scene()->addItem(zone);
         }
         for(auto c : m_player2.field.deck.uiDeck) {

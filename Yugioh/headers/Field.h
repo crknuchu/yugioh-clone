@@ -11,10 +11,11 @@ public:
     Field();
     void setField(int, int, int);
 
-    FieldZone* fieldZone;
+    FieldZone* fieldZone; // moralo je zbog qgraphihcs item pokazivac
     MonsterZone monsterZone;
-    Graveyard* graveyard;
+    Graveyard* graveyard; // isto kao gore
     SpellTrapZone spellTrapZone;
+//    Graveyard graveyard;
     Deck deck;
 
 private:

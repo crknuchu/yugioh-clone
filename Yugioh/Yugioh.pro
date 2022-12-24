@@ -10,6 +10,7 @@ QT +=   widgets \
         multimedia
 
 SOURCES += \
+        sources/BotPlayer.cpp \
         sources/Field.cpp \
         sources/FieldZone.cpp \
         sources/GameSettings.cpp \
@@ -54,9 +55,14 @@ HEADERS += \
     headers/MonsterZone.h \
     headers/mainmenu.h \
     headers/Zone.h \
-    headers/Serializer.h \
     headers/ui_mainwindow.h \
-    headers/ui_mainmenu.h
+    headers/ui_mainmenu.h \
+    headers/CardMenu.h \  \
+    headers/MonsterZone.h \
+    headers/mainmenu.h \
+    headers/Zone.h \
+    sources/BotPlayer.h \
+    headers/Serializer.h
 
 RESOURCES += \
         resources.qrc

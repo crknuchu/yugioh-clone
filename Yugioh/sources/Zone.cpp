@@ -41,6 +41,7 @@ void Zone::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 
     QColor zoneColor = this->brush().color();
     if(zoneColor == Qt::red) {
+        std::cout<<"nesto "<<std::endl;
         emit zoneRedAndClicked(this);
     }
     else if(zoneColor == Qt::green) {
@@ -77,3 +78,4 @@ void Zone::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
     painter->drawRect(rect);
 };
+

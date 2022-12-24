@@ -20,7 +20,6 @@ public:
     void colorFreeZones();
     void colorOccupiedZones();
     void refresh();
-
     std::vector<Zone*> m_monsterZone;
 
 private:
