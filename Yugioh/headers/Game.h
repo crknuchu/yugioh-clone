@@ -20,7 +20,7 @@ namespace GameExternVars {
     extern Player *pOtherPlayer;
     extern Card *pCardToBePlacedOnField;
     extern Card *pAttackingMonster;
-    extern int clientID;
+    extern qint32 currentTurnClientID;
 }
 
 class Game: public QMainWindow
@@ -66,6 +66,7 @@ private:
 // Networking:
   // TODO: Separate class?
     QTcpSocket *m_pTcpSocket = nullptr; // TODO: This will probably have to be in GameExternVars so that EffectActivator can see it
+    qint32 m_clientID;
     QDataStream m_inDataStream;
     QString m_currentHeader;
     static const std::map<QString, DESERIALIZATION_MEMBER_FUNCTION_POINTER> m_deserializationMap;
@@ -81,6 +82,8 @@ private:
     void deserializeBattleBetweenDifferentPositionMonsters(QDataStream &deserializationStream);
     void deserializeLpChange(QDataStream &deserializationStream);
     void deserializeDeserializationFinished(QDataStream &deserializationStream);
+    void deserializeGamePhaseChanged(QDataStream &deserializationStream);
+    void deserializeNewTurn(QDataStream &deserializationStream);
 
 private slots:
     void onGameStart(qint32 firstToPlay, qint32 clientID);
