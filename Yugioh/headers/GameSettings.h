@@ -2,6 +2,9 @@
 #define GAMESETTINGS_H
 
 #include <QDialog>
+#include <QDesktopServices>
+#include <QUrl>
+
 namespace Ui {
 class GameSettings;
 }
@@ -31,7 +34,7 @@ public:
 
 signals:
     void okButtonClicked();
-
+    void helpClicked();
 
 private slots:
     void onSetLifepointsCurrentIndexChanged(int index);
@@ -45,6 +48,8 @@ private slots:
     void onLeaveButtonClick();
 
 
+
+    void onHelpButtonClick();
 
 private:
     Ui::GameSettings *ui;

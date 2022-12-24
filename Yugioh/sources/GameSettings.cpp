@@ -37,6 +37,8 @@ GameSettings::GameSettings(QWidget *parent) :
 
     connect(ui->leaveButton, &QPushButton::clicked, this, &GameSettings::onLeaveButtonClick);
 
+
+    connect(ui->help,&QPushButton::clicked, this, &GameSettings::onHelpButtonClick);
 }
 
 GameSettings::~GameSettings()
@@ -165,3 +167,12 @@ void GameSettings::onOkButtonClick()
 void GameSettings::onLeaveButtonClick(){
     close();
 }
+
+void GameSettings::onHelpButtonClick()
+{
+    emit helpClicked();
+    QString link = "https://www.dicebreaker.com/games/yu-gi-oh-tcg/how-to/how-to-play-yu-gi-oh-tcg#how-to-play-ygo-tcg";
+    QDesktopServices:: openUrl(QUrl(link));
+    close();
+}
+
