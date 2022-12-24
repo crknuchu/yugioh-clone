@@ -52,7 +52,10 @@ public:
   void attackOpponent(MonsterCard a, Player &opponent);
   void sendToGraveyard(Card &);
   void fromGraveyardToHand(Card &);
-  void fromGraveyardToField(Card &, Zone &);
+  void fromGraveyardToField(Card &, int);
+
+
+
   bool isCardInGrave(Card &c);
   // -----------------------------------------
 

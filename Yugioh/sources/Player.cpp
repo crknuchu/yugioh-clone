@@ -4,14 +4,14 @@ Player::Player(){}
 
 Player::Player(std::string playerName, int points) : m_hand(Hand()), field(Field()), m_name(playerName), m_points(points){};
 
-//NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
+
 Player::Player(Player &p){
     this->field = p.field;
     this->m_points = p.m_points;
     this->m_name = p.m_name;
 
 }
-//NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
+
 Player Player::operator=(Player &p){
     return p;
 }
@@ -106,7 +106,7 @@ bool Player::isCardInGrave(Card &c)
 }
 
 
-void Player::fromGraveyardToField(Card &card, Zone &zone)
+void Player::fromGraveyardToField(Card &card, int zoneNumber)
 {
     if (isCardInGrave(card) == true)
     {
@@ -116,10 +116,12 @@ void Player::fromGraveyardToField(Card &card, Zone &zone)
         if (dynamic_cast<MonsterCard *>(&card) != nullptr)
         {
             this->field.monsterZone.colorFreeZones();
+            this->field.monsterZone.placeInMonsterZone(&card, zoneNumber);
         }
         else if (dynamic_cast<SpellTrapZone *>(&card) != nullptr)
         {
             this->field.spellTrapZone.colorFreeZones();
+            this->field.spellTrapZone.placeInSpellTrapZone(&card, zoneNumber);
         }
     }
     else
@@ -155,6 +157,7 @@ void Player::activationSpellTrapCard(Card &card){
 
 void Player::sendToGraveyard(Card &card){
     //first need to be removed from field
+    int position;
     try {
         //removing from deck, not sure if is it legal move
         for (auto it = this->field.deck.cbegin(); it != this->field.deck.cend(); it++){
@@ -166,18 +169,21 @@ void Player::sendToGraveyard(Card &card){
             }
         }
 
-        for (auto it = this->field.monsterZone.m_monsterZone.cbegin(); it != this->field.monsterZone.m_monsterZone.cend(); it++){
+        position = 0; //can't put this in for loop bcs of auto iterator
+        for (auto it = this->field.monsterZone.m_monsterZone.cbegin(); it != this->field.monsterZone.m_monsterZone.cend(); it++, position++){
             if ((*it)->m_pCard == &card){
-                this->field.monsterZone.m_monsterZone.erase(it);
+                this->field.monsterZone.m_monsterZone.erase(it);//delete from vector of cards
+                this->field.monsterZone.removeFromMonsterZone(position);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
                 return;
             }
         }
-
-        for (auto it = this->field.spellTrapZone.m_spellTrapZone.cbegin(); it != this->field.spellTrapZone.m_spellTrapZone.cend(); it++){
+        position = 0;
+        for (auto it = this->field.spellTrapZone.m_spellTrapZone.cbegin(); it != this->field.spellTrapZone.m_spellTrapZone.cend(); it++, position++){
             if ((*it)->m_pCard == &card){
                 this->field.spellTrapZone.m_spellTrapZone.erase(it);
+                this->field.spellTrapZone.removeFromSpellTrapZone(position);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
                 return;
