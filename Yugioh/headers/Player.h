@@ -51,8 +51,13 @@ public:
   // std::vector<MonsterCard *> tableMonsterCards(const Player &opponent); //check vector size before attack
   void attackOpponent(MonsterCard a, Player &opponent);
   void sendToGraveyard(Card &);
+  void sendToGraveyard(Card &, Zone &);
+
   void fromGraveyardToHand(Card &);
-  void fromGraveyardToField(Card &, Zone &);
+  void fromGraveyardToField(Card &, int);
+
+
+
   bool isCardInGrave(Card &c);
   // -----------------------------------------
 
@@ -69,28 +74,22 @@ public:
 
 
   std::string getPlayerName() const;
-  unsigned getPlayerPoints();
-  void setPoints(unsigned points);
+  unsigned getPlayerLifePoints() const;
+  void setPlayerLifePoints(unsigned points);
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
-// DON'T NEED THIS OBJECTS, HAVE ON FIELD INSTEAD
-//  Graveyard graveyard;
-//  MonsterZone monsterZone;
-//  SpellTrapZone spellTrapZone;
-  Hand hand;
-//  Deck deck;
 
 
+//  void setPlayerLifePoints(unsigned);
+  void setPoints(unsigned);
   unsigned doDirectDamage(unsigned);
   void addPoints(unsigned);
   void setDeck(Deck &);
-//  Graveyard* m_graveyard;
-//  MonsterZone m_monsterZone;
-//  SpellTrapZone m_SpellTrapZone
+  Hand m_hand;
   Field field;
-//  Deck m_deck;
 private:
     std::string m_name;
     unsigned m_points;
+
 };
 
 // std::istream &operator>>(std::istream &in, Player &p);

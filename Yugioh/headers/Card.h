@@ -37,9 +37,9 @@ enum class CardLocation
     //SPELL_TRAP_ZONE
 };
 
-class Card:public QGraphicsPixmapItem
+class Card : public QObject, public QGraphicsPixmapItem
 {
-//    Q_OBJECT
+    Q_OBJECT
 public:
 
     friend class Player;
@@ -51,8 +51,6 @@ public:
     std::string getCardTypeString() const;
 
     CardType getCardType() const;
-
-
 
     CardLocation getCardLocation() const;
 
@@ -87,11 +85,12 @@ public:
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
-    Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent = 0);
+    Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath);
     std::string cardName;
     CardType cardType;
     CardLocation cardLocation;
     std::string cardDescription;
+    std::string imagePath;
     //cardImage
     // CardMenu *cardMenu = new CardMenu(this);
     
@@ -105,8 +104,10 @@ private:
 
 
 
-//signals:
-//    void cardHovered(Card *);
+signals:
+   void cardHoveredEnter(Card &);
+   void cardHoveredLeave(Card &);
+   void cardSelected(Card *);
 
 };
 

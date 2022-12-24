@@ -1,10 +1,12 @@
 qrc_resources.cpp
 qrc_resources.o
-Yugioh/compile_ui.sh
 build-Yugioh-Desktop-Debug/
 Yugioh/Yugioh.pro.user
+Yugioh/a.out
+Yugioh/Yugioh
 build-Yugioh-Desktop_Qt_6_4_1_GCC_64bit-Debug/
 build-Yugioh-Desktop_Qt_5_15_2_GCC_64bit-Debug/
+build-Yugioh-Desktop_Qt_5_15_2_GCC_64bit-Release/
 build*
 .vscode
 .qmake.stash
@@ -18,3 +20,4 @@ Trapcard.o
 main.o
 qrc_resources.cpp
 qrc_resources.o
+build

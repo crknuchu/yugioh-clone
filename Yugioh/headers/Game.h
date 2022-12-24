@@ -24,23 +24,21 @@ class Card;
 
 
 
-/* TODO:
- * 1) GamePhasesEnum.h to avoid Game.h includes in other files
- * 2)Unnamed namespaces
- */
-
-
-
-// Unnamed namespaces as a replacement for global static variables
-//namespace {
-//    Player *m_pCurrentPlayer;
-//    Player *m_pOtherPlayer;
-//}
-
 
 
 // Will be needed in the future for the Summoning action
 //static int *p_Summon_target = nullptr;
+
+// WIP
+namespace GameExternVars {
+    extern Player *pCurrentPlayer;
+    extern Player *pOtherPlayer;
+    extern Card *pCardToBePlacedOnField;
+    extern Card *pAttackingMonster;
+}
+
+
+
 
 
 class Game: public QMainWindow
@@ -49,16 +47,18 @@ class Game: public QMainWindow
 
 public:
   Game();
-  Game(Player p1, Player p2, QWidget *parent = nullptr);  // Why is parent's type QWidget and not QMainWindow?
+  Game(Player p1, Player p2,int lifePoints = 4000,int numberOfCards = 5 ,int timePerMove = 5,QWidget *parent = nullptr );  // Why is parent's type QWidget and not QMainWindow?
   ~Game();
-  int lifePoints = 4000;
-  int numberOfCards = 5;
-  int timePerMove = 5;
+  int lifePoints ;
+  int numberOfCards ;
+  int timePerMove ;
 
 
   // Public member functions:
   void start();
-  GamePhasesEnum getGamePhase() const;
+  GamePhases setGamePhase() const;
+
+
 
 
 
@@ -74,19 +74,26 @@ public:
 private:
   Ui::MainWindow *ui;
   QGraphicsScene *scene;
-  GamePhasesEnum m_phase;
+  GamePhases m_phase;
   Player m_player1;  
   Player m_player2;
-  Player *m_pCurrentPlayer;
-  Player *m_pOtherPlayer;
   int m_currentTurn;
   int counter = 0;
+
+  int resizeCount = 0; // dirty hack
+
+
 
   // Private member functions:
   int randomGenerator(const int limit) const;
   int decideWhoPlaysFirst() const;
   void firstTurnSetup(float, float);
   void switchPlayers();
+
+  void damageCalculation(Card *attackingMonster, Card *attackedMonster);
+  void battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
+  void battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
+  void damagePlayer(Player &targetPlayer, int howMuch);
 
 // QT related stuff:
   int m_windowWidth;
@@ -101,38 +108,38 @@ private slots:
     void onMainPhase2ButtonClick();
     void onEndPhaseButtonClick();
     void onMainWindowResize(QResizeEvent *);
-    void onGamePhaseChange(const GamePhasesEnum &newGamePhase);
+    void onGamePhaseChange(const GamePhases &newGamePhase);
     void onTurnEnd();
-    void onRedZoneClicked(Zone* zone);
-
-    /*
-     * This Card* will eventually be replaced with Player * probably,
-     * because in the future Game will only have info about Player,
-     * who will manage adding the card to the scene.
-     * For now, cards are added to the scene in Game.cpp for test purposes
-     * so this is a good enough placeholder until we change that.
-     */
+    void onCardAddedToScene(Card &);
 
 
-    void onCardAddedToScene(const Card *);
-
-
-
-    // FIXME: Slots for signals emitted in Card.cpp
-//    void onCardHover(Card *);
-
+    // Slots for Card signal handling
+    void onCardHoverEnter(Card &);
+    void onCardHoverLeave(Card &);
+    void onCardSelect(Card *);
 
 
     // Slots for CardMenu signal handling
-    void onActivateButtonClick(const Card &);
+    void onActivateButtonClick(Card &);
     void onSetButtonClick(const Card &);
-    void onSummonButtonClick(const Card &);
+    void onSummonButtonClick(Card &);
+    void onAttackButtonClick(Card &);
+
+    // Slots for EffectActivator signal handling
+    void onHealthPointsChange(Player &);
+    void onGameEnd(Player &); // const?
+
+    // Slots for Zone signal handling
+    void onRedZoneClick(Zone *zone);
+    void onGreenZoneClick(Zone *zone);
+
 
 signals:
     void mainWindowResized(QResizeEvent *);
-    void gamePhaseChanged(const GamePhasesEnum &newGamePhase);
+    void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
-    void cardAddedToScene(Card *);
+    void cardAddedToScene(Card &targetCard);
+    void gameEndedAfterBattle(Player &loser);
 };
 
 

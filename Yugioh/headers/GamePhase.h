@@ -4,7 +4,7 @@
 #include <map>
 #include <QString>
 
-enum class GamePhasesEnum {
+enum class GamePhases {
   DRAW_PHASE,
   STANDBY_PHASE,
   MAIN_PHASE1,
@@ -13,12 +13,10 @@ enum class GamePhasesEnum {
   END_PHASE
 };
 
-// Unnamed namespaces?
-
-namespace GamePhase {
-    extern const std::map<GamePhasesEnum, QString> gamePhaseToQString;
-
-    extern GamePhasesEnum currentGamePhase;
+namespace GamePhaseExternVars {
+    extern const std::map<GamePhases, QString> gamePhaseToQString;
+    extern std::map<QString, GamePhases> qStringToGamePhase;
+    extern GamePhases currentGamePhase;
 }
 
 #endif // GAMEPHASE_H

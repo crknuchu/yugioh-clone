@@ -3,14 +3,15 @@
 #include <iterator>
 #include <iostream>
 #include "headers/CardMenu.h"
-Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent)
-    : QGraphicsPixmapItem(parent)
-    ,cardName(cardName)
+Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath)
+    :cardName(cardName)
     ,cardType(cardType)
     ,cardLocation(cardLocation)
     ,cardDescription(cardDescription)
+    ,imagePath(imagePath)
 {
-    QPixmap pixmap(":/resources/pictures/card_back.jpg");
+    QPixmap pixmap;
+    pixmap.load(QString::fromStdString(imagePath));
     pixmap = pixmap.scaled(QSize(200,150), Qt::KeepAspectRatio); //pixmap size needs to not be hardcoded
     height = pixmap.height();
     width = pixmap.width();
@@ -88,11 +89,11 @@ bool Card::operator==(const Card &other) const
 
 void Card::hoverEnterEvent(QGraphicsSceneHoverEvent *event){
     // TODO: Is this even possible since QGraphicsPixmapItem doesn't inherit QObject
-//    emit cardHovered(this);
+    emit cardHoveredEnter(*this);
 }
 
 void Card::hoverLeaveEvent(QGraphicsSceneHoverEvent *event){
-//    std::cout<<"leave"<<std::endl;
+    emit cardHoveredLeave(*this);
 }
 
 void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
@@ -100,12 +101,11 @@ void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
 }
 
 void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
-    if(cardMenu->isVisible() == false){
-        cardMenu->show();
-    }
-    else{
-        cardMenu->hide();
-    }
+//    if(event->buttons() & Qt::LeftButton)
+//    {
+    std::cout << "Card was clicked" << std::endl;
+       emit cardSelected(this);
+//    }
 }
 
 void Card::move(float x,float y){

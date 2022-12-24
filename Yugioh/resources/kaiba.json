@@ -1,0 +1,661 @@
+{
+        "data":[
+        {
+            "id":0,
+            "name":"Hane-Hane",
+            "type":"Effect Monster",
+            "desc":"FLIP: Select 1 Trap Card on the field and destroy it. If the selected card is Set, pick up and see the card. If it is a Trap Card, it is destroyed. If it is a Spell Card, return it to its original position.",
+            "atk":450,
+            "def":500,
+            "level":2,
+            "race":"Beast",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/HaneHane.jpg"
+        }
+        ,
+        {
+            "id":1,
+            "name":"Blue-Eyes White Dragon",
+            "type":"Normal Monster",
+            "desc":"This legendery dragon is a powerful engine of destruction...",
+            "atk":3000,
+            "def":2500,
+            "level":8,
+            "race":"Dragon",
+            "attribute":"LIGHT",
+            "archetype":"Blue-Eyes",
+            "ammount":3,
+            "image":":/resources/pictures/blue_eyes.jpg"
+        }
+        ,
+        {
+            "id":2,
+            "name":"Judge Man",
+            "type":"Normal Monster",
+            "desc":"This club-wielding warrior battels to the end and never surrenders",
+            "atk":2200,
+            "def":1500,
+            "level":6,
+            "race":"Warrior",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/judge_man.jpg"
+        }
+        ,
+        {
+            "id":3,
+            "name":"Swordstalker",
+            "type":"Normal Monster",
+            "desc":"A monster formed by the vengeful souls of those who passed away in battle.",
+            "atk":2000,
+            "def":1600,
+            "level":6,
+            "race":"Warrior",
+            "attribute":"Dark",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/swordstalker.jpg"
+        }
+        ,
+        {
+            "id":4,
+            "name":"Gyakutenno Megami",
+            "type":"Normal Monster",
+            "desc":"This fairy uses her mystical power to protect the weak and provide spiritual support",
+            "atk":1800,
+            "def":2000,
+            "level":6,
+            "race":"Fairy",
+            "attribute":"LIGHT",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/gyakuteno_megami.jpg"
+        }
+        ,
+        {
+            "id":5,
+            "name":"Rude Kaiser",
+            "type":"Normal Monster",
+            "desc":"With an axe in each hand, this monster delivers heavy damage.",
+            "atk":1800,
+            "def":1600,
+            "level":5,
+            "race":"Beast-Warrior",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/RudeKaiser.jpg"
+        }
+        ,
+        {
+            "id":6,
+            "name":"La Jinn the Mystical Genie of the Lamp",
+            "type":"Normal Monster",
+            "desc":"A genie of the lamp that is at the beck and call of its master.",
+            "atk":1800,
+            "def":1000,
+            "level":4,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/LaJinntheMysticalGenieoftheLamp.jpg"
+        }
+        ,
+        {
+            "id":7,
+            "name":"Battle Ox",
+            "type":"Normal Monster",
+            "desc":"A monster with tremendous power, it destroys enemies with a swing of its axe.",
+            "atk":1700,
+            "def":1000,
+            "level":4,
+            "race":"Beast-Warrior",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/BattleOx.jpg"
+        }
+        ,
+        {
+            "id":8,
+            "name":"Ryu-Kishin Powered",
+            "type":"Normal Monster",
+            "desc":"A gargoyle enhanced by the powers of darkness. Very sharp talons make it a worthy opponent.",
+            "atk":1600,
+            "def":1200,
+            "level":4,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/Ryu-KishinPowered.jpg"
+        }
+        ,
+        {
+            "id":9,
+            "name":"Rogue Doll",
+            "type":"Normal Monster",
+            "desc":"A deadly doll gifted with mystical power, it is particularly powerful when attacking against dark forces.",
+            "atk":1600,
+            "def":1000,
+            "level":4,
+            "race":"Spellcaster",
+            "attribute":"",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/RogueDoll.jpg"
+        }
+        ,
+        {
+            "id":10,
+            "name":"Skull Red Bird",
+            "type":"Normal Monster",
+            "desc":"This monster swoops down and attacks with a rain of knives stored in its wings.",
+            "atk":1550,
+            "def":1200,
+            "level":4,
+            "race":"Winget Beast",
+            "attribute":"WIND",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/SkullRedBird.jpg"
+        }
+        ,
+        {
+            "id":11,
+            "name":"Kojikocy",
+            "type":"Normal Monster",
+            "desc":"A man-hunter with powerful arms that can crush boulders.",
+            "atk":1500,
+            "def":1200,
+            "level":4,
+            "race":"Warrior",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/Kojikocy.jpg"
+        }
+        ,
+        {
+            "id":12,
+            "name":"Koumori Dragon",
+            "type":"Normal Monster",
+            "desc":"A vicious, fire-breathing dragon whose wicked flame corrupts the souls of its victims.",
+            "atk":1500,
+            "def":1200,
+            "level":4,
+            "race":"Dragon",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/KoumoriDragon.jpg"
+        }
+        ,
+        {
+            "id":13,
+            "name":"Pale Beast",
+            "type":"Normal Monster",
+            "desc":"With skin tinged a bluish-white, this strange creature is a fearsome sight to behold.",
+            "atk":1500,
+            "def":1200,
+            "level":4,
+            "race":"Beast",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/PaleBeast.jpg"
+        }
+        ,
+        {
+            "id":14,
+            "name":"Destroyer Golem",
+            "type":"Normal Monster",
+            "desc":"A golem with a massive right hand for crushing its victims.",
+            "atk":1500,
+            "def":1000,
+            "level":4,
+            "race":"Rock",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/DestroyerGolem.jpg"
+        }
+        ,
+        {
+            "id":15,
+            "name":"Mystic Clown",
+            "type":"Normal Monster",
+            "desc":"Nothing can stop the mad attack of this powerful creature.",
+            "atk":2200,
+            "def":1500,
+            "level":6,
+            "race":"Warrior",
+            "attribute":"Fiend",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/MysticClown.jpg"
+        }
+        ,
+        {
+            "id":16,
+            "name":"Uraby",
+            "type":"Normal Monster",
+            "desc":"Fast on its feet, this dinosaur rips enemies to shreds with its sharp claws.",
+            "atk":1500,
+            "def":800,
+            "level":4,
+            "race":"Dinosaur",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/Uraby.jpg"
+        }
+        ,
+        {
+            "id":17,
+            "name":"Mystic Horseman",
+            "type":"Normal Monster",
+            "desc":"Half man and half horse, this monster is known for its extreme speed.",
+            "atk":1300,
+            "def":1550,
+            "level":4,
+            "race":"Beast",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/MysticHorseman.jpg"
+        }
+        ,
+        {
+            "id":18,
+            "name":"Dark Titan of Terror",
+            "type":"Normal Monster",
+            "desc":"A fiend said to dwell in the world of dreams, it attacks enemies in their sleep.",
+            "atk":1300,
+            "def":1100,
+            "level":4,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/DarkTitanofTerror.jpg"
+        }
+        ,
+        {
+            "id":19,
+            "name":"D. Human",
+            "type":"Normal Monster",
+            "desc":"Gifted with the power of dragons, this warrior wields a sword created from a dragon's fang.",
+            "atk":1300,
+            "def":1100,
+            "level":4,
+            "race":"Warrior",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/D.Human.jpg"
+        }
+        ,
+        {
+            "id":20,
+            "name":"Ogre of the Black Shadow",
+            "type":"Normal Monster",
+            "desc":"An ogre possessed by the powers of the dark. Few can withstand its rapid charge.",
+            "atk":1200,
+            "def":1400,
+            "level":4,
+            "race":"Beast-Warrior",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/OgreoftheBlackShadow.jpg"
+        }
+        ,
+        {
+            "id":21,
+            "name":"Terra the Terrible",
+            "type":"Normal Monster",
+            "desc":"Known as a swamp dweller, this creature is a minion of the dark forces.",
+            "atk":1200,
+            "def":1300,
+            "level":4,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/TerratheTerrible.jpg"
+        }
+        ,
+        {
+            "id":22,
+            "name":"Dark Assailant",
+            "type":"Normal Monster",
+            "desc":"Armed with the Psycho Sword, this sinister assassin rules the bad land.",
+            "atk":1200,
+            "def":1200,
+            "level":4,
+            "race":"Zombie",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/DarkAssailant.jpg"
+        }
+        ,
+        {
+            "id":23,
+            "name":"Hitotsu-Me Giant",
+            "type":"Normal Monster",
+            "desc":"A one-eyed behemoth with thick, powerful arms made for delivering punishing blows.",
+            "atk":1200,
+            "def":1000,
+            "level":4,
+            "race":"Beast-Warrior",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/Hitotsu-MeGiant.jpg"
+        }
+        ,
+        {
+            "id":24,
+            "name":"Master & Expert",
+            "type":"Normal Monster",
+            "desc":"A deadly duo consisting of a beast master and its loyal servant.",
+            "atk":1200,
+            "def":1000,
+            "level":4,
+            "race":"Beast",
+            "attribute":"EARTH",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/MasterExpert.jpg"
+        }
+        ,
+        {
+            "id":25,
+            "name":"Ryu-Kishin",
+            "type":"Normal Monster",
+            "desc":"A very elusive creature that looks like a harmless statue until it attacks.",
+            "atk":1000,
+            "def":500,
+            "level":3,
+            "race":"Fiend",
+            "attribute":"DARK",
+            "archetype":"N/A",
+            "ammount":3,
+            "image":":/resources/pictures/Ryu-Kishin.jpg"
+        }
+    ,
+    {
+        "id":26,
+        "name":"Unknown Warrior of Fiend",
+        "type":"Normal Monster",
+        "desc":"The speed of this warrior creates an intense vacuum that can slice through a monster's hide.",
+        "atk":1000,
+        "def":500,
+        "level":3,
+        "race":"Warrior",
+        "attribute":"DARK",
+        "archetype":"N/A",
+        "ammount":3,
+        "image":":/resources/pictures/UnknownWarriorofFiend.jpg"
+    }
+    ,
+    {
+        "id":27,
+        "name":"Lord of D.",
+        "type":"Effect Monster",
+        "desc":"Neither player can target Dragon monsters on the field with card effects.",
+        "atk":1200,
+        "def":1100,
+        "level":4,
+        "race":"Spellcaster",
+        "attribute":"DARK",
+        "archetype":"N/A",
+        "ammount":3,
+        "image":":/resources/pictures/LordofD.jpg"
+    }
+    ,
+    {
+        "id":28,
+        "name":"Mysterious Puppeteer",
+        "type":"Effect Monster",
+        "desc":"Each time you or your opponent Normal Summons or Flip Summons a monster, increase your Life Points by 500 points.",
+        "atk":1000,
+        "def":1500,
+        "level":4,
+        "race":"Warrior",
+        "attribute":"EARTH",
+        "archetype":"N/A",
+        "ammount":3,
+        "image":":/resources/pictures/MysteriousPuppeteer.jpg"
+    }
+    ,
+    {
+        "id":29,
+        "name":"The Wicked Worm Beast",
+        "type":"Effect Monster",
+        "desc":"This face-up card on the field is returned to the owner's hand during the End Phase of your turn.",
+        "atk":1400,
+        "def":700,
+        "level":3,
+        "race":"Beast",
+        "attribute":"EARTH",
+        "archetype":"N/A",
+        "ammount":3,
+        "image":":/resources/pictures/TheWickedWormBeast.jpg"
+    }
+    ,
+    {
+        "id":30,
+        "name":"Trap Master",
+        "type":"Effect Monster",
+        "desc":"FLIP: Select 1 Trap Card on the field and destroy it. If the selected card is Set, pick up and see the card. If it is a Trap Card, it is destroyed. If it is a Spell Card, return it to its original position.",
+        "atk":500,
+        "def":1100,
+        "level":3,
+        "race":"Warrior",
+        "attribute":"EARTH",
+        "archetype":"N/A",
+        "ammount":3,
+        "image":":/resources/pictures/TrapMaster.jpg"
+    }
+    ,
+    {
+        "id":31,
+        "name":"Dark Energy",
+        "type":"Spell Card",
+        "desc":"Increase the ATK and DEF of a Fiend-Type monster equipped with this card by 300 points",
+        "race":"EQUIP SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/dark_energy.jpg"
+    }
+    ,
+    {
+        "id":32,
+        "name":"Invigoration",
+        "type":"Spell Card",
+        "desc":"An EARTH monster equipped with this card increases its ATK by 400 points and decreases its DEF by 200 points.",
+        "race":"EQUIP SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/Invigoration.jpg"
+    }
+    ,
+    {
+        "id":33,
+        "name":"Sogen",
+        "type":"Spell Card",
+        "desc":"All Warrior and Beast-Warrior monsters on the field gain 200 ATK/DEF.",
+        "race":"FIELD SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/Sogen.jpg"
+    }
+    ,
+    {
+        "id":34,
+        "name":"Dark Hole",
+        "type":"Spell Card",
+        "desc":"Destroy all monsters on the field.",
+        "race":"NORMAL SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/DarkHole.jpg"
+    }
+    ,
+    {
+        "id":35,
+        "name":"De-Spell",
+        "type":"Spell Card",
+        "desc":"Target 1 face-up Spell, or 1 Set Spell/Trap, on the field; destroy that target if it is a Spell. (If the target is Set, reveal it.)",
+        "race":"NORMAL SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/DeSpell.jpg"
+    }
+    ,
+    {
+        "id":36,
+        "name":"Ancient Telescope",
+        "type":"Spell Card",
+        "desc":"See the top 5 cards of your opponent's Deck. Return the cards to the Deck in the same order.",
+        "race":"NORMAL SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/AncientTelescope.jpg"
+    }
+    ,
+    {
+        "id":37,
+        "name":"Monster Reborn",
+        "type":"Spell Card",
+        "desc":"Target 1 monster in either GY; Special Summon it.",
+        "race":"NORMAL SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/MonsterReborn.jpg"
+    }
+    ,
+    {
+        "id":38,
+        "name":"Ookazi",
+        "type":"Spell Card",
+        "desc":"Inflict 800 damage to your opponent.",
+        "race":"NORMAL SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/Ookazi.jpg"
+    }
+    ,
+    {
+        "id":39,
+        "name":"Fissure",
+        "type":"Spell Card",
+        "desc":"Destroy the 1 face-up monster your opponent controls that has the lowest ATK (your choice, if tied).",
+        "race":"NORMAL SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/Fissure.jpg"
+    }
+    ,
+    {
+        "id":40,
+        "name":"Remove Trap",
+        "type":"Spell Card",
+        "desc":"Select 1 face-up Trap Card on the field and destroy it.",
+        "race":"NORMAL SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/RemoveTrap.jpg"
+    }
+    ,
+    {
+        "id":41,
+        "name":"The Flute of Summoning Dragon",
+        "type":"Spell Card",
+        "desc":"Special Summon up to 2 Dragon monsters from your hand. 'Lord of D.' must be on the field to activate and to resolve this effect.",
+        "race":"NORMAL SPELL",
+        "ammount":3,
+        "image":":/resources/pictures/TheFluteofSummoningDragon.jpg"
+    }
+    ,
+    {
+        "id":42,
+        "name":"The Inexperienced Spy",
+        "type":"Spell Card",
+        "desc":"Select and see 1 card in your opponent's hand.",
+        "race":"NORMAL SPELL",
+        "ammount":2,
+        "image":":/resources/pictures/TheInexperiencedSpy.jpg"
+    }
+    ,
+    {
+        "id":43,
+        "name":"Ultimate Offering",
+        "type":"Trap Card",
+        "desc":"During your Main Phase or your opponent's Battle Phase: You can pay 500 Life Points; immediately after this effect resolves, Normal Summon/Set 1 monster.",
+        "race":"CONTINUOUS TRAP",
+        "ammount":2,
+        "image":":/resources/pictures/UltimateOffering.jpg"
+    }
+    ,
+    {
+        "id":44,
+        "name":"Castle Walls",
+        "type":"Trap Card",
+        "desc":"Increase the DEF of 1 face-up monster on the field by 500 points until the end of this turn",
+        "race":"NORMAL TRAP",
+        "ammount":2,
+        "image":":/resources/pictures/CastleWalls.jpg"
+    }
+    ,
+    {
+        "id":45,
+        "name":"Just Desserts",
+        "type":"Trap Card",
+        "desc":"Inflict 500 damage to your opponent for each monster they control.",
+        "race":"NORMAL TRAP",
+        "ammount":2,
+        "image":":/resources/pictures/JustDesserts.jpg"
+    }
+    ,
+    {
+        "id":46,
+        "name":"Reinforcements",
+        "type":"Trap Card",
+        "desc":"Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+        "race":"NORMAL TRAP",
+        "ammount":2,
+        "image":":/resources/pictures/Reinforcements.jpg"
+    }
+    ,
+    {
+        "id":47,
+        "name":"Reverse Trap",
+        "type":"Trap Card",
+        "desc":"Until the End Phase, all effects that add or subtract ATK or DEF are reversed. (Additions now subtract, and subtractions now add, instead. Multiplications and divisions, including halving/doubling, are not affected.)",
+        "race":"NORMAL TRAP",
+        "ammount":2,
+        "image":":/resources/pictures/ReverseTrap.jpg"
+    }
+    ,
+    {
+        "id":48,
+        "name":"Trap Hole",
+        "type":"Trap Card",
+        "desc":"When your opponent Normal or Flip Summons 1 monster with 1000 or more ATK: Target that monster; destroy that target.",
+        "race":"NORMAL TRAP",
+        "ammount":2,
+        "image":":/resources/pictures/TrapHole.jpg"
+    }
+    ,
+    {
+        "id":49,
+        "name":"Two-Pronged Attack",
+        "type":"Trap Card",
+        "desc":"Select and destroy 2 of your monsters and 1 of your opponent's monsters.",
+        "race":"NORMAL TRAP",
+        "ammount":2,
+        "image":":/resources/pictures/Two-ProngedAttack.jpg"
+    }
+    ]
+}
+
+
+

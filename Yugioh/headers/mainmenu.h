@@ -19,22 +19,24 @@ public:
 
     void setGame(Game *newGame);
 
-    void setMusic();
+
+
 
 private slots:
-    void on_pushButton_clicked();
+    void on_btnStart_clicked();
 
-    void on_pushButton_4_clicked();
+    void on_btnQuit_clicked();
 
-    void on_pushButton_5_clicked();
+    void on_btnGameSettings_clicked();
 
+    void updateValues();
 
 
 
 private:
     Ui::MainMenu *ui;
     Game *m_pGame;
-    GameSettings *gameSettings;
+    GameSettings *m_pGameSettings;
 };
 
 

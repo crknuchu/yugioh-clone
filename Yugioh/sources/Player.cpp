@@ -2,16 +2,16 @@
 #include "headers/GamePhase.h"
 Player::Player(){}
 
-Player::Player(std::string playerName, int points) : hand(Hand()), field(Field()), m_name(playerName), m_points(points){};
+Player::Player(std::string playerName, int points) : m_hand(Hand()), field(Field()), m_name(playerName), m_points(points){};
 
-//NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
+
 Player::Player(Player &p){
     this->field = p.field;
     this->m_points = p.m_points;
     this->m_name = p.m_name;
 
 }
-//NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
+
 Player Player::operator=(Player &p){
     return p;
 }
@@ -20,7 +20,7 @@ std::string Player::getPlayerName() const{
     return this->m_name;
 }
 
-unsigned Player::getPlayerPoints(){
+unsigned Player::getPlayerLifePoints() const {
     return this->m_points;
 }
 
@@ -39,8 +39,10 @@ void Player::addPoints(unsigned points){
 void Player::setDeck(Deck &d) {
     this->field.deck = d;
 }
-
-//DRAW PHASE 
+void Player::setPlayerLifePoints(unsigned newHealthPoints)
+{
+    m_points = newHealthPoints;
+}
 
 void Player::drawCards(unsigned int numOfCards) {
     //TODO refactor
@@ -55,7 +57,7 @@ void Player::drawCards(unsigned int numOfCards) {
     else{
         std::vector<Card*> newCards = this->field.deck.draw(numOfCards);
         for (unsigned i = 0; i < newCards.size(); i++){
-            this->hand.addToHand(*newCards[i]);
+            this->m_hand.addToHand(*newCards[i]);
         }
         std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
     }
@@ -77,7 +79,7 @@ void Player::fromGraveyardToHand(Card &card){
         if ((*it) == &card) {
             cardInGrave = 1;
             this->field.graveyard->erase(it);
-            this->hand.addToHand(card);
+            this->m_hand.addToHand(card);
             return;
         }
     }
@@ -104,7 +106,7 @@ bool Player::isCardInGrave(Card &c)
 }
 
 
-void Player::fromGraveyardToField(Card &card, Zone &zone)
+void Player::fromGraveyardToField(Card &card, int zoneNumber)
 {
     if (isCardInGrave(card) == true)
     {
@@ -114,10 +116,12 @@ void Player::fromGraveyardToField(Card &card, Zone &zone)
         if (dynamic_cast<MonsterCard *>(&card) != nullptr)
         {
             this->field.monsterZone.colorFreeZones();
+            this->field.monsterZone.placeInMonsterZone(&card, zoneNumber);
         }
         else if (dynamic_cast<SpellTrapZone *>(&card) != nullptr)
         {
             this->field.spellTrapZone.colorFreeZones();
+            this->field.spellTrapZone.placeInSpellTrapZone(&card, zoneNumber);
         }
     }
     else
@@ -149,10 +153,16 @@ void Player::activationSpellTrapCard(Card &card){
         delete tmp;
     }
 }
+void Player::sendToGraveyard(Card &card, Zone &zone)
+{
+      zone.m_pCard = nullptr; //free space for that zone, card is sent to graveyard ===> zone.isEmpty() returns true after
+      this->field.graveyard->sendToGraveyard(card);
 
+}
 
 void Player::sendToGraveyard(Card &card){
     //first need to be removed from field
+    int position;
     try {
         //removing from deck, not sure if is it legal move
         for (auto it = this->field.deck.cbegin(); it != this->field.deck.cend(); it++){
@@ -164,27 +174,30 @@ void Player::sendToGraveyard(Card &card){
             }
         }
 
-        for (auto it = this->field.monsterZone.m_monsterZone.cbegin(); it != this->field.monsterZone.m_monsterZone.cend(); it++){
+        position = 0; //can't put this in for loop bcs of auto iterator
+        for (auto it = this->field.monsterZone.m_monsterZone.cbegin(); it != this->field.monsterZone.m_monsterZone.cend(); it++, position++){
             if ((*it)->m_pCard == &card){
-                this->field.monsterZone.m_monsterZone.erase(it);
+                this->field.monsterZone.m_monsterZone.erase(it);//delete from vector of cards
+                this->field.monsterZone.removeFromMonsterZone(position);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
                 return;
             }
         }
-
-        for (auto it = this->field.spellTrapZone.m_spellTrapZone.cbegin(); it != this->field.spellTrapZone.m_spellTrapZone.cend(); it++){
+        position = 0;
+        for (auto it = this->field.spellTrapZone.m_spellTrapZone.cbegin(); it != this->field.spellTrapZone.m_spellTrapZone.cend(); it++, position++){
             if ((*it)->m_pCard == &card){
                 this->field.spellTrapZone.m_spellTrapZone.erase(it);
+                this->field.spellTrapZone.removeFromSpellTrapZone(position);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
                 return;
             }
         }
 
-        for (auto it = this->hand.cbegin(); it != this->hand.cend(); it++){
+        for (auto it = this->m_hand.cbegin(); it != this->m_hand.cend(); it++){
             if ((*it) == &card){
-               this->hand.erase(it);
+               this->m_hand.erase(it);
                this->field.graveyard->sendToGraveyard(card);
                std::cout<< (*it)->getCardName() << " succesfully removed from hand"<<std::endl;
                return;
@@ -217,8 +230,8 @@ int Player::checkOpponentGround(Player &opponent) {
 
 void Player::attackOpponent(MonsterCard a, Player &opponent){
 
-    GamePhasesEnum tmpPhase = GamePhase::currentGamePhase;
-    if (tmpPhase == GamePhasesEnum::BATTLE_PHASE){
+    GamePhases tmpPhase = GamePhaseExternVars::currentGamePhase;
+    if (tmpPhase == GamePhases::BATTLE_PHASE){
         if (checkOpponentGround(opponent) == 0){
             opponent.setPoints(a.getAttackPoints());
         }
@@ -239,14 +252,33 @@ bool Player::operator==(const Player &other) const {
     return this->getPlayerName() == other.getPlayerName();
 }
 
-// std::istream &operator>>(std::istream &in, Player &p){
-//     char c; //for space/comma reading
-//     in >>  >> c >> p.points;
-//     return in;
-// }
-
 std::ostream &operator<<(std::ostream &out, Player &p){
-    return out << "Player name: " << p.getPlayerName() << ", points " << p.getPlayerPoints()<<std::endl;
+    return out << "Player name: " << p.getPlayerName() << ", points " << p.getPlayerLifePoints()<<std::endl;
 }
 
+
+
+
+
+//int Player::checkOpponentGround(Player &opponent) const {
+//    // return opponent.m_tableMonsterCards.getMonsterZone().size();
+//}
+//void Player::attackOpponent(Game &game, MonsterCard m, Player &opponent){
+
+//    // if (game.getGamePhase() == GamePhases::BATTLE_PHASE){
+//    //     if (m.getCardType() == CardType::MONSTER_CARD){
+//    //         if (0 == checkOpponentGround(opponent)){
+//    //             opponent.setPlayerLifePoints(m.getAttackPoints());
+//    //         }
+//    //     }
+//    //     else {
+//    //         //TODO
+//    //         //pick opponent card to fight()
+//    //     }
+//    // }
+//    // else {
+//    //     std::cerr<<"incompatibile game phase, can't attack at this moment"<<std::endl;
+//    // }
+
+//}
 

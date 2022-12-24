@@ -32,7 +32,8 @@ SOURCES += \
         sources/Player.cpp \
         sources/CardMenu.cpp \
         sources/MonsterZone.cpp  \
-        sources/profilesettings.cpp
+        sources/profilesettings.cpp \
+        sources/Serializer.cpp
 
 HEADERS += \
     headers/Field.h \
@@ -51,13 +52,19 @@ HEADERS += \
     headers/Graveyard.h \
     headers/Hand.h \
     headers/Player.h \
+    headers/CardMenu.h \ 
+    headers/MonsterZone.h \
+    headers/mainmenu.h \
+    headers/Zone.h \
     headers/ui_mainwindow.h \
+    headers/ui_mainmenu.h \
     headers/CardMenu.h \  \
     sources/profilesettings.h \
     headers/MonsterZone.h \
     headers/mainmenu.h \
     headers/Zone.h \
-    sources/BotPlayer.h
+    sources/BotPlayer.h \
+    headers/Serializer.h
 
 RESOURCES += \
         resources.qrc

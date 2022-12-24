@@ -1,5 +1,5 @@
 #include "headers/mainmenu.h"
-#include "ui_mainmenu.h"
+#include "headers/ui_mainmenu.h"
 #include "headers/Game.h"
 #include "headers/Player.h"
 #include "headers/GameSettings.h"
@@ -23,9 +23,9 @@ MainMenu::MainMenu(QWidget *parent) :
     QPalette palette;
     palette.setBrush(QPalette::Window, bkgnd);
     this->setPalette(palette);
-    QMediaPlayer * music = new QMediaPlayer();
-    music->setSource(QUrl("qrc:/resources/sounds/illusion.mp3")); // in qt5 is setMedia()
-    music->play();
+//    QMediaPlayer * music = new QMediaPlayer();
+//    music->setSaource(QUrl("qrc:/resources/sounds/illusion.mp3")); // in qt5 is setMedia()
+//    music->play();
 
 
 }
@@ -33,11 +33,12 @@ MainMenu::MainMenu(QWidget *parent) :
 MainMenu::~MainMenu()
 {
     delete ui;
+    delete m_pGame;
+    delete m_pGameSettings;
 }
 
-void MainMenu::on_pushButton_clicked()
+void MainMenu::on_btnStart_clicked()
 {
-
     Player* player1 = new Player("Nikola");
     Player* player2 = new Player("Milan");
     m_pGame = new Game(*player1, *player2);
@@ -45,30 +46,33 @@ void MainMenu::on_pushButton_clicked()
 }
 
 
-void MainMenu::on_pushButton_4_clicked()
+void MainMenu::on_btnQuit_clicked()
 {
     close();
 }
 
-
-void MainMenu::on_pushButton_5_clicked()
+void MainMenu::on_btnGameSettings_clicked()
 {
-    gameSettings = new GameSettings();
-    gameSettings->show();
+    m_pGameSettings = new GameSettings();
+    m_pGameSettings->show();
 
+    connect(m_pGameSettings, &GameSettings::okButtonClicked, this, &MainMenu::updateValues);
 }
-
-
 
 void MainMenu::setGame(Game *newGame)
 {
     m_pGame = newGame;
 }
 
-
-
-
-
-
+void MainMenu::updateValues()
+{
+    //to do save as json file?
+    if(!m_pGame)
+    {
+        m_pGame->setLifePoints(m_pGameSettings->getLifePoints());
+        m_pGame->setNumberOfCards(m_pGame->getNumberOfCards());
+        m_pGame->setTimePerMove(m_pGame->getTimePerMove());
+    }
+}
 
 

@@ -12,6 +12,7 @@
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QGraphicsView>
+#include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
@@ -41,6 +42,13 @@ public:
     QPushButton *btnBattlePhase;
     QPushButton *btnMainPhase2;
     QPushButton *btnEndPhase;
+    QVBoxLayout *verticalLayout;
+    QHBoxLayout *horizontalLayout;
+    QLabel *labelCurrentPlayerConst;
+    QLabel *labelCurrentPlayerDynamic;
+    QHBoxLayout *horizontalLayout_2;
+    QLabel *labelHealthPointsConst;
+    QLabel *labelHealthPointsDynamic;
     QWidget *verticalLayoutWidget_2;
     QVBoxLayout *verticalLayout_6;
     QLabel *label;
@@ -64,10 +72,10 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         graphicsView = new QGraphicsView(centralwidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        graphicsView->setGeometry(QRect(410, 0, 1201, 711));
+        graphicsView->setGeometry(QRect(423, 9, 1191, 761));
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(0, 0, 401, 777));
+        layoutWidget->setGeometry(QRect(9, 9, 401, 760));
         leftVerticalLayout = new QVBoxLayout(layoutWidget);
         leftVerticalLayout->setObjectName(QString::fromUtf8("leftVerticalLayout"));
         leftVerticalLayout->setContentsMargins(0, 0, 0, 0);
@@ -107,6 +115,41 @@ public:
         btnEndPhase->setObjectName(QString::fromUtf8("btnEndPhase"));
 
         leftVerticalLayout->addWidget(btnEndPhase);
+
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        labelCurrentPlayerConst = new QLabel(layoutWidget);
+        labelCurrentPlayerConst->setObjectName(QString::fromUtf8("labelCurrentPlayerConst"));
+
+        horizontalLayout->addWidget(labelCurrentPlayerConst);
+
+        labelCurrentPlayerDynamic = new QLabel(layoutWidget);
+        labelCurrentPlayerDynamic->setObjectName(QString::fromUtf8("labelCurrentPlayerDynamic"));
+
+        horizontalLayout->addWidget(labelCurrentPlayerDynamic);
+
+
+        verticalLayout->addLayout(horizontalLayout);
+
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        labelHealthPointsConst = new QLabel(layoutWidget);
+        labelHealthPointsConst->setObjectName(QString::fromUtf8("labelHealthPointsConst"));
+
+        horizontalLayout_2->addWidget(labelHealthPointsConst);
+
+        labelHealthPointsDynamic = new QLabel(layoutWidget);
+        labelHealthPointsDynamic->setObjectName(QString::fromUtf8("labelHealthPointsDynamic"));
+
+        horizontalLayout_2->addWidget(labelHealthPointsDynamic);
+
+
+        verticalLayout->addLayout(horizontalLayout_2);
+
+
+        leftVerticalLayout->addLayout(verticalLayout);
 
         verticalLayoutWidget_2 = new QWidget(centralwidget);
         verticalLayoutWidget_2->setObjectName(QString::fromUtf8("verticalLayoutWidget_2"));
@@ -186,6 +229,10 @@ public:
         btnBattlePhase->setText(QCoreApplication::translate("MainWindow", "Battle Phase", nullptr));
         btnMainPhase2->setText(QCoreApplication::translate("MainWindow", "Main Phase 2", nullptr));
         btnEndPhase->setText(QCoreApplication::translate("MainWindow", "End Phase", nullptr));
+        labelCurrentPlayerConst->setText(QCoreApplication::translate("MainWindow", "Current Player:", nullptr));
+        labelCurrentPlayerDynamic->setText(QString());
+        labelHealthPointsConst->setText(QCoreApplication::translate("MainWindow", "Health Points: ", nullptr));
+        labelHealthPointsDynamic->setText(QString());
         label->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         avatarPlayer->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         progressBar->setFormat(QCoreApplication::translate("MainWindow", "%p%", nullptr));
