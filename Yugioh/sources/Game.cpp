@@ -90,7 +90,7 @@ void Game::switchPlayers() {
     std::cout << "Current player is: " << *GameExternVars::pCurrentPlayer << std::endl;
     ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
 
-    // Swtich clients too
+    // Switch clients too
     GameExternVars::currentTurnClientID == 1 ? GameExternVars::currentTurnClientID = 2 : GameExternVars::currentTurnClientID = 1;
 
     // Notify the server about the new turn beginning:
@@ -322,6 +322,8 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID) {
 
     GameExternVars::currentTurnClientID = firstToPlay;
 
+    std::cout << "Extern var current turn client ID !!!:  " << GameExternVars::currentTurnClientID << std::endl;
+
   // Disable UI for second player until its his turn.
     // TODO: Move this into a separate function since its used in onTurnEnd too.
     if(m_clientID != GameExternVars::currentTurnClientID)
@@ -502,12 +504,8 @@ void Game::deserializeAddCardToHand(QDataStream &deserializationStream)
     QString whoGetsTheCards;
     deserializationStream >> whoGetsTheCards;
 
-    std::cout << "Whogetsthecards: " << whoGetsTheCards.toStdString() << std::endl;
-
-    std::cout << "pCurrentplayer: " << GameExternVars::pCurrentPlayer << ", pOtherPlayer: " << GameExternVars::pOtherPlayer << std::endl;
-
-    // whoGetsTheCards will be MYSELF only if a player does something that gives a card to his opponent (or for example in firstTurnSetup where its mandatory).
-    whoGetsTheCards == QString::fromStdString("MYSELF") ? GameExternVars::pCurrentPlayer->drawCards(numOfCards) : GameExternVars::pOtherPlayer->drawCards(numOfCards);
+    // Actually draw the cards
+    whoGetsTheCards == QString::fromStdString("CURRENT_PLAYER") ? GameExternVars::pCurrentPlayer->drawCards(numOfCards) : GameExternVars::pOtherPlayer->drawCards(numOfCards);
 }
 
 void Game::deserializeBattleBetweenAttackPositionMonsters(QDataStream &deserializationStream)
@@ -832,7 +830,7 @@ void Game::onTurnEnd() {
     outDataStream << QString::fromStdString("ADD_CARD_TO_HAND")
                   << qint32(1)
                   // Tell the opponent that his opponent (current player) got the card // TODO: Should we send MYSELF?
-                  << QString::fromStdString("OPPONENT");
+                  << QString::fromStdString("CURRENT_PLAYER");
     sendDataToServer(buffer);
     blockingLoop.exec();
 
@@ -1267,7 +1265,7 @@ void Game::onWriteDataButtonClick()
 
     outDataStream << QString::fromStdString("ADD_CARD_TO_HAND")
                   << qint32(5)
-                  << QString::fromStdString("OPPONENT");
+                  << QString::fromStdString("CURRENT_PLAYER");
 
    if(!sendDataToServer(buffer))
     {
