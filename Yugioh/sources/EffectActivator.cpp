@@ -57,7 +57,7 @@ void EffectActivator::activateLordOfD() {
     // returnToHand test
     MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                                 MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
                                                 CardType::MONSTER_CARD, CardLocation::HAND,
                                                 "Neither player can target Dragon monsters on the field with card effects."
                                                 );

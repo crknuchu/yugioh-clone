@@ -1,7 +1,9 @@
 #include "headers/Monstercard.h"
 
 
-MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn)
+MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,
+                         bool active, MonsterPosition position, bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,
+                         bool summonedThisTurn)
     : Card(cardName, cardType, cardLocation, cardDescription)
     ,attackPoints(attackPoints)
     ,defensePoints(defensePoints)
@@ -13,23 +15,12 @@ MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defe
     ,position(position)
     ,alreadyAttack(alreadyAttack)
     ,summonedThisTurn(summonedThisTurn)
-{
-}
+{}
 
 MonsterCard::~MonsterCard()
 {
 
 }
-
-
-const std::map<Position, std::string> MonsterCard::positionEnumToString{
-    {Position::ATTACK,  "ATTACK"},
-    {Position::DEFENSE, "DEFENSE"},
-    {Position::NONE,    "NONE"}
-};
-
-
-
 
 int MonsterCard::getAttackPoints() const
 {
@@ -155,7 +146,7 @@ int MonsterCard::getLevel() const
     return level;
 }
 
-Position MonsterCard::getPosition() const
+MonsterPosition MonsterCard::getPosition() const
 {
     return position;
 }
@@ -193,20 +184,20 @@ void MonsterCard::muliplyDefensePoints(int coef)
 
 }
 
-bool MonsterCard::normalSummon(Position s){
+bool MonsterCard::normalSummon(MonsterPosition monsterPos){
     if (this->active == true or this->cardLocation != CardLocation :: HAND )
         return false; // unsuporeted actions
     this->active = true;
-    this->position = s;
+    this->position = monsterPos;
     return true;
 }
 
 
-bool MonsterCard::specialSummon(Position s){
+bool MonsterCard::specialSummon(MonsterPosition monsterPos){
     if ( this->cardLocation == CardLocation :: DECK )
         return false;
     active = true;
-    position = s;
+    position = monsterPos;
     return true;
 }
 
@@ -223,7 +214,7 @@ void MonsterCard::setCardMenu(){
     if(monsterKind == MonsterKind::EFFECT_MONSTER){
         flagMap.insert("activate",true);
     }
-    if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){
+    if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == MonsterPosition::ATTACK){
         flagMap.insert("attack",true);
         flagMap.insert("summon",true);
     }

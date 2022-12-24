@@ -110,7 +110,7 @@ void Game::damageCalculation(Card *attackingMonster, Card *attackedMonster)
     MonsterCard* attacker = static_cast<MonsterCard*>(attackingMonster);
     MonsterCard* defender = static_cast<MonsterCard*>(attackedMonster);
 
-    if(defender->getPosition() == Position::ATTACK)
+    if(defender->getPosition() == MonsterPosition::ATTACK)
     {
         std::cout << "Battle between 2 attacking monsters begins!" << std::endl;
         battleBetweenTwoAttackPositionMonsters(*attacker, *defender);
@@ -446,22 +446,44 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
     QString cardName;
     QString cardType;
     qint32 zoneNumber;
+    QString positionQString;
     deserializationStream >> cardName
                           >> cardType
-                          >> zoneNumber;
+                          >> zoneNumber
+                          >> positionQString;
 
     std::cout << "Card info: " << std::endl;
     std::cout << "Card name: " << cardName.toStdString() << std::endl;
     std::cout << "Card type: " << cardType.toStdString() << std::endl;
     std::cout << "Zone number: " << zoneNumber << std::endl;
+    std::cout << "Card position: " << positionQString.toStdString() << std::endl;
+
+
+
+    // TODO: Here we will recreate the card in the future and put it in the correct zone.
+    if(cardType == QString::fromStdString("monster card"))
+    {
+        // Get the position enum
+        // ...
+    }
+    else if(cardType == QString::fromStdString("spell card"))
+    {
+        // Get the position enum
+        // ...
+    }
+    else
+    {
+        // Get the position enum
+        // ...
+    }
+
 
     // Placeholder
     /* Here, we will create the card by parsing JSON data that will be found based on card's name
        For now, we create a random card for testing purposes. */
-
     MonsterCard *testCard = new MonsterCard("Lord of D", 3000, 2500, 4,
                                                 MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
                                                 CardType::MONSTER_CARD, CardLocation::FIELD,
                                                 "Neither player can target Dragon monsters on the field with card effects."
                                                 );
@@ -888,7 +910,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         // FIXME: If this isn't dynamically allocated with "new", it doesn't get added to the scene
         MonsterCard *monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                                     MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                    MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                                    MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
                                                     CardType::MONSTER_CARD, CardLocation::FIELD,
                                                     "Neither player can target Dragon monsters on the field with card effects."
                                                     );
@@ -938,7 +960,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         // Testing green zones
         MonsterCard *monsterCard2 = new MonsterCard("test", 1700, 4000, 4,
                                                     MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                                    MonsterAttribute::DARK, false, Position::DEFENSE, false,
+                                                    MonsterAttribute::DARK, false, MonsterPosition::FACE_UP_DEFENSE, false,
                                                     CardType::MONSTER_CARD, CardLocation::FIELD,
                                                     "test"
                                                     );
@@ -1112,8 +1134,10 @@ void Game::onSetButtonClick(const Card &card)
 void Game::onRedZoneClick(Zone *clickedRedZone) {
     Card* card = GameExternVars::pCardToBePlacedOnField;
 
+
+
     // TODO: Move this into separate functions.
-    if(card->getCardType() == CardType::MONSTER_CARD) { // We have a segfault because this card is nullptr
+    if(card->getCardType() == CardType::MONSTER_CARD) {
         monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
         for(auto x : monsterZone.m_monsterZone) {
@@ -1121,6 +1145,29 @@ void Game::onRedZoneClick(Zone *clickedRedZone) {
                 std::cout << *x->m_pCard << std::endl;
         }
         monsterZone.refresh();
+
+        // Get the monster's position
+        MonsterCard *pMonsterCard = static_cast<MonsterCard *>(card);
+        QString monsterPosition = pMonsterCard->monsterPositionEnumToQString.at(pMonsterCard->getPosition());
+
+        // Place the card on the field
+        card->move(clickedRedZone->m_x, clickedRedZone->m_y);
+
+        QEventLoop blockingLoop;
+        connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+        // zoneNumber is a placeholder for the number of the zone in which the card was placed
+        // Later,  we will have a method for getting this
+        qint32 zoneNumber = 3;
+        outDataStream << QString("FIELD_PLACEMENT") // Header, so that server knows what data to expect after it
+                      << QString::fromStdString(card->getCardName()) // We only send card's name, server will pass it to the other client and then that client will construct the card
+                      << QString::fromStdString(card->getCardTypeString())
+                      << zoneNumber
+                      << monsterPosition;
+        sendDataToServer(buffer);
+        blockingLoop.exec();
     }
     else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
         spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
@@ -1130,27 +1177,38 @@ void Game::onRedZoneClick(Zone *clickedRedZone) {
                 std::cout << *x->m_pCard << std::endl;
         }
         spellTrapZone.refresh();
+
+        // Get the spell/trap's position
+        QString spellTrapPosition;
+        if(card->getCardType() == CardType::SPELL_CARD)
+        {
+            SpellCard *pSpellCard = static_cast<SpellCard *>(card);
+            spellTrapPosition = pSpellCard->spellTrapPositionEnumToQString.at(pSpellCard->getSpellPosition());
+        }
+        else
+        {
+            TrapCard *pTrapCard = static_cast<TrapCard *>(card);
+            spellTrapPosition = pTrapCard->spellTrapPositionEnumToQString.at(pTrapCard->getTrapPosition());
+        }
+
+        // Place the card on the field
+        card->move(clickedRedZone->m_x, clickedRedZone->m_y);
+
+        QEventLoop blockingLoop;
+        connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
+        QByteArray buffer;
+        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+        outDataStream.setVersion(QDataStream::Qt_5_15);
+
+        qint32 zoneNumber = 3;
+        outDataStream << QString("FIELD_PLACEMENT")
+                      << QString::fromStdString(card->getCardName())
+                      << QString::fromStdString(card->getCardTypeString())
+                      << zoneNumber
+                      << spellTrapPosition;
+        sendDataToServer(buffer);
+        blockingLoop.exec();
     }
-
-    // FIXME: For some reason, when card is in the zone and we go fullscreen, right border of the zone goes under the card
-    card->move(clickedRedZone->m_x, clickedRedZone->m_y);
-
-
-    // Testing serialization
-    QByteArray buffer;
-    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-    outDataStream.setVersion(QDataStream::Qt_5_15);
-
-
-    // zoneNumber is a placeholder for the number of the zone in which the card was placed
-    // Later,  we will have a method for getting this
-    qint32 zoneNumber = 3;
-    outDataStream << QString("FIELD_PLACEMENT") // header, so that server knows what data to expect after it
-                  << QString::fromStdString(card->getCardName()) // We only send card's name, server will pass it to the other client and then that client will construct the card
-                  << QString::fromStdString(card->getCardTypeString())
-                  << zoneNumber;
-
-    sendDataToServer(buffer);
 }
 
 void Game::onGreenZoneClick(Zone *clickedGreenZone) {

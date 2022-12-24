@@ -49,12 +49,6 @@ enum class MonsterAttribute
     WIND
 };
 
-enum class Position{
-    ATTACK,
-    DEFENSE,
-    NONE
-};
-
 
 
 
@@ -63,7 +57,7 @@ class MonsterCard : public Card
 public:
 
     MonsterCard( const std::string &cardName,int attackPoints, int defensePoints, int level, MonsterType type,
-                 MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack,
+                 MonsterKind kind, MonsterAttribute attribute,bool active,MonsterPosition position,bool alreadyAttack,
                  CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool summonedThisTurn = false);
     virtual ~MonsterCard();
 
@@ -76,7 +70,7 @@ public:
     MonsterAttribute getAttribute() const;
     std::string getAttributeString() const;
     int getLevel() const;
-    Position getPosition() const;
+    MonsterPosition getPosition() const;
 
     void setAttackPoints(int newAttackPoints);
     void setDefensePoints(int newDefensePoints);
@@ -90,13 +84,11 @@ public:
     void increaseDefensePoints(int points);
     void muliplyDefensePoints(int coef);
 
-    bool normalSummon(Position position);
-    bool specialSummon(Position position);
+    bool normalSummon(MonsterPosition position);
+    bool specialSummon(MonsterPosition position);
 
 
     void setCardMenu() override;
-
-    static const std::map<Position, std::string> positionEnumToString;
 
 protected:
     int attackPoints;
@@ -106,7 +98,7 @@ protected:
     MonsterAttribute attribute;
     int level;
     bool active;
-    Position position;
+    MonsterPosition position;
     bool alreadyAttack;
     bool summonedThisTurn;
 

@@ -1,10 +1,11 @@
 #include "headers/Trapcard.h"
 
-TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,bool active,bool setThisTurn)
+TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, SpellTrapPosition position, const std::string &cardDescription,bool active,bool setThisTurn)
     : Card(cardName, cardType, cardLocation, cardDescription)
     ,trapType(type)
     ,setThisTurn(setThisTurn)
     ,active(active)
+    ,position(position)
 {}
 
 
@@ -25,6 +26,11 @@ std::string TrapCard::getTrapTypeString() const
     default:
         return "error:unknown trap type";
     }
+}
+
+SpellTrapPosition TrapCard::getTrapPosition() const
+{
+    return position;
 }
 
 void TrapCard::activateTrap()
