@@ -72,6 +72,7 @@ private:
     static const std::map<QString, DESERIALIZATION_MEMBER_FUNCTION_POINTER> m_deserializationMap;
 
     bool sendDataToServer(QByteArray &data);
+    void notifyServerThatDeserializationHasFinished();
     QByteArray QInt32ToQByteArray(qint32 source); // We use qint32 to ensure the number has 4 bytes
 
     void deserializeWelcomeMessage(QDataStream &deserializationStream);
