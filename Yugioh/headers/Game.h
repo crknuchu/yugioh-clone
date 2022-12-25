@@ -84,6 +84,7 @@ private:
     void deserializeDeserializationFinished(QDataStream &deserializationStream);
     void deserializeGamePhaseChanged(QDataStream &deserializationStream);
     void deserializeNewTurn(QDataStream &deserializationStream);
+    void deserializeEffectActivated(QDataStream &deserializationFinished);
 
 private slots:
     void onGameStart(qint32 firstToPlay, qint32 clientID);

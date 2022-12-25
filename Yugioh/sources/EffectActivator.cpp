@@ -64,7 +64,7 @@ void EffectActivator::activateLordOfD() {
     returnToHand(*monsterCard2, GamePhases::END_PHASE, *GameExternVars::pCurrentPlayer);
 
 
-    // changeLifePointsBy test
+//    // changeLifePointsBy test
     changeLifePointsBy(-500, *GameExternVars::pCurrentPlayer);
 
 }

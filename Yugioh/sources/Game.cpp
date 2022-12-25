@@ -37,7 +37,8 @@ const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_d
     {"LP_CHANGE",                                       &Game::deserializeLpChange},
     {"DESERIALIZATION_FINISHED",                        &Game::deserializeDeserializationFinished},
     {"GAMEPHASE_CHANGED",                               &Game::deserializeGamePhaseChanged},
-    {"NEW_TURN",                                        &Game::deserializeNewTurn}
+    {"NEW_TURN",                                        &Game::deserializeNewTurn},
+    {"EFFECT_ACTIVATED",                                &Game::deserializeEffectActivated}
 };
 
 
@@ -301,17 +302,17 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID) {
     // Set the m_clientID to clientID so we always know who we are
     m_clientID = clientID;
 
-  // Set up pointers to current and other player
-  if (firstToPlay == 1)
-  {
+    // Set up pointers to current and other player
+    if (firstToPlay == 1)
+    {
       GameExternVars::pCurrentPlayer = &m_player1;
       GameExternVars::pOtherPlayer = &m_player2;
-  }
-  else
-  {
+    }
+    else
+    {
       GameExternVars::pCurrentPlayer = &m_player2;
       GameExternVars::pOtherPlayer = &m_player1;
-  }
+    }
 
     GameExternVars::currentTurnClientID = firstToPlay;
 
@@ -319,12 +320,14 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID) {
 
   // Disable UI for second player until its his turn.
     // TODO: Move this into a separate function since its used in onTurnEnd too.
-    if(m_clientID != GameExternVars::currentTurnClientID)
+    if(m_clientID != firstToPlay)
     {
       this->ui->btnBattlePhase->setEnabled(false);
       this->ui->btnEndPhase->setEnabled(false);
 
       // TODO: Disable clicks on the cards if its possible, or at least disable card menu for every card that this player has.
+        // For loops with pCurrentPlayer and pOtherPlayer's hand and disable each card's menu
+            // Important: don't forget to reenable it in onTurnEnd or switchPlayers
     }
 
 
@@ -395,7 +398,7 @@ bool Game::sendDataToServer(QByteArray &data)
         // First we send the data's size
         m_pTcpSocket->write(QInt32ToQByteArray(data.size()));
         // Then we write the actual data
-        m_pTcpSocket->write(data); // data.right(data.size())?
+        m_pTcpSocket->write(data);
         return m_pTcpSocket->waitForBytesWritten();
     }
     else
@@ -438,11 +441,9 @@ void Game::deserializeStartGame(QDataStream &deserializationStream)
 
 void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
 {
-    /* If header was FIELD_PLACEMENT, we will get:
-     * 1) Card's name
-     * 2) Card's type
-     * 3) Number of the zone that the card was placed in
-     */
+    // TODO: There are still things here to be done, like reconstructing the cards and summoning them in correct zone and position
+
+
     QString cardName;
     QString cardType;
     qint32 zoneNumber;
@@ -657,6 +658,13 @@ void Game::deserializeLpChange(QDataStream &deserializationStream)
         GameExternVars::pOtherPlayer->setPlayerLifePoints(newLifePoints);
         ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
     }
+
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
+
+    outDataStream << QString::fromStdString("DESERIALIZATION_FINISHED");
+    sendDataToServer(buffer);
 }
 
 void Game::deserializeDeserializationFinished(QDataStream &deserializationStream)
@@ -706,6 +714,32 @@ void Game::deserializeNewTurn(QDataStream &deserializationStream)
     ui->btnBattlePhase->setEnabled(true);
     ui->btnMainPhase2->setEnabled(false);
     ui->btnEndPhase->setEnabled(true);
+
+    // Notify the server that deserialization is finished
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
+    outDataStream << QString::fromStdString("DESERIALIZATION_FINISHED");
+    sendDataToServer(buffer);
+}
+
+void Game::deserializeEffectActivated(QDataStream &deserializationStream)
+{
+    // Get the name of the opponent's card that activated the effect
+    QString cardName;
+    deserializationStream >> cardName;
+
+
+    /* TODO: We can't just create an EffectActivator here and use activateEffect(cardName). There are problems with that:
+     * 1) What if the effect includes some kind of user input? We can't let this client act like he activated the effect
+     * 2) ...
+     *
+     * It's probably better if we have the consequences of the effect activations sent here and then just apply them.
+     */
+
+    std::cout << "PLACEHOLDER COUT: The opponent has activated " << cardName.toStdString() << "'s effect." << std::endl;
+
+
 
     // Notify the server that deserialization is finished
     QByteArray buffer;
@@ -1042,7 +1076,22 @@ void Game::onActivateButtonClick(const Card &card)
     connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
 
     // Activate the card's effect
+    // We need to wait for DESERIALIZATION_FINISHED header in case some of the effects trigger something like a LP_CHANGE or similar actions.
+    QEventLoop blockingLoop;
+    connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
     effectActivator.activateEffect(cardName);
+    blockingLoop.exec();
+
+
+    // Notify the server / other client
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
+    outDataStream << QString::fromStdString("EFFECT_ACTIVATED")
+                  << QString::fromStdString(cardName); // Who activated the effect
+    sendDataToServer(buffer);
+
+
 
 }
 
@@ -1134,9 +1183,7 @@ void Game::onSetButtonClick(const Card &card)
 void Game::onRedZoneClick(Zone *clickedRedZone) {
     Card* card = GameExternVars::pCardToBePlacedOnField;
 
-
-
-    // TODO: Move this into separate functions.
+    // TODO: Move these into separate functions.
     if(card->getCardType() == CardType::MONSTER_CARD) {
         monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
