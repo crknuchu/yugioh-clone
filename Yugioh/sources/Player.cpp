@@ -177,7 +177,7 @@ void Player::sendToGraveyard(Card &card){
         position = 0; //can't put this in for loop bcs of auto iterator
         for (auto it = this->field.monsterZone.m_monsterZone.cbegin(); it != this->field.monsterZone.m_monsterZone.cend(); it++, position++){
             if ((*it)->m_pCard == &card){
-                this->field.monsterZone.m_monsterZone.erase(it);//delete from vector of cards
+//                this->field.monsterZone.m_monsterZone.erase(it);//delete from vector of cards
                 this->field.monsterZone.removeFromMonsterZone(position);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
@@ -187,10 +187,10 @@ void Player::sendToGraveyard(Card &card){
         position = 0;
         for (auto it = this->field.spellTrapZone.m_spellTrapZone.cbegin(); it != this->field.spellTrapZone.m_spellTrapZone.cend(); it++, position++){
             if ((*it)->m_pCard == &card){
-                this->field.spellTrapZone.m_spellTrapZone.erase(it);
+//                this->field.spellTrapZone.m_spellTrapZone.erase(it);
                 this->field.spellTrapZone.removeFromSpellTrapZone(position);
                 this->field.graveyard->sendToGraveyard(card);
-                std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
+                std::cout << "u playeruu" << std::endl;
                 return;
             }
         }

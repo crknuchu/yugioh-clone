@@ -111,6 +111,7 @@ private slots:
     void onGamePhaseChange(const GamePhases &newGamePhase);
     void onTurnEnd();
     void onCardAddedToScene(Card &);
+    void onActivateFromHand(Card &);
 
 
     // Slots for Card signal handling
@@ -140,6 +141,7 @@ signals:
     void turnEnded();
     void cardAddedToScene(Card &targetCard);
     void gameEndedAfterBattle(Player &loser);
+    void activateFromHand(Card &activatedCard);
 };
 
 

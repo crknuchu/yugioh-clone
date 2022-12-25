@@ -22,6 +22,13 @@ Player *GameExternVars::pOtherPlayer = nullptr;
 Card *GameExternVars::pCardToBePlacedOnField = nullptr;
 Card *GameExternVars::pAttackingMonster = nullptr;
 
+void delay()
+{
+    QTime dieTime= QTime::currentTime().addSecs(1);
+    while (QTime::currentTime() < dieTime)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+}
+
 // QMainWindow != Ui::MainWindow
 
 // Class definitions:
@@ -253,39 +260,40 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
 
 
   //just a placeholder code for hand
-  MonsterCard* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
+  MonsterCard* testCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, Position::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::HAND,
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/blue_eyes.jpg"
                                               );
-  MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
+  SpellCard* testCard2 = new SpellCard(SpellType::NORMAL_SPELL, "Dark Hole",
+                                             CardType::SPELL_CARD, CardLocation::HAND,
+                                             " Destroy all monsters on the field. ", ":/resources/pictures/DarkHole.jpg", true);
+
+  MonsterCard* testCard3 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, Position::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::HAND,
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/blue_eyes.jpg"
                                               );
-  MonsterCard* monsterCard3 = new MonsterCard("Lord of D", 3000, 2500, 4,
-                                              MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                              MonsterAttribute::DARK, false, Position::ATTACK, false,
-                                              CardType::MONSTER_CARD, CardLocation::HAND,
-                                              "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/blue_eyes.jpg"
-                                              );
-  ui->graphicsView->scene()->addWidget(monsterCard1->cardMenu);
-  ui->graphicsView->scene()->addWidget(monsterCard2->cardMenu);
-  ui->graphicsView->scene()->addItem(monsterCard1);
-  emit cardAddedToScene(*monsterCard1);
-  ui->graphicsView->scene()->addItem(monsterCard2);
-  emit cardAddedToScene(*monsterCard2);
-  ui->graphicsView->scene()->addItem(monsterCard3);
-  emit cardAddedToScene(*monsterCard3);
+  ui->graphicsView->scene()->addWidget(testCard1->cardMenu);
+  testCard1->cardMenu->setVisible(false);
+  ui->graphicsView->scene()->addWidget(testCard2->cardMenu);
+  testCard2->cardMenu->setVisible(false);
+  ui->graphicsView->scene()->addWidget(testCard3->cardMenu);
+  testCard3->cardMenu->setVisible(false);
+  ui->graphicsView->scene()->addItem(testCard1);
+  emit cardAddedToScene(*testCard1);
+  ui->graphicsView->scene()->addItem(testCard2);
+  emit cardAddedToScene(*testCard2);
+  ui->graphicsView->scene()->addItem(testCard3);
+  emit cardAddedToScene(*testCard3);
   GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight);
-  GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(monsterCard3, 2); //testing purposes
-  GameExternVars::pCurrentPlayer->m_hand.addToHand(*monsterCard1);
-  GameExternVars::pCurrentPlayer->m_hand.addToHand(*monsterCard2);
+  GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard3, 2); //testing purposes
+  GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard1);
+  GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
 }
 
 
@@ -444,7 +452,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         ui->labelImage->setAlignment(Qt::AlignCenter);
 
         // TODO: getEffect()
-    //    ui->textBrowserEffect->setText(monsterCard1->getEffect());
+    //    ui->textBrowserEffect->setText(testCard1->getEffect());
 
         QPixmap pix;
         pix.load(":/resources/blue_eyes.jpg");
@@ -559,12 +567,17 @@ void Game::onCardSelect(Card *card)
         onAttackButtonClick(*card);
     });
 
+    connect(this, &Game::activateFromHand, this, &Game::onActivateFromHand);
 
     // FIXME: After menu is closed once, 2 clicks are needed to get it to be shown again
     card->cardMenu->isVisible() == false ? card->cardMenu->show() : card->cardMenu->hide();
 }
 
-
+void Game::onActivateFromHand(Card &activatedCard) {
+    //its only spell card for now that can be activated from hand
+    GameExternVars::pCardToBePlacedOnField = &activatedCard;
+    GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
+}
 
 // Slots for card menu UI
 void Game::onActivateButtonClick(Card &card)
@@ -573,17 +586,24 @@ void Game::onActivateButtonClick(Card &card)
 
     // Idea: Map of function pointers for effects
     const std::string cardName = card.getCardName();
+    if(card.getCardLocation() == CardLocation::HAND) {
+        emit activateFromHand(card);
+    }
+    else {
+        // Effect activator is needed for effect handling
+        EffectActivator effectActivator(card);
 
-    // Effect activator is needed for effect handling
-    EffectActivator effectActivator(card);
+        // We connect every signal from EffectActivator to our slots in Game:
+        connect(&effectActivator, &EffectActivator::healthPointsChanged, this, &Game::onHealthPointsChange);
+        connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
 
-    // We connect every signal from EffectActivator to our slots in Game:
-    connect(&effectActivator, &EffectActivator::healthPointsChanged, this, &Game::onHealthPointsChange);
-    connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
+        // Activate the card's effect
+        effectActivator.activateEffect(cardName);
 
-    // Activate the card's effect
-    effectActivator.activateEffect(cardName);
-
+        //if(shouldBeSentToGraveyard) this needs to be implemented
+        delay();
+        GameExternVars::pCurrentPlayer->sendToGraveyard(card);
+    }
 }
 
 void Game::onSummonButtonClick(Card &card) {
@@ -651,24 +671,17 @@ void Game::onRedZoneClick(Zone *clickedRedZone) {
     if(card->getCardType() == CardType::MONSTER_CARD) {
         GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
-        for(auto x : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
-            if(!x->isEmpty())
-                std::cout << *x->m_pCard << std::endl;
-        }
         GameExternVars::pCurrentPlayer->field.monsterZone.refresh();
     }
     else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
         GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
-        for(auto x : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
-            if(!x->isEmpty())
-                std::cout << *x->m_pCard << std::endl;
-        }
         GameExternVars::pCurrentPlayer->field.spellTrapZone.refresh();
+        card->cardMenu->activateButton->click(); //testing purposes
     }
 
     // FIXME: For some reason, when card is in the zone and we go fullscreen, right border of the zone goes under the card
-    card->move(clickedRedZone->m_x, clickedRedZone->m_y);
+//    card->move(clickedRedZone->m_x, clickedRedZone->m_y);
 }
 
 void Game::onGreenZoneClick(Zone *clickedGreenZone) {
