@@ -90,7 +90,7 @@ void MonsterZone::colorOccupiedZones() {
 
 void MonsterZone::refresh() {
     for(Zone *zone : m_monsterZone) {
-        zone->setBrush(Qt::NoBrush);
+        zone->setBrush(QColor(0,0,200,30));
         zone->update();
     }
 }
