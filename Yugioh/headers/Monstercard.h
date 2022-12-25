@@ -66,6 +66,8 @@ public:
     MonsterCard( const std::string &cardName,int attackPoints, int defensePoints, int level, MonsterType type,
                  MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack,
                  CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool summonedThisTurn = false);
+
+    MonsterCard(MonsterCard&);
     virtual ~MonsterCard();
 
     int getAttackPoints() const;

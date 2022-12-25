@@ -278,20 +278,20 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/blue_eyes.jpg"
                                               );
-  ui->graphicsView->scene()->addWidget(testCard1->cardMenu);
-  testCard1->cardMenu->setVisible(false);
-  ui->graphicsView->scene()->addWidget(testCard2->cardMenu);
-  testCard2->cardMenu->setVisible(false);
-  ui->graphicsView->scene()->addWidget(testCard3->cardMenu);
-  testCard3->cardMenu->setVisible(false);
-  ui->graphicsView->scene()->addItem(testCard1);
-  emit cardAddedToScene(*testCard1);
-  ui->graphicsView->scene()->addItem(testCard2);
-  emit cardAddedToScene(*testCard2);
-  ui->graphicsView->scene()->addItem(testCard3);
-  emit cardAddedToScene(*testCard3);
+//  ui->graphicsView->scene()->addWidget(testCard1->cardMenu);
+//  testCard1->cardMenu->setVisible(false);e
+//  ui->graphicsView->scene()->addWidget(testCard2->cardMenu);
+//  testCard2->cardMenu->setVisible(false);
+//  ui->graphicsView->scene()->addWidget(testCard3->cardMenu);
+//  testCard3->cardMenu->setVisible(false);
+//  ui->graphicsView->scene()->addItem(testCard1);
+  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard1);
+//  ui->graphicsView->scene()->addItem(testCard2);
+  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard2);
+//  ui->graphicsView->scene()->addItem(testCard3);
+  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard3);
   GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight);
-  GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard3, 2); //testing purposes
+  GameExternVars::pOtherPlayer->field.monsterZone.placeInMonsterZone(testCard3, 2); //testing purposes
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard1);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
 }
@@ -303,7 +303,8 @@ void Game::setupConnections() {
     connect(this, &Game::mainWindowResized, this, &Game::onMainWindowResize);
     connect(this, &Game::gamePhaseChanged, this, &Game::onGamePhaseChange);
     connect(this, &Game::turnEnded, this, &Game::onTurnEnd);
-    connect(this, &Game::cardAddedToScene, this, &Game::onCardAddedToScene);
+    connect(&m_player1, &Player::cardAddedToScene, this, &Game::onCardAddedToScene);
+    connect(&m_player2, &Player::cardAddedToScene, this, &Game::onCardAddedToScene);
     connect(this, &Game::gameEndedAfterBattle, this, &Game::onGameEnd); // Same slot for both game endings (one in EffectActivator and one here)
 
     // Buttons
@@ -704,6 +705,20 @@ void Game::onCardAddedToScene(Card &card)
     connect(&card, &Card::cardSelected, this, &Game::onCardSelect);
     connect(&card, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
     connect(&card, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
+
+    //Needed to show a card
+    ui->graphicsView->scene()->addWidget(card.cardMenu);
+    card.cardMenu->setVisible(false);
+    if(card.scene()) {
+        if(card.getCardType() == CardType::MONSTER_CARD) {
+            MonsterCard* monsterCard = dynamic_cast<MonsterCard*>(&card);
+            MonsterCard* cardCopy = new MonsterCard(*monsterCard);
+            std::cout << "hej jel sam ovde" << std::endl;
+            ui->graphicsView->scene()->addItem(cardCopy);
+        }
+    }
+    else
+     ui->graphicsView->scene()->addItem(&card);
 
     // By default we don't want to show card info unless the card is hovered
     ui->labelImage->setVisible(false);

@@ -7,6 +7,7 @@
 #include <ostream>
 #include <istream>
 #include <vector>
+#include <QObject>
 #include "Monstercard.h"
 #include "Monstercard.h"
 //#include "SpellTrapZone.h"
@@ -18,12 +19,13 @@
 //#include "SpellTrapZone.h"
 #include "Field.h"
 
-class Player{ 
+class Player : public QObject{
 
+    Q_OBJECT
 public:
   Player();
   Player(Player &);
-  ~Player() {};
+  ~Player(){};
   Player operator=(Player &);
   Player(std::string playerName,int points = 8000);
   //DRAW PHASE
@@ -87,6 +89,9 @@ public:
   void setDeck(Deck &);
   Hand m_hand;
   Field field;
+
+signals:
+  void cardAddedToScene(Card &);
 private:
     std::string m_name;
     unsigned m_points;

@@ -24,18 +24,17 @@ int main(int argc,char **argv)
   m.showFullScreen();
 
   Player player1("Nikola");
-  BotPlayer player2("Bot");
+//  BotPlayer player2("Bot");
+  Player player2("Milan");
   std::vector<Card*> cards = s.getCards();
   Deck d = Deck(cards);
 //  player1.drawCards(3);
     //MainMenu m;
       //m.show();
   player1.setDeck(d);
+  player2.setDeck(d);
   Game game(player1, player2);
 
-  player1.drawCards(1);
-  player1.drawCards(1);
-  player1.drawCards(1);
   game.showFullScreen();
 
   return app.exec();

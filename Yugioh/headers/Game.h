@@ -139,9 +139,8 @@ signals:
     void mainWindowResized(QResizeEvent *);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
-    void cardAddedToScene(Card &targetCard);
     void gameEndedAfterBattle(Player &loser);
-    void activateFromHand(Card &activatedCard);
+    void activateFromHand(Card &);
 };
 
 
