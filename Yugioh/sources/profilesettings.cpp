@@ -76,6 +76,14 @@ void profileSettings::setUpConnections(){
     connect(ui->cancel, &QPushButton::clicked, this, &profileSettings::undoChanges);
 }
 
+avatars profileSettings::getAvatar(){
+    return currentAvatar;
+}
+
+sleeves profileSettings::getSleeve(){
+    return currentSleeve;
+}
+
 
 profileSettings::~profileSettings()
 {

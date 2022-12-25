@@ -27,6 +27,8 @@ private slots:
 
     void on_btnQuit_clicked();
 
+    void on_btnProfileSettings_clicked();
+
     void on_btnGameSettings_clicked();
 
     void updateValues();

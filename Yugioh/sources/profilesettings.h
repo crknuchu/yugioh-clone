@@ -30,7 +30,8 @@ class profileSettings : public QWidget
 public:
     explicit profileSettings(QWidget *parent = nullptr);
     ~profileSettings();
-
+    avatars getAvatar();
+    sleeves getSleeve();
 private:
     void setUpConnections();
     QGraphicsScene *scene;

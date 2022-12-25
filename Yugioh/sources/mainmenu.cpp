@@ -6,7 +6,8 @@
 #include <QDir>
 #include <QScreen>
 #include <QMediaPlayer>
-
+//#include "headers/profilesettings.h"
+#include "sources/profilesettings.h"
 
 MainMenu::MainMenu(QWidget *parent) :
     QMainWindow(parent),
@@ -26,8 +27,6 @@ MainMenu::MainMenu(QWidget *parent) :
 //    QMediaPlayer * music = new QMediaPlayer();
 //    music->setSaource(QUrl("qrc:/resources/sounds/illusion.mp3")); // in qt5 is setMedia()
 //    music->play();
-
-
 }
 
 MainMenu::~MainMenu()
@@ -49,6 +48,14 @@ void MainMenu::on_btnStart_clicked()
 void MainMenu::on_btnQuit_clicked()
 {
     close();
+}
+
+void MainMenu::on_btnProfileSettings_clicked(){
+
+    profileSettings *p = new profileSettings();
+    p->show();
+
+    //need to update values after closing/saving
 }
 
 void MainMenu::on_btnGameSettings_clicked()
