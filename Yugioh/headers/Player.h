@@ -31,27 +31,15 @@ public:
   void drawCards();
   // ------------------------------------------
 
-  //STANDBYPHASE
-  void activationSpellTrapCard(Card &); // need emit signal that send reference to card which needs to be activated
 
-  // ----------------------------------------------------------------------------------------------------------------
-  //THESE FUNCTIONS DONT NEED TO BE IMPLEMENTED - FUNCTION ABOVE WILL DO THAT EFFECT INSTEAD, JUST BEFORE ACTIVATION|
-  // NEED TO CHECK GAME PHASE                                                                                       |
-  //   void automaticallyActivationSBPhase(); // not necessary, function above will do the same thing               |
-  //   void automaticallyActivationMPhase(); //                                                                     |
-  // ----------------------------------------------------------------------------------------------------------------
-
-  //MAIN PHASE 1 
   void setCardPosition(); // don't need to do it
   void putCardOnField(Card &); //same as above
   // ------------------------------------------
 
   //BATTLE PHASE
   int checkOpponentGround(Player &opponent);
-  // std::vector<MonsterCard *> tableMonsterCards(const Player &opponent); //check vector size before attack
-  void attackOpponent(MonsterCard a, Player &opponent);
   void sendToGraveyard(Card &);
-  void sendToGraveyard(Card &, Zone &);
+  void sendToGraveyard(Card &, Zone *);
 
   void fromGraveyardToHand(Card &);
   void fromGraveyardToField(Card &, int);
@@ -59,18 +47,6 @@ public:
 
 
   bool isCardInGrave(Card &c);
-  // -----------------------------------------
-
-  //MAIN PHASE 2 -> same as MAIN PHASE 1 + XYZ Summon
-  void XYZSummon();
-  // -----------------------------------------
-
-  //END PHASE
-
-  //TODO
-  // add missing methods
-  
-  //
 
 
   std::string getPlayerName() const;

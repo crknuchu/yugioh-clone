@@ -14,17 +14,7 @@ void Graveyard::setGraveyard(float x, float y)
     setBrush(QColor(211,211,211,30));
 }
 
-//NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
-Graveyard Graveyard::operator=(Graveyard &g){
-    return g;
-}
-//NOT A PERMAMENT SOLUTION - JUST IN ORDRER FOR COMPILATION
-Graveyard::Graveyard(Graveyard &g){
-    this->m_height = g.m_height;
-    this->m_width = g.m_width;
-    this->m_x = g.m_x;
-    this->m_y = g.m_y;
-}
+
 
 Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
     :CardList(initialGraveyard)

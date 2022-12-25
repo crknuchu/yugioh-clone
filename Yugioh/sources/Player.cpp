@@ -73,23 +73,15 @@ void Player::drawCards(){
 
 void Player::fromGraveyardToHand(Card &card){
 
-    int cardInGrave = 0; //flag
-    for (auto it = this->field.graveyard->cbegin(); it != this->field.graveyard->cend(); it++)
+
+    for (auto it = this->field.graveyard->getGraveyard().cbegin(); it != this->field.graveyard->getGraveyard().cend(); it++)
     {
         if ((*it) == &card) {
-            cardInGrave = 1;
-            this->field.graveyard->erase(it);
+            this->field.graveyard->removeFromGraveyard(card);
             this->m_hand.addToHand(card);
             return;
         }
     }
-
-    if (cardInGrave == 0)
-    {
-        std::cerr<<card.getCardName() << " card is not in grave, can't draw it back"<<std::endl;
-        return;
-    }
-
 
 }
 
@@ -113,12 +105,12 @@ void Player::fromGraveyardToField(Card &card, int zoneNumber)
         this->field.graveyard->removeFromGraveyard(card); // this function return removed card,
                                                                 // but in this case we dont need it
         //put it back in filed zone
-        if (dynamic_cast<MonsterCard *>(&card) != nullptr)
+        if (card.getCardType() == CardType::MONSTER_CARD)
         {
             this->field.monsterZone.colorFreeZones();
             this->field.monsterZone.placeInMonsterZone(&card, zoneNumber);
         }
-        else if (dynamic_cast<SpellTrapZone *>(&card) != nullptr)
+        else if (card.getCardType() == CardType::SPELL_CARD || card.getCardType() == CardType::TRAP_CARD)
         {
             this->field.spellTrapZone.colorFreeZones();
             this->field.spellTrapZone.placeInSpellTrapZone(&card, zoneNumber);
@@ -133,71 +125,29 @@ void Player::fromGraveyardToField(Card &card, int zoneNumber)
 
 
 
-// STANDBY PHASE
-void Player::activationSpellTrapCard(Card &card){
-    //TODO
-
-    std::cout<<card.getCardName() << " is activated " << std::endl;
-    SpellCard *tmp = dynamic_cast<SpellCard *>(&card);
-    if (tmp != nullptr){
-        // effectActivator function() for spell card;
-        delete tmp;
-        return;
-    }
-    else {
-        TrapCard *tmp = dynamic_cast<TrapCard*>(&card);
-        tmp = dynamic_cast<TrapCard *>(&card);
-        if (tmp != nullptr){
-            //effectActivator funciton() for trap card;
-        }
-        delete tmp;
-    }
-}
-void Player::sendToGraveyard(Card &card, Zone &zone)
+void Player::sendToGraveyard(Card &card, Zone *zone)
 {
-      zone.m_pCard = nullptr; //free space for that zone, card is sent to graveyard ===> zone.isEmpty() returns true after
+      zone->m_pCard = nullptr; //free space for that zone, card is sent to graveyard ===> zone.isEmpty() returns true after
       this->field.graveyard->sendToGraveyard(card);
 
 }
 
 void Player::sendToGraveyard(Card &card){
     //first need to be removed from field
-    int position;
     try {
         //removing from deck, not sure if is it legal move
-        for (auto it = this->field.deck.cbegin(); it != this->field.deck.cend(); it++){
+        for (auto it = this->field.deck.getDeck().begin(); it != this->field.deck.getDeck().end(); it++){
             if ((*it) == &card){
-                this->field.deck.erase(it);
+                this->field.deck.getDeck().erase(it);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->getCardName()<<" successfully removed from deck"<<std::endl;
                 return;
             }
-        }
-
-        position = 0; //can't put this in for loop bcs of auto iterator
-        for (auto it = this->field.monsterZone.m_monsterZone.cbegin(); it != this->field.monsterZone.m_monsterZone.cend(); it++, position++){
-            if ((*it)->m_pCard == &card){
-                this->field.monsterZone.m_monsterZone.erase(it);//delete from vector of cards
-                this->field.monsterZone.removeFromMonsterZone(position);
-                this->field.graveyard->sendToGraveyard(card);
-                std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
-                return;
-            }
-        }
-        position = 0;
-        for (auto it = this->field.spellTrapZone.m_spellTrapZone.cbegin(); it != this->field.spellTrapZone.m_spellTrapZone.cend(); it++, position++){
-            if ((*it)->m_pCard == &card){
-                this->field.spellTrapZone.m_spellTrapZone.erase(it);
-                this->field.spellTrapZone.removeFromSpellTrapZone(position);
-                this->field.graveyard->sendToGraveyard(card);
-                std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
-                return;
-            }
-        }
+        }  
 
         for (auto it = this->m_hand.cbegin(); it != this->m_hand.cend(); it++){
             if ((*it) == &card){
-               this->m_hand.erase(it);
+               this->m_hand.removeFromHand(card);
                this->field.graveyard->sendToGraveyard(card);
                std::cout<< (*it)->getCardName() << " succesfully removed from hand"<<std::endl;
                return;
@@ -228,23 +178,6 @@ int Player::checkOpponentGround(Player &opponent) {
        });
 }
 
-void Player::attackOpponent(MonsterCard a, Player &opponent){
-
-    GamePhases tmpPhase = GamePhaseExternVars::currentGamePhase;
-    if (tmpPhase == GamePhases::BATTLE_PHASE){
-        if (checkOpponentGround(opponent) == 0){
-            opponent.setPoints(a.getAttackPoints());
-        }
-        else {
-            std::cout<<"decide what card do u want to attack, attack points of " << a.getCardName()<< " is " << a.getAttackPoints() << std::endl;
-            //TODO
-            // implement opponent card for attack
-        }
-    }
-    else {
-        std::cerr<<"not a battle phase, can't attack now\n"<<std::endl;
-    }
-}
 
 // --------------------------------------------
 // Operator overloads:
@@ -258,27 +191,4 @@ std::ostream &operator<<(std::ostream &out, Player &p){
 
 
 
-
-
-//int Player::checkOpponentGround(Player &opponent) const {
-//    // return opponent.m_tableMonsterCards.getMonsterZone().size();
-//}
-//void Player::attackOpponent(Game &game, MonsterCard m, Player &opponent){
-
-//    // if (game.getGamePhase() == GamePhases::BATTLE_PHASE){
-//    //     if (m.getCardType() == CardType::MONSTER_CARD){
-//    //         if (0 == checkOpponentGround(opponent)){
-//    //             opponent.setPlayerLifePoints(m.getAttackPoints());
-//    //         }
-//    //     }
-//    //     else {
-//    //         //TODO
-//    //         //pick opponent card to fight()
-//    //     }
-//    // }
-//    // else {
-//    //     std::cerr<<"incompatibile game phase, can't attack at this moment"<<std::endl;
-//    // }
-
-//}
 
