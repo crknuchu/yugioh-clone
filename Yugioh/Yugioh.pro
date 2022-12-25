@@ -61,7 +61,7 @@ HEADERS += \
     headers/MonsterZone.h \
     headers/mainmenu.h \
     headers/Zone.h \
-    sources/BotPlayer.h \
+    headers/BotPlayer.h \
     headers/Serializer.h
 
 RESOURCES += \

@@ -140,7 +140,15 @@ void EffectActivator::activateAncientTelescope()
 
 void EffectActivator::activateDarkHole()
 {
+    for(Zone* zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
+        if(!zone->isEmpty())
+            GameExternVars::pCurrentPlayer->sendToGraveyard(*zone->m_pCard, zone);
+    }
 
+    for(Zone* zone : GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone) {
+        if(!zone->isEmpty())
+            GameExternVars::pOtherPlayer->sendToGraveyard(*zone->m_pCard, zone);
+    }
 }
 
 void EffectActivator::activateDeSpell()

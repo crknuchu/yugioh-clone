@@ -78,7 +78,7 @@ void Player::fromGraveyardToHand(Card &card){
     {
         if ((*it) == &card) {
             cardInGrave = 1;
-            this->field.graveyard->erase(it);
+//            this->field.graveyard->removeFromGraveyard(*it);
             this->m_hand.addToHand(card);
             return;
         }
@@ -153,9 +153,9 @@ void Player::activationSpellTrapCard(Card &card){
         delete tmp;
     }
 }
-void Player::sendToGraveyard(Card &card, Zone &zone)
+void Player::sendToGraveyard(Card &card, Zone* zone)
 {
-      zone.m_pCard = nullptr; //free space for that zone, card is sent to graveyard ===> zone.isEmpty() returns true after
+      zone->m_pCard = nullptr; //free space for that zone, card is sent to graveyard ===> zone.isEmpty() returns true after
       this->field.graveyard->sendToGraveyard(card);
 
 }
@@ -167,7 +167,7 @@ void Player::sendToGraveyard(Card &card){
         //removing from deck, not sure if is it legal move
         for (auto it = this->field.deck.cbegin(); it != this->field.deck.cend(); it++){
             if ((*it) == &card){
-                this->field.deck.erase(it);
+//                this->field.deck.erase(it);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->getCardName()<<" successfully removed from deck"<<std::endl;
                 return;
@@ -197,7 +197,7 @@ void Player::sendToGraveyard(Card &card){
 
         for (auto it = this->m_hand.cbegin(); it != this->m_hand.cend(); it++){
             if ((*it) == &card){
-               this->m_hand.erase(it);
+//               this->m_hand.erase(it);
                this->field.graveyard->sendToGraveyard(card);
                std::cout<< (*it)->getCardName() << " succesfully removed from hand"<<std::endl;
                return;
