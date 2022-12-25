@@ -108,3 +108,12 @@ float MonsterZone::getWidth() const
     return m_width;
 }
 
+float MonsterZone::size() const {
+    float size = 0;
+    for(Zone* zone : m_monsterZone) {
+        if(!zone->isEmpty())
+            size++;
+    }
+
+    return size;
+}

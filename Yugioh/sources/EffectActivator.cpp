@@ -28,6 +28,7 @@ const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> Eff
     {"Ancient Telescope",               &EffectActivator::activateAncientTelescope},
     {"Dark Hole",                       &EffectActivator::activateDarkHole},
     {"De-Spell",                        &EffectActivator::activateDeSpell},
+    {"Dian Keto the Cure Master",       &EffectActivator::activateDianKetoTheCureMaster},
     {"Fissure",                         &EffectActivator::activateFissure},
     {"Monster Reborn",                  &EffectActivator::activateMonsterReborn},
     {"Ookazi",                          &EffectActivator::activateOokazi},
@@ -156,6 +157,10 @@ void EffectActivator::activateDeSpell()
 
 }
 
+void EffectActivator::activateDianKetoTheCureMaster() {
+    changeHealthPointsBy(1000, *GameExternVars::pCurrentPlayer);
+}
+
 void EffectActivator::activateFissure()
 {
 
@@ -168,7 +173,7 @@ void EffectActivator::activateMonsterReborn()
 
 void EffectActivator::activateOokazi()
 {
-
+    changeHealthPointsBy(-800, *GameExternVars::pOtherPlayer);
 }
 
 void EffectActivator::activateRemoveTrap()

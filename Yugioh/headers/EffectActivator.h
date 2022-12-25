@@ -54,6 +54,7 @@ private:
     void activateAncientTelescope();
     void activateDarkHole();
     void activateDeSpell();
+    void activateDianKetoTheCureMaster();
     void activateFissure();
     void activateMonsterReborn();
     void activateOokazi();

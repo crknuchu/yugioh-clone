@@ -267,9 +267,9 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/blue_eyes.jpg"
                                               );
-  SpellCard* testCard2 = new SpellCard(SpellType::NORMAL_SPELL, "Dark Hole",
+  SpellCard* testCard2 = new SpellCard(SpellType::NORMAL_SPELL, "Dian Keto the Cure Master",
                                              CardType::SPELL_CARD, CardLocation::HAND,
-                                             " Destroy all monsters on the field. ", ":/resources/pictures/DarkHole.jpg", true);
+                                             "  Increase your Life Points by 1000 points.  ", ":/resources/pictures/DianKetotheCureMaster.jpg", true);
 
   MonsterCard* testCard3 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
