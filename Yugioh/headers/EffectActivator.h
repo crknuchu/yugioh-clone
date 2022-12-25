@@ -48,6 +48,7 @@ private:
     void activateHaneHane();
 
     // Spell card effect activations:
+    void activateCardDestruction();
     void activateDarkEnergy();
     void activateInvigoration();
     void activateSogen();

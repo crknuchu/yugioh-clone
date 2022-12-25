@@ -52,6 +52,7 @@ public:
   void attackOpponent(MonsterCard a, Player &opponent);
   void sendToGraveyard(Card &);
   void sendToGraveyard(Card &, Zone*);
+  void discard(Card&);
 
   void fromGraveyardToHand(Card &);
   void fromGraveyardToField(Card &, int);

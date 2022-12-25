@@ -31,3 +31,7 @@ Card* Hand::removeFromHand(Card &card) {
     m_cardList.erase(it);
     return &card;
 }
+
+float Hand::size() const {
+    return m_cardList.size();
+}

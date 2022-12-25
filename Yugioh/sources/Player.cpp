@@ -190,7 +190,6 @@ void Player::sendToGraveyard(Card &card){
 //                this->field.spellTrapZone.m_spellTrapZone.erase(it);
                 this->field.spellTrapZone.removeFromSpellTrapZone(position);
                 this->field.graveyard->sendToGraveyard(card);
-                std::cout << "u playeruu" << std::endl;
                 return;
             }
         }
@@ -208,6 +207,11 @@ void Player::sendToGraveyard(Card &card){
        std::cerr<<card.getCardName()<<" can't be removed"<<std::endl;
 //        throw e;
     }
+}
+
+void Player::discard(Card &card) {
+    m_hand.removeFromHand(card);
+    field.graveyard->sendToGraveyard(card);
 }
 
 // --------------------------------------------

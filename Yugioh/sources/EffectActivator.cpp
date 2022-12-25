@@ -22,17 +22,18 @@ const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> Eff
     {"Hane-Hane",               &EffectActivator::activateHaneHane},
 
     // Spells
-    {"Dark Energy",                     &EffectActivator::activateDarkEnergy},
-    {"Invigoration",                    &EffectActivator::activateInvigoration},
-    {"Sogen",                           &EffectActivator::activateSogen},
     {"Ancient Telescope",               &EffectActivator::activateAncientTelescope},
+    {"Card Destruction",                &EffectActivator::activateCardDestruction},
+    {"Dark Energy",                     &EffectActivator::activateDarkEnergy},
     {"Dark Hole",                       &EffectActivator::activateDarkHole},
     {"De-Spell",                        &EffectActivator::activateDeSpell},
     {"Dian Keto the Cure Master",       &EffectActivator::activateDianKetoTheCureMaster},
     {"Fissure",                         &EffectActivator::activateFissure},
+    {"Invigoration",                    &EffectActivator::activateInvigoration},
     {"Monster Reborn",                  &EffectActivator::activateMonsterReborn},
     {"Ookazi",                          &EffectActivator::activateOokazi},
     {"Remove Trap",                     &EffectActivator::activateRemoveTrap},
+    {"Sogen",                           &EffectActivator::activateSogen},
     {"The Flute of Summoning Dragon",   &EffectActivator::activateTheFluteOfSummoningDragon},
     {"The Inexperienced Spy",           &EffectActivator::activateTheInexperiencedSpy},
 
@@ -137,6 +138,19 @@ void EffectActivator::activateSogen()
 void EffectActivator::activateAncientTelescope()
 {
 
+}
+
+void EffectActivator::activateCardDestruction() {
+    float opponentHandSize = GameExternVars::pOtherPlayer->m_hand.size();
+    for(Card* card : GameExternVars::pOtherPlayer->m_hand.getHand()) {
+        GameExternVars::pOtherPlayer->discard(*card);
+    }
+    GameExternVars::pOtherPlayer->drawCards(opponentHandSize);
+    float currentPlayerHandSize = GameExternVars::pCurrentPlayer->m_hand.size();
+    for(Card* card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
+        GameExternVars::pCurrentPlayer->discard(*card);
+    }
+    GameExternVars::pCurrentPlayer->drawCards(currentPlayerHandSize);
 }
 
 void EffectActivator::activateDarkHole()

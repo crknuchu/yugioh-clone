@@ -12,6 +12,7 @@ public:
     void setHandCoordinates(float, float);
     void addToHand(Card &card);
     Card* removeFromHand(Card &card);
+    float size() const;
 private:
     float m_x;
     float m_y;
