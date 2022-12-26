@@ -21,17 +21,11 @@ MonsterCard::~MonsterCard()
 
 }
 
-MonsterCard::MonsterCard(MonsterCard& monsterCard)
-    :Card(monsterCard.cardName, monsterCard.cardType, monsterCard.cardLocation, monsterCard.cardDescription,monsterCard.imagePath)    ,attackPoints(attackPoints)
-    ,defensePoints(monsterCard.defensePoints)
-    ,type(monsterCard.type)
-    ,monsterKind(monsterCard.monsterKind)
-    ,attribute(monsterCard.attribute)
-    ,level(monsterCard.level)
-    ,active(monsterCard.active)
-    ,position(monsterCard.position)
-    ,alreadyAttack(monsterCard.alreadyAttack)
-    ,summonedThisTurn(monsterCard.summonedThisTurn){}
+MonsterCard* MonsterCard::clone() {
+    return new MonsterCard(this->cardName, this->attackPoints, this->defensePoints, this->level, this->type,
+                           this->monsterKind, this->attribute, this->active, this->position, this->alreadyAttack,
+                           this->cardType, this->cardLocation, this->cardDescription, this->imagePath, this->summonedThisTurn);
+}
 
 const std::map<Position, std::string> MonsterCard::positionEnumToString{
     {Position::ATTACK,  "ATTACK"},

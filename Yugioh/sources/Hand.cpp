@@ -9,13 +9,19 @@ Hand::Hand(std::vector<Card*> &initialHand)
     :CardList(initialHand){}
 
 std::vector<Card*> Hand::getHand() const{
-    return m_cardList;
+    return this->m_cardList;
 }
 
-void Hand::setHandCoordinates(float windowWidth, float windowHeight) {
+void Hand::setHandCoordinates(float windowWidth, float windowHeight, int playerNumber) {
     float cardHeight = 150;
-    m_x = windowWidth / 4;
-    m_y = windowHeight - cardHeight - 50;
+    if(playerNumber == 1) {
+        m_x = windowWidth / 4;
+        m_y = windowHeight - cardHeight - 50;
+    }
+    else if(playerNumber == 2){
+        m_x = windowWidth / 4;
+        m_y = 0;
+    }
 }
 
 void Hand::addToHand(Card &card) {
@@ -27,11 +33,14 @@ void Hand::addToHand(Card &card) {
 }
 
 Card* Hand::removeFromHand(Card &card) {
+    float gap = 20;
     auto it = std::find(m_cardList.begin(), m_cardList.end(), &card);
+    m_x -= (card.getWidth() + gap);
+    std::cout << m_x << std::endl;
     m_cardList.erase(it);
     return &card;
 }
 
 float Hand::size() const {
-    return m_cardList.size();
+    return this->m_cardList.size();
 }

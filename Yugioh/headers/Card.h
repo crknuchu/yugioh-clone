@@ -46,6 +46,8 @@ public:
 
     virtual ~Card();
 
+    virtual Card* clone() = 0;
+
     const std::string &getCardName() const;
 
     std::string getCardTypeString() const;

@@ -15,6 +15,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsLayout>
+#include <QDebug>
 
 // Extern vars initialization:
 Player *GameExternVars::pCurrentPlayer = nullptr;
@@ -32,7 +33,7 @@ void delay()
 // QMainWindow != Ui::MainWindow
 
 // Class definitions:
-Game::Game(Player p1, Player p2,int lifePoints,int numberOfCards ,int timePerMove,QWidget *parent )
+Game::Game(Player p1, Player p2,int lifePoints,int numberOfCards ,int timePerMove, QWidget *parent )
     : QMainWindow(parent),
       lifePoints(lifePoints),
       numberOfCards(numberOfCards),
@@ -219,30 +220,18 @@ void Game::damagePlayer(Player &targetPlayer, int howMuch)
 }
 
 void Game::firstTurnSetup(float windowWidth, float windowHeight) {
-  // The game decides who will play first:
-  if (decideWhoPlaysFirst() == 1)
-  {
-      GameExternVars::pCurrentPlayer = &m_player1;
-      GameExternVars::pOtherPlayer = &m_player2;
-  }
-  else
-  {
-      GameExternVars::pCurrentPlayer = &m_player2;
-      GameExternVars::pOtherPlayer = &m_player1;
-  }
-
-  std::cout << "The first one to play is " << GameExternVars::pCurrentPlayer->getPlayerName() << std::endl;
 
   m_currentTurn = 1;
   GamePhaseExternVars::currentGamePhase = GamePhases::DRAW_PHASE;
   emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
-  // The first one gets 6 cards:
+  // The first one gets 6 cards:.
+  GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight, 1);
   GameExternVars::pCurrentPlayer->drawCards(6);
 
   // The other one gets 5 cards
+  GameExternVars::pOtherPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight, 2);
   GameExternVars::pOtherPlayer->drawCards(5);
-
 
 
   GamePhaseExternVars::currentGamePhase = GamePhases::STANDBY_PHASE;
@@ -267,9 +256,9 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/blue_eyes.jpg"
                                               );
-  SpellCard* testCard2 = new SpellCard(SpellType::NORMAL_SPELL, "Dian Keto the Cure Master",
+  SpellCard* testCard2 = new SpellCard(SpellType::NORMAL_SPELL, "Dark Hole",
                                              CardType::SPELL_CARD, CardLocation::HAND,
-                                             "  Increase your Life Points by 1000 points.  ", ":/resources/pictures/DianKetotheCureMaster.jpg", true);
+                                             "  Increase your Life Points by 1000 points.  ", ":/resources/pictures/DarkHole.jpg", true);
 
   MonsterCard* testCard3 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
@@ -278,20 +267,10 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/blue_eyes.jpg"
                                               );
-//  ui->graphicsView->scene()->addWidget(testCard1->cardMenu);
-//  testCard1->cardMenu->setVisible(false);e
-//  ui->graphicsView->scene()->addWidget(testCard2->cardMenu);
-//  testCard2->cardMenu->setVisible(false);
-//  ui->graphicsView->scene()->addWidget(testCard3->cardMenu);
-//  testCard3->cardMenu->setVisible(false);
-//  ui->graphicsView->scene()->addItem(testCard1);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard1);
-//  ui->graphicsView->scene()->addItem(testCard2);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard2);
-//  ui->graphicsView->scene()->addItem(testCard3);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard3);
-  GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight);
-  GameExternVars::pOtherPlayer->field.monsterZone.placeInMonsterZone(testCard3, 2); //testing purposes
+  GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard3, 2); //testing purposes
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard1);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
 }
@@ -455,12 +434,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         // TODO: getEffect()
     //    ui->textBrowserEffect->setText(testCard1->getEffect());
 
-        QPixmap pix;
-        pix.load(":/resources/blue_eyes.jpg");
-        pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
-        ui->labelImage->setPixmap(pix);
-
-
         // GraphicsView and GraphicsScene adjustments:
         this->setWindowTitle("Yu-Gi-Oh!");
         ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -487,39 +460,54 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         QBrush brush(QPalette::Window, background);
         ui->graphicsView->setBackgroundBrush(brush);
 
-        m_player1.field.setField(1, viewAndSceneWidth,m_windowHeight);
-        for(auto zone :    m_player1.field.monsterZone.m_monsterZone) {
-            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-            ui->graphicsView->scene()->addItem(zone);
+        // The game decides who will play first:
+        if (decideWhoPlaysFirst() == 1)
+        {
+            GameExternVars::pCurrentPlayer = &m_player1;
+            GameExternVars::pOtherPlayer = &m_player2;
         }
-        for(auto zone : m_player1.field.spellTrapZone.m_spellTrapZone) {
-            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-            ui->graphicsView->scene()->addItem(zone);
+        else
+        {
+            GameExternVars::pCurrentPlayer = &m_player2;
+            GameExternVars::pOtherPlayer = &m_player1;
         }
-        for(auto c : m_player1.field.deck.uiDeck) {
-            ui->graphicsView->scene()->addItem(c);
-        }
-        ui->graphicsView->scene()->addItem(m_player1.field.graveyard);
-        ui->graphicsView->scene()->addItem(m_player1.field.fieldZone);
 
-        m_player2.field.setField(2, viewAndSceneWidth,m_windowHeight);
-        for(auto zone :    m_player2.field.monsterZone.m_monsterZone) {
+        std::cout << "The first one to play is " << GameExternVars::pCurrentPlayer->getPlayerName() << std::endl;
+
+
+        GameExternVars::pCurrentPlayer->field.setField(1, viewAndSceneWidth,m_windowHeight);
+        for(auto zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
             connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
             connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
             ui->graphicsView->scene()->addItem(zone);
         }
-        for(auto zone : m_player2.field.spellTrapZone.m_spellTrapZone) {
+        for(auto zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
             connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
             connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
             ui->graphicsView->scene()->addItem(zone);
         }
-        for(auto c : m_player2.field.deck.uiDeck) {
+        for(auto c : GameExternVars::pCurrentPlayer->field.deck.uiDeck) {
             ui->graphicsView->scene()->addItem(c);
         }
-        ui->graphicsView->scene()->addItem(m_player2.field.graveyard);
-        ui->graphicsView->scene()->addItem(m_player2.field.fieldZone);
+        ui->graphicsView->scene()->addItem(GameExternVars::pCurrentPlayer->field.graveyard);
+        ui->graphicsView->scene()->addItem(GameExternVars::pCurrentPlayer->field.fieldZone);
+
+        GameExternVars::pOtherPlayer->field.setField(2, viewAndSceneWidth,m_windowHeight);
+        for(auto zone : GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone) {
+            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
+            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+            ui->graphicsView->scene()->addItem(zone);
+        }
+        for(auto zone : GameExternVars::pOtherPlayer->field.spellTrapZone.m_spellTrapZone) {
+            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
+            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+            ui->graphicsView->scene()->addItem(zone);
+        }
+        for(auto c : GameExternVars::pOtherPlayer->field.deck.uiDeck) {
+            ui->graphicsView->scene()->addItem(c);
+        }
+        ui->graphicsView->scene()->addItem(GameExternVars::pOtherPlayer->field.graveyard);
+        ui->graphicsView->scene()->addItem(GameExternVars::pOtherPlayer->field.fieldZone);
 
         // First turn setup at the beginning of the game:
         firstTurnSetup(viewAndSceneWidth, m_windowHeight);
@@ -588,6 +576,7 @@ void Game::onActivateButtonClick(Card &card)
     // Idea: Map of function pointers for effects
     const std::string cardName = card.getCardName();
     if(card.getCardLocation() == CardLocation::HAND) {
+        GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
         emit activateFromHand(card);
     }
     else {
@@ -702,23 +691,26 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 
 void Game::onCardAddedToScene(Card &card)
 {
-    connect(&card, &Card::cardSelected, this, &Game::onCardSelect);
-    connect(&card, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
-    connect(&card, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
-
     //Needed to show a card
-    ui->graphicsView->scene()->addWidget(card.cardMenu);
-    card.cardMenu->setVisible(false);
     if(card.scene()) {
-        if(card.getCardType() == CardType::MONSTER_CARD) {
-            MonsterCard* monsterCard = dynamic_cast<MonsterCard*>(&card);
-            MonsterCard* cardCopy = new MonsterCard(*monsterCard);
-            std::cout << "hej jel sam ovde" << std::endl;
-            ui->graphicsView->scene()->addItem(cardCopy);
-        }
+        Card* cardCopy = card.clone();
+        std::cout << *cardCopy << std::endl;
+        connect(cardCopy, &Card::cardSelected, this, &Game::onCardSelect);
+        connect(cardCopy, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
+        connect(cardCopy, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
+        ui->graphicsView->scene()->addItem(cardCopy);
+        ui->graphicsView->scene()->addWidget(cardCopy->cardMenu);
+        cardCopy->cardMenu->setVisible(false);
+        cardCopy->move(card.pos().x(), card.pos().y());
     }
-    else
-     ui->graphicsView->scene()->addItem(&card);
+    else {
+        connect(&card, &Card::cardSelected, this, &Game::onCardSelect);
+        connect(&card, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
+        connect(&card, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
+        ui->graphicsView->scene()->addItem(&card);
+        ui->graphicsView->scene()->addWidget(card.cardMenu);
+        card.cardMenu->setVisible(false);
+    }
 
     // By default we don't want to show card info unless the card is hovered
     ui->labelImage->setVisible(false);

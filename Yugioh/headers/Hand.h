@@ -9,7 +9,7 @@ public:
     Hand();
     Hand(std::vector<Card*> &initialHand);
     std::vector<Card*> getHand() const;
-    void setHandCoordinates(float, float);
+    void setHandCoordinates(float, float, int);
     void addToHand(Card &card);
     Card* removeFromHand(Card &card);
     float size() const;

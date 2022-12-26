@@ -6,6 +6,11 @@ SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardT
     ,active(active)
 {}
 
+SpellCard* SpellCard::clone() {
+    return new SpellCard(this->type, this->cardName, this->cardType, this->cardLocation,
+                         this->cardDescription, this->imagePath, this->active);
+}
+
 SpellType SpellCard::getSpellType() const
 {
     return type;

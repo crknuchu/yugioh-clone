@@ -57,9 +57,8 @@ void Player::drawCards(unsigned int numOfCards) {
     else{
         std::vector<Card*> newCards = this->field.deck.draw(numOfCards);
         for (unsigned i = 0; i < newCards.size(); i++){
-            this->m_hand.addToHand(*newCards[i]);
-            std::cout << "Kolko bre puta sam ovde" << std::endl;
             emit cardAddedToScene(*newCards[i]);
+            this->m_hand.addToHand(*newCards[i]);
         }
         std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
     }
@@ -212,8 +211,8 @@ void Player::sendToGraveyard(Card &card){
 }
 
 void Player::discard(Card &card) {
-    m_hand.removeFromHand(card);
-    field.graveyard->sendToGraveyard(card);
+    this->m_hand.removeFromHand(card);
+    this->field.graveyard->sendToGraveyard(card);
 }
 
 // --------------------------------------------

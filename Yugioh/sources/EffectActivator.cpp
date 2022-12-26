@@ -141,16 +141,18 @@ void EffectActivator::activateAncientTelescope()
 }
 
 void EffectActivator::activateCardDestruction() {
+    float currentPlayerHandSize = GameExternVars::pCurrentPlayer->m_hand.size();
+    for(Card* card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
+        GameExternVars::pCurrentPlayer->discard(*card);
+    }
+
+    GameExternVars::pCurrentPlayer->drawCards(currentPlayerHandSize);
+
     float opponentHandSize = GameExternVars::pOtherPlayer->m_hand.size();
     for(Card* card : GameExternVars::pOtherPlayer->m_hand.getHand()) {
         GameExternVars::pOtherPlayer->discard(*card);
     }
     GameExternVars::pOtherPlayer->drawCards(opponentHandSize);
-    float currentPlayerHandSize = GameExternVars::pCurrentPlayer->m_hand.size();
-    for(Card* card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
-        GameExternVars::pCurrentPlayer->discard(*card);
-    }
-    GameExternVars::pCurrentPlayer->drawCards(currentPlayerHandSize);
 }
 
 void EffectActivator::activateDarkHole()
@@ -277,7 +279,7 @@ void EffectActivator::returnToHand(Card &targetCard, const GamePhases &inWhichGa
 
 void EffectActivator::destroyCard(Card &targetCard, Player &targetPlayer)
 {
-    targetPlayer.field.graveyard->sendToGraveyard(targetCard);
+    targetPlayer.sendToGraveyard(targetCard);
 }
 
 void EffectActivator::destroyCards(std::vector<Card*> &targetCards, Player &targetPlayer)

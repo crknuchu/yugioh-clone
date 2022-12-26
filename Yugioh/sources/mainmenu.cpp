@@ -3,6 +3,7 @@
 #include "headers/Game.h"
 #include "headers/Player.h"
 #include "headers/GameSettings.h"
+#include "headers/Serializer.h"
 #include <QDir>
 #include <QScreen>
 #include <QMediaPlayer>
@@ -39,8 +40,14 @@ MainMenu::~MainMenu()
 
 void MainMenu::on_btnStart_clicked()
 {
+    Serializer s;
+    s.loadFromJson(":/resources/yugi.json");
     Player* player1 = new Player("Nikola");
     Player* player2 = new Player("Milan");
+    std::vector<Card*> cards = s.getCards();
+    Deck d = Deck(cards);
+    player1->setDeck(d);
+    player2->setDeck(d);
     m_pGame = new Game(*player1, *player2);
     m_pGame->showFullScreen();
 }

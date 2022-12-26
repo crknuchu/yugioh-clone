@@ -7,6 +7,10 @@ TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType
     ,active(active)
 {}
 
+TrapCard* TrapCard::clone() {
+    return new TrapCard(this->trapType, this->cardName, this->cardType, this->cardLocation,
+                        this->cardDescription, this->imagePath, this->active, this->setThisTurn);
+}
 
 TrapType TrapCard::getTrapType() const
 {

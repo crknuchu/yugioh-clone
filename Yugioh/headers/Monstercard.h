@@ -67,9 +67,9 @@ public:
                  MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack,
                  CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool summonedThisTurn = false);
 
-    MonsterCard(MonsterCard&);
     virtual ~MonsterCard();
 
+    MonsterCard* clone() override;
     int getAttackPoints() const;
     int getDefensePoints() const;
     MonsterType getMonsterType() const;
