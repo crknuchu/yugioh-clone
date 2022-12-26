@@ -179,7 +179,32 @@ void EffectActivator::activateDianKetoTheCureMaster() {
 
 void EffectActivator::activateFissure()
 {
+    std::vector<Zone *>monsters = GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone;
+    std::cout<<GameExternVars::pOtherPlayer->getPlayerName();
+    int lowestATK = 100000;
+    Card *destroyCard = nullptr;
+    Zone *destroyZone = nullptr;
 
+
+    for (Zone *zone : monsters)
+    {
+        if (zone->isEmpty())
+            continue;
+        if (!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::MONSTER_CARD)
+        {
+            MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+
+
+            if (m->getAttackPoints() < lowestATK)
+            {
+                lowestATK = m->getAttackPoints();
+                destroyCard = zone->m_pCard;
+                destroyZone = zone;
+            }
+
+        }
+    }
+    GameExternVars::pOtherPlayer->sendToGraveyard(*destroyCard, destroyZone);
 }
 
 void EffectActivator::activateMonsterReborn()

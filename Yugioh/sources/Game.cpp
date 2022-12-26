@@ -249,7 +249,7 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
 
 
   //just a placeholder code for hand
-  MonsterCard* testCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
+  MonsterCard* testCard1 = new MonsterCard("Blue dragon", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, Position::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::HAND,
@@ -260,19 +260,26 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                              CardType::SPELL_CARD, CardLocation::HAND,
                                              "  Increase your Life Points by 1000 points.  ", ":/resources/pictures/DarkHole.jpg", true);
 
-  MonsterCard* testCard3 = new MonsterCard("Lord of D", 3000, 2500, 4,
+  MonsterCard* testCard3 = new MonsterCard("Blue dragon", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, Position::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::HAND,
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/blue_eyes.jpg"
                                               );
+  SpellCard* testCard4 = new SpellCard(SpellType::NORMAL_SPELL, "Fissure",
+                                             CardType::SPELL_CARD, CardLocation::HAND,
+                                             "  Destroy the 1 face-up monster your opponent controls that has the lowest ATK", ":/resources/pictures/Fissure.jpg", true);
+
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard1);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard2);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard3);
+  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard4);
+
   GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard3, 2); //testing purposes
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard1);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
+  GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
 }
 
 
