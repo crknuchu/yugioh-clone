@@ -1061,24 +1061,22 @@ void Game::onActivateButtonClick(const Card &card)
     connect(&effectActivator, &EffectActivator::lifePointsChanged, this, &Game::onLifePointsChange);
     connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
 
-    // Activate the card's effect
-    // We need to wait for DESERIALIZATION_FINISHED header in case some of the effects trigger something like a LP_CHANGE or similar actions.
+    // Notify the server / other client
     QEventLoop blockingLoop;
     connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
-    effectActivator.activateEffect(cardName);
-    blockingLoop.exec();
-
-
-    // Notify the server / other client
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
     outDataStream << QString::fromStdString("EFFECT_ACTIVATED")
                   << QString::fromStdString(cardName); // Who activated the effect
     sendDataToServer(buffer);
+    blockingLoop.exec();
 
-
-
+    // Activate the actual effect. We need to block in case the effects triggers another header, like LP_CHANGE for example
+    QEventLoop blockingLoop2;
+    connect(this, &Game::deserializationFinished, &blockingLoop2, &QEventLoop::quit);
+    effectActivator.activateEffect(cardName);
+    blockingLoop2.exec();
 }
 
 void Game::onSummonButtonClick(Card &card) {
@@ -1174,6 +1172,8 @@ void Game::onGameEnd(Player &loser)
     std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost because his health points reached 0 !" << std::endl;
 
     // Notify the server
+    QEventLoop blockingLoop;
+    connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
@@ -1181,6 +1181,7 @@ void Game::onGameEnd(Player &loser)
                   << QString::fromStdString(loser.getPlayerName()).trimmed() // Whose life points has changed
                   << qint32(0); // New life points
     sendDataToServer(buffer);
+    blockingLoop.exec();
 
     // TODO: Stop the game here (or maybe in the server too) somehow!
 }
@@ -1361,11 +1362,11 @@ void Game::onTestNetworkButtonClick()
 
 void Game::onWriteDataButtonClick()
 {
-   // Testing
-   GameExternVars::pCurrentPlayer->drawCards(5);
-   QByteArray buffer;
-   QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-   outDataStream.setVersion(QDataStream::Qt_5_15);
+    // Testing
+    GameExternVars::pCurrentPlayer->drawCards(5);
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
 
     outDataStream << QString::fromStdString("ADD_CARD_TO_HAND")
                   << qint32(5)

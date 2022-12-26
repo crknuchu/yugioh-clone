@@ -12,7 +12,6 @@ MainMenu::MainMenu(QWidget *parent) :
 
     setupConnections();
 
-
     QPixmap bkgnd(":/resources/yugioh1.jpg");
     //bkgnd.devicePixelRatioFScale();
     bkgnd = bkgnd.scaled(this->size(), Qt::IgnoreAspectRatio);
