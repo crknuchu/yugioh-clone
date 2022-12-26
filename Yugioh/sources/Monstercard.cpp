@@ -151,6 +151,32 @@ MonsterPosition MonsterCard::getPosition() const
     return position;
 }
 
+void MonsterCard::setPosition(const MonsterPosition &newPosition)
+{
+    position = newPosition;
+}
+
+void MonsterCard::changePosition()
+{
+    const MonsterPosition oldPosition = getPosition();
+    QTransform transformationMatrix;
+    if(oldPosition == MonsterPosition::ATTACK)
+    {
+        // Change the actual position
+        setPosition(MonsterPosition::FACE_UP_DEFENSE);
+
+        // Change it on the scene
+        transformationMatrix.rotate(90);
+        setPixmap(pixmap().transformed(transformationMatrix));
+    }
+    else if(oldPosition == MonsterPosition::FACE_UP_DEFENSE)
+    {
+        setPosition(MonsterPosition::ATTACK);
+        transformationMatrix.rotate(-90);
+        setPixmap(pixmap().transformed(transformationMatrix));
+    }
+}
+
 void MonsterCard::setAttackPoints(int newAttackPoints)
 {
     attackPoints = newAttackPoints;

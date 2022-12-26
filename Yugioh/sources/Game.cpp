@@ -38,7 +38,8 @@ const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_d
     {"DESERIALIZATION_FINISHED",                        &Game::deserializeDeserializationFinished},
     {"GAMEPHASE_CHANGED",                               &Game::deserializeGamePhaseChanged},
     {"NEW_TURN",                                        &Game::deserializeNewTurn},
-    {"EFFECT_ACTIVATED",                                &Game::deserializeEffectActivated}
+    {"EFFECT_ACTIVATED",                                &Game::deserializeEffectActivated},
+    {"REPOSITION",                                      &Game::deserializeReposition}
 };
 
 
@@ -713,10 +714,27 @@ void Game::deserializeEffectActivated(QDataStream &deserializationStream)
     notifyServerThatDeserializationHasFinished();
 }
 
+void Game::deserializeReposition(QDataStream &deserializationStream)
+{
+    QString cardName;
+    qint32 zoneNumber;
+    deserializationStream >> cardName
+                          >> zoneNumber;
+
+    // TODO: Find the monster
+    std::cout << "PLACEHOLDER: Here we find " << cardName.toStdString() << " which is in the zone with number " << zoneNumber << std::endl;
+
+    // Change its position
+    // monsterCard->changePosition();
+
+    // Notify the server that deserialization is finished
+    notifyServerThatDeserializationHasFinished();
+}
+
 void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
 {
-    std::cout << "clientID in onGameStart: " << clientID << std::endl;
     std::cout << "Game has started!" << std::endl;
+
     // First turn setup at the beginning of the game:
     firstTurnSetup(firstToPlay, clientID);
 
@@ -996,6 +1014,10 @@ void Game::onCardSelect(Card *card)
         onAttackButtonClick(*card);
     });
 
+    connect(card->cardMenu->repositionButton, &QPushButton::clicked, this, [this, card](){
+        onRepositionButtonClick(*card);
+    });
+
 
     // FIXME: After menu is closed once, 2 clicks are needed to get it to be shown again
     if(card->cardMenu->visible == false)
@@ -1096,6 +1118,28 @@ void Game::onAttackButtonClick(Card &attackingMonster)
    monsterZone.colorOccupiedZones();
 }
 
+void Game::onRepositionButtonClick(Card &card)
+{
+    std::cout << "Reposition button clicked for card " << card.getCardName() << std::endl;
+//    // We are sure that this card is a MonsterCard since only monsters can change their position to defense or attack
+    MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+
+    // Change the position
+    monsterCard->changePosition();
+
+    // Notify the server / other client
+    QEventLoop blockingLoop;
+    connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
+    outDataStream << QString::fromStdString("REPOSITION")
+                  << QString::fromStdString(monsterCard->getCardName()) // TODO: This is maybe unneeded, since we can locate the monster by just using the zone number
+                  << qint32(3); // Zone number, so we can locate the monster
+    sendDataToServer(buffer);
+    blockingLoop.exec();
+}
+
 
 /* TODO: This should accept the targetPlayer as an argument, because otherwise we always print currentPlayer's hp,
          even if it was other player's health that had changed. */
@@ -1111,6 +1155,8 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
 
 
     // Notify the server about health change.
+    QEventLoop blockingLoop;
+    connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
@@ -1118,7 +1164,7 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
                   << QString::fromStdString(targetPlayer.getPlayerName()).trimmed() // Whose life points has changed
                   << qint32(targetPlayer.getPlayerLifePoints()); // New life points
     sendDataToServer(buffer);
-
+    blockingLoop.exec();
 }
 
 void Game::onGameEnd(Player &loser)

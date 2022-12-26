@@ -50,7 +50,6 @@ private:
     int decideWhoPlaysFirst() const;
     void firstTurnSetup(qint32 firstToPlay, qint32 clientID);
     void switchPlayers();
-
     void damageCalculation(Card *attackingMonster, Card *attackedMonster);
     void battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
     void battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
@@ -85,7 +84,8 @@ private:
     void deserializeDeserializationFinished(QDataStream &deserializationStream);
     void deserializeGamePhaseChanged(QDataStream &deserializationStream);
     void deserializeNewTurn(QDataStream &deserializationStream);
-    void deserializeEffectActivated(QDataStream &deserializationFinished);
+    void deserializeEffectActivated(QDataStream &deserializationStream);
+    void deserializeReposition(QDataStream &deserializationStream);
 
 private slots:
     void onGameStart(qint32 firstToPlay, qint32 clientID);
@@ -105,10 +105,11 @@ private slots:
 
 
     // Slots for CardMenu signal handling
-    void onActivateButtonClick(const Card &);
-    void onSetButtonClick(const Card &);
-    void onSummonButtonClick(Card &);
-    void onAttackButtonClick(Card &);
+    void onActivateButtonClick(const Card &card);
+    void onSetButtonClick(const Card &card);
+    void onSummonButtonClick(Card &card);
+    void onAttackButtonClick(Card &card);
+    void onRepositionButtonClick(Card &card);
 
     // Slots for EffectActivator signal handling
     void onLifePointsChange(Player &);

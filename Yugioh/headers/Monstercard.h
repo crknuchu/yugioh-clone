@@ -71,6 +71,8 @@ public:
     std::string getAttributeString() const;
     int getLevel() const;
     MonsterPosition getPosition() const;
+    void setPosition(const MonsterPosition &newPosition); // Just a setter
+    void changePosition(); // Calls a setter + changes the pixmap
 
     void setAttackPoints(int newAttackPoints);
     void setDefensePoints(int newDefensePoints);
