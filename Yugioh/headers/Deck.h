@@ -3,12 +3,11 @@
 
 #include <string>
 #include "CardList.h"
-#include "Monstercard.h"
 
 class Deck : public CardList {
 public:
     Deck();
-    Deck(const std::string &pathToDeck, std::vector<Card*> &deck);
+    Deck(std::vector<Card*> &);
     void setDeck(float, float, int);
     std::vector<Card*> getDeck() const;
     Card* draw();

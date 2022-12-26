@@ -85,10 +85,8 @@ void EffectActivator::activateLordOfD() {
     returnToHand(*(this->getCard()), GamePhases::END_PHASE, *GameExternVars::pCurrentPlayer);
 
 
-    // Test revealCardsInHand
-    revealCardsInHand(1, *GameExternVars::pCurrentPlayer);
-
-
+//    // changeLifePointsBy test
+    changeHealthPointsBy(-500, *GameExternVars::pCurrentPlayer);
 
     // Test increaseATK
     // FIXME: We can't pass Card to this function because we need a MonsterCard
@@ -438,12 +436,12 @@ std::vector<MonsterCard *> EffectActivator::findFaceUpMonsters(Player &targetPla
 }
 
 void EffectActivator::changeHealthPointsBy(int pointChange, Player &targetPlayer) {
-    unsigned currentPlayerHealthPoints = targetPlayer.getPlayerLifePoints();
+    unsigned currentPlayerLifePoints = targetPlayer.getPlayerLifePoints();
 
-    std::cout << "currentPlayerHealthPoints: " << currentPlayerHealthPoints << std::endl;
+    std::cout << "currentPlayerLifePoints: " << currentPlayerLifePoints << std::endl;
 
     // This shouldn't be unsigned because it goes to UINT_MAX if its subtracted below 0.
-    int newHealthPoints = currentPlayerHealthPoints + pointChange;
+    int newHealthPoints = currentPlayerLifePoints + pointChange;
     newHealthPoints > 0 ? targetPlayer.setPlayerLifePoints(newHealthPoints) : emit gameEnded(targetPlayer);
 
     // The following code is only for the purpose of unified output, it can be made prettier probably.
@@ -453,7 +451,7 @@ void EffectActivator::changeHealthPointsBy(int pointChange, Player &targetPlayer
     pointChange = pointChange < 0 ? pointChange * -1 : pointChange;
 
     std::cout << "Player " << targetPlayer.getPlayerName() << " " << lostOrGained << " " << pointChange << " health points." << std::endl;
-    emit healthPointsChanged(targetPlayer);
+    emit lifePointsChanged(targetPlayer);
 }
 
 

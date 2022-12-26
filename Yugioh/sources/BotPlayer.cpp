@@ -1,4 +1,4 @@
-#include "BotPlayer.h"
+#include "headers/BotPlayer.h"
 
 BotPlayer::BotPlayer(){}
 

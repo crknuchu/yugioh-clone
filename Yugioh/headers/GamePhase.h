@@ -15,7 +15,7 @@ enum class GamePhases {
 
 namespace GamePhaseExternVars {
     extern const std::map<GamePhases, QString> gamePhaseToQString;
-    extern std::map<QString, GamePhases> qStringToGamePhase;
+    extern const std::map<QString, GamePhases> QStringToGamePhase;
     extern GamePhases currentGamePhase;
 }
 

@@ -1,9 +1,11 @@
 #include "headers/Spellcard.h"
 
-SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool active)
-    : Card(cardName, cardType, cardLocation, cardDescription,imagePath)
+SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, SpellTrapPosition position,
+                     const std::string &cardDescription, std::string imagePath, bool active)
+    : Card(cardName, cardType, cardLocation, cardDescription, imagePath)
     ,type(type)
     ,active(active)
+    ,position(position)
 {}
 
 SpellType SpellCard::getSpellType() const
@@ -29,6 +31,11 @@ std::string SpellCard::getSpellTypeString() const
         default:
             return "error:unknown spell type";
         }
+}
+
+SpellTrapPosition SpellCard::getSpellPosition() const
+{
+    return position;
 }
 
 void SpellCard::activateSpell()

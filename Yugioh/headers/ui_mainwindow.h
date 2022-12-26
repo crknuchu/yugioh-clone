@@ -20,6 +20,7 @@
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QTextEdit>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -48,6 +49,12 @@ public:
     QHBoxLayout *horizontalLayout_2;
     QLabel *labelHealthPointsConst;
     QLabel *labelHealthPointsDynamic;
+    QHBoxLayout *horizontalLayout_3;
+    QTextEdit *textEditAddress;
+    QTextEdit *textEditPort;
+    QPushButton *btnTestNetwork;
+    QLabel *labelMessageFromServer;
+    QPushButton *btnWriteData;
     QMenuBar *menubar;
     QStatusBar *statusbar;
     QToolBar *toolBar;
@@ -64,7 +71,7 @@ public:
         graphicsView->setGeometry(QRect(423, 9, 1191, 761));
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(9, 9, 401, 760));
+        layoutWidget->setGeometry(QRect(10, 10, 401, 761));
         leftVerticalLayout = new QVBoxLayout(layoutWidget);
         leftVerticalLayout->setObjectName(QString::fromUtf8("leftVerticalLayout"));
         leftVerticalLayout->setContentsMargins(0, 0, 0, 0);
@@ -141,6 +148,36 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_2);
 
+        horizontalLayout_3 = new QHBoxLayout();
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        textEditAddress = new QTextEdit(layoutWidget);
+        textEditAddress->setObjectName(QString::fromUtf8("textEditAddress"));
+
+        horizontalLayout_3->addWidget(textEditAddress);
+
+        textEditPort = new QTextEdit(layoutWidget);
+        textEditPort->setObjectName(QString::fromUtf8("textEditPort"));
+
+        horizontalLayout_3->addWidget(textEditPort);
+
+
+        verticalLayout->addLayout(horizontalLayout_3);
+
+        btnTestNetwork = new QPushButton(layoutWidget);
+        btnTestNetwork->setObjectName(QString::fromUtf8("btnTestNetwork"));
+
+        verticalLayout->addWidget(btnTestNetwork);
+
+        labelMessageFromServer = new QLabel(layoutWidget);
+        labelMessageFromServer->setObjectName(QString::fromUtf8("labelMessageFromServer"));
+
+        verticalLayout->addWidget(labelMessageFromServer);
+
+        btnWriteData = new QPushButton(layoutWidget);
+        btnWriteData->setObjectName(QString::fromUtf8("btnWriteData"));
+
+        verticalLayout->addWidget(btnWriteData);
+
 
         leftVerticalLayout->addLayout(verticalLayout);
 
@@ -182,6 +219,9 @@ public:
         labelCurrentPlayerDynamic->setText(QString());
         labelHealthPointsConst->setText(QCoreApplication::translate("MainWindow", "Health Points: ", nullptr));
         labelHealthPointsDynamic->setText(QString());
+        btnTestNetwork->setText(QCoreApplication::translate("MainWindow", "Connect to the server", nullptr));
+        labelMessageFromServer->setText(QCoreApplication::translate("MainWindow", "Message from server", nullptr));
+        btnWriteData->setText(QCoreApplication::translate("MainWindow", "Write data to server", nullptr));
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi
 

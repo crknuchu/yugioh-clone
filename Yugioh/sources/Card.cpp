@@ -48,6 +48,33 @@ void Card::flipCard()
     
 }
 
+const std::map<MonsterPosition, QString> Card::monsterPositionEnumToQString{
+    {MonsterPosition::ATTACK,              "ATTACK"},
+    {MonsterPosition::FACE_UP_DEFENSE,     "FACE_UP_DEFENSE"},
+    {MonsterPosition::FACE_DOWN_DEFENSE,   "FACE_DOWN_DEFENSE"},
+    {MonsterPosition::NONE,                "NONE"}
+};
+
+const std::map<SpellTrapPosition, QString> Card::spellTrapPositionEnumToQString{
+    {SpellTrapPosition::FACE_UP,             "FACE_UP"},
+    {SpellTrapPosition::SET,                 "SET"},
+    {SpellTrapPosition::NONE,                "NONE"}
+};
+
+const std::map<QString, MonsterPosition> Card::monsterPositionQStringToEnum{
+    {"ATTACK",              MonsterPosition::ATTACK},
+    {"FACE_UP_DEFENSE",     MonsterPosition::FACE_UP_DEFENSE},
+    {"FACE_DOWN_DEFENSE",   MonsterPosition::FACE_DOWN_DEFENSE},
+    {"NONE",                MonsterPosition::NONE}
+};
+
+const std::map<QString, SpellTrapPosition> Card::spellTrapPositionQStringToEnum{
+    {"FACE_UP",     SpellTrapPosition::FACE_UP},
+    {"SET",         SpellTrapPosition::SET},
+    {"NONE",        SpellTrapPosition::NONE}
+};
+
+
 const std::string &Card::getCardName() const
 {
     return cardName;
@@ -126,11 +153,11 @@ void Card::hoverMoveEvent(QGraphicsSceneHoverEvent *event){
 }
 
 void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
-//    if(event->buttons() & Qt::LeftButton)
-//    {
-    std::cout << "Card was clicked" << std::endl;
+    std::cout << "Card " << this->getCardName() << " was clicked!" << std::endl;
+    if(event->buttons() & Qt::LeftButton)
+    {
        emit cardSelected(this);
-//    }
+    }
 }
 
 void Card::move(float x,float y){

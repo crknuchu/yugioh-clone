@@ -1,16 +1,13 @@
 #include "headers/Deck.h"
+#include "headers/Monstercard.h"
 #include <iostream>
 #include <chrono>
 #include <algorithm>
 #include <random>
 
 Deck::Deck(){}
-Deck::Deck(const std::string &pathToDeck, std::vector<Card*> &deck)
-    :CardList(deck){
-    for(auto card : m_cardList){
-        std::cout << card->getCardName() << " ";
-    }
-}
+Deck::Deck(std::vector<Card*> &deck)
+    :CardList(deck){}
 
 std::vector<Card*> Deck::getDeck() const{
     return m_cardList;
@@ -21,7 +18,7 @@ void Deck::setDeck(float x, float y, int playerNumber) {
     for(int i = 0; i < 5; i++) { //for now its hardcoded but needs to be deck.size / 4
         MonsterCard* placeholderCard = new MonsterCard("placeholder", 0,0,1,MonsterType::AQUA,
                                           MonsterKind::NORMAL_MONSTER, MonsterAttribute::DARK,
-                                          false, Position::DEFENSE, true, CardType::MONSTER_CARD,
+                                          false, MonsterPosition::FACE_UP_DEFENSE, true, CardType::MONSTER_CARD,
                                           CardLocation::DECK, "placeholder",":/resources/pictures/card_back.jpg", false);
 
         placeholderCard->setPos(x,y);

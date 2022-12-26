@@ -36,6 +36,20 @@ enum class CardLocation
     //SPELL_TRAP_ZONE
 };
 
+enum class MonsterPosition{
+    ATTACK,
+    FACE_UP_DEFENSE,
+    FACE_DOWN_DEFENSE,
+    NONE
+};
+
+enum class SpellTrapPosition{
+    SET,
+    FACE_UP,
+    NONE
+};
+
+
 class Card : public QObject, public QGraphicsPixmapItem
 {
     Q_OBJECT
@@ -82,6 +96,12 @@ public:
     CardMenu *cardMenu = new CardMenu();
     float height;
     float width;//only for testing purposes
+
+    static const std::map<MonsterPosition, QString> monsterPositionEnumToQString;
+    static const std::map<SpellTrapPosition, QString> spellTrapPositionEnumToQString;
+
+    static const std::map<QString, MonsterPosition> monsterPositionQStringToEnum;
+    static const std::map<QString, SpellTrapPosition> spellTrapPositionQStringToEnum;
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
