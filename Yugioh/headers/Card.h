@@ -74,10 +74,10 @@ public:
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
-    // void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void move(float x,float y);
+    void flipCard();
 
-    QMap<QString,bool> tmp;
+    bool faceUp = true; //card is turned face up (image is visible) or facedown (back is visible)
 
     CardMenu *cardMenu = new CardMenu();
     float height;
@@ -91,17 +91,8 @@ protected:
     CardLocation cardLocation;
     std::string cardDescription;
     std::string imagePath;
-    //cardImage
-    // CardMenu *cardMenu = new CardMenu(this);
     
-
-
-
 private:
-//    std::string cardName = "";
-    // TODO: Remove this
-    std::string owner = "";
-
 
 
 signals:

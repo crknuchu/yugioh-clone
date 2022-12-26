@@ -276,6 +276,9 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                               );
   ui->graphicsView->scene()->addWidget(monsterCard1->cardMenu);
   ui->graphicsView->scene()->addWidget(monsterCard2->cardMenu);
+  ui->graphicsView->scene()->addWidget(monsterCard3->cardMenu);
+  monsterCard1->flipCard();
+  monsterCard1->flipCard();
   ui->graphicsView->scene()->addItem(monsterCard1);
   emit cardAddedToScene(*monsterCard1);
   ui->graphicsView->scene()->addItem(monsterCard2);

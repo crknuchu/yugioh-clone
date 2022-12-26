@@ -22,7 +22,7 @@ public:
     QPushButton *summonButton = new QPushButton("Summon");
     QPushButton *repositionButton = new QPushButton("Reposition");
     QPushButton *attackButton = new QPushButton("Attack");
-    QPushButton *attackDirectlyButton = new QPushButton("Attack Directly");
+    QPushButton *attackDirectlyButton = new QPushButton("Atk Direct");
     QVBoxLayout *layout = new QVBoxLayout(this);
 
 protected:

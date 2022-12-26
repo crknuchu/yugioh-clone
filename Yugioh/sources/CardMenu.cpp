@@ -4,6 +4,7 @@ CardMenu::CardMenu()
 {
     setWindowFlags(Qt::FramelessWindowHint);
     setUpLayout();
+    hide();
 }
 
 void CardMenu::setUpLayout()

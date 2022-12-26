@@ -23,6 +23,25 @@ Card::~Card()
 {
 }
 
+void Card::flipCard()
+{
+    if(faceUp == true){
+        QPixmap pixmap;
+        pixmap.load(QString::fromStdString(":/resources/pictures/card_back.jpg"));
+        pixmap = pixmap.scaled(QSize(200,150), Qt::KeepAspectRatio);
+        setPixmap(pixmap);
+        faceUp = false;
+    }
+    else{
+        QPixmap pixmap;
+        pixmap.load(QString::fromStdString(imagePath));
+        pixmap = pixmap.scaled(QSize(200,150), Qt::KeepAspectRatio);
+        setPixmap(pixmap);
+        faceUp = true;
+    }
+    
+}
+
 const std::string &Card::getCardName() const
 {
     return cardName;
