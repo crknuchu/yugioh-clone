@@ -1,20 +1,17 @@
 #include "headers/Player.h"
 #include "headers/Game.h"
-
+#include "headers/mainmenu.h"
 #include <iostream>
 
 #include <QApplication>
 
 int main(int argc,char **argv)
 {
-  QApplication app(argc, argv);
+    QApplication app(argc, argv);
 
-  Player player1("Nikola");
-  Player player2("Milan");
+    MainMenu mainMenu;
 
-  Game game(player1, player2);
+    mainMenu.show();
 
-//  game.showFullScreen();
-  game.show();
-  return app.exec();
+    return app.exec();
 }

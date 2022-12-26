@@ -1343,7 +1343,6 @@ void Game::onDataIncoming()
     auto deserializationFunctionPointer = m_deserializationMap.at(m_currentHeader);
     (this->*deserializationFunctionPointer)(m_inDataStream);
 
-
     // TODO: Send DESERIALIZATION_FINISHED here instead of writing same code at the end of every deserialization function
 }
 
@@ -1354,6 +1353,7 @@ void Game::onTestNetworkButtonClick()
     // Parse the address and the port
     QString addr = ui->textEditAddress->toPlainText();
     int port = ui->textEditPort->toPlainText().toInt();
+
     // Connect to the server
     m_pTcpSocket->abort();
     m_pTcpSocket->connectToHost(addr , port);

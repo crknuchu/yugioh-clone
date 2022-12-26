@@ -17,12 +17,14 @@ public:
     explicit MainMenu(QWidget *parent = nullptr);
     ~MainMenu();
 
+    void setupConnections();
+
 private slots:
-    void on_pushButton_clicked();
+    void on_btnStart_clicked();
 
-    void on_pushButton_4_clicked();
+    void on_btnQuit_clicked();
 
-    void on_pushButton_5_clicked();
+    void on_btnGameSettings_clicked();
 
 private:
     Ui::MainMenu *ui;
