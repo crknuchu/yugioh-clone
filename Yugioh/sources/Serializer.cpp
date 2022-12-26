@@ -20,20 +20,8 @@ void Serializer::loadFromJson(QString s)
     file.close();
     QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
     QJsonObject obj = d.object();
-
-
-    int lifePoints = d["lifepoints"].toInt();
-    int numberOfCards = d["numberofcards"].toInt();
-    int timePerMove = d["timepermove"].toInt();
-
-    qWarning() << lifePoints;
-
-    return;
-
     QJsonArray arr = obj["data"].toArray();
 
-
-    
     for(auto item : arr){
         
         
