@@ -23,6 +23,12 @@ Card::~Card()
 {
 }
 
+void Card::addToScene(QGraphicsScene *scene)
+{
+    scene->addItem(this);
+    scene->addWidget(cardMenu);
+}
+
 void Card::flipCard()
 {
     if(faceUp == true){

@@ -258,38 +258,33 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                               MonsterAttribute::DARK, false, Position::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::HAND,
                                               "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/blue_eyes.jpg"
+                                              ":/resources/pictures/LordofD.jpg"
                                               );
   MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, Position::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::HAND,
                                               "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/blue_eyes.jpg"
+                                              ":/resources/pictures/LordofD.jpg"
                                               );
   MonsterCard* monsterCard3 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, Position::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::HAND,
                                               "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/blue_eyes.jpg"
+                                              ":/resources/pictures/LordofD.jpg"
                                               );
-  ui->graphicsView->scene()->addWidget(monsterCard1->cardMenu);
-  ui->graphicsView->scene()->addWidget(monsterCard2->cardMenu);
-  ui->graphicsView->scene()->addWidget(monsterCard3->cardMenu);
-  monsterCard1->flipCard();
-  monsterCard1->flipCard();
-  ui->graphicsView->scene()->addItem(monsterCard1);
-  emit cardAddedToScene(*monsterCard1);
-  ui->graphicsView->scene()->addItem(monsterCard2);
-  emit cardAddedToScene(*monsterCard2);
-  ui->graphicsView->scene()->addItem(monsterCard3);
-  emit cardAddedToScene(*monsterCard3);
-  GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight);
-  GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(monsterCard3, 2); //testing purposes
-  GameExternVars::pCurrentPlayer->m_hand.addToHand(*monsterCard1);
-  GameExternVars::pCurrentPlayer->m_hand.addToHand(*monsterCard2);
-}
+    monsterCard1->addToScene(ui->graphicsView->scene());
+    emit cardAddedToScene(*monsterCard1);
+    monsterCard2->addToScene(ui->graphicsView->scene());
+    emit cardAddedToScene(*monsterCard2);
+    monsterCard3->addToScene(ui->graphicsView->scene());
+    emit cardAddedToScene(*monsterCard3);
+    GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight);
+    GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(monsterCard3, 2); //testing purposes
+    GameExternVars::pCurrentPlayer->m_hand.addToHand(*monsterCard1);
+    GameExternVars::pCurrentPlayer->m_hand.addToHand(*monsterCard2);
+    }
 
 
 // QT related stuff:

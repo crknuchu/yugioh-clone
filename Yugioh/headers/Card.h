@@ -4,8 +4,6 @@
 #include "CardMenu.h"
 #include "headers/GamePhase.h"
 
-
-
 #include <string>
 #include <vector>
 #include <QGraphicsPixmapItem>
@@ -16,6 +14,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QMap>
 #include <QString>
+#include <QGraphicsScene>
 
 class Game;
 
@@ -76,6 +75,7 @@ public:
     void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
     void move(float x,float y);
     void flipCard();
+    void addToScene(QGraphicsScene *scene);
 
     bool faceUp = true; //card is turned face up (image is visible) or facedown (back is visible)
 
