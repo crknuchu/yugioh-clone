@@ -3,48 +3,30 @@
 
 #include "Player.h"
 #include "Card.h"
+#include "GamePhase.h"
+#include "Zone.h"
 
 #include <QGraphicsScene>
 #include <QMainWindow>
 #include <QResizeEvent>
+#include <QTcpSocket>
 
-// WIP
-#include "GamePhase.h"
-
-
-#include "Zone.h"
 namespace Ui {
     class MainWindow;
 }
 
-
-class Card;
-
-
-
-
-
-
-
-// Will be needed in the future for the Summoning action
-//static int *p_Summon_target = nullptr;
-
-// WIP
 namespace GameExternVars {
     extern Player *pCurrentPlayer;
     extern Player *pOtherPlayer;
     extern Card *pCardToBePlacedOnField;
     extern Card *pAttackingMonster;
+    extern qint32 currentTurnClientID;
 }
-
-
-
-
 
 class Game: public QMainWindow
 {
     Q_OBJECT
-
+    using DESERIALIZATION_MEMBER_FUNCTION_POINTER = void(Game::*)(QDataStream &);
 public:
   Game();
   Game(Player p1, Player p2,int lifePoints = 4000,int numberOfCards = 5 ,int timePerMove = 5,QWidget *parent = nullptr );  // Why is parent's type QWidget and not QMainWindow?
@@ -57,10 +39,6 @@ public:
   // Public member functions:
   void start();
   GamePhases setGamePhase() const;
-
-
-
-
 
   int getLifePoints() const;
   void setLifePoints(int newLifePoints);
@@ -82,15 +60,15 @@ private:
   Player m_player2;
   int m_currentTurn;
   int counter = 0;
-
-  int resizeCount = 0; // dirty hack
+  int resizeCount = 0;
+  int m_viewAndSceneWidth;
 
 
 
   // Private member functions:
   int randomGenerator(const int limit) const;
   int decideWhoPlaysFirst() const;
-  void firstTurnSetup(float, float);
+  void firstTurnSetup(qint32 firstToPlay, qint32 clientID, float, float);
   void switchPlayers();
 
   void damageCalculation(Card *attackingMonster, Card *attackedMonster);
@@ -99,14 +77,39 @@ private:
   void damagePlayer(Player &targetPlayer, int howMuch);
 
 // QT related stuff:
-  int m_windowWidth;
-  int m_windowHeight;
+    int m_windowWidth;
+    int m_windowHeight;
 
-  void setupConnections();
-  bool eventFilter(QObject *obj, QEvent *event) override;
+    void setupConnections();
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
+// Networking:
+  // TODO: Separate class?
+    QTcpSocket *m_pTcpSocket = nullptr; // TODO: This will probably have to be in GameExternVars so that EffectActivator can see it
+    qint32 m_clientID;
+    QDataStream m_inDataStream;
+    QString m_currentHeader;
+    static const std::map<QString, DESERIALIZATION_MEMBER_FUNCTION_POINTER> m_deserializationMap;
+
+    bool sendDataToServer(QByteArray &data);
+    void notifyServerThatDeserializationHasFinished();
+    QByteArray QInt32ToQByteArray(qint32 source); // We use qint32 to ensure the number has 4 bytes
+
+    void deserializeWelcomeMessage(QDataStream &deserializationStream);
+    void deserializeStartGame(QDataStream &deserializationStream);
+    void deserializeFieldPlacement(QDataStream &deserializationStream);
+    void deserializeAddCardToHand(QDataStream &deserializationStream);
+    void deserializeBattleBetweenAttackPositionMonsters(QDataStream &deserializationStream);
+    void deserializeBattleBetweenDifferentPositionMonsters(QDataStream &deserializationStream);
+    void deserializeLpChange(QDataStream &deserializationStream);
+    void deserializeDeserializationFinished(QDataStream &deserializationStream);
+    void deserializeGamePhaseChanged(QDataStream &deserializationStream);
+    void deserializeNewTurn(QDataStream &deserializationStream);
+    void deserializeEffectActivated(QDataStream &deserializationStream);
+    void deserializeReposition(QDataStream &deserializationStream);
 
 private slots:
+    void onGameStart(qint32 firstToPlay, qint32 clientID);
     void onBattlePhaseButtonClick();
     void onMainPhase2ButtonClick();
     void onEndPhaseButtonClick();
@@ -123,13 +126,14 @@ private slots:
 
 
     // Slots for CardMenu signal handling
-    void onActivateButtonClick(Card &);
-    void onSetButtonClick(const Card &);
-    void onSummonButtonClick(Card &);
-    void onAttackButtonClick(Card &);
+    void onActivateButtonClick(Card &card);
+    void onSetButtonClick(Card &card);
+    void onSummonButtonClick(Card &card);
+    void onAttackButtonClick(Card &card);
+    void onRepositionButtonClick(Card &card);
 
     // Slots for EffectActivator signal handling
-    void onHealthPointsChange(Player &);
+    void onLifePointsChange(Player &);
     void onGameEnd(Player &); // const?
 
     // Slots for Zone signal handling
@@ -137,17 +141,24 @@ private slots:
     void onGreenZoneClick(Zone *zone);
 
 
+    // Networking slots
+    // TODO: Separate class ?
+    void onNetworkErrorOccurred(QAbstractSocket::SocketError socketError);
+    void onDataIncoming();
+    void onTestNetworkButtonClick();
+
+    // Testing
+    void onWriteDataButtonClick();
+
 signals:
     void mainWindowResized(QResizeEvent *);
+    void gameStarted(qint32 firstToPlay, qint32 clientID);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
     void cardAddedToScene(Card &targetCard);
     void gameEndedAfterBattle(Player &loser);
+    void lifePointsChanged(Player &targetPlayer);
+    void deserializationFinished();
 };
-
-
-
-
-
 
 #endif // GAME_H

@@ -40,7 +40,10 @@ void Serializer::loadFromJson(QString s)
             MonsterAttribute attribute = Maps::stringToMonsterAttribute[item.toObject()["attribute"].toString()];
             MonsterType type = Maps::stringToMonsterType[item.toObject()["archetype"].toString()];
             
-            MonsterCard *monsterCard = new MonsterCard(name,atk,def,level,type,race,attribute,false,Position::NONE,false,cardType,CardLocation::DECK,desc,imagePath,false);
+            // Placeholder
+            MonsterPosition position = MonsterPosition::NONE;
+
+            MonsterCard *monsterCard = new MonsterCard(name,atk,def,level,type,race,attribute,false, position,false,cardType,CardLocation::DECK,desc,imagePath,false);
             arrayOfCards.push_back(monsterCard);
         }
         else if(item.toObject()["type"].toString() == "Spell Card"){
@@ -50,7 +53,11 @@ void Serializer::loadFromJson(QString s)
             const std::string desc = item.toObject()["desc"].toString().toStdString();
             const std::string imagePath = item.toObject()["image"].toString().toStdString();
             SpellType spellType = Maps::stringToSpellType[item.toObject()["race"].toString()];
-            SpellCard *spellCard = new SpellCard(spellType,name,cardType,CardLocation::DECK,desc,imagePath,false); 
+
+            // Placeholder
+            SpellTrapPosition position = SpellTrapPosition::NONE;
+
+            SpellCard *spellCard = new SpellCard(spellType,name,cardType,CardLocation::DECK, position,desc,imagePath,false);
             arrayOfCards.push_back(spellCard);
         }
         else{
@@ -60,7 +67,10 @@ void Serializer::loadFromJson(QString s)
             const std::string imagePath = item.toObject()["image"].toString().toStdString();
             TrapType trapType = Maps::stringToTrapType[item.toObject()["race"].toString()];
         
-            TrapCard *trapCard = new TrapCard(trapType,name,cardType,CardLocation::DECK,desc,imagePath,false,false);
+            // Placeholder
+            SpellTrapPosition position = SpellTrapPosition::NONE;
+
+            TrapCard *trapCard = new TrapCard(trapType,name,cardType,CardLocation::DECK, position, desc,imagePath,false,false);
             arrayOfCards.push_back(trapCard);
         }
 

@@ -7,7 +7,8 @@ RCC_DIR = build
 UI_DIR = build
 
 QT +=   widgets \
-        multimedia
+        multimedia \
+        network
 
 SOURCES += \
         sources/BotPlayer.cpp \
@@ -57,11 +58,11 @@ HEADERS += \
     headers/Zone.h \
     headers/ui_mainwindow.h \
     headers/ui_mainmenu.h \
-    headers/CardMenu.h \  \
+    headers/CardMenu.h \ 
     headers/MonsterZone.h \
     headers/mainmenu.h \
     headers/Zone.h \
-    sources/BotPlayer.h \
+    headers/BotPlayer.h \
     headers/Serializer.h
 
 RESOURCES += \

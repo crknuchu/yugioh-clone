@@ -1,7 +1,10 @@
 #include "headers/Monstercard.h"
 
 
-MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool summonedThisTurn)
+MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, 
+                        MonsterKind kind, MonsterAttribute attribute,bool active, MonsterPosition position,
+                        bool alreadyAttack, CardType cardType, CardLocation cardLocation, 
+                        const std::string &cardDescription, std::string imagePath, bool summonedThisTurn)
     : Card(cardName, cardType, cardLocation, cardDescription,imagePath)
     ,attackPoints(attackPoints)
     ,defensePoints(defensePoints)
@@ -13,23 +16,12 @@ MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defe
     ,position(position)
     ,alreadyAttack(alreadyAttack)
     ,summonedThisTurn(summonedThisTurn)
-{
-}
+{}
 
 MonsterCard::~MonsterCard()
 {
 
 }
-
-
-const std::map<Position, std::string> MonsterCard::positionEnumToString{
-    {Position::ATTACK,  "ATTACK"},
-    {Position::DEFENSE, "DEFENSE"},
-    {Position::NONE,    "NONE"}
-};
-
-
-
 
 int MonsterCard::getAttackPoints() const
 {
@@ -155,9 +147,35 @@ int MonsterCard::getLevel() const
     return level;
 }
 
-Position MonsterCard::getPosition() const
+MonsterPosition MonsterCard::getPosition() const
 {
     return position;
+}
+
+void MonsterCard::setPosition(const MonsterPosition &newPosition)
+{
+    position = newPosition;
+}
+
+void MonsterCard::changePosition()
+{
+    const MonsterPosition oldPosition = getPosition();
+    QTransform transformationMatrix;
+    if(oldPosition == MonsterPosition::ATTACK)
+    {
+        // Change the actual position
+        setPosition(MonsterPosition::FACE_UP_DEFENSE);
+
+        // Change it on the scene
+        transformationMatrix.rotate(90);
+        setPixmap(pixmap().transformed(transformationMatrix));
+    }
+    else if(oldPosition == MonsterPosition::FACE_UP_DEFENSE)
+    {
+        setPosition(MonsterPosition::ATTACK);
+        transformationMatrix.rotate(-90);
+        setPixmap(pixmap().transformed(transformationMatrix));
+    }
 }
 
 void MonsterCard::setAttackPoints(int newAttackPoints)
@@ -205,20 +223,20 @@ void MonsterCard::multiplyDefensePoints(float multiplyBy)
 
 }
 
-bool MonsterCard::normalSummon(Position s){
+bool MonsterCard::normalSummon(MonsterPosition monsterPos){
     if (this->active == true or this->cardLocation != CardLocation :: HAND )
         return false; // unsuporeted actions
     this->active = true;
-    this->position = s;
+    this->position = monsterPos;
     return true;
 }
 
 
-bool MonsterCard::specialSummon(Position s){
+bool MonsterCard::specialSummon(MonsterPosition monsterPos){
     if ( this->cardLocation == CardLocation :: DECK )
         return false;
     active = true;
-    position = s;
+    position = monsterPos;
     return true;
 }
 
@@ -226,8 +244,8 @@ void MonsterCard::setCardMenu(){
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
 
     if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
-        flagMap.insert("set",true);
-        flagMap.insert("summon",true);
+        flagMap.insert("set", true);
+        flagMap.insert("summon", true);
     }
     if(cardLocation == CardLocation::FIELD  && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1|| GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("reposition",true);
@@ -235,7 +253,7 @@ void MonsterCard::setCardMenu(){
     if(monsterKind == MonsterKind::EFFECT_MONSTER){
         flagMap.insert("activate",true);
     }
-    if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){
+    if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == MonsterPosition::ATTACK){
         flagMap.insert("attack",true);
         flagMap.insert("summon",true);
     }

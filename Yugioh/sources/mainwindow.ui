@@ -27,10 +27,10 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>9</x>
-      <y>9</y>
+      <x>10</x>
+      <y>10</y>
       <width>401</width>
-      <height>760</height>
+      <height>761</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="leftVerticalLayout">
@@ -159,6 +159,37 @@ li.checked::marker { content: &quot;\2612&quot;; }
           </widget>
          </item>
         </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QTextEdit" name="textEditAddress"/>
+         </item>
+         <item>
+          <widget class="QTextEdit" name="textEditPort"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnTestNetwork">
+         <property name="text">
+          <string>Connect to the server</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelMessageFromServer">
+         <property name="text">
+          <string>Message from server</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btnWriteData">
+         <property name="text">
+          <string>Write data to server</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>

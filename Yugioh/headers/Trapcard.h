@@ -14,12 +14,12 @@ class TrapCard : public Card
 {
 public:
 
-    TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool active = false,bool setThisTurn = false);
+    TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, SpellTrapPosition position, const std::string &cardDescription,std::string imagePath,bool active = false,bool setThisTurn = false);
 
 
     TrapType getTrapType() const;
     std::string getTrapTypeString() const;
-
+    SpellTrapPosition getTrapPosition() const;
     void activateTrap();
     void setCardMenu() override;
 
@@ -27,6 +27,7 @@ protected:
     TrapType trapType;
     bool setThisTurn;
     bool active;
+    SpellTrapPosition position;
 };
 
 #endif // TRAPCARD_H
