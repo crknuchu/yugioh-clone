@@ -486,13 +486,13 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
          *  1) Flags
          *  2) ?
          */
-        currentAvatar = avatars::KAIBA;
-        switch(currentAvatar)
+        std::cout<<"Final avatar is ";
+        switch(finalAvatar)
         {
             case(avatars::YUGI):{
                 QPixmap avatar(":/resources/pictures/yugi.png");
 
-
+                std::cout<<" YUGI"<<std::endl;
                 ui->avatarPlayer->setStyleSheet("border: 1px solid grey");
                 ui->avatarPlayer->setPixmap(avatar);
                 ui->avatarPlayer->setScaledContents(true);
@@ -500,12 +500,12 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                 ui->avatarPlayer->setMaximumWidth(200);
                 ui->avatarPlayer->setAlignment(Qt::AlignCenter);
                 ui->namePlayer->setText(QString::fromUtf8(this->m_player1.getPlayerName()));
-    //
+                break;
             }
             case (avatars::KAIBA):{
                 QPixmap avatar(":/resources/pictures/kaiba.png");
 
-
+                std::cout<<" KAIBA"<<std::endl;
                 ui->avatarPlayer->setStyleSheet("border: 1px solid grey");
                 ui->avatarPlayer->setPixmap(avatar);
                 ui->avatarPlayer->setScaledContents(true);
@@ -513,6 +513,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                 ui->avatarPlayer->setMaximumWidth(200);
                 ui->avatarPlayer->setAlignment(Qt::AlignCenter);
                 ui->namePlayer->setText(QString::fromUtf8(this->m_player1.getPlayerName()));
+                break;
             }
         }
 //        ui->avatarPlayer->setBaseSize(200, 250);

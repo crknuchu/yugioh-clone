@@ -22,7 +22,7 @@ enum class avatars {
 
 extern sleeves currentSleeve;
 extern avatars currentAvatar;
-
+extern avatars finalAvatar;
 class profileSettings : public QWidget
 {
     Q_OBJECT

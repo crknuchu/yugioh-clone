@@ -7,6 +7,7 @@
 #include <iostream>
 avatars currentAvatar;
 sleeves currentSleeve;
+avatars finalAvatar;
 
 profileSettings::profileSettings(QWidget *parent) :
     QWidget(parent),
@@ -57,6 +58,7 @@ profileSettings::profileSettings(QWidget *parent) :
 
     QPixmap avatar(":/resources/pictures/yugi.png");
     currentAvatar = avatars::YUGI;
+    finalAvatar = avatars::YUGI;
 
     ui->avatarWindow->setStyleSheet("border: 3px solid grey");
     ui->avatarWindow->setPixmap(avatar);
@@ -97,16 +99,18 @@ void profileSettings::changeAvatar(){
             QPixmap pic1(":/resources/pictures/kaiba.png");
             ui->avatarWindow->clear();
             ui->avatarWindow->setPixmap(pic1);
+            finalAvatar = avatars::KAIBA;
             currentAvatar = avatars::YUGI;
-            std::cout<<"YUGI"<<std::endl;
+            std::cout<<"KAIBA"<<std::endl;
         break;
            }
         case(avatars::YUGI):{
                 QPixmap pic(":/resources/pictures/yugi.png");
                 ui->avatarWindow->clear();
                 ui->avatarWindow->setPixmap(pic);
+                finalAvatar = avatars::YUGI;
                 currentAvatar = avatars::KAIBA;
-                std::cout<<"KAIBA"<<std::endl;
+                std::cout<<"YUGI"<<std::endl;
                 break;
         }
     }
@@ -177,7 +181,7 @@ void profileSettings::changeSleevePrevious(){
 
 
 void profileSettings::saveChanges(){
-    switch(currentAvatar){
+    switch(finalAvatar){
         case(avatars::YUGI):{
             std::cout<<"YUGI"<<std::endl;
             break;
@@ -193,7 +197,7 @@ void profileSettings::saveChanges(){
 }
 
 void profileSettings::undoChanges(){
-    currentAvatar = avatars::YUGI;
+    finalAvatar = avatars::YUGI;
     currentSleeve = sleeves::BLACK;
     close();
 }
