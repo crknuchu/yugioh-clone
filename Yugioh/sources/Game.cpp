@@ -696,3 +696,45 @@ void Game::onCardAddedToScene(Card &card)
     ui->labelImage->setVisible(false);
     ui->textBrowserEffect->setVisible(false);
 }
+
+int Game::getLifePointsJson(){
+    QString val;
+    QFile file;
+    file.setFileName(":/resources/deck_settings.json");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    val = file.readAll();
+    file.close();
+    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject obj = d.object();
+
+    int lifePoints = d["lifepoints"].toInt();
+    return lifePoints;
+}
+
+int Game::getNumberOfCardsJson(){
+    QString val;
+    QFile file;
+    file.setFileName(":/resources/deck_settings.json");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    val = file.readAll();
+    file.close();
+    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject obj = d.object();
+
+    int numberOfCards = d["numberofcards"].toInt();
+    return numberOfCards;
+}
+
+int Game::getTimePerMoveJson(){
+    QString val;
+    QFile file;
+    file.setFileName(":/resources/deck_settings.json");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    val = file.readAll();
+    file.close();
+    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject obj = d.object();
+
+    int timePerMove = d["timepermove"].toInt();
+    return timePerMove;
+}

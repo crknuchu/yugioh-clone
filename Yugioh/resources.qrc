@@ -103,7 +103,7 @@
         <file>resources/pictures/DragonCaptureJar.jpg</file>
         <file>resources/pictures/Waboku.jpg</file>
        
-        
+        <file>resources/deck_settings.json</file>
 
     </qresource>
 </RCC>

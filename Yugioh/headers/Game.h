@@ -64,12 +64,15 @@ public:
 
   int getLifePoints() const;
   void setLifePoints(int newLifePoints);
+  int getLifePointsJson();
 
   int getNumberOfCards() const;
   void setNumberOfCards(int newNumberOfCards);
+  int getNumberOfCardsJson();
 
   int getTimePerMove() const;
   void setTimePerMove(int newTimePerMove);
+  int getTimePerMoveJson();
 
 private:
   Ui::MainWindow *ui;
