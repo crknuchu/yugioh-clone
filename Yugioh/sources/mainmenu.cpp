@@ -75,4 +75,23 @@ void MainMenu::updateValues()
     }
 }
 
+void MainMenu::saveDeckSettingsJson(int lifePoints,int numberOfCards,int timePerMove)
+{
+    QJsonObject obj;
+    obj.insert("lifepoints",lifePoints);
+    obj.insert("numberofcards",numberOfCards);
+    obj.insert("timepermove",timePerMove);
+
+    QString path = qApp->applicationDirPath();
+    path.append("/resources/deck_settings.json");
+    qWarning() << path;
+
+    QFile file;
+    file.setFileName(path);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QJsonDocument d(obj);
+    file.write(d.toJson());
+    file.close();
+    return;
+}
 

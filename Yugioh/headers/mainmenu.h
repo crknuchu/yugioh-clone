@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include "headers/Game.h"
 #include "headers/GameSettings.h"
+#include <QJsonObject>
+#include <QJsonDocument>
 
 namespace Ui {
 class MainMenu;
@@ -18,6 +20,8 @@ public:
     ~MainMenu();
 
     void setGame(Game *newGame);
+
+    void saveDeckSettingsJson(int lifePoints,int numberOfCards,int timePerMove);
 
 
 
