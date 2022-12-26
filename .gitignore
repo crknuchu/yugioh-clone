@@ -4,6 +4,8 @@ Yugioh/compile_ui.sh
 build-Yugioh-Desktop-Debug/
 Yugioh/Yugioh.pro.user
 Yugioh/a.out
+Yugioh/yugioh-server/yugioh-server.pro.user
+Yugioh/yugioh-server/Makefile 
 build-Yugioh-Desktop_Qt_6_4_1_GCC_64bit-Debug/
 build-Yugioh-Desktop_Qt_5_15_2_GCC_64bit-Debug/
 .vscode
