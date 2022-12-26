@@ -22,8 +22,8 @@ int main(int argc,char **argv)
   for(auto card : s.getCards())
     qWarning() <<  QString::fromStdString(card->getCardName());
 
-  MainMenu m;
-  m.show();
+//  MainMenu m;
+//  m.show();
 
   Player player1("Nikola");
   BotPlayer player2("Bot");
@@ -52,7 +52,7 @@ int main(int argc,char **argv)
   profileSettings *p = new profileSettings(); // this has to be dynamicaly alocated,
   //it doesn't work if it is stored on the stack
 //  m->setCentralWidget(&p);
-//  game.showFullScreen();
+  game.showFullScreen();
 //   //   p.resize(500, 500);
 //   p.setMinimumWidth(1024);
 //   p.setMinimumHeight(711);

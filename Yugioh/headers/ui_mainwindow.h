@@ -51,9 +51,9 @@ public:
     QLabel *labelHealthPointsDynamic;
     QWidget *verticalLayoutWidget_2;
     QVBoxLayout *verticalLayout_6;
-    QLabel *label;
-    QLineEdit *lineEdit_4;
-    QLineEdit *lineEdit_5;
+    QLabel *enemyAvatar;
+    QLineEdit *enemyName;
+    QProgressBar *enemyPoints;
     QWidget *verticalLayoutWidget;
     QVBoxLayout *verticalLayout_3;
     QLabel *avatarPlayer;
@@ -153,28 +153,29 @@ public:
 
         verticalLayoutWidget_2 = new QWidget(centralwidget);
         verticalLayoutWidget_2->setObjectName(QString::fromUtf8("verticalLayoutWidget_2"));
-        verticalLayoutWidget_2->setGeometry(QRect(410, 0, 151, 131));
+        verticalLayoutWidget_2->setGeometry(QRect(1450, 10, 161, 221));
         verticalLayout_6 = new QVBoxLayout(verticalLayoutWidget_2);
         verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
         verticalLayout_6->setContentsMargins(0, 0, 0, 0);
-        label = new QLabel(verticalLayoutWidget_2);
-        label->setObjectName(QString::fromUtf8("label"));
+        enemyAvatar = new QLabel(verticalLayoutWidget_2);
+        enemyAvatar->setObjectName(QString::fromUtf8("enemyAvatar"));
 
-        verticalLayout_6->addWidget(label);
+        verticalLayout_6->addWidget(enemyAvatar);
 
-        lineEdit_4 = new QLineEdit(verticalLayoutWidget_2);
-        lineEdit_4->setObjectName(QString::fromUtf8("lineEdit_4"));
+        enemyName = new QLineEdit(verticalLayoutWidget_2);
+        enemyName->setObjectName(QString::fromUtf8("enemyName"));
 
-        verticalLayout_6->addWidget(lineEdit_4);
+        verticalLayout_6->addWidget(enemyName);
 
-        lineEdit_5 = new QLineEdit(verticalLayoutWidget_2);
-        lineEdit_5->setObjectName(QString::fromUtf8("lineEdit_5"));
+        enemyPoints = new QProgressBar(verticalLayoutWidget_2);
+        enemyPoints->setObjectName(QString::fromUtf8("enemyPoints"));
+        enemyPoints->setValue(24);
 
-        verticalLayout_6->addWidget(lineEdit_5);
+        verticalLayout_6->addWidget(enemyPoints);
 
         verticalLayoutWidget = new QWidget(centralwidget);
         verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
-        verticalLayoutWidget->setGeometry(QRect(450, 590, 131, 151));
+        verticalLayoutWidget->setGeometry(QRect(450, 550, 161, 221));
         verticalLayout_3 = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         verticalLayout_3->setContentsMargins(0, 0, 0, 0);
@@ -192,6 +193,7 @@ public:
         progressBar->setObjectName(QString::fromUtf8("progressBar"));
         progressBar->setMaximum(8000);
         progressBar->setValue(8000);
+        progressBar->setInvertedAppearance(false);
 
         verticalLayout_3->addWidget(progressBar);
 
@@ -233,7 +235,7 @@ public:
         labelCurrentPlayerDynamic->setText(QString());
         labelHealthPointsConst->setText(QCoreApplication::translate("MainWindow", "Health Points: ", nullptr));
         labelHealthPointsDynamic->setText(QString());
-        label->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
+        enemyAvatar->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         avatarPlayer->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
         progressBar->setFormat(QCoreApplication::translate("MainWindow", "%p%", nullptr));
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));

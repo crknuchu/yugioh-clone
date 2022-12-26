@@ -40,7 +40,6 @@ Game::Game(Player p1, Player p2,int lifePoints,int numberOfCards ,int timePerMov
 
     // Setup connections:
     setupConnections();
-
     /* Install an event filter for Resize event
        With this, we will be notified of every resize event on MainWindow
        We can use this to get new resolution after showFullscreen, whereas
@@ -365,6 +364,8 @@ void Game::onEndPhaseButtonClick()
     std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
     m_currentTurn++;
     emit turnEnded();
+    ui->progressBar->setValue(m_player1.getPlayerLifePoints() - 100);
+    m_player1.setPlayerLifePoints(m_player1.getPlayerLifePoints() - 100);
 
 }
 
@@ -513,11 +514,35 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                 ui->avatarPlayer->setMaximumWidth(200);
                 ui->avatarPlayer->setAlignment(Qt::AlignCenter);
                 ui->namePlayer->setText(QString::fromUtf8(this->m_player1.getPlayerName()));
+
+
                 break;
             }
         }
 //        ui->avatarPlayer->setBaseSize(200, 250);
-        ui->progressBar->setValue(6000);
+        ui->progressBar->setMaximum(this->m_player1.getPlayerLifePoints());
+        ui->progressBar->setMinimum(0);
+        ui->progressBar->setValue(this->m_player1.getPlayerLifePoints());
+        ui->progressBar->setFormat("%v");
+        ui->progressBar->setRange(0, 8000);
+
+
+        ui->enemyName->setText(QString::fromUtf8(this->m_player2.getPlayerName()));
+        ui->enemyPoints->setMaximum(this->m_player2.getPlayerLifePoints());
+        ui->enemyPoints->setMinimum(0);
+        ui->enemyPoints->setRange(0, 8000);
+        ui->enemyPoints->setFormat("%v");
+        ui->enemyPoints->setValue(this->m_player2.getPlayerLifePoints());
+
+        QPixmap avatar(":/resources/pictures/kaiba.png");
+
+//        std::cout<<" KAIBA"<<std::endl;
+        ui->enemyAvatar->setStyleSheet("border: 1px solid grey");
+        ui->enemyAvatar->setPixmap(avatar);
+        ui->enemyAvatar->setScaledContents(true);
+        ui->enemyAvatar->setMaximumHeight(200);
+        ui->enemyAvatar->setMaximumWidth(200);
+        ui->enemyAvatar->setAlignment(Qt::AlignCenter);
 
 //        else
 //        {
