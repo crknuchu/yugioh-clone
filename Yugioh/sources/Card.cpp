@@ -163,6 +163,7 @@ void Card::mousePressEvent(QGraphicsSceneMouseEvent *event){
 void Card::move(float x,float y){
     setPos(x,y); //we need to implement a unified move() function that moves the card and the menu at the same time
     cardMenu->move(pos().x(),pos().y()-cardMenu->height());
+    hide();
 }
 
 void Card::setName(std::string name){
