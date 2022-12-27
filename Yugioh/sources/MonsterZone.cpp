@@ -50,6 +50,7 @@ void MonsterZone::placeInMonsterZone(Card *card, Zone* zone){
     MonsterCard* monsterCard = dynamic_cast<MonsterCard*>(card);
     if(monsterCard) {
         zone->putInZone(monsterCard);
+        monsterCard->setCardLocation(CardLocation::FIELD);
     }
     else {
         std::cout << "Only monster cards can be put in monster zone" << std::endl;

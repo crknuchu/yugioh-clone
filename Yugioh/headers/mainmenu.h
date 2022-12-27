@@ -27,7 +27,7 @@ public:
 
 
 private slots:
-    void on_btnStart_clicked();
+    void onStartButtonClick();
 
     void on_btnQuit_clicked();
 

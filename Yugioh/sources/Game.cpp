@@ -24,6 +24,8 @@ Player *GameExternVars::pOtherPlayer = nullptr;
 Card *GameExternVars::pCardToBePlacedOnField = nullptr;
 Card *GameExternVars::pAttackingMonster = nullptr;
 qint32 GameExternVars::currentTurnClientID = -1;
+std::vector<Card *> GameExternVars::yugiCards;
+std::vector<Card *> GameExternVars::kaibaCards;
 
 const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_deserializationMap = {
     {"WELCOME_MESSAGE",                                 &Game::deserializeWelcomeMessage},
@@ -73,6 +75,17 @@ Game::Game(Player p1, Player p2,int lifePoints,int numberOfCards ,int timePerMov
     // Create a new scene:
     scene = new QGraphicsScene(this);
     ui->graphicsView->setScene(scene);
+
+
+
+
+    // Set the global decks of both players
+        // TODO: Kaiba.json
+    Serializer s;
+    s.loadFromJson(":/resources/yugi.json");
+    GameExternVars::yugiCards = s.getCards();
+//    s.loadFromJson(":/resources/kaiba.json");
+
 }
 
 Game::Game() {}
@@ -326,6 +339,17 @@ void Game::damagePlayer(Player &targetPlayer, int howMuch)
         emit gameEndedAfterBattle(targetPlayer);
 }
 
+Card* Game::reconstructCard(QString cardName)
+{
+    for(Card *card : GameExternVars::yugiCards)
+    {
+        if(card->getCardName() == cardName.toStdString())
+            return card;
+    }
+
+    return nullptr;
+}
+
 
 
 
@@ -334,26 +358,6 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
 
     std::cout << "Window width/height in firstTurnSetup: " << windowWidth << " / " << windowHeight << std::endl;
 
-
-    std::cout << "Client id: " << clientID << std::endl;
-    // Set the m_clientID to clientID so we always know who we are
-    m_clientID = clientID;
-
-    // Set up pointers to current and other player
-    if (firstToPlay == 1)
-    {
-      GameExternVars::pCurrentPlayer = &m_player1;
-      GameExternVars::pOtherPlayer = &m_player2;
-    }
-    else
-    {
-      GameExternVars::pCurrentPlayer = &m_player2;
-      GameExternVars::pOtherPlayer = &m_player1;
-    }
-
-    GameExternVars::currentTurnClientID = firstToPlay;
-
-    std::cout << "Extern var current turn client ID !!!:  " << GameExternVars::currentTurnClientID << std::endl;
 
   // Disable UI for second player until its his turn.
     // TODO: Move this into a separate function since its used in onTurnEnd too.
@@ -385,19 +389,19 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
 
 
   //just a placeholder code for hand
-    MonsterCard* monsterCard1 = new MonsterCard("Lord of D", 3000, 2500, 4,
+    MonsterCard* monsterCard1 = new MonsterCard("Trap Master", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::HAND,
                                               "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/LordofD.jpg"
+                                              ":/resources/pictures/TrapMaster.jpg"
                                               );
-    MonsterCard* monsterCard2 = new MonsterCard("Lord of D", 3000, 2500, 4,
+    MonsterCard* monsterCard2 = new MonsterCard("Trap Master", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::HAND,
                                               "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/LordofD.jpg"
+                                              ":/resources/pictures/TrapMaster.jpg"
                                               );
     MonsterCard* monsterCard3 = new MonsterCard("Lord of D", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
@@ -554,21 +558,43 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
 
 
     // TODO: Here we will recreate the card in the future and put it in the correct zone.
-    if(cardType == QString::fromStdString("monster card"))
+    Card* targetCard = reconstructCard(cardName);
+
+    std::cout << *targetCard << std::endl;
+
+
+    if(targetCard == nullptr)
     {
-        // Get the position enum
-        // ...
+        std::cerr << "reconstructCard() failed in deserializeFieldPlacement!" << std::endl;
+        return;
     }
-    else if(cardType == QString::fromStdString("spell card"))
+
+
+    Zone *targetZone;
+    if(cardType == "monster card")
     {
-        // Get the position enum
-        // ...
+        GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(targetCard, zoneNumber);
+        targetZone = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber];
     }
     else
     {
-        // Get the position enum
-        // ...
+        GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(targetCard, zoneNumber);
+        targetZone = GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone[zoneNumber];
     }
+
+
+    for(auto x : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
+        if(!x->isEmpty())
+            std::cout << *x->m_pCard << std::endl;
+    }
+
+    qDebug() << targetCard->pos();
+
+    targetCard->move(targetZone->m_x, targetZone->m_y);
+
+    qDebug() << targetCard->pos();
+
+    notifyServerThatDeserializationHasFinished();
 }
 
 void Game::deserializeAddCardToHand(QDataStream &deserializationStream)
@@ -785,8 +811,14 @@ void Game::deserializeReposition(QDataStream &deserializationStream)
     // TODO: Find the monster
     std::cout << "PLACEHOLDER: Here we find " << cardName.toStdString() << " which is in the zone with number " << zoneNumber << std::endl;
 
+
+    Card* targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber]->m_pCard;
+
+    // We know that its a monster
+    MonsterCard *targetMonster = static_cast<MonsterCard *>(targetCard);
+
     // Change its position
-    // monsterCard->changePosition();
+    targetMonster->changePosition();
 
     // Notify the server that deserialization is finished
     notifyServerThatDeserializationHasFinished();
@@ -796,39 +828,78 @@ void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
 {
     std::cout << "Game has started!" << std::endl;
 
-    m_player1.field.setField(1, m_viewAndSceneWidth,m_windowHeight);
-    for(auto zone :    m_player1.field.monsterZone.m_monsterZone) {
-        connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-        connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-        ui->graphicsView->scene()->addItem(zone);
-    }
-    for(auto zone : m_player1.field.spellTrapZone.m_spellTrapZone) {
-        connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-        connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-        ui->graphicsView->scene()->addItem(zone);
-    }
-    for(auto c : m_player1.field.deck.uiDeck) {
-        ui->graphicsView->scene()->addItem(c);
-    }
-    ui->graphicsView->scene()->addItem(m_player1.field.graveyard);
-    ui->graphicsView->scene()->addItem(m_player1.field.fieldZone);
+    std::cout << "First one to play is client with id " << firstToPlay << std::endl;
 
-    m_player2.field.setField(2, m_viewAndSceneWidth,m_windowHeight);
-    for(auto zone :    m_player2.field.monsterZone.m_monsterZone) {
+
+    // Set up pointers to current and other player
+    if (firstToPlay == 1)
+    {
+      GameExternVars::pCurrentPlayer = &m_player1;
+      GameExternVars::pOtherPlayer = &m_player2;
+    }
+    else
+    {
+      GameExternVars::pCurrentPlayer = &m_player2;
+      GameExternVars::pOtherPlayer = &m_player1;
+    }
+
+    std::cout << "Client id: " << clientID << std::endl;
+    // Set the m_clientID to clientID so we always know who we are
+
+
+    m_clientID = clientID; // = 1
+
+
+    GameExternVars::currentTurnClientID = firstToPlay; // = 1 or 2
+
+
+    // We always want to have our field on the bottom, not current player's.
+    int flagBottomField, flagUpperField;
+    if(m_clientID == firstToPlay)
+    {
+        flagBottomField = 1;
+        flagUpperField = 2;
+    }
+    else
+    {
+        flagBottomField = 2;
+        flagUpperField  = 1;
+    }
+
+
+    GameExternVars::pCurrentPlayer->field.setField(flagBottomField, m_viewAndSceneWidth, m_windowHeight);
+    for(auto zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
         ui->graphicsView->scene()->addItem(zone);
     }
-    for(auto zone : m_player2.field.spellTrapZone.m_spellTrapZone) {
+    for(auto zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
         ui->graphicsView->scene()->addItem(zone);
     }
-    for(auto c : m_player2.field.deck.uiDeck) {
+    for(auto c : GameExternVars::pCurrentPlayer->field.deck.uiDeck) {
         ui->graphicsView->scene()->addItem(c);
     }
-    ui->graphicsView->scene()->addItem(m_player2.field.graveyard);
-    ui->graphicsView->scene()->addItem(m_player2.field.fieldZone);
+    ui->graphicsView->scene()->addItem(GameExternVars::pCurrentPlayer->field.graveyard);
+    ui->graphicsView->scene()->addItem(GameExternVars::pCurrentPlayer->field.fieldZone);
+
+    GameExternVars::pOtherPlayer->field.setField(flagUpperField, m_viewAndSceneWidth,m_windowHeight);
+    for(auto zone : GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone) {
+        connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
+        connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+        ui->graphicsView->scene()->addItem(zone);
+    }
+    for(auto zone : GameExternVars::pOtherPlayer->field.spellTrapZone.m_spellTrapZone) {
+        connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
+        connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+        ui->graphicsView->scene()->addItem(zone);
+    }
+    for(auto c : GameExternVars::pOtherPlayer->field.deck.uiDeck) {
+        ui->graphicsView->scene()->addItem(c);
+    }
+    ui->graphicsView->scene()->addItem(GameExternVars::pOtherPlayer->field.graveyard);
+    ui->graphicsView->scene()->addItem(GameExternVars::pOtherPlayer->field.fieldZone);
 
 
 
@@ -936,7 +1007,6 @@ void Game::onTurnEnd() {
     outDataStream.setVersion(QDataStream::Qt_5_15);
     outDataStream << QString::fromStdString("ADD_CARD_TO_HAND")
                   << qint32(1)
-                  // Tell the opponent that his opponent (current player) got the card // TODO: Should we send MYSELF?
                   << QString::fromStdString("CURRENT_PLAYER");
     sendDataToServer(buffer);
     blockingLoop.exec();
@@ -1044,43 +1114,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         background = background.scaled(m_viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
         QBrush brush(QPalette::Window, background);
         ui->graphicsView->setBackgroundBrush(brush);
-
-//        m_player1.field.setField(1, m_viewAndSceneWidth,m_windowHeight);
-//        for(auto zone :    m_player1.field.monsterZone.m_monsterZone) {
-//            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-//            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-//            ui->graphicsView->scene()->addItem(zone);
-//        }
-//        for(auto zone : m_player1.field.spellTrapZone.m_spellTrapZone) {
-//            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-//            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-//            ui->graphicsView->scene()->addItem(zone);
-//        }
-//        for(auto c : m_player1.field.deck.uiDeck) {
-//            ui->graphicsView->scene()->addItem(c);
-//        }
-//        ui->graphicsView->scene()->addItem(m_player1.field.graveyard);
-//        ui->graphicsView->scene()->addItem(m_player1.field.fieldZone);
-
-//        m_player2.field.setField(2, m_viewAndSceneWidth,m_windowHeight);
-//        for(auto zone :    m_player2.field.monsterZone.m_monsterZone) {
-//            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-//            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-//            ui->graphicsView->scene()->addItem(zone);
-//        }
-//        for(auto zone : m_player2.field.spellTrapZone.m_spellTrapZone) {
-//            connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
-//            connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
-//            ui->graphicsView->scene()->addItem(zone);
-//        }
-//        for(auto c : m_player2.field.deck.uiDeck) {
-//            ui->graphicsView->scene()->addItem(c);
-//        }
-//        ui->graphicsView->scene()->addItem(m_player2.field.graveyard);
-//        ui->graphicsView->scene()->addItem(m_player2.field.fieldZone);
-
-        // First turn setup at the beginning of the game:
-//        firstTurnSetup(m_viewAndSceneWidth, m_windowHeight);
     }
 }
 
@@ -1172,8 +1205,7 @@ void Game::onSummonButtonClick(Card &card) {
     std::cout<< "Summon button was clicked on card " << card.getCardName() << std::endl;
 
     // Remove target card from player's hand
-//    GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
-//    std::cout << "Hand after removing the card: " << std::endl;
+    GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
 
     /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
        to see it. */
@@ -1281,23 +1313,22 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
 
     std::cout << "Card " << *card << std::endl;
 
-
     // TODO: Move these into separate functions.
-    if(card->getCardType() == CardType::MONSTER_CARD) {
+    if(card->getCardType() == CardType::MONSTER_CARD)
+    {
         GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
+
         for(auto x : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
             if(!x->isEmpty())
                 std::cout << *x->m_pCard << std::endl;
         }
+
         GameExternVars::pCurrentPlayer->field.monsterZone.refresh();
 
         // Get the monster's position
         MonsterCard *pMonsterCard = static_cast<MonsterCard *>(card);
         QString monsterPosition = pMonsterCard->monsterPositionEnumToQString.at(pMonsterCard->getPosition());
-
-        // Place the card on the field
-        card->move(clickedRedZone->m_x, clickedRedZone->m_y);
 
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
@@ -1337,9 +1368,6 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
             TrapCard *pTrapCard = static_cast<TrapCard *>(card);
             spellTrapPosition = pTrapCard->spellTrapPositionEnumToQString.at(pTrapCard->getTrapPosition());
         }
-
-        // Place the card on the field
-        card->move(clickedRedZone->m_x, clickedRedZone->m_y);
 
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);

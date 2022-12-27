@@ -23,12 +23,8 @@ void Serializer::loadFromJson(QString s)
     QJsonArray arr = obj["data"].toArray();
 
     for(auto item : arr){
-        
-        
-
-
         CardType cardType;
-        if(item.toObject()["type"].toString() == "Normal Monster"){
+        if(item.toObject()["type"].toString() == "Normal Monster" || item.toObject()["type"].toString() == "Effect Monster"){
             cardType = CardType::MONSTER_CARD;
             const std::string name = item.toObject()["name"].toString().toStdString();
             const std::string desc = item.toObject()["desc"].toString().toStdString();

@@ -63,6 +63,8 @@ void MyTcpServer:: onNewConnection()
         {
             std::cout << "Number of clients is 2, the game should start soon..." << std::endl;
 
+            // Decide who plays first
+            int whoPlaysFirst = decideWhoPlaysFirst();
             for(std::pair<QTcpSocket*, int> clientSocket : m_clients)
             {
                 // We also send the id to each Game client so it knows about itself.
@@ -72,7 +74,7 @@ void MyTcpServer:: onNewConnection()
                 QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
                 outDataStream.setVersion(QDataStream::Qt_5_15);
                 outDataStream << QString::fromStdString("START_GAME") // Notify clients that the game should start
-                              << qint32(decideWhoPlaysFirst()) // Tell them who plays first
+                              << qint32(whoPlaysFirst)// Tell them who plays first
                               << qint32(clientSocket.second); // Tell them who they are
                 clientSocket.first->write(buffer);
             }

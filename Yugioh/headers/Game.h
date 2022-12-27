@@ -21,6 +21,8 @@ namespace GameExternVars {
     extern Card *pCardToBePlacedOnField;
     extern Card *pAttackingMonster;
     extern qint32 currentTurnClientID;
+    extern std::vector<Card *> yugiCards;
+    extern std::vector<Card *> kaibaCards;
 }
 
 class Game: public QMainWindow
@@ -75,6 +77,8 @@ private:
   void battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
   void battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
   void damagePlayer(Player &targetPlayer, int howMuch);
+
+  Card* reconstructCard(QString cardName);
 
 // QT related stuff:
     int m_windowWidth;

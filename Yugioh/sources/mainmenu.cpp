@@ -30,6 +30,8 @@ MainMenu::MainMenu(QWidget *parent) :
 //    music->play();
 
 
+
+    connect(ui->btnStart, &QPushButton::clicked, this, &MainMenu::onStartButtonClick);
 }
 
 MainMenu::~MainMenu()
@@ -39,16 +41,16 @@ MainMenu::~MainMenu()
     delete m_pGameSettings;
 }
 
-void MainMenu::on_btnStart_clicked()
+void MainMenu::onStartButtonClick()
 {
     Serializer s;
     s.loadFromJson(":/resources/yugi.json");
     Player *player1 = new Player("Nikola");
     Player *player2 = new Player("Milan");
     std::vector<Card *> cards = s.getCards();
-    Deck d = Deck(cards);
-    player1->setDeck(d);
-    player2->setDeck(d);
+    Deck deck = Deck(cards);
+    player1->setDeck(deck);
+    player2->setDeck(deck);
     m_pGame = new Game(*player1, *player2);
 //    m_pGame->showFullScreen();
     m_pGame->show();
