@@ -83,7 +83,9 @@ void MonsterZone::colorFreeZones() {
 void MonsterZone::colorOccupiedZones() {
     for(Zone *zone : m_monsterZone) {
         if(!zone->isEmpty()) {
-            zone->setBrush(Qt::green);
+            QColor green50(Qt::green);
+            green50.setAlphaF(0.5);
+            zone->setBrush(green50);
             zone->update();
         }
     }

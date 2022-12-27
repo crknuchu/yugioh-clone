@@ -706,14 +706,16 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 }
 
 void Game::onBlueZoneClick(Zone *clickedBlueZone) {
-    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA Blue zone was clicked!" << std::endl;
 
-    // TODO: MonsterCard instead of Card?
-    // Card* attackedMonster = clickedGreenZone->m_pCard;
-    // Refresh the opponent's monster zone
-    // GameExternVars::pOtherPlayer->field.monsterZone.refresh();
-    // Do the damage calculation
-    // damageCalculation(GameExternVars::pAttackingMonster, attackedMonster);
+    MonsterCard* pickedMonster = static_cast<MonsterCard*>(clickedBlueZone->m_pCard);
+    
+    //invigoration
+    if(pickedMonster->getAttribute() == MonsterAttribute::EARTH){
+        pickedMonster->setAttackPoints(pickedMonster->getAttackPoints()+400);
+        pickedMonster->setDefensePoints(pickedMonster->getDefensePoints()+200);
+    }
+
+    GameExternVars::pCurrentPlayer->field.monsterZone.refresh();
 }
 
 void Game::onCardAddedToScene(Card &card)
