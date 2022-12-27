@@ -101,6 +101,15 @@ bool MonsterZone::isFull() const {
     return true;
 }
 
+bool MonsterZone::isEmpty() const {
+    for(Zone* zone : m_monsterZone) {
+        if(!zone->isEmpty())
+            return false;
+    }
+
+    return true;
+}
+
 float MonsterZone::getWidth() const
 {
     return m_width;

@@ -1,4 +1,5 @@
 #include "headers/Trapcard.h"
+#include "headers/EffectRequirement.h"
 
 TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool active,bool setThisTurn)
     : Card(cardName, cardType, cardLocation, cardDescription,imagePath)
@@ -38,12 +39,14 @@ void TrapCard::activateTrap()
 
 void TrapCard::setCardMenu(){
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
-
+    EffectRequirement effectRequirement(*this);
+    bool cardActivationRequirement = effectRequirement.isActivatable(this->cardName);
     if(cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)){
         flagMap.insert("set",true);
-        flagMap.insert("activate",true);
+        if(cardActivationRequirement)
+            flagMap.insert("activate",true);
     }
-    if(cardLocation == CardLocation::FIELD && setThisTurn == false){
+    if(cardLocation == CardLocation::FIELD && setThisTurn == false && cardActivationRequirement){
         flagMap.insert("activate",true);
     }
     cardMenu->update(flagMap);

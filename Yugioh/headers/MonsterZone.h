@@ -17,6 +17,7 @@ public:
     void removeFromMonsterZone(int);
     float getWidth() const;
     bool isFull() const;
+    bool isEmpty() const;
     void colorFreeZones();
     void colorOccupiedZones();
     void refresh();

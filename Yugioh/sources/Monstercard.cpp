@@ -1,5 +1,5 @@
 #include "headers/Monstercard.h"
-
+#include "headers/EffectRequirement.h"
 
 MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool summonedThisTurn)
     : Card(cardName, cardType, cardLocation, cardDescription,imagePath)
@@ -229,7 +229,8 @@ bool MonsterCard::specialSummon(Position s){
 
 void MonsterCard::setCardMenu(){
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
-
+    EffectRequirement effectRequirement(*this);
+    bool cardActivationRequirement = effectRequirement.isActivatable(this->cardName);
     if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("set",true);
         flagMap.insert("summon",true);
@@ -237,7 +238,7 @@ void MonsterCard::setCardMenu(){
     if(cardLocation == CardLocation::FIELD  && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1|| GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("reposition",true);
     }
-    if(monsterKind == MonsterKind::EFFECT_MONSTER){
+    if(monsterKind == MonsterKind::EFFECT_MONSTER && cardLocation == CardLocation::FIELD && cardActivationRequirement){
         flagMap.insert("activate",true);
     }
     if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){

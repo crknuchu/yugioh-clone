@@ -2,6 +2,7 @@
 #include "headers/Game.h"
 #include "headers/Monstercard.h"
 #include "headers/EffectActivator.h"
+#include "headers/EffectRequirement.h"
 #include "headers/MonsterZone.h"
 #include "headers/SpellTrapZone.h"
 #include "headers/Serializer.h"
@@ -277,7 +278,7 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard4);
 
   GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard3, 2); //testing purposes
-  GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard1);
+  GameExternVars::pOtherPlayer->field.monsterZone.placeInMonsterZone(testCard1, 2);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
 }
