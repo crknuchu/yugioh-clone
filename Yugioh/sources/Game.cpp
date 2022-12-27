@@ -566,6 +566,8 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
 
     // TODO: Here we will recreate the card in the future and put it in the correct zone.
     Card* targetCard = reconstructCard(cardName);
+
+
     std::cout << *targetCard << std::endl;
     if(targetCard == nullptr)
     {
@@ -576,9 +578,34 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
     // Add the card to the scene
     ui->graphicsView->scene()->addItem(targetCard);
 
-    cardType == "monster card"
-            ? GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(targetCard, zoneNumber)
-            : GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(targetCard, zoneNumber);
+    if (cardType == "monster card")
+    {
+        MonsterCard *monsterCard = static_cast<MonsterCard *>(targetCard);
+
+        // Set the position
+        MonsterPosition monsterPosition = monsterCard->monsterPositionQStringToEnum.at(positionQString);
+        monsterCard->setPosition(monsterPosition);
+
+        // Place it on the field
+        GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(targetCard, zoneNumber);
+    }
+    else
+    {
+        SpellTrapPosition stPosition;
+        if(cardType == "spell card")
+        {
+            SpellCard *spellCard = static_cast<SpellCard *>(targetCard);
+            stPosition = spellCard->spellTrapPositionQStringToEnum.at(positionQString);
+            spellCard->setPosition(stPosition);
+        }
+        else
+        {
+            TrapCard *trapCard = static_cast<TrapCard *>(targetCard);
+            stPosition = trapCard->spellTrapPositionQStringToEnum.at(positionQString);
+            trapCard->setPosition(stPosition);
+        }
+        GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(targetCard, zoneNumber);
+    }
 
 
     // Rotate it by 180 degrees to be facing towards us
@@ -1351,9 +1378,7 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
                       << zoneNumber
                       << monsterPosition;
         sendDataToServer(buffer);
-         std::cout << "Odmah pre blok.exeC() u redzoneclicked" << std::endl;
         blockingLoop.exec();
-        std::cout << "Odmah posle blok.exeC() u redzoneclicked" << std::endl;
     }
     else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
         GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);

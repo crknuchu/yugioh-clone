@@ -51,3 +51,8 @@ void TrapCard::setCardMenu(){
     }
     cardMenu->update(flagMap);
 };
+
+void TrapCard::setPosition(SpellTrapPosition &newPosition)
+{
+    position = newPosition;
+};
