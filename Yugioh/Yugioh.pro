@@ -60,8 +60,6 @@ HEADERS += \
     headers/ui_mainmenu.h \
     headers/CardMenu.h \ 
     headers/MonsterZone.h \
-    headers/mainmenu.h \
-    headers/Zone.h \
     headers/BotPlayer.h \
     headers/Serializer.h
 

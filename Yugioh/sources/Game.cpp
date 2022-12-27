@@ -707,6 +707,7 @@ void Game::deserializeLpChange(QDataStream &deserializationStream)
 void Game::deserializeDeserializationFinished(QDataStream &deserializationStream)
 {
     emit deserializationFinished();
+//    QTimer::singleShot(0, this, &Game::deserializationFinished);
 }
 
 void Game::deserializeGamePhaseChanged(QDataStream &deserializationStream)
@@ -1199,11 +1200,13 @@ void Game::onAttackButtonClick(Card &attackingMonster)
 void Game::onRepositionButtonClick(Card &card)
 {
     std::cout << "Reposition button clicked for card " << card.getCardName() << std::endl;
-//    // We are sure that this card is a MonsterCard since only monsters can change their position to defense or attack
+
+    // We are sure that this card is a MonsterCard since only monsters can change their position to defense or attack
     MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
 
     // Change the position
     monsterCard->changePosition();
+
 
     // Notify the server / other client
     QEventLoop blockingLoop;
@@ -1216,6 +1219,7 @@ void Game::onRepositionButtonClick(Card &card)
                   << qint32(3); // Zone number, so we can locate the monster
     sendDataToServer(buffer);
     blockingLoop.exec();
+
 }
 
 

@@ -12,7 +12,7 @@ void CardMenu::setUpLayout()
     layout->addWidget(activateButton);
     layout->addWidget(setButton);
     layout->addWidget(summonButton);        
-    layout->addWidget(repositionButton);   
+    layout->addWidget(repositionButton);
     layout->addWidget(attackButton); 
     layout->addWidget(attackDirectlyButton);       
 }
