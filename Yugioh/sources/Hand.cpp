@@ -36,7 +36,6 @@ Card* Hand::removeFromHand(Card &card) {
     float gap = 20;
     auto it = std::find(m_cardList.begin(), m_cardList.end(), &card);
     m_x -= (card.getWidth() + gap);
-    std::cout << m_x << std::endl;
     m_cardList.erase(it);
     return &card;
 }
