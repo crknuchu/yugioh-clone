@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include "headers/Game.h"
 #include "headers/GameSettings.h"
-#include "headers/DeckSettings.h"
+
 namespace Ui {
 class MainMenu;
 }
@@ -31,15 +31,13 @@ private slots:
 
     void updateValues();
 
-
-
     void on_btnDeckSettings_clicked();
 
 private:
     Ui::MainMenu *ui;
     Game *m_pGame;
     GameSettings *m_pGameSettings;
-    deckSettings *m_pDeckSettings;
+
 };
 
 

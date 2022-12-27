@@ -7,17 +7,18 @@
 #include "headers/CardMenu.h"
 #include "headers/Serializer.h"
 
+#include "decksettings.h"
+
 int main(int argc,char **argv)
 {
   QApplication app(argc, argv);
 
-  Serializer s;
-  s.loadFromJson(":/resources/yugi.json");
-  for(auto card : s.getCards())
-    qWarning() <<  QString::fromStdString(card->getCardName());
+  //MainMenu m;
+  //m.showFullScreen();
 
-  MainMenu m;
-  m.showFullScreen();
+  deckSettings d;
+  d.show();
+
 
   app.exec();
   return 0;
