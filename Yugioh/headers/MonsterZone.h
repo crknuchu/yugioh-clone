@@ -19,6 +19,7 @@ public:
     bool isFull() const;
     void colorFreeZones();
     void colorOccupiedZones();
+    void colorAvailableZones(MonsterAttribute attribute);
     void refresh();
     float size() const;
     std::vector<Zone*> m_monsterZone;

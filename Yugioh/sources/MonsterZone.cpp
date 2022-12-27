@@ -86,6 +86,18 @@ void MonsterZone::colorOccupiedZones() {
     }
 }
 
+void MonsterZone::colorAvailableZones(MonsterAttribute attribute) {
+    for(Zone *zone : m_monsterZone) {
+        // ovde mora neki uslov tipa if(type == EARTH) ili attribute == nesto ...
+        if(!zone->isEmpty() && static_cast<MonsterCard*>(zone->m_pCard)->getAttribute() == attribute) {
+            // zone->setZValue(100);
+            // zone->m_pCard->hide();
+            zone->setBrush(Qt::blue);
+            zone->update();
+        }
+    }
+}
+
 void MonsterZone::refresh() {
     for(Zone *zone : m_monsterZone) {
         zone->setBrush(QColor(0,0,200,30));

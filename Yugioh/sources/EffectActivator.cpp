@@ -127,7 +127,11 @@ void EffectActivator::activateDarkEnergy()
 
 void EffectActivator::activateInvigoration()
 {
-
+    // prvo treba da se zone gde se nalaze moja cudovista oboje (EARTH)
+    GameExternVars::pCurrentPlayer->field.monsterZone.colorAvailableZones(MonsterAttribute::DARK); //temp for testing, change to EARTH
+    // to treba da bude neka fja koja prima argument ili EARTH ili npr spellcaster
+    // kada se oboje polja treba da se klikne na kartu i da se efekat odradi
+    // u slot koji hvata klik 
 }
 
 void EffectActivator::activateSogen()

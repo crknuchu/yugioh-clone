@@ -133,6 +133,7 @@ private slots:
     // Slots for Zone signal handling
     void onRedZoneClick(Zone *zone);
     void onGreenZoneClick(Zone *zone);
+    void onBlueZoneClick(Zone *zone);
 
 
 signals:

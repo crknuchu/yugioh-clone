@@ -50,6 +50,7 @@ void MainMenu::on_btnStart_clicked()
     player2->setDeck(d);
     m_pGame = new Game(*player1, *player2);
     m_pGame->showFullScreen();
+    hide();
 }
 
 

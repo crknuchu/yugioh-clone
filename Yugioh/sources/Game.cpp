@@ -271,15 +271,21 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                              CardType::SPELL_CARD, CardLocation::HAND,
                                              "  Destroy the 1 face-up monster your opponent controls that has the lowest ATK", ":/resources/pictures/Fissure.jpg", true);
 
+    SpellCard* testCard5 = new SpellCard(SpellType::NORMAL_SPELL, "Invigoration",
+                                             CardType::SPELL_CARD, CardLocation::HAND,
+                                             "  blablabla.  ", ":/resources/pictures/Invigoration.jpg", true);
+
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard1);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard2);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard3);
-  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard4);
+//   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard4);
+  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard5);
 
   GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard3, 2); //testing purposes
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard1);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
-  GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
+//   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
+  GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard5);
 }
 
 
@@ -486,11 +492,13 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         for(auto zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
             connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
             connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+            connect(zone, &Zone::zoneBlueAndClicked, this, &Game::onBlueZoneClick);
             ui->graphicsView->scene()->addItem(zone);
         }
         for(auto zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
             connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
             connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
+            connect(zone, &Zone::zoneBlueAndClicked, this, &Game::onBlueZoneClick);
             ui->graphicsView->scene()->addItem(zone);
         }
         for(auto c : GameExternVars::pCurrentPlayer->field.deck.uiDeck) {
@@ -594,6 +602,9 @@ void Game::onActivateButtonClick(Card &card)
         connect(&effectActivator, &EffectActivator::healthPointsChanged, this, &Game::onHealthPointsChange);
         connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
 
+        //testing
+        // GameExternVars::pCurrentPlayer->field.monsterZone.colorAvailableZones();
+
         // Activate the card's effect
         effectActivator.activateEffect(cardName);
 
@@ -692,8 +703,17 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 
     // Do the damage calculation
     damageCalculation(GameExternVars::pAttackingMonster, attackedMonster);
+}
 
+void Game::onBlueZoneClick(Zone *clickedBlueZone) {
+    std::cout << "Blue zone was clicked!" << std::endl;
 
+    // TODO: MonsterCard instead of Card?
+    // Card* attackedMonster = clickedGreenZone->m_pCard;
+    // Refresh the opponent's monster zone
+    // GameExternVars::pOtherPlayer->field.monsterZone.refresh();
+    // Do the damage calculation
+    // damageCalculation(GameExternVars::pAttackingMonster, attackedMonster);
 }
 
 void Game::onCardAddedToScene(Card &card)

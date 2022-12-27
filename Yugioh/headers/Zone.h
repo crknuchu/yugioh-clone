@@ -31,6 +31,7 @@ public:
 signals:
     void zoneRedAndClicked(Zone*);
     void zoneGreenAndClicked(Zone*);
+    void zoneBlueAndClicked(Zone*);
 
 private:
     float m_height = 150;

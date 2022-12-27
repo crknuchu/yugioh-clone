@@ -46,6 +46,9 @@ void Zone::mousePressEvent(QGraphicsSceneMouseEvent* event) {
     else if(zoneColor == Qt::green) {
         emit zoneGreenAndClicked(this);
     }
+    else if(zoneColor == Qt::blue) {
+        emit zoneBlueAndClicked(this);
+    }
 }
 
 QRectF Zone::boundingRect() const
