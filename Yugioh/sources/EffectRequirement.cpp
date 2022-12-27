@@ -19,7 +19,7 @@ bool EffectRequirement::isActivatable(const std::string &cardName)
 
         condition = std::invoke(effectReqFunctionPointer, this);
     } catch(std::out_of_range &e) {
-        std::cerr << "Error: That card doesn't have an effect! Out of range exception from: " << e.what() << std::endl;
+        std::cout << "That card doesn't have a requirement." << std::endl;
     }
 
     return condition;

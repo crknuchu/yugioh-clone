@@ -56,9 +56,9 @@ void Player::drawCards(unsigned int numOfCards) {
     }
     else{
         std::vector<Card*> newCards = this->field.deck.draw(numOfCards);
-        for (unsigned i = 0; i < newCards.size(); i++){
-            emit cardAddedToScene(*newCards[i]);
-            this->m_hand.addToHand(*newCards[i]);
+        for (Card* newCard : newCards ){
+            emit cardAddedToScene(*newCard);
+            this->m_hand.addToHand(*newCard);
         }
         std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
     }
@@ -211,8 +211,8 @@ void Player::sendToGraveyard(Card &card){
 }
 
 void Player::discard(Card &card) {
-    this->m_hand.removeFromHand(card);
-    this->field.graveyard->sendToGraveyard(card);
+    Card* removedCard = this->m_hand.removeFromHand(card);
+    this->field.graveyard->sendToGraveyard(*removedCard);
 }
 
 // --------------------------------------------
