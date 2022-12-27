@@ -350,6 +350,18 @@ Card* Game::reconstructCard(QString cardName)
     return nullptr;
 }
 
+void Game::visuallySetMonster(MonsterCard *pMonsterCard)
+{
+    QPixmap pix;
+    pix.load(":/resources/pictures/card_back.jpg");
+    pix = pix.scaled(QSize(pMonsterCard->width, pMonsterCard->height), Qt::KeepAspectRatio);
+    QTransform transformationMatrix;
+    transformationMatrix.rotate(90);
+    pMonsterCard->setPixmap(pix.transformed(transformationMatrix));
+
+    // TODO: Center the card
+}
+
 
 
 
@@ -585,6 +597,10 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
         // Set the position
         MonsterPosition monsterPosition = monsterCard->monsterPositionQStringToEnum.at(positionQString);
         monsterCard->setPosition(monsterPosition);
+
+        // If monster is set we need to make it appear so
+        if(monsterPosition == MonsterPosition::FACE_DOWN_DEFENSE)
+            visuallySetMonster(monsterCard);
 
         // Place it on the field
         GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(targetCard, zoneNumber);
@@ -1392,17 +1408,9 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
         MonsterCard *pMonsterCard = static_cast<MonsterCard *>(card);
         QString monsterPosition = pMonsterCard->monsterPositionEnumToQString.at(pMonsterCard->getPosition());
 
-        std::cout << "Monster position (should be set) " << monsterPosition.toStdString() << std::endl;
         // If the position is SET, we need to rotate the card and change the pixmap to card_back.jpg
         if(monsterPosition == QString::fromStdString("FACE_DOWN_DEFENSE"))
-        {
-            QPixmap pix;
-            pix.load(":/resources/pictures/card_back.jpg");
-            pix = pix.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
-            QTransform transformationMatrix;
-            transformationMatrix.rotate(90);
-            card->setPixmap(pix.transformed(transformationMatrix));
-        }
+            visuallySetMonster(pMonsterCard);
 
         GameExternVars::pCurrentPlayer->field.monsterZone.refresh();
 

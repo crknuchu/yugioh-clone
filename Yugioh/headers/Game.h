@@ -79,6 +79,7 @@ private:
   void damagePlayer(Player &targetPlayer, int howMuch);
 
   Card* reconstructCard(QString cardName);
+  void visuallySetMonster(MonsterCard *monsterCard);
 
 // QT related stuff:
     int m_windowWidth;
