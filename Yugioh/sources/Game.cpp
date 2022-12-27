@@ -706,7 +706,7 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 }
 
 void Game::onBlueZoneClick(Zone *clickedBlueZone) {
-    std::cout << "Blue zone was clicked!" << std::endl;
+    std::cout << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA Blue zone was clicked!" << std::endl;
 
     // TODO: MonsterCard instead of Card?
     // Card* attackedMonster = clickedGreenZone->m_pCard;

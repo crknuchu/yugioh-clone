@@ -70,7 +70,9 @@ void SpellTrapZone::placeInSpellTrapZone(Card *card, int zoneNumber)
 void SpellTrapZone::colorFreeZones() {
     for(Zone *zone : m_spellTrapZone) {
         if(zone->isEmpty()) {
-            zone->setBrush(Qt::red);
+            QColor red50(Qt::red);
+            red50.setAlphaF(0.5);
+            zone->setBrush(red50);
             zone->update();
         }
     }
@@ -79,7 +81,9 @@ void SpellTrapZone::colorFreeZones() {
 void SpellTrapZone::colorOccupiedZones() {
     for(Zone *zone : m_spellTrapZone) {
         if(!zone->isEmpty()) {
-            zone->setBrush(Qt::green);
+            QColor green50(Qt::green);
+            green50.setAlphaF(0.5);
+            zone->setBrush(green50);
             zone->update();
         }
     }

@@ -6,6 +6,7 @@
 #include <QObject>
 #include "Card.h"
 
+
 class Zone : public QObject, public QGraphicsRectItem {
 
     Q_OBJECT

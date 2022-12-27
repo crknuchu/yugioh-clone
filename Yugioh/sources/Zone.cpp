@@ -40,13 +40,19 @@ void Zone::setCoordinates(float x, float y) {
 void Zone::mousePressEvent(QGraphicsSceneMouseEvent* event) {
 
     QColor zoneColor = this->brush().color();
-    if(zoneColor == Qt::red) {
+    QColor red50(Qt::red);
+    red50.setAlphaF(0.5);
+    QColor green50(Qt::green);
+    green50.setAlphaF(0.5);
+    QColor blue50(Qt::blue);
+    blue50.setAlphaF(0.5);
+    if(zoneColor == red50) {
         emit zoneRedAndClicked(this);
     }
-    else if(zoneColor == Qt::green) {
+    else if(zoneColor == green50) {
         emit zoneGreenAndClicked(this);
     }
-    else if(zoneColor == Qt::blue) {
+    else if(zoneColor == blue50) {
         emit zoneBlueAndClicked(this);
     }
 }

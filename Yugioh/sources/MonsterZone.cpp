@@ -71,7 +71,10 @@ void MonsterZone::placeInMonsterZone(Card *card, int zoneNumber)
 void MonsterZone::colorFreeZones() {
     for(Zone *zone : m_monsterZone) {
         if(zone->isEmpty()) {
-            zone->setBrush(Qt::red);
+            QColor red50 = Qt::red;
+            red50.setAlphaF(0.5);
+            zone->setBrush(red50);
+            // zone->setBrush(Qt::red);
             zone->update();
         }
     }
@@ -90,9 +93,10 @@ void MonsterZone::colorAvailableZones(MonsterAttribute attribute) {
     for(Zone *zone : m_monsterZone) {
         // ovde mora neki uslov tipa if(type == EARTH) ili attribute == nesto ...
         if(!zone->isEmpty() && static_cast<MonsterCard*>(zone->m_pCard)->getAttribute() == attribute) {
-            // zone->setZValue(100);
-            // zone->m_pCard->hide();
-            zone->setBrush(Qt::blue);
+            zone->setZValue(100);
+            QColor blue50 = Qt::blue;
+            blue50.setAlphaF(0.5);
+            zone->setBrush(blue50);
             zone->update();
         }
     }
