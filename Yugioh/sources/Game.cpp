@@ -1319,7 +1319,7 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
                 std::cout << *x->m_pCard << std::endl;
         }
         GameExternVars::pCurrentPlayer->field.spellTrapZone.refresh();
-    }
+
 
         // Get the spell/trap's position
         QString spellTrapPosition;
@@ -1351,6 +1351,7 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
                       << spellTrapPosition;
         sendDataToServer(buffer);
         blockingLoop.exec();
+    }
 }
 
 void Game::onGreenZoneClick(Zone *clickedGreenZone) {
