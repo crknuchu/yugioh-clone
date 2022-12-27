@@ -250,12 +250,12 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
 
 
   //just a placeholder code for hand
-  MonsterCard* testCard1 = new MonsterCard("Blue dragon", 3000, 2500, 4,
+  MonsterCard* testCard1 = new MonsterCard("Hitotsu-MeGiant", 1200, 1000, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                              MonsterAttribute::DARK, false, Position::ATTACK, false,
+                                              MonsterAttribute::EARTH, false, Position::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::HAND,
                                               "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/blue_eyes.jpg"
+                                              ":/resources/pictures/Hitotsu-MeGiant.jpg"
                                               );
   SpellCard* testCard2 = new SpellCard(SpellType::NORMAL_SPELL, "Dark Hole",
                                              CardType::SPELL_CARD, CardLocation::HAND,
@@ -270,7 +270,10 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                               );
   SpellCard* testCard4 = new SpellCard(SpellType::NORMAL_SPELL, "Fissure",
                                              CardType::SPELL_CARD, CardLocation::HAND,
-                                             "  Destroy the 1 face-up monster your opponent controls that has the lowest ATK", ":/resources/pictures/Fissure.jpg", true);
+                                             "  An EARTH monster equipped with this card increases "
+                                             "its ATK by 400 points and decreases its DEF by 200 points.",
+                                       ":/resources/pictures/Fissure.jpg", true);
+
 
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard1);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard2);

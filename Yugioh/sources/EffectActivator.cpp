@@ -127,6 +127,9 @@ void EffectActivator::activateDarkEnergy()
 
 void EffectActivator::activateInvigoration()
 {
+//An EARTH monster equipped with this card
+//increases its ATK by 400 points and decreases its DEF by 200 points.
+
 
 }
 
@@ -192,6 +195,7 @@ void EffectActivator::activateFissure()
             continue;
         if (!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::MONSTER_CARD)
         {
+
             MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
 
 
@@ -204,7 +208,10 @@ void EffectActivator::activateFissure()
 
         }
     }
+    if (destroyCard == nullptr || destroyZone == nullptr)
+        return;
     GameExternVars::pOtherPlayer->sendToGraveyard(*destroyCard, destroyZone);
+
 }
 
 void EffectActivator::activateMonsterReborn()
