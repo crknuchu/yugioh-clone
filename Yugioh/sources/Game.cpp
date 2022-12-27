@@ -1098,7 +1098,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
     //    ui->textBrowserEffect->setText(monsterCard1->getEffect());
 
         QPixmap pix;
-        pix.load(":/resources/blue_eyes.jpg");
+        pix.load(":/resources/pictures/blue_eyes.jpg");
         pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
         ui->labelImage->setPixmap(pix);
 
@@ -1226,14 +1226,19 @@ void Game::onSummonButtonClick(Card &card) {
     // Remove target card from player's hand
     GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
 
+
+
     /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
        to see it. */
     GameExternVars::pCardToBePlacedOnField = &card;
     std::cout << "Current summon target is: " << GameExternVars::pCardToBePlacedOnField->getCardName() << std::endl;
 
+    // Set the monster's position explicitly to ATTACK (since thats the only one allowed when summoning)
+    MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+    monsterCard->setPosition(MonsterPosition::ATTACK);
+
     // Color the free zones so user can select one to place.
     GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
-
 }
 
 void Game::onAttackButtonClick(Card &attackingMonster)
@@ -1257,7 +1262,6 @@ void Game::onRepositionButtonClick(Card &card)
 
     // Change the position
     monsterCard->changePosition();
-
 
     qint32 zoneNumber = 0;
     // Get the zone number of this card (will be needed for deserialization)
@@ -1333,6 +1337,44 @@ void Game::onGameEnd(Player &loser)
 void Game::onSetButtonClick(Card &card)
 {
     std::cout << "Set button clicked on card " << card.getCardName() << std::endl;
+
+    // Remove target card from player's hand
+    GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
+
+    /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
+       to see it. */
+    GameExternVars::pCardToBePlacedOnField = &card;
+    std::cout << "Current summon target is: " << GameExternVars::pCardToBePlacedOnField->getCardName() << std::endl;
+
+
+    /* Since both spells/traps and monsters can be Set (but the behavior differs!),
+       we need to see what this card actually is. */
+
+    if(card.getCardType() == CardType::MONSTER_CARD)
+    {
+        MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+
+        // Set its position to FACE_DOWN_DEFENSE
+        monsterCard->setPosition(MonsterPosition::FACE_DOWN_DEFENSE);
+
+        GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
+    }
+    else if(card.getCardType() == CardType::SPELL_CARD)
+    {
+       SpellCard *spellCard = static_cast<SpellCard *>(&card);
+
+       // Set its position to SET
+       spellCard->setPosition(SpellTrapPosition::SET);
+
+       GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
+    }
+    else
+    {
+        TrapCard *trapCard = static_cast<TrapCard *>(&card);
+        trapCard->setPosition(SpellTrapPosition::SET);
+        GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
+    }
+
 }
 
 void Game::onRedZoneClick(Zone *clickedRedZone)
@@ -1346,16 +1388,23 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
         GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
 
-        for(auto x : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
-            if(!x->isEmpty())
-                std::cout << *x->m_pCard << std::endl;
+        // Read the monster's position
+        MonsterCard *pMonsterCard = static_cast<MonsterCard *>(card);
+        QString monsterPosition = pMonsterCard->monsterPositionEnumToQString.at(pMonsterCard->getPosition());
+
+        std::cout << "Monster position (should be set) " << monsterPosition.toStdString() << std::endl;
+        // If the position is SET, we need to rotate the card and change the pixmap to card_back.jpg
+        if(monsterPosition == QString::fromStdString("FACE_DOWN_DEFENSE"))
+        {
+            QPixmap pix;
+            pix.load(":/resources/pictures/card_back.jpg");
+            pix = pix.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
+            QTransform transformationMatrix;
+            transformationMatrix.rotate(90);
+            card->setPixmap(pix.transformed(transformationMatrix));
         }
 
         GameExternVars::pCurrentPlayer->field.monsterZone.refresh();
-
-        // Get the monster's position
-        MonsterCard *pMonsterCard = static_cast<MonsterCard *>(card);
-        QString monsterPosition = pMonsterCard->monsterPositionEnumToQString.at(pMonsterCard->getPosition());
 
         // TODO: Make this a separate function
         qint32 zoneNumber = 1;
@@ -1396,11 +1445,27 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
         {
             SpellCard *pSpellCard = static_cast<SpellCard *>(card);
             spellTrapPosition = pSpellCard->spellTrapPositionEnumToQString.at(pSpellCard->getSpellPosition());
+
+            if(spellTrapPosition == QString::fromStdString("SET"))
+            {
+                QPixmap pix;
+                pix.load(":/resources/pictures/card_back.jpg");
+                pix = pix.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
+                card->setPixmap(pix);
+            }
         }
         else
         {
             TrapCard *pTrapCard = static_cast<TrapCard *>(card);
             spellTrapPosition = pTrapCard->spellTrapPositionEnumToQString.at(pTrapCard->getTrapPosition());
+
+            if(spellTrapPosition == QString::fromStdString("SET"))
+            {
+                QPixmap pix;
+                pix.load(":/resources/pictures/card_back.jpg");
+                pix = pix.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
+                card->setPixmap(pix);
+            }
         }
 
         qint32 zoneNumber = 1;

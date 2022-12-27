@@ -22,7 +22,7 @@ public:
     SpellTrapPosition getTrapPosition() const;
     void activateTrap();
     void setCardMenu() override;
-    void setPosition(SpellTrapPosition &newPosition);
+    void setPosition(SpellTrapPosition newPosition);
 
 protected:
     TrapType trapType;

@@ -57,7 +57,7 @@ void SpellCard::setCardMenu(){
      cardMenu->update(flagMap);
 }
 
-void SpellCard::setPosition(SpellTrapPosition &newPosition)
+void SpellCard::setPosition(SpellTrapPosition newPosition)
 {
     position = newPosition;
 };
