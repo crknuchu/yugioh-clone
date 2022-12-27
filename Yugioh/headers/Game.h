@@ -129,6 +129,7 @@ private slots:
     // Slots for EffectActivator signal handling
     void onHealthPointsChange(Player &);
     void onGameEnd(Player &); // const?
+    void onMonsterReborn(Player &);
 
     // Slots for Zone signal handling
     void onRedZoneClick(Zone *zone);

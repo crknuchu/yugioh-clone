@@ -8,7 +8,8 @@ EffectRequirement::~EffectRequirement(){}
 
 const std::map<std::string, EffectRequirement::EFFECT_REQUIREMENT_MEMBER_FUNCTION_POINTER> EffectRequirement::effectReqMap = {
     //Spells
-    {"Fissure",        &EffectRequirement::fissureReq}
+    {"Fissure",        &EffectRequirement::fissureReq},
+    {"Monster Reborn", &EffectRequirement::monsterRebornReq}
 };
 
 bool EffectRequirement::isActivatable(const std::string &cardName)
@@ -32,4 +33,15 @@ bool EffectRequirement::fissureReq() {
             opponentHasMonsters = true;
 
     return opponentHasMonsters;
+}
+
+bool EffectRequirement::monsterRebornReq(){
+
+    for (Card *card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard())
+    {
+        if (card->getCardType() == CardType::MONSTER_CARD){
+            return true;
+        }
+    }
+    return false;
 }

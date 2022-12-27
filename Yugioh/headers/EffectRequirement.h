@@ -18,6 +18,7 @@ private:
     Card *m_card;
 
     bool fissureReq();
+    bool monsterRebornReq();
 };
 
 #endif // EFFECTREQUIREMENT_H

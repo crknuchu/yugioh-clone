@@ -1,5 +1,6 @@
 #include "headers/EffectActivator.h"
 #include "headers/Game.h"
+#include "headers/EffectRequirement.h"
 // Maybe unneeded
 //enum class PhasePart {
 //    BEGINNING,
@@ -216,7 +217,7 @@ void EffectActivator::activateFissure()
 
 void EffectActivator::activateMonsterReborn()
 {
-
+    emit effectMonsterReborn(*GameExternVars::pCurrentPlayer);
 }
 
 void EffectActivator::activateOokazi()

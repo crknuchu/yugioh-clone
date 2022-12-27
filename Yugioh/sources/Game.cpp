@@ -268,11 +268,11 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/blue_eyes.jpg"
                                               );
-  SpellCard* testCard4 = new SpellCard(SpellType::NORMAL_SPELL, "Fissure",
+  SpellCard* testCard4 = new SpellCard(SpellType::NORMAL_SPELL, "Monster Reborn",
                                              CardType::SPELL_CARD, CardLocation::HAND,
                                              "  An EARTH monster equipped with this card increases "
                                              "its ATK by 400 points and decreases its DEF by 200 points.",
-                                       ":/resources/pictures/Fissure.jpg", true);
+                                       ":/resources/pictures/MonsterReborn.jpg", true);
 
 
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard1);
@@ -280,10 +280,11 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard3);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard4);
 
-  GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard3, 2); //testing purposes
-  GameExternVars::pOtherPlayer->field.monsterZone.placeInMonsterZone(testCard1, 2);
+  GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard3, 1); //testing purposes
+  GameExternVars::pOtherPlayer->field.graveyard->sendToGraveyard(*testCard1);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
+//  GameExternVars::pCurrentPlayer->field.graveyard->sendToGraveyard(new testCard);
 }
 
 
@@ -598,6 +599,7 @@ void Game::onActivateButtonClick(Card &card)
         connect(&effectActivator, &EffectActivator::healthPointsChanged, this, &Game::onHealthPointsChange);
         connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
 
+        connect(&effectActivator, &EffectActivator::effectMonsterReborn, this, &Game::onMonsterReborn);
         // Activate the card's effect
         effectActivator.activateEffect(cardName);
 
@@ -605,6 +607,28 @@ void Game::onActivateButtonClick(Card &card)
         delay();
         GameExternVars::pCurrentPlayer->sendToGraveyard(card);
     }
+}
+
+void Game::onMonsterReborn(Player &p)
+{
+//    std::cout<<"POCETAK MONSTER REBORN KARTE "<<std::endl;
+    for (Card *c : p.field.graveyard->getGraveyard())
+    {
+        if (c->getCardType() == CardType::MONSTER_CARD)
+        {
+//            p.field.graveyard->removeFromGraveyard(*c);
+            for (Zone *zone : p.field.monsterZone.m_monsterZone)
+            {
+                if (zone->isEmpty())
+                {
+                    p.field.graveyard->removeFromGraveyard(*c);
+                    p.field.monsterZone.placeInMonsterZone(c, zone);
+                    return;
+                }
+            }
+        }
+    }
+//    std::cout<<"KRAJ MONSTER REBORN KARTE "<<std::endl;
 }
 
 void Game::onSummonButtonClick(Card &card) {
