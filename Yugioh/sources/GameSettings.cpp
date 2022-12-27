@@ -33,6 +33,10 @@ GameSettings::GameSettings(QWidget *parent) :
     ui->SetInitialNumberOfCards->addItem("9");
     ui->SetInitialNumberOfCards->addItem("10");
 
+
+    ui->ChooseDeck->addItem("Yugi's deck");
+    ui->ChooseDeck->addItem("Kaiba's deck");
+
     connect(ui->okButton , &QPushButton::clicked , this, &GameSettings::onOkButtonClick);
 
     connect(ui->leaveButton, &QPushButton::clicked, this, &GameSettings::onLeaveButtonClick);
@@ -160,7 +164,6 @@ void GameSettings::onSetInitialNumberOfCardsCurrentIndexChanged(int index)
 void GameSettings::onOkButtonClick()
 {
     emit okButtonClicked();
-    std:: cout << "ssss" << std:: endl ;
     close();
 }
 
@@ -174,5 +177,21 @@ void GameSettings::onHelpButtonClick()
     QString link = "https://www.dicebreaker.com/games/yu-gi-oh-tcg/how-to/how-to-play-yu-gi-oh-tcg#how-to-play-ygo-tcg";
     QDesktopServices:: openUrl(QUrl(link));
     close();
+}
+
+
+void GameSettings::on_ChooseDeck_activated(int index)
+{
+    switch (index) {
+    case 0:
+        this->deck = Decks::YUGI;
+        break;
+    case 1:
+        this->deck = Decks::KAIBA;
+        break;
+    default:
+        this->deck = Decks::YUGI;
+        break;
+    }
 }
 

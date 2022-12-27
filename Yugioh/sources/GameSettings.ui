@@ -119,6 +119,24 @@ font: 700 italic 11pt &quot;Ubuntu Mono&quot;;</string>
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="label_4">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(255, 255, 255);
+font: 700 italic 11pt &quot;Ubuntu Mono&quot;;</string>
+       </property>
+       <property name="text">
+        <string>Choose deck</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="ChooseDeck">
+       <property name="styleSheet">
+        <string notr="true">background-color: rgb(246, 211, 45);</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="verticalSpacer_3">
        <property name="orientation">
         <enum>Qt::Vertical</enum>

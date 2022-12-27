@@ -5,6 +5,14 @@
 #include <QDesktopServices>
 #include <QUrl>
 
+
+enum class Decks
+{
+    YUGI,
+    KAIBA
+};
+
+
 namespace Ui {
 class GameSettings;
 }
@@ -20,7 +28,7 @@ public:
     int timePerMove ;
     int numberOfCards ;
     int lifePoints ;
-
+    Decks deck;
 
 
     int getLifePoints() const;
@@ -50,6 +58,9 @@ private slots:
 
 
     void onHelpButtonClick();
+
+
+    void on_ChooseDeck_activated(int index);
 
 private:
     Ui::GameSettings *ui;

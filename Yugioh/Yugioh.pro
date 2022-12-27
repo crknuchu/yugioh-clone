@@ -10,7 +10,6 @@ QT +=   widgets \
         multimedia
 
 SOURCES += \
-        decksettings.cpp \
         sources/Field.cpp \
         sources/FieldZone.cpp \
         sources/GameSettings.cpp \
@@ -35,7 +34,6 @@ SOURCES += \
         sources/Serializer.cpp
 
 HEADERS += \
-    decksettings.h \
     headers/Field.h \
     headers/FieldZone.h \
     headers/GameSettings.h \
@@ -64,7 +62,6 @@ RESOURCES += \
         resources.qrc
 
 FORMS += \
-    decksettings.ui \
     sources/GameSettings.ui \
     sources/mainmenu.ui \
     sources/mainwindow.ui

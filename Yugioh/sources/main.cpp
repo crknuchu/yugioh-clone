@@ -7,17 +7,15 @@
 #include "headers/CardMenu.h"
 #include "headers/Serializer.h"
 
-#include "decksettings.h"
 
 int main(int argc,char **argv)
 {
   QApplication app(argc, argv);
 
-  //MainMenu m;
-  //m.showFullScreen();
+  MainMenu m;
+  m.showFullScreen();
 
-  deckSettings d;
-  d.show();
+
 
 
   app.exec();
