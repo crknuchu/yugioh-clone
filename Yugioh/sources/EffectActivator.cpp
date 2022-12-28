@@ -217,7 +217,35 @@ void EffectActivator::activateFissure()
 
 void EffectActivator::activateMonsterReborn()
 {
-    emit effectMonsterReborn(*GameExternVars::pCurrentPlayer);
+    //we want to reborn strongest monster
+    MonsterCard* strongestMonsterInEitherGraveyard = nullptr;
+    int whichGraveyard = 1;
+    for(Card* card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard()) {
+        if(card->getCardType() == CardType::MONSTER_CARD) {
+            MonsterCard* monsterInGraveyard = static_cast<MonsterCard*>(card);
+            if(!strongestMonsterInEitherGraveyard ||
+                    strongestMonsterInEitherGraveyard->getAttackPoints() < monsterInGraveyard->getAttackPoints())
+                strongestMonsterInEitherGraveyard = monsterInGraveyard;
+        }
+    }
+
+    for(Card* card : GameExternVars::pOtherPlayer->field.graveyard->getGraveyard()) {
+        if(card->getCardType() == CardType::MONSTER_CARD) {
+            MonsterCard* monsterInGraveyard = static_cast<MonsterCard*>(card);
+            if(!strongestMonsterInEitherGraveyard ||
+                    strongestMonsterInEitherGraveyard->getAttackPoints() < monsterInGraveyard->getAttackPoints()) {
+                strongestMonsterInEitherGraveyard = monsterInGraveyard;
+                whichGraveyard = 2;
+            }
+        }
+    }
+
+    whichGraveyard == 1 ?
+                GameExternVars::pCurrentPlayer->field.graveyard->removeFromGraveyard(*strongestMonsterInEitherGraveyard)
+              : GameExternVars::pOtherPlayer->field.graveyard->removeFromGraveyard(*strongestMonsterInEitherGraveyard);
+
+    GameExternVars::pCardToBePlacedOnField = strongestMonsterInEitherGraveyard;
+    GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
 }
 
 void EffectActivator::activateOokazi()

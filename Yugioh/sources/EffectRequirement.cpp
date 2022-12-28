@@ -37,11 +37,18 @@ bool EffectRequirement::fissureReq() {
 
 bool EffectRequirement::monsterRebornReq(){
 
-    for (Card *card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard())
-    {
+    bool isAnyMonsterInGraveyard = false;
+    for (Card *card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard()) {
         if (card->getCardType() == CardType::MONSTER_CARD){
-            return true;
+            isAnyMonsterInGraveyard = true;
         }
     }
-    return false;
+
+    for (Card *card : GameExternVars::pOtherPlayer->field.graveyard->getGraveyard()) {
+        if (card->getCardType() == CardType::MONSTER_CARD){
+            isAnyMonsterInGraveyard = true;
+        }
+    }
+
+    return isAnyMonsterInGraveyard;
 }
