@@ -562,7 +562,7 @@ void Game::setupConnections() {
     // Networking
     connect(m_pTcpSocket, &QIODevice::readyRead, this, &Game::onDataIncoming);
     connect(m_pTcpSocket, &::QAbstractSocket::errorOccurred, this, &Game::onNetworkErrorOccurred);
-    connect(ui->btnTestNetwork, &QPushButton::clicked, this, &Game::onConnectButtonClick);
+    connect(ui->btnConnect, &QPushButton::clicked, this, &Game::onConnectButtonClick);
     connect(ui->btnWriteData, &QPushButton::clicked, this, &Game::onWriteDataButtonClick);
 }
 
@@ -1684,7 +1684,7 @@ void Game::onDataIncoming()
 
 void Game::onConnectButtonClick()
 {
-//    ui->btnConnect->setEnabled(false);
+    ui->btnConnect->setEnabled(false);
 
     // Parse the address and the port
     QString addr = ui->textEditAddress->toPlainText().trimmed();

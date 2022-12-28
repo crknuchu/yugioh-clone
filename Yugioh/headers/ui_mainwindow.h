@@ -59,7 +59,7 @@ public:
     QHBoxLayout *horizontalLayout_3;
     QTextEdit *textEditAddress;
     QTextEdit *textEditPort;
-    QPushButton *btnTestNetwork;
+    QPushButton *btnConnect;
     QPushButton *btnWriteData;
     QMenuBar *menubar;
     QStatusBar *statusbar;
@@ -204,10 +204,10 @@ public:
 
         verticalLayout->addLayout(horizontalLayout_3);
 
-        btnTestNetwork = new QPushButton(layoutWidget);
-        btnTestNetwork->setObjectName(QString::fromUtf8("btnTestNetwork"));
+        btnConnect = new QPushButton(layoutWidget);
+        btnConnect->setObjectName(QString::fromUtf8("btnConnect"));
 
-        verticalLayout->addWidget(btnTestNetwork);
+        verticalLayout->addWidget(btnConnect);
 
         btnWriteData = new QPushButton(layoutWidget);
         btnWriteData->setObjectName(QString::fromUtf8("btnWriteData"));
@@ -260,7 +260,7 @@ public:
         labelOtherPlayerLpDynamic->setText(QString());
         labelServerAddress->setText(QCoreApplication::translate("MainWindow", "Server address", nullptr));
         labelServerPort->setText(QCoreApplication::translate("MainWindow", "Server port", nullptr));
-        btnTestNetwork->setText(QCoreApplication::translate("MainWindow", "Connect to the server", nullptr));
+        btnConnect->setText(QCoreApplication::translate("MainWindow", "Connect to the server", nullptr));
         btnWriteData->setText(QCoreApplication::translate("MainWindow", "Test write data to server", nullptr));
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi
