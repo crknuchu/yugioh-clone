@@ -157,7 +157,7 @@ private slots:
     // Networking slots
     void onNetworkErrorOccurred(QAbstractSocket::SocketError socketError);
     void onDataIncoming();
-    void onTestNetworkButtonClick();
+    void onConnectButtonClick();
 
     // Testing
     void onWriteDataButtonClick();

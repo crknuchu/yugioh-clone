@@ -562,7 +562,7 @@ void Game::setupConnections() {
     // Networking
     connect(m_pTcpSocket, &QIODevice::readyRead, this, &Game::onDataIncoming);
     connect(m_pTcpSocket, &::QAbstractSocket::errorOccurred, this, &Game::onNetworkErrorOccurred);
-    connect(ui->btnTestNetwork, &QPushButton::clicked, this, &Game::onTestNetworkButtonClick);
+    connect(ui->btnTestNetwork, &QPushButton::clicked, this, &Game::onConnectButtonClick);
     connect(ui->btnWriteData, &QPushButton::clicked, this, &Game::onWriteDataButtonClick);
 }
 
@@ -1101,6 +1101,10 @@ void Game::onMainPhase2ButtonClick()
 void Game::onEndPhaseButtonClick()
 {
     std::cout << "End phase button clicked" << std::endl;
+
+    std::cout << "Current client turn : " << GameExternVars::currentTurnClientID << std::endl;
+
+
     GamePhaseExternVars::currentGamePhase = GamePhases::END_PHASE;
     for(Zone* zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
         if(!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::TRAP_CARD) {
@@ -1117,9 +1121,9 @@ void Game::onEndPhaseButtonClick()
     // Set the label text to indicate that we are in the End Phase:
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
-    //... (something may happen here eventually)
+    // Something may happen here, like checking the effects that resolve in the end phase
 
-    // TODO: More work is needed here...
+
     std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
     m_currentTurn++;
     emit turnEnded();
@@ -1678,13 +1682,13 @@ void Game::onDataIncoming()
     (this->*deserializationFunctionPointer)(m_inDataStream);
 }
 
-void Game::onTestNetworkButtonClick()
+void Game::onConnectButtonClick()
 {
-    ui->btnTestNetwork->setEnabled(false);
+//    ui->btnConnect->setEnabled(false);
 
     // Parse the address and the port
-    QString addr = ui->textEditAddress->toPlainText();
-    int port = ui->textEditPort->toPlainText().toInt();
+    QString addr = ui->textEditAddress->toPlainText().trimmed();
+    int port = ui->textEditPort->toPlainText().trimmed().toInt();
 
     // Connect to the server
     m_pTcpSocket->abort();

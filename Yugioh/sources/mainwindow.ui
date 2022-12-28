@@ -216,7 +216,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="btnTestNetwork">
+        <widget class="QPushButton" name="btnConnect">
          <property name="text">
           <string>Connect to the server</string>
          </property>
