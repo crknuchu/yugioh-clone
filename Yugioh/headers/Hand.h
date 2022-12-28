@@ -12,6 +12,7 @@ public:
     void setHandCoordinates(float, float, int);
     void addToHand(Card &card);
     Card* removeFromHand(Card &card);
+    void fixCardsPosition(std::vector<Card*> &cardsToBeFixed);
     float size() const;
 private:
     float m_x;

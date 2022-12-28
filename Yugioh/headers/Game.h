@@ -111,7 +111,7 @@ private slots:
     void onMainWindowResize(QResizeEvent *);
     void onGamePhaseChange(const GamePhases &newGamePhase);
     void onTurnEnd();
-    void onCardAddedToScene(Card &);
+    void onCardAddedToScene(Card *);
     void onActivateFromHand(Card &);
 
 
@@ -123,7 +123,7 @@ private slots:
 
     // Slots for CardMenu signal handling
     void onActivateButtonClick(Card &);
-    void onSetButtonClick(const Card &);
+    void onSetButtonClick(Card &);
     void onSummonButtonClick(Card &);
     void onAttackButtonClick(Card &);
 

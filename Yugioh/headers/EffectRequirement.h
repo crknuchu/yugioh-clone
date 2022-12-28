@@ -20,6 +20,8 @@ private:
     bool changeofheartReq();
     bool fissureReq();
     bool monsterRebornReq();
+    bool haneHaneReq();
+    bool reinforcementsReq();
 };
 
 #endif // EFFECTREQUIREMENT_H

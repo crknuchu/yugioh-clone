@@ -12,6 +12,20 @@ SpellCard* SpellCard::clone() {
                          this->cardDescription, this->imagePath, this->active);
 }
 
+bool SpellCard::shouldBeSentToGraveyard()
+{
+    if(type == SpellType::CONTINUOUS_SPELL)
+        return false;
+
+    if(type == SpellType::EQUIP_SPELL)
+        return false;
+
+    if(type == SpellType::FIELD_SPELL)
+        return false;
+
+    return true;
+}
+
 SpellType SpellCard::getSpellType() const
 {
     return type;
@@ -35,11 +49,6 @@ std::string SpellCard::getSpellTypeString() const
         default:
             return "error:unknown spell type";
         }
-}
-
-void SpellCard::activateSpell()
-{
-    this->active = true;
 }
 
 void SpellCard::setCardMenu(){

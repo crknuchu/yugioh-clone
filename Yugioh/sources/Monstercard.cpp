@@ -27,6 +27,11 @@ MonsterCard* MonsterCard::clone() {
                            this->cardType, this->cardLocation, this->cardDescription, this->imagePath, this->summonedThisTurn);
 }
 
+bool MonsterCard::shouldBeSentToGraveyard()
+{
+    return false;
+}
+
 const std::map<Position, std::string> MonsterCard::positionEnumToString{
     {Position::ATTACK,  "ATTACK"},
     {Position::DEFENSE, "DEFENSE"},
@@ -210,25 +215,8 @@ void MonsterCard::multiplyDefensePoints(float multiplyBy)
 
 }
 
-bool MonsterCard::normalSummon(Position s){
-    if (this->active == true or this->cardLocation != CardLocation :: HAND )
-        return false; // unsuporeted actions
-    this->active = true;
-    this->position = s;
-    return true;
-}
-
-
-bool MonsterCard::specialSummon(Position s){
-    if ( this->cardLocation == CardLocation :: DECK )
-        return false;
-    active = true;
-    position = s;
-    return true;
-}
-
 void MonsterCard::setCardMenu(){
-    QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
+    QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}, {"flip",false}};
     EffectRequirement effectRequirement(*this);
     bool cardActivationRequirement = effectRequirement.isActivatable(this->cardName);
     if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){

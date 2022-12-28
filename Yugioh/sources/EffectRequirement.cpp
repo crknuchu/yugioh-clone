@@ -8,9 +8,13 @@ EffectRequirement::~EffectRequirement(){}
 
 const std::map<std::string, EffectRequirement::EFFECT_REQUIREMENT_MEMBER_FUNCTION_POINTER> EffectRequirement::effectReqMap = {
     //Spells
+
     {"Fissure",                     &EffectRequirement::fissureReq},
     {"Monster Reborn",              &EffectRequirement::monsterRebornReq},
-    {"Change of Heart",             &EffectRequirement::changeofheartReq}
+    {"Change of Heart",             &EffectRequirement::changeofheartReq},
+    {"Hane-Hane",                   &EffectRequirement::haneHaneReq},
+    //Traps
+    {"Reinforcements", &EffectRequirement::reinforcementsReq}
 };
 
 bool EffectRequirement::isActivatable(const std::string &cardName)
@@ -38,13 +42,32 @@ bool EffectRequirement::fissureReq() {
 
 bool EffectRequirement::monsterRebornReq(){
 
-    for (Card *card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard())
-    {
+    bool isAnyMonsterInGraveyard = false;
+    for (Card *card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard()) {
         if (card->getCardType() == CardType::MONSTER_CARD){
-            return true;
+            isAnyMonsterInGraveyard = true;
         }
     }
-    return false;
+
+    for (Card *card : GameExternVars::pOtherPlayer->field.graveyard->getGraveyard()) {
+        if (card->getCardType() == CardType::MONSTER_CARD){
+            isAnyMonsterInGraveyard = true;
+        }
+    }
+
+    return isAnyMonsterInGraveyard;
+}
+
+bool EffectRequirement::haneHaneReq() {
+    return EffectRequirement::fissureReq();
+}
+
+bool EffectRequirement::reinforcementsReq() {
+    bool currentPlayerHasMonsters = false;
+    if(!GameExternVars::pCurrentPlayer->field.monsterZone.isEmpty())
+            currentPlayerHasMonsters = true;
+
+    return currentPlayerHasMonsters;
 }
 
 bool EffectRequirement::changeofheartReq(){

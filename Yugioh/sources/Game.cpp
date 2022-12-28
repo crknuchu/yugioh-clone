@@ -228,10 +228,12 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
   emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
   // The first one gets 6 cards:.
+  GameExternVars::pCurrentPlayer->field.deck.shuffleDeck();
   GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight, 1);
   GameExternVars::pCurrentPlayer->drawCards(6);
 
   // The other one gets 5 cards
+  GameExternVars::pOtherPlayer->field.deck.shuffleDeck();
   GameExternVars::pOtherPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight, 2);
   GameExternVars::pOtherPlayer->drawCards(5);
 
@@ -251,12 +253,12 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
 
 
   //just a placeholder code for hand
-  MonsterCard* testCard1 = new MonsterCard("Hitotsu-MeGiant", 1200, 1000, 4,
+  MonsterCard* testCard1 = new MonsterCard("Hane-Hane", 450, 500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::EARTH, false, Position::ATTACK, false,
-                                              CardType::MONSTER_CARD, CardLocation::HAND,
+                                              CardType::MONSTER_CARD, CardLocation::FIELD,
                                               "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/Hitotsu-MeGiant.jpg"
+                                              ":/resources/pictures/HaneHane.jpg"
                                               );
   SpellCard* testCard2 = new SpellCard(SpellType::NORMAL_SPELL, "Change of Heart",
                                              CardType::SPELL_CARD, CardLocation::HAND,
@@ -265,7 +267,7 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
   MonsterCard* testCard3 = new MonsterCard("Blue dragon", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, Position::ATTACK, false,
-                                              CardType::MONSTER_CARD, CardLocation::HAND,
+                                              CardType::MONSTER_CARD, CardLocation::GRAVEYARD,
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/blue_eyes.jpg"
                                               );
@@ -275,14 +277,14 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                              "its ATK by 400 points and decreases its DEF by 200 points.",
                                        ":/resources/pictures/MonsterReborn.jpg", true);
 
+  emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard1);
+  emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard2);
+  emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard3);
+  emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard4);
 
-  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard1);
-  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard2);
-  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard3);
-  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard4);
-
-  GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard3, 1); //testing purposes
-  GameExternVars::pOtherPlayer->field.graveyard->sendToGraveyard(*testCard1);
+  //testing purposes
+  GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard1, 2);
+  GameExternVars::pOtherPlayer->field.monsterZone.placeInMonsterZone(testCard3,2);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
 //  GameExternVars::pCurrentPlayer->field.graveyard->sendToGraveyard(new testCard);
@@ -298,6 +300,7 @@ void Game::setupConnections() {
     connect(&m_player1, &Player::cardAddedToScene, this, &Game::onCardAddedToScene);
     connect(&m_player2, &Player::cardAddedToScene, this, &Game::onCardAddedToScene);
     connect(this, &Game::gameEndedAfterBattle, this, &Game::onGameEnd); // Same slot for both game endings (one in EffectActivator and one here)
+    connect(this, &Game::activateFromHand, this, &Game::onActivateFromHand);
 
     // Buttons
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
@@ -358,7 +361,18 @@ void Game::onEndPhaseButtonClick()
 {
     std::cout << "End phase button clicked" << std::endl;
     GamePhaseExternVars::currentGamePhase = GamePhases::END_PHASE;
+    for(Zone* zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
+        if(!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::TRAP_CARD) {
+            zone->m_pCard->setIsSetThisTurn(false);
+            zone->m_pCard->setPlayerThatSetThisCard(2);
+        }
+    }
 
+    for(Zone* zone : GameExternVars::pOtherPlayer->field.spellTrapZone.m_spellTrapZone) {
+        if(!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::TRAP_CARD) {
+            zone->m_pCard->setPlayerThatSetThisCard(1);
+        }
+    }
     // Set the label text to indicate that we are in the End Phase:
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
@@ -556,23 +570,6 @@ void Game::onCardSelect(Card *card)
     // Now we need to connect the card's menu UI to our slots
     /* We use a lambda here because QT's clicked() signal only sends a bool value of true/false
        This way, we can pass the card to our onActivateButtonClick slot */
-    connect(card->cardMenu->activateButton, &QPushButton::clicked, this, [this, card](){
-        onActivateButtonClick(*card);
-    });
-
-    connect(card->cardMenu->setButton, &QPushButton::clicked, this, [this, card](){
-        onSetButtonClick(*card);
-    });
-
-    connect(card->cardMenu->summonButton, &QPushButton::clicked, this, [this, card](){
-        onSummonButtonClick(*card);
-    });
-
-    connect(card->cardMenu->attackButton, &QPushButton::clicked, this, [this, card](){
-        onAttackButtonClick(*card);
-    });
-
-    connect(this, &Game::activateFromHand, this, &Game::onActivateFromHand);
 
     // FIXME: After menu is closed once, 2 clicks are needed to get it to be shown again
     card->cardMenu->isVisible() == false ? card->cardMenu->show() : card->cardMenu->hide();
@@ -580,6 +577,7 @@ void Game::onCardSelect(Card *card)
 
 void Game::onActivateFromHand(Card &activatedCard) {
     //its only spell card for now that can be activated from hand
+    activatedCard.setIsActivated(true);
     GameExternVars::pCardToBePlacedOnField = &activatedCard;
     GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
 }
@@ -598,19 +596,23 @@ void Game::onActivateButtonClick(Card &card)
     else {
         // Effect activator is needed for effect handling
         EffectActivator effectActivator(card);
-
         // We connect every signal from EffectActivator to our slots in Game:
         connect(&effectActivator, &EffectActivator::healthPointsChanged, this, &Game::onHealthPointsChange);
         connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
+        effectActivator.activateEffect(cardName);
 
         connect(&effectActivator, &EffectActivator::effectMonsterReborn, this, &Game::onMonsterReborn);
         connect(&effectActivator, &EffectActivator::effectChangeOfHeart, this, &Game::onChangeOfHeart);
         // Activate the card's effect
         effectActivator.activateEffect(cardName);
 
+        if(card.shouldBeSentToGraveyard()) {//this needs to be implemented
+            delay();
+            card.getPlayerThatSetThisCard() == 1 ?
+                        GameExternVars::pCurrentPlayer->sendToGraveyard(card)
+                      : GameExternVars::pOtherPlayer->sendToGraveyard(card);
+        }
         //if(shouldBeSentToGraveyard) this needs to be implemented
-        delay();
-        GameExternVars::pCurrentPlayer->sendToGraveyard(card);
     }
 }
 void Game::onChangeOfHeart(Player &current, Player &opponent) {
@@ -654,14 +656,13 @@ void Game::onMonsterReborn(Player &p)
             }
         }
     }
-//    std::cout<<"KRAJ MONSTER REBORN KARTE "<<std::endl;
 }
 
 void Game::onSummonButtonClick(Card &card) {
     std::cout<< "Summon button was clicked on card " << card.getCardName() << std::endl;
 
     // Remove target card from player's hand
-//    GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
+    GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
 //    std::cout << "Hand after removing the card: " << std::endl;
 
     /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
@@ -707,9 +708,31 @@ void Game::onGameEnd(Player &loser)
 }
 
 
-void Game::onSetButtonClick(const Card &card)
+void Game::onSetButtonClick(Card &card)
 {
     std::cout << "Set button clicked on card " << card.getCardName() << std::endl;
+
+    // Remove target card from player's hand
+    GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
+
+    /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
+       to see it. */
+    GameExternVars::pCardToBePlacedOnField = &card;
+    std::cout << "Current summon target is: " << GameExternVars::pCardToBePlacedOnField->getCardName() << std::endl;
+
+
+    /* Since both spells/traps and monsters can be Set (but the behavior differs!),
+       we need to see what this card actually is. */
+
+    if(card.getCardType() == CardType::MONSTER_CARD)
+    {
+        GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
+    }
+    else
+    {
+        GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
+    }
+
 }
 
 void Game::onRedZoneClick(Zone *clickedRedZone) {
@@ -727,12 +750,14 @@ void Game::onRedZoneClick(Zone *clickedRedZone) {
     else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
         GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
+        card->setIsSetThisTurn(true);
         GameExternVars::pCurrentPlayer->field.spellTrapZone.refresh();
-        card->cardMenu->activateButton->click(); //testing purposes
+        if(card->getIsActivated()) {
+            card->cardMenu->activateButton->click();
+        }
     }
 
-    // FIXME: For some reason, when card is in the zone and we go fullscreen, right border of the zone goes under the card
-//    card->move(clickedRedZone->m_x, clickedRedZone->m_y);
+    card->cardMenu->setVisible(false);
 }
 
 void Game::onGreenZoneClick(Zone *clickedGreenZone) {
@@ -750,28 +775,52 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 
 }
 
-void Game::onCardAddedToScene(Card &card)
+void Game::onCardAddedToScene(Card *card)
 {
     //Needed to show a card
-    if(card.scene()) {
-        Card* cardCopy = card.clone();
-        std::cout << *cardCopy << std::endl;
-        connect(cardCopy, &Card::cardSelected, this, &Game::onCardSelect);
-        connect(cardCopy, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
-        connect(cardCopy, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
-        ui->graphicsView->scene()->addItem(cardCopy);
-        ui->graphicsView->scene()->addWidget(cardCopy->cardMenu);
-        cardCopy->cardMenu->setVisible(false);
-        cardCopy->move(card.pos().x(), card.pos().y());
-    }
-    else {
-        connect(&card, &Card::cardSelected, this, &Game::onCardSelect);
-        connect(&card, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
-        connect(&card, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
-        ui->graphicsView->scene()->addItem(&card);
-        ui->graphicsView->scene()->addWidget(card.cardMenu);
-        card.cardMenu->setVisible(false);
-    }
+//    if(card->scene()) {
+//        Card* cardCopy = card->clone();
+//        std::cout << *cardCopy << std::endl;
+//        connect(cardCopy, &Card::cardSelected, this, &Game::onCardSelect);
+//        connect(cardCopy, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
+//        connect(cardCopy, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
+//        connect(cardCopy->cardMenu->activateButton, &QPushButton::clicked, this, [this, cardCopy](){
+//            onActivateButtonClick(*cardCopy);
+//        });
+//        connect(cardCopy->cardMenu->setButton, &QPushButton::clicked, this, [this, cardCopy](){
+//            onSetButtonClick(*cardCopy);
+//        });
+//        connect(cardCopy->cardMenu->summonButton, &QPushButton::clicked, this, [this, card](){
+//            onSummonButtonClick(*card);
+//        });
+//        connect(cardCopy->cardMenu->attackButton, &QPushButton::clicked, this, [this, card](){
+//            onAttackButtonClick(*card);
+//        });
+//        ui->graphicsView->scene()->addItem(cardCopy);
+//        ui->graphicsView->scene()->addWidget(cardCopy->cardMenu);
+//        cardCopy->cardMenu->setVisible(false);
+//        cardCopy->move(card->pos().x(), card->pos().y());
+//    }
+//    else {
+    connect(card, &Card::cardSelected, this, &Game::onCardSelect);
+    connect(card, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
+    connect(card, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
+    connect(card->cardMenu->activateButton, &QPushButton::clicked, this, [this, card](){
+        onActivateButtonClick(*card);
+    });
+    connect(card->cardMenu->setButton, &QPushButton::clicked, this, [this, card](){
+        onSetButtonClick(*card);
+    });
+    connect(card->cardMenu->summonButton, &QPushButton::clicked, this, [this, card](){
+        onSummonButtonClick(*card);
+    });
+    connect(card->cardMenu->attackButton, &QPushButton::clicked, this, [this, card](){
+        onAttackButtonClick(*card);
+    });
+    ui->graphicsView->scene()->addItem(card);
+    ui->graphicsView->scene()->addWidget(card->cardMenu);
+    card->cardMenu->setVisible(false);
+//    }
 
     // By default we don't want to show card info unless the card is hovered
     ui->labelImage->setVisible(false);

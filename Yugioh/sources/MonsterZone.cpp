@@ -37,6 +37,16 @@ void MonsterZone::removeFromMonsterZone(int zoneNumber) {
     removeFromMonsterZone(zone);
 }
 
+Zone* MonsterZone::getZone(Card *card)
+{
+    for(Zone* zone : m_monsterZone) {
+        if(!zone->isEmpty() && zone->m_pCard == card)
+            return zone;
+    }
+
+    return nullptr;
+}
+
 
 void MonsterZone::placeInMonsterZone(Card *card, Zone* zone){
 
