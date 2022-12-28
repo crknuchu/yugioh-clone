@@ -216,7 +216,7 @@ void MonsterCard::multiplyDefensePoints(float multiplyBy)
 }
 
 void MonsterCard::setCardMenu(){
-    QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
+    QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}, {"flip",false}};
     EffectRequirement effectRequirement(*this);
     bool cardActivationRequirement = effectRequirement.isActivatable(this->cardName);
     if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){

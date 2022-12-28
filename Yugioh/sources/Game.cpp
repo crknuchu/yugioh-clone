@@ -227,10 +227,12 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
   emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
   // The first one gets 6 cards:.
+  GameExternVars::pCurrentPlayer->field.deck.shuffleDeck();
   GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight, 1);
   GameExternVars::pCurrentPlayer->drawCards(6);
 
   // The other one gets 5 cards
+  GameExternVars::pOtherPlayer->field.deck.shuffleDeck();
   GameExternVars::pOtherPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight, 2);
   GameExternVars::pOtherPlayer->drawCards(5);
 
@@ -609,7 +611,7 @@ void Game::onSummonButtonClick(Card &card) {
     std::cout<< "Summon button was clicked on card " << card.getCardName() << std::endl;
 
     // Remove target card from player's hand
-//    GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
+    GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
 //    std::cout << "Hand after removing the card: " << std::endl;
 
     /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
