@@ -477,10 +477,7 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
     ui->labelGamePhase->setText(QString::fromStdString("MAIN PHASE 1"));
 
 
-
-
-
-  //just a placeholder code for hand
+   // Just a placeholder code for hand
     MonsterCard* monsterCard1 = new MonsterCard("Trap Master", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
@@ -525,13 +522,15 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
     spellCard1->cardMenu->setVisible(false);
     emit cardAddedToScene(spellCard1);
 
-
-
     GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight);
     GameExternVars::pCurrentPlayer->m_hand.addToHand(*monsterCard1);
     GameExternVars::pCurrentPlayer->m_hand.addToHand(*monsterCard2);
     GameExternVars::pCurrentPlayer->m_hand.addToHand(*spellCard1);
 
+    // Testing
+    QTransform transformationMatrix;
+    transformationMatrix.rotate(180);
+    monsterCard3->setPixmap(monsterCard3->pixmap().transformed(transformationMatrix));
     GameExternVars::pOtherPlayer->field.monsterZone.placeInMonsterZone(monsterCard3, 2); //testing purposes
 
       // TODO: Disable clicks on the cards if its possible, or at least disable card menu for every card that this player has.
@@ -1301,8 +1300,9 @@ void Game::onCardSelect(Card *card)
          ? card->cardMenu->attackDirectlyButton->setVisible(false)
          : card->cardMenu->attackDirectlyButton->setVisible(true);
 
-
-    card->cardMenu->isVisible() == false ? card->cardMenu->show() : card->cardMenu->hide();
+    // We only want current client to be able to have a card menu
+    if(m_clientID == GameExternVars::currentTurnClientID)
+        card->cardMenu->isVisible() == false ? card->cardMenu->show() : card->cardMenu->hide();
 }
 
 
