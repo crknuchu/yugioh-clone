@@ -143,6 +143,7 @@ private slots:
     void onSummonButtonClick(Card &card);
     void onAttackButtonClick(Card &card);
     void onRepositionButtonClick(Card &card);
+    void onAttackDirectlyButtonClick(Card &card);
 
     // Slots for EffectActivator signal handling
     void onLifePointsChange(Player &);

@@ -166,7 +166,7 @@ void Game::damageCalculation(Card *attackingMonster, Card *attackedMonster)
     }
 
     // Set the alreadyAttack flag for attacker
-    attacker->setAlreadyAttack(true);
+    attacker->setAlreadyAttackedThisTurn(true);
 }
 
 void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender)
@@ -1176,6 +1176,7 @@ void Game::onCardAddedToScene(Card *card)
     connect(card, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
     connect(card, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
 
+    // Card menu connects
     connect(card->cardMenu->activateButton, &QPushButton::clicked, this, [this, card](){
         onActivateButtonClick(*card);
     });
@@ -1193,9 +1194,12 @@ void Game::onCardAddedToScene(Card *card)
     });
 
     connect(card->cardMenu->repositionButton, &QPushButton::clicked, this, [this, card](){
-            onRepositionButtonClick(*card);
+        onRepositionButtonClick(*card);
     });
 
+    connect(card->cardMenu->attackDirectlyButton, &QPushButton::clicked, this, [this, card]() {
+        onAttackDirectlyButtonClick(*card);
+    });
 
     // By default we don't want to show card info unless the card is hovered
     ui->labelImage->setVisible(false);
@@ -1297,6 +1301,13 @@ void Game::onCardSelect(Card *card)
 {
     std::cout << "Card name: " << card->getCardName() << std::endl;
     card->setCardMenu();
+
+    // We need to check if the opponent has any monsters. If he doesn't, we don't show Attack Directly button
+    !GameExternVars::pOtherPlayer->field.monsterZone.isEmpty()
+         ? card->cardMenu->attackDirectlyButton->setVisible(false)
+         : card->cardMenu->attackDirectlyButton->setVisible(true);
+
+
     card->cardMenu->isVisible() == false ? card->cardMenu->show() : card->cardMenu->hide();
 }
 
@@ -1393,6 +1404,12 @@ void Game::onRepositionButtonClick(Card &card)
     blockingLoop.exec();
 }
 
+void Game::onAttackDirectlyButtonClick(Card &card)
+{
+    MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+    damagePlayer(*GameExternVars::pOtherPlayer, monsterCard->getAttackPoints());
+}
+
 
 /* TODO: This should accept the targetPlayer as an argument, because otherwise we always print currentPlayer's hp,
          even if it was other player's health that had changed. */
@@ -1400,8 +1417,9 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
 {
     std::cout << "Current health points for player " << targetPlayer.getPlayerName() << " : "<< targetPlayer.getPlayerLifePoints() << std::endl;
 
-    // Set the label text to the current turn player's health value
+    // Update labels
     ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(targetPlayer.getPlayerLifePoints())));
+
 
     // Notify the server about health change.
     QEventLoop blockingLoop;
@@ -1409,8 +1427,8 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
-    outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
-                  << QString::fromStdString(targetPlayer.getPlayerName()).trimmed() // Whose life points has changed
+    outDataStream << QString::fromStdString("LP_CHANGE")
+                  << QString::fromStdString(targetPlayer.getPlayerName()) // Whose life points has changed
                   << qint32(targetPlayer.getPlayerLifePoints()); // New life points
     sendDataToServer(buffer);
     blockingLoop.exec();
@@ -1428,8 +1446,8 @@ void Game::onGameEnd(Player &loser)
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
-    outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
-                  << QString::fromStdString(loser.getPlayerName()).trimmed() // Whose life points has changed
+    outDataStream << QString::fromStdString("LP_CHANGE")
+                  << QString::fromStdString(loser.getPlayerName()) // Whose life points has changed
                   << qint32(0); // New life points
     sendDataToServer(buffer);
     blockingLoop.exec();
@@ -1480,6 +1498,8 @@ void Game::onSetButtonClick(Card &card)
 
 }
 
+
+// TODO: summonAlready = true , activatedAlready = true at the end of onRedZoneClick?
 void Game::onRedZoneClick(Zone *clickedRedZone)
 {
     Card *card = GameExternVars::pCardToBePlacedOnField;
@@ -1516,6 +1536,10 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
                       << monsterPosition;
         sendDataToServer(buffer);
         blockingLoop.exec();
+
+
+        // Set this monster's summon flag to true
+        pMonsterCard->setAlreadySummonedThisTurn(true);
     }
     else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
         GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
@@ -1545,7 +1569,6 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
             if(spellTrapPosition == QString::fromStdString("SET"))
                 visuallySetTrap(pTrapCard);
         }
-
 
         qint32 zoneNumber = findZoneNumber(*card, GameExternVars::pCurrentPlayer);
 
@@ -1611,8 +1634,6 @@ void Game::onDataIncoming()
     std::cout << "We are in onDataIncoming" << std::endl;
 
     // Read data that was sent from the server
-
-//     Deserialization
     m_inDataStream.startTransaction();
 
     //First we need to check what header we have
@@ -1625,13 +1646,6 @@ void Game::onDataIncoming()
         return;
 
     m_currentHeader = header;
-
-
-//    if(header == m_currentHeader)
-//    {
-//        QTimer::singleShot(0, this, deserializationFunctionPointer);
-//        return;
-//    }
 
     // Then we call the appropriate deserialization method for that header:
     auto deserializationFunctionPointer = m_deserializationMap.at(m_currentHeader);
@@ -1654,7 +1668,6 @@ void Game::onTestNetworkButtonClick()
 void Game::onWriteDataButtonClick()
 {
     // Testing
-//    GameExternVars::pCurrentPlayer->drawCards(5);
     std::cout << "Current player draws 5 - not actually, this is a test" << std::endl;
     QEventLoop blockingLoop;
     connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);

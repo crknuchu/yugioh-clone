@@ -98,6 +98,16 @@ void MonsterZone::refresh() {
     }
 }
 
+bool MonsterZone::isEmpty() const
+{
+    for(Zone* zone : m_monsterZone)
+    {
+        if(!zone->isEmpty())
+            return false;
+    }
+    return true;
+}
+
 bool MonsterZone::isFull() const {
     for(Zone* zone : m_monsterZone) {
         if(zone->isEmpty())

@@ -21,7 +21,7 @@ public:
     void colorOccupiedZones();
     void refresh();
     std::vector<Zone*> m_monsterZone;
-
+    bool isEmpty() const;
 private:
     float m_width;
 };

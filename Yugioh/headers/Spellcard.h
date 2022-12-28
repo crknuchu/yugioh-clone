@@ -32,6 +32,8 @@ protected:
     bool active;
     SpellTrapPosition position;
 
+
+
 };
 
 
