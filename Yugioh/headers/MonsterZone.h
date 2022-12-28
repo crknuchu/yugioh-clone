@@ -24,7 +24,6 @@ public:
     void refresh();
     float size() const;
     std::vector<Zone*> m_monsterZone;
-
 private:
     float m_width;
 };

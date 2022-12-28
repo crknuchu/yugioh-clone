@@ -91,6 +91,7 @@ void MonsterZone::colorFreeZones() {
 void MonsterZone::colorOccupiedZones() {
     for(Zone *zone : m_monsterZone) {
         if(!zone->isEmpty()) {
+            zone->setZValue(-5);
             zone->setBrush(Qt::green);
             zone->update();
         }
@@ -100,8 +101,20 @@ void MonsterZone::colorOccupiedZones() {
 void MonsterZone::refresh() {
     for(Zone *zone : m_monsterZone) {
         zone->setBrush(QColor(0,0,200,30));
+        zone->setZValue(-10);
+        // zone->setBrush(Qt::NoBrush);
         zone->update();
     }
+}
+
+bool MonsterZone::isEmpty() const
+{
+    for(Zone* zone : m_monsterZone)
+    {
+        if(!zone->isEmpty())
+            return false;
+    }
+    return true;
 }
 
 bool MonsterZone::isFull() const {
@@ -109,15 +122,6 @@ bool MonsterZone::isFull() const {
         if(zone->isEmpty())
             return false;
     }
-    return true;
-}
-
-bool MonsterZone::isEmpty() const {
-    for(Zone* zone : m_monsterZone) {
-        if(!zone->isEmpty())
-            return false;
-    }
-
     return true;
 }
 

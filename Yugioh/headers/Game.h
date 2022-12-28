@@ -31,7 +31,7 @@ class Game: public QMainWindow
     using DESERIALIZATION_MEMBER_FUNCTION_POINTER = void(Game::*)(QDataStream &);
 public:
   Game();
-  Game(Player p1, Player p2,int lifePoints = 4000,int numberOfCards = 5 ,int timePerMove = 5,QWidget *parent = nullptr );  // Why is parent's type QWidget and not QMainWindow?
+  Game(Player p1, Player p2,int lifePoints = 4000,int numberOfCards = 5 ,int timePerMove = 5,QWidget *parent = nullptr);
   ~Game();
   int lifePoints ;
   int numberOfCards ;
@@ -77,8 +77,14 @@ private:
   void battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
   void battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
   void damagePlayer(Player &targetPlayer, int howMuch);
+  void visuallySetMonster(MonsterCard *monsterCard);
+  void visuallySetSpell(SpellCard *spellCard);
+  void visuallySetTrap(TrapCard *trapCard);
 
   Card* reconstructCard(QString cardName);
+
+  qint32 findZoneNumber(Card &targetCard, Player *pWhoOwnsIt);
+  Zone* findZone(qint32 zoneNumber, QString cardType, Player *pTargetPlayer);
 
 // QT related stuff:
     int m_windowWidth;
@@ -91,6 +97,7 @@ private:
   // TODO: Separate class?
     QTcpSocket *m_pTcpSocket = nullptr; // TODO: This will probably have to be in GameExternVars so that EffectActivator can see it
     qint32 m_clientID;
+    QString m_clientName;
     QDataStream m_inDataStream;
     QString m_currentHeader;
     static const std::map<QString, DESERIALIZATION_MEMBER_FUNCTION_POINTER> m_deserializationMap;
@@ -99,7 +106,6 @@ private:
     void notifyServerThatDeserializationHasFinished();
     QByteArray QInt32ToQByteArray(qint32 source); // We use qint32 to ensure the number has 4 bytes
 
-    void deserializeWelcomeMessage(QDataStream &deserializationStream);
     void deserializeStartGame(QDataStream &deserializationStream);
     void deserializeFieldPlacement(QDataStream &deserializationStream);
     void deserializeAddCardToHand(QDataStream &deserializationStream);
@@ -111,6 +117,8 @@ private:
     void deserializeNewTurn(QDataStream &deserializationStream);
     void deserializeEffectActivated(QDataStream &deserializationStream);
     void deserializeReposition(QDataStream &deserializationStream);
+    void deserializeDestroyCard(QDataStream &deserializationStream);
+    void deserializeGameEnd(QDataStream &deserializationStream);
 
 private slots:
     void onGameStart(qint32 firstToPlay, qint32 clientID);
@@ -120,9 +128,8 @@ private slots:
     void onMainWindowResize(QResizeEvent *);
     void onGamePhaseChange(const GamePhases &newGamePhase);
     void onTurnEnd();
-    void onCardAddedToScene(Card *);
+    void onCardAddedToScene(Card *addedCard);
     void onActivateFromHand(Card &);
-
 
     // Slots for Card signal handling
     void onCardHoverEnter(Card &);
@@ -136,6 +143,7 @@ private slots:
     void onSummonButtonClick(Card &card);
     void onAttackButtonClick(Card &card);
     void onRepositionButtonClick(Card &card);
+    void onAttackDirectlyButtonClick(Card &card);
 
     // Slots for EffectActivator signal handling
     void onLifePointsChange(Player &);
@@ -147,7 +155,6 @@ private slots:
 
 
     // Networking slots
-    // TODO: Separate class ?
     void onNetworkErrorOccurred(QAbstractSocket::SocketError socketError);
     void onDataIncoming();
     void onTestNetworkButtonClick();
@@ -160,6 +167,7 @@ signals:
     void gameStarted(qint32 firstToPlay, qint32 clientID);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
+    void cardAddedToScene(Card *addedCard);
     void gameEndedAfterBattle(Player &loser);
     void lifePointsChanged(Player &targetPlayer);
     void deserializationFinished();

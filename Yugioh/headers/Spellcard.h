@@ -25,7 +25,7 @@ public:
     SpellTrapPosition getSpellPosition() const;
     void activateSpell();
     void setCardMenu() override;
-    void setPosition(SpellTrapPosition &newPosition);
+    void setPosition(SpellTrapPosition newPosition);
 
 
 
@@ -33,6 +33,8 @@ protected:
     SpellType type;
     bool active;
     SpellTrapPosition position;
+
+
 
 };
 

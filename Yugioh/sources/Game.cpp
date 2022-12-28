@@ -30,7 +30,6 @@ std::vector<Card *> GameExternVars::yugiCards;
 std::vector<Card *> GameExternVars::kaibaCards;
 
 const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_deserializationMap = {
-    {"WELCOME_MESSAGE",                                 &Game::deserializeWelcomeMessage},
     {"START_GAME",                                      &Game::deserializeStartGame},
     {"FIELD_PLACEMENT",                                 &Game::deserializeFieldPlacement},
     {"ADD_CARD_TO_HAND",                                &Game::deserializeAddCardToHand},
@@ -41,7 +40,9 @@ const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_d
     {"GAMEPHASE_CHANGED",                               &Game::deserializeGamePhaseChanged},
     {"NEW_TURN",                                        &Game::deserializeNewTurn},
     {"EFFECT_ACTIVATED",                                &Game::deserializeEffectActivated},
-    {"REPOSITION",                                      &Game::deserializeReposition}
+    {"REPOSITION",                                      &Game::deserializeReposition},
+    {"DESTROY_CARD",                                    &Game::deserializeDestroyCard},
+    {"GAME_END",                                        &Game::deserializeGameEnd}
 };
 
 void delay()
@@ -63,6 +64,17 @@ Game::Game(Player p1, Player p2, int lifePoints, int numberOfCards, int timePerM
 
 {
     ui->setupUi(this);
+
+    // UI Configuration
+    // Game phase buttons and label:
+    ui->labelGamePhase->setAlignment(Qt::AlignCenter);
+
+    // Card info:
+    ui->labelImage->setAlignment(Qt::AlignCenter);
+
+    // Disable textBrowser until hover
+    ui->textBrowserEffect->setVisible(false);
+
 
     // Setup data stream
     m_inDataStream.setDevice(m_pTcpSocket);
@@ -140,7 +152,8 @@ void Game::switchPlayers() {
     GameExternVars::pOtherPlayer = tmp;
 
     std::cout << "Current player is: " << *GameExternVars::pCurrentPlayer << std::endl;
-    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelCurrentPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelOtherPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pOtherPlayer->getPlayerName()));
 
     // Switch clients too
     GameExternVars::currentTurnClientID == 1 ? GameExternVars::currentTurnClientID = 2 : GameExternVars::currentTurnClientID = 1;
@@ -172,6 +185,9 @@ void Game::damageCalculation(Card *attackingMonster, Card *attackedMonster)
         std::cout << "Battle between 2 different position monsters begins!" << std::endl;
         battleBetweenTwoDifferentPositionMonsters(*attacker, *defender);
     }
+
+    // Set the alreadyAttack flag for attacker
+    attacker->setAlreadyAttackedThisTurn(true);
 }
 
 void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender)
@@ -186,23 +202,30 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
            In that case, attacker gets destroyed and the player
            that was controlling it takes damage. */
 
-        // TODO: Notify server that the monster is destroyed                            !!!!
-        GameExternVars::pCurrentPlayer->field.graveyard->sendToGraveyard(attacker);
-        damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
         std::cout << "The defender wins!" << std::endl;
-//        GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
-        // Notify the server about the battle outcome
-            // TODO: These can probably be simplified or moved into separate functions since they are similar
+
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
+
+        // We need the destroyed monster's zone number
+        qint32 attackerZoneNumber = findZoneNumber(attacker, GameExternVars::pCurrentPlayer);
+
+        // Find the zone that holds the destroyed card
+        Zone *pZoneOfTheDestroyedCard = findZone(attackerZoneNumber, QString::fromStdString("monster card"), GameExternVars::pCurrentPlayer);
+        Card *pDestroyedCard = pZoneOfTheDestroyedCard->m_pCard;
+
+        // Actually destroy it
+        GameExternVars::pCurrentPlayer->sendToGraveyard(*pDestroyedCard, pZoneOfTheDestroyedCard);
+
+
+        // TODO: We can move this into a separate function
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
-        outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
-                      << QString::fromStdString("DEFENDER") // Who won
-                      << QString::fromStdString(attacker.getCardName()) // Name of destroyed monster so it can be destroyed in other client's session too
-                      << qint32(3) // Number of the monster zone that the monster was in. // Placeholder for now until getZoneNumber() is implemented.   // Is it even needed?
-                      << qint32(attackPointsDifference);
+        outDataStream << QString::fromStdString("DESTROY_CARD") // Notify the server that a card was destroyed
+                      << QString::fromStdString("CURRENT_PLAYER") // Who owns a card that was destroyed
+                      << QString::fromStdString(attacker.getCardTypeString())
+                      << attackerZoneNumber; // Where is the monster card located
         sendDataToServer(buffer);
         blockingLoop.exec();
 
@@ -210,13 +233,8 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
     }
     else if(attackPointsDifference > 0)
     {
-        /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard
-                 Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
-        GameExternVars::pOtherPlayer->field.graveyard->sendToGraveyard(defender);
-        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
+//        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
         std::cout << "The attacker wins!" << std::endl;
-//        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
-
 
         /* We want to notify the server about the battle outcome.
          * We also have to use QEventLoop to make this client wait until client 2 sends DESERIALIZATION_FINISHED
@@ -229,15 +247,28 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
          *  so we will always enter the loop before that.
          *
          *  TODO: We can make sure that this won't happen by using singleshot QTimer instead of a standard emit call */
-        QEventLoop blockingLoop;
+
+        QEventLoop blockingLoop; // TODO: We can probably reuse blockingLoop
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
+
+        // We need the destroyed monster's zone number
+        qint32 defenderZoneNumber = findZoneNumber(defender, GameExternVars::pOtherPlayer);
+
+        // TODO: These 3 lines can be a separate function since they are reused a lot in these battle functions
+        // We need to find zone of the destroyed card
+        Zone *pZoneOfTheDestroyedCard = findZone(defenderZoneNumber, QString::fromStdString("monster card"), GameExternVars::pOtherPlayer);
+        Card *pDestroyedCard = pZoneOfTheDestroyedCard->m_pCard;
+
+        // Actually destroy it
+        GameExternVars::pOtherPlayer->sendToGraveyard(*pDestroyedCard, pZoneOfTheDestroyedCard);
+
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
-        outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
-                      << QString::fromStdString("ATTACKER")
-                      << QString::fromStdString(defender.getCardName())
-                      << qint32(3);
+        outDataStream << QString::fromStdString("DESTROY_CARD") // Notify the server that a card was destroyed
+                      << QString::fromStdString("OTHER_PLAYER") // Who owns a card that was destroyed
+                      << QString::fromStdString(defender.getCardTypeString())
+                      << defenderZoneNumber; // Where is the monster card located
         sendDataToServer(buffer);
         blockingLoop.exec();
 
@@ -247,24 +278,48 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
     {
         /* This means that both attacking monsters had the same ATK.
          * In that case, both of them get destroyed, but no player takes damage. */
-       GameExternVars::pCurrentPlayer->field.graveyard->sendToGraveyard(attacker);
-       GameExternVars::pOtherPlayer->field.graveyard->sendToGraveyard(defender);
-
         std::cout << "Both monsters die!" << std::endl;
 
-        QEventLoop blockingLoop;
-        connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
+        // First we destroy the attacker
+        QEventLoop blockingLoopAttacker;
+        connect(this, &Game::deserializationFinished, &blockingLoopAttacker, &QEventLoop::quit);
+
+        qint32 attackerZoneNumber = findZoneNumber(attacker, GameExternVars::pCurrentPlayer);
+        Zone *pZoneOfTheDestroyedCard = findZone(attackerZoneNumber, QString::fromStdString("monster card"), GameExternVars::pCurrentPlayer);
+        Card *pDestroyedCard = pZoneOfTheDestroyedCard->m_pCard;
+        GameExternVars::pCurrentPlayer->sendToGraveyard(*pDestroyedCard, pZoneOfTheDestroyedCard);
+
+        // Notify the server
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
-        outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
-                      << QString::fromStdString("NOONE") // Both monsters die
-                      << QString::fromStdString(attacker.getCardName())
-                      << QString::fromStdString(defender.getCardName())
-                      << qint32(3)
-                      << qint32(3);
+        outDataStream << QString::fromStdString("DESTROY_CARD") // Notify the server that a card was destroyed
+                      << QString::fromStdString("CURRENT_PLAYER") // Who owns a card that was destroyed
+                      << QString::fromStdString(attacker.getCardTypeString())
+                      << attackerZoneNumber; // Where is the monster card located
         sendDataToServer(buffer);
-        blockingLoop.exec();
+        blockingLoopAttacker.exec();
+
+        // Now destroy the defender
+        QEventLoop blockingLoopDefender;
+        connect(this, &Game::deserializationFinished, &blockingLoopDefender, &QEventLoop::quit);
+
+        qint32 defenderZoneNumber = findZoneNumber(defender, GameExternVars::pOtherPlayer);
+
+        pZoneOfTheDestroyedCard = findZone(defenderZoneNumber, QString::fromStdString("monster card"), GameExternVars::pOtherPlayer);
+        pDestroyedCard = pZoneOfTheDestroyedCard->m_pCard;
+        GameExternVars::pOtherPlayer->sendToGraveyard(*pDestroyedCard, pZoneOfTheDestroyedCard);
+
+        // Notify the server
+        QByteArray buffer2;
+        QDataStream outDataStream2(&buffer2, QIODevice::WriteOnly);
+        outDataStream2.setVersion(QDataStream::Qt_5_15);
+        outDataStream2 << QString::fromStdString("DESTROY_CARD") // Notify the server that a card was destroyed
+                       << QString::fromStdString("OTHER_PLAYER") // Who owns a card that was destroyed
+                       << QString::fromStdString(defender.getCardTypeString())
+                       << defenderZoneNumber; // Where is the monster card located
+        sendDataToServer(buffer2);
+        blockingLoopDefender.exec();
     }
 }
 
@@ -278,18 +333,6 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
          * get destroyed but the player controlling the attacker still takes damage. */
         std::cout << "The defender wins!" << std::endl;
 
-        QEventLoop blockingLoop;
-        connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
-        QByteArray buffer;
-        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-        outDataStream.setVersion(QDataStream::Qt_5_15);
-        outDataStream << QString::fromStdString("BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS")
-                      << QString::fromStdString("DEFENDER"); // Who won
-//                      << qint32(pointsDifference);
-        sendDataToServer(buffer);
-        blockingLoop.exec();
-
-
         damagePlayer(*GameExternVars::pCurrentPlayer, pointsDifference);
     }
     else if(pointsDifference > 0)
@@ -297,22 +340,23 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         /* If the attacker was stronger, the defender gets destroyed but the player
          * that was controlling the defender doesn't take damage because it was in
          * DEFENSE position. */
-
-        /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard(defender)
-                 Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
-        GameExternVars::pOtherPlayer->field.graveyard->sendToGraveyard(defender);
         std::cout << "The attacker wins!" << std::endl;
-//        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
-
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
+
+        // We need the destroyed monster's zone number
+        qint32 defenderZoneNumber = findZoneNumber(defender, GameExternVars::pOtherPlayer);
+        Zone *pZoneOfTheDestroyedCard = findZone(defenderZoneNumber, QString::fromStdString("monster card"), GameExternVars::pOtherPlayer);
+        Card *pDestroyedCard = pZoneOfTheDestroyedCard->m_pCard;
+        GameExternVars::pOtherPlayer->sendToGraveyard(*pDestroyedCard, pZoneOfTheDestroyedCard);
+
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
-        outDataStream << QString::fromStdString("BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS")
-                      << QString::fromStdString("ATTACKER")
-                      << QString::fromStdString(defender.getCardName())
-                      << qint32(3);
+        outDataStream << QString::fromStdString("DESTROY_CARD") // Notify the server that a card was destroyed
+                      << QString::fromStdString("OTHER_PLAYER") // Who owns a card that was destroyed
+                      << QString::fromStdString(defender.getCardTypeString())
+                      << defenderZoneNumber; // Where is the monster card located
         sendDataToServer(buffer);
         blockingLoop.exec();
     }
@@ -320,18 +364,7 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
     {
         // If the pointsDifference is 0 then nothing happens
         std::cout << "No monster dies!" << std::endl;
-
-        QEventLoop blockingLoop;
-        connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
-        QByteArray buffer;
-        QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-        outDataStream.setVersion(QDataStream::Qt_5_15);
-        outDataStream << QString::fromStdString("BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS")
-                      << QString::fromStdString("NOONE");
-        sendDataToServer(buffer);
-        blockingLoop.exec();
     }
-
 }
 
 void Game::damagePlayer(Player &targetPlayer, int howMuch)
@@ -358,6 +391,70 @@ Card* Game::reconstructCard(QString cardName)
 
     return nullptr;
 }
+
+qint32 Game::findZoneNumber(Card &targetCard, Player *pWhoOwnsIt)
+{
+    qint32 zoneNumber = 1;
+    std::vector<Zone *> targetPartOfField;
+
+    targetCard.getCardType() == CardType::MONSTER_CARD
+        ? targetPartOfField = pWhoOwnsIt->field.monsterZone.m_monsterZone
+        : targetPartOfField = pWhoOwnsIt->field.spellTrapZone.m_spellTrapZone;
+
+    for(Zone *zone : targetPartOfField)
+    {
+        Card *tmpCard = zone->m_pCard;
+        if(tmpCard != nullptr)
+        {
+            if(targetCard.getCardName() == tmpCard->getCardName())
+                break;
+        }
+        zoneNumber++;
+    }
+
+    return zoneNumber;
+}
+
+Zone *Game::findZone(qint32 zoneNumber, QString cardType, Player *pTargetPlayer)
+{
+    std::vector<Zone *> partOfField;
+    cardType == "monster card"
+            ? partOfField = pTargetPlayer->field.monsterZone.m_monsterZone
+            : partOfField = pTargetPlayer->field.spellTrapZone.m_spellTrapZone;
+
+    return partOfField[zoneNumber - 1];
+}
+
+void Game::visuallySetMonster(MonsterCard *pMonsterCard)
+{
+    QPixmap pix;
+    pix.load(":/resources/pictures/card_back.jpg");
+    pix = pix.scaled(QSize(pMonsterCard->width, pMonsterCard->height), Qt::KeepAspectRatio);
+    QTransform transformationMatrix;
+    transformationMatrix.rotate(90);
+    pMonsterCard->setPixmap(pix.transformed(transformationMatrix));
+
+    // TODO: Center the card
+}
+
+void Game::visuallySetSpell(SpellCard *pSpellCard)
+{
+    QPixmap pix;
+    pix.load(":/resources/pictures/card_back.jpg");
+    pix = pix.scaled(QSize(pSpellCard->width, pSpellCard->height), Qt::KeepAspectRatio);
+    pSpellCard->setPixmap(pix);
+}
+
+void Game::visuallySetTrap(TrapCard *pTrapCard)
+{
+    QPixmap pix;
+    pix.load(":/resources/pictures/card_back.jpg");
+    pix = pix.scaled(QSize(pTrapCard->width, pTrapCard->height), Qt::KeepAspectRatio);
+    pTrapCard->setPixmap(pix);
+}
+
+
+
 
 void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth, float windowHeight)
 {
@@ -397,31 +494,31 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
 
 
 
-  //just a placeholder code for hand
-  MonsterCard* testCard1 = new MonsterCard("Hane-Hane", 450, 500, 4,
+    //just a placeholder code for hand
+    MonsterCard* testCard1 = new MonsterCard("Hane-Hane", 450, 500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::EARTH, false, MonsterPosition::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::FIELD,
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/HaneHane.jpg"
                                               );
-  TrapCard* testCard2 = new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
-                                             CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
-                                             "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
-                                       ":/resources/pictures/Reinforcements.jpg", true);
+    TrapCard* testCard2 = new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
 
-  MonsterCard* testCard3 = new MonsterCard("Blue dragon", 3000, 2500, 4,
+    MonsterCard* testCard3 = new MonsterCard("Trap Master", 500, 1500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
                                               CardType::MONSTER_CARD, CardLocation::GRAVEYARD,
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/TrapMaster.jpg"
                                               );
-  SpellCard* testCard4 = new SpellCard(SpellType::NORMAL_SPELL, "Monster Reborn",
-                                             CardType::SPELL_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
-                                             "  An EARTH monster equipped with this card increases "
-                                             "its ATK by 400 points and decreases its DEF by 200 points.",
-                                       ":/resources/pictures/MonsterReborn.jpg", true);
+    SpellCard* testCard4 = new SpellCard(SpellType::NORMAL_SPELL, "Monster Reborn",
+                                            CardType::SPELL_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "  An EARTH monster equipped with this card increases "
+                                            "its ATK by 400 points and decreases its DEF by 200 points.",
+                                            ":/resources/pictures/MonsterReborn.jpg", true);
 
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard1);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard2);
@@ -434,6 +531,13 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
 //  GameExternVars::pCurrentPlayer->field.graveyard->sendToGraveyard(new testCard);
+    // Label setup:
+    ui->labelCurrentPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelOtherPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pOtherPlayer->getPlayerName()));
+
+    ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+    ui->labelOtherPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
+
 }
 
 
@@ -515,15 +619,6 @@ QByteArray Game::QInt32ToQByteArray(qint32 source)
     return tmp;
 }
 
-void Game::deserializeWelcomeMessage(QDataStream &deserializationStream)
-{
-    QString welcomeMessage;
-    deserializationStream >> welcomeMessage;
-
-//    m_messageFromServer = welcomeMessage;
-    ui->labelMessageFromServer->setText(welcomeMessage);
-}
-
 void Game::deserializeStartGame(QDataStream &deserializationStream)
 {
     std::cout << "We are in deserializeStartGame" << std::endl;
@@ -582,6 +677,10 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
         MonsterPosition monsterPosition = monsterCard->monsterPositionQStringToEnum.at(positionQString);
         monsterCard->setPosition(monsterPosition);
 
+        // If monster is set we need to make it appear so
+        if(monsterPosition == MonsterPosition::FACE_DOWN_DEFENSE)
+            visuallySetMonster(monsterCard);
+
         // Place it on the field
         GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(targetCard, zoneNumber);
     }
@@ -593,12 +692,16 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
             SpellCard *spellCard = static_cast<SpellCard *>(targetCard);
             stPosition = spellCard->spellTrapPositionQStringToEnum.at(positionQString);
             spellCard->setPosition(stPosition);
+
+            // Visually set it
+            visuallySetSpell(spellCard);
         }
         else
         {
             TrapCard *trapCard = static_cast<TrapCard *>(targetCard);
             stPosition = trapCard->spellTrapPositionQStringToEnum.at(positionQString);
             trapCard->setPosition(stPosition);
+            visuallySetTrap(trapCard);
         }
         GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(targetCard, zoneNumber);
     }
@@ -738,12 +841,12 @@ void Game::deserializeLpChange(QDataStream &deserializationStream)
     if (whoseLifePointsChanged.toStdString() == GameExternVars::pCurrentPlayer->getPlayerName())
     {
         GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints);
-        ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+        ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
     }
     else
     {
         GameExternVars::pOtherPlayer->setPlayerLifePoints(newLifePoints);
-        ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
+        ui->labelOtherPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
     }
 
     // Notify the server that deserialization is finished
@@ -787,7 +890,8 @@ void Game::deserializeNewTurn(QDataStream &deserializationStream)
     GameExternVars::pOtherPlayer = tmp;
 
     std::cout << "Current player is: " << *GameExternVars::pCurrentPlayer << std::endl;
-    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelCurrentPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelOtherPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pOtherPlayer->getPlayerName()));
 
     // Update currentTurnClientID
     GameExternVars::currentTurnClientID = newTurnClientID;
@@ -828,11 +932,7 @@ void Game::deserializeReposition(QDataStream &deserializationStream)
     deserializationStream >> cardName
                           >> zoneNumber;
 
-    // TODO: Find the monster
-    std::cout << "PLACEHOLDER: Here we find " << cardName.toStdString() << " which is in the zone with number " << zoneNumber << std::endl;
-
-
-    Card* targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber]->m_pCard;
+    Card* targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard;
 
     // We know that its a monster
     MonsterCard *targetMonster = static_cast<MonsterCard *>(targetCard);
@@ -841,6 +941,47 @@ void Game::deserializeReposition(QDataStream &deserializationStream)
     targetMonster->changePosition();
 
     // Notify the server that deserialization is finished
+    notifyServerThatDeserializationHasFinished();
+}
+
+void Game::deserializeDestroyCard(QDataStream &deserializationStream)
+{
+    QString whoOwnedTheDestroyedCardQString;
+    QString cardType;
+    qint32 zoneNumber;
+
+    deserializationStream >> whoOwnedTheDestroyedCardQString
+                          >> cardType
+                          >> zoneNumber;
+
+    // Check who owned the destroyed card
+    Player *pPlayerWhoOwnedTheDestroyedCard = nullptr;
+
+    whoOwnedTheDestroyedCardQString == "CURRENT_PLAYER"
+        ? pPlayerWhoOwnedTheDestroyedCard = GameExternVars::pCurrentPlayer
+        : pPlayerWhoOwnedTheDestroyedCard = GameExternVars::pOtherPlayer;
+
+    // Find the zone that holds the destroyed card
+    Zone *pZoneOfTheDestroyedCard = findZone(zoneNumber, cardType, pPlayerWhoOwnedTheDestroyedCard);
+    Card *pDestroyedCard = pZoneOfTheDestroyedCard->m_pCard;
+
+    // Actually destroy it
+    pPlayerWhoOwnedTheDestroyedCard->sendToGraveyard(*pDestroyedCard, pZoneOfTheDestroyedCard); // TODO: Change all other occurences and add zone parameter
+
+    notifyServerThatDeserializationHasFinished();
+}
+
+void Game::deserializeGameEnd(QDataStream &deserializationStream)
+{
+    QString loserName;
+    deserializationStream >> loserName;
+
+    // If loserName is our name, it means we lost
+    m_clientName == loserName
+            ? QMessageBox::information(this, tr("GAME END"), tr("DEFEAT"))
+            : QMessageBox::information(this, tr("GAME END"), tr("VICTORY"));
+
+
     notifyServerThatDeserializationHasFinished();
 }
 
@@ -866,7 +1007,16 @@ void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
     // Set the m_clientID to clientID so we always know who we are
     m_clientID = clientID;
 
+    // We also want to always know our name
+    clientID == firstToPlay
+            ? m_clientName = QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName())
+            : m_clientName = QString::fromStdString(GameExternVars::pOtherPlayer->getPlayerName());
+
+    // Set the currentTurnClientID extern var
     GameExternVars::currentTurnClientID = firstToPlay;
+
+
+
 
     // We always want to have our field on the bottom, not current player's.
     int flagBottomField, flagUpperField;
@@ -1032,8 +1182,6 @@ void Game::onTurnEnd() {
     sendDataToServer(buffer);
     blockingLoop.exec();
 
-
-
     // The draw phase ends and the standby phase begins (this is not optional).
     GamePhaseExternVars::currentGamePhase = GamePhases::STANDBY_PHASE;
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
@@ -1046,17 +1194,7 @@ void Game::onTurnEnd() {
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
     // Main Phase 1 runs until user clicks one of the buttons.
-
-
-
-    // TODO: More testing is needed in onTurnEnd() to confirm everything works perfectly.
-
-    /* FIXME:
-        1) Sometimes both client's buttons are greyed out?
-    */
-
 }
-
 
 /* In order to have drag resizes on the main window, we can place CentralWidget in a layout,
    but weird things tend to happen when we actually resize then, so for now its not done like that.*/
@@ -1082,17 +1220,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         m_windowHeight = resizeEvent->size().height();
 
         // Check: Very rarely, this displays the same width/height as the old window
-    //    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
-
-        // WIP: UI components
-        // Game phase buttons and label:
-        ui->labelGamePhase->setAlignment(Qt::AlignCenter);
-
-        // Card info:
-        ui->labelImage->setAlignment(Qt::AlignCenter);
-
-        // TODO: getEffect()
-    //    ui->textBrowserEffect->setText(testCard1->getEffect());
+        // std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
 
         // GraphicsView and GraphicsScene adjustments:
         this->setWindowTitle("Yu-Gi-Oh!");
@@ -1102,7 +1230,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
         // TODO: Change leftVerticalLayout name to something normal
         const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
-    //    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
 
         m_viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
         ui->graphicsView->setFixedSize(m_viewAndSceneWidth, m_windowHeight);
@@ -1111,12 +1238,8 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         // TODO: Check if this is needed
         ui->graphicsView->fitInView(0, 0, m_viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
 
-    //    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
-
-        // WIP: Background image
-        // TODO: Find another image of the field
         QPixmap background(":/resources/pictures/space.jpeg");
-        background = background.scaled(m_viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
+        background = background.scaled(m_viewAndSceneWidth,  this->size().height(), Qt::IgnoreAspectRatio);
         QBrush brush(QPalette::Window, background);
         ui->graphicsView->setBackgroundBrush(brush);
     }
@@ -1125,6 +1248,26 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 void Game::onCardHoverEnter(Card &card)
 {
     std::cout << "Card " << card.getCardName() << " hover-entered!" << std::endl;
+
+    /* If the card is a monster, we want its ATK/DEF in card description too.
+     * If its not a monster, it will be empty string and won't mess with the description. */
+    std::string atkDefIfMonster = "";
+    if(card.getCardType() == CardType::MONSTER_CARD)
+    {
+        MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+        atkDefIfMonster += "ATK: " + std::to_string(monsterCard->getAttackPoints()) + "  /  DEF: " + std::to_string(monsterCard->getDefensePoints());
+    }
+
+    // Set the correct card image
+    QPixmap pix;
+    pix.load(QString::fromStdString(card.imagePath));
+    pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
+    ui->labelImage->setPixmap(pix);
+
+    // Set the description text
+    ui->textBrowserEffect->setText(QString::fromStdString(card.getCardDescription() + "\n\n\n" + atkDefIfMonster));
+
+    // Enable card info ui
     ui->labelImage->setVisible(true);
     ui->textBrowserEffect->setVisible(true);
 }
@@ -1138,18 +1281,17 @@ void Game::onCardHoverLeave(Card &card)
 void Game::onCardSelect(Card *card)
 {
     std::cout << "Card name: " << card->getCardName() << std::endl;
-
-    // Pseudo-code
-    /* -> Call setCardMenu() that determines the appearance of card menu based on flags
-     *  -> calls cardMenu.set() that sets the appropriate fields to false
-    */
     card->setCardMenu();
 
-    // Now we need to connect the card's menu UI to our slots
-    /* We use a lambda here because QT's clicked() signal only sends a bool value of true/false
-       This way, we can pass the card to our onActivateButtonClick slot */
+    // We need to check if the opponent has any monsters. If he doesn't, we don't show Attack Directly button
+    !GameExternVars::pOtherPlayer->field.monsterZone.isEmpty()
+         ? card->cardMenu->attackDirectlyButton->setVisible(false)
+         : card->cardMenu->attackDirectlyButton->setVisible(true);
 
-    card->cardMenu->isVisible() == false ? card->cardMenu->show() : card->cardMenu->hide();
+    // We only want current client to be able to have a card menu
+        // TODO: Should this be at the beginning of this function?
+    if(m_clientID == GameExternVars::currentTurnClientID)
+        card->cardMenu->isVisible() == false ? card->cardMenu->show() : card->cardMenu->hide();
 }
 
 void Game::onActivateFromHand(Card &activatedCard) {
@@ -1214,14 +1356,19 @@ void Game::onSummonButtonClick(Card &card) {
     // Remove target card from player's hand
     GameExternVars::pCurrentPlayer->m_hand.removeFromHand(card);
 
+
+
     /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
        to see it. */
     GameExternVars::pCardToBePlacedOnField = &card;
     std::cout << "Current summon target is: " << GameExternVars::pCardToBePlacedOnField->getCardName() << std::endl;
 
+    // Set the monster's position explicitly to ATTACK (since thats the only one allowed when summoning)
+    MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+    monsterCard->setPosition(MonsterPosition::ATTACK);
+
     // Color the free zones so user can select one to place.
     GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
-
 }
 
 void Game::onAttackButtonClick(Card &attackingMonster)
@@ -1232,7 +1379,6 @@ void Game::onAttackButtonClick(Card &attackingMonster)
    GameExternVars::pAttackingMonster = &attackingMonster;
 
    // Color opponent's monsters
-   // Placeholder for now, should be GameExternVars::pOtherPlayer->monsterZone.colorOccupiedZones() but that produces segfault
    GameExternVars::pOtherPlayer->field.monsterZone.colorOccupiedZones();
 }
 
@@ -1246,20 +1392,8 @@ void Game::onRepositionButtonClick(Card &card)
     // Change the position
     monsterCard->changePosition();
 
-
-    qint32 zoneNumber = 0;
-    // Get the zone number of this card (will be needed for deserialization)
-    for(Zone *zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone)
-    {
-        Card *tmpCard = zone->m_pCard;
-        if(tmpCard != nullptr)
-        {
-            if(card.getCardName() == tmpCard->getCardName())
-                break;
-        }
-
-        zoneNumber++;
-    }
+    // Find the zone number
+    qint32 zoneNumber = findZoneNumber(*monsterCard, GameExternVars::pCurrentPlayer);
 
     // Notify the server / other client
     QEventLoop blockingLoop;
@@ -1274,6 +1408,12 @@ void Game::onRepositionButtonClick(Card &card)
     blockingLoop.exec();
 }
 
+void Game::onAttackDirectlyButtonClick(Card &card)
+{
+    MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+    damagePlayer(*GameExternVars::pOtherPlayer, monsterCard->getAttackPoints());
+}
+
 
 /* TODO: This should accept the targetPlayer as an argument, because otherwise we always print currentPlayer's hp,
          even if it was other player's health that had changed. */
@@ -1281,8 +1421,10 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
 {
     std::cout << "Current health points for player " << targetPlayer.getPlayerName() << " : "<< targetPlayer.getPlayerLifePoints() << std::endl;
 
-    // Set the label text to the current turn player's health value
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(targetPlayer.getPlayerLifePoints())));
+    // Update labels
+    ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+    ui->labelOtherPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
+
 
     // Notify the server about health change.
     QEventLoop blockingLoop;
@@ -1290,8 +1432,8 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
-    outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
-                  << QString::fromStdString(targetPlayer.getPlayerName()).trimmed() // Whose life points has changed
+    outDataStream << QString::fromStdString("LP_CHANGE")
+                  << QString::fromStdString(targetPlayer.getPlayerName()) // Whose life points has changed
                   << qint32(targetPlayer.getPlayerLifePoints()); // New life points
     sendDataToServer(buffer);
     blockingLoop.exec();
@@ -1300,7 +1442,8 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
 void Game::onGameEnd(Player &loser)
 {
     loser.setPlayerLifePoints(0);
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString("0"));
+    ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+    ui->labelOtherPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
     std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost because his health points reached 0 !" << std::endl;
 
     // Notify the server
@@ -1309,13 +1452,30 @@ void Game::onGameEnd(Player &loser)
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
-    outDataStream << QString::fromStdString("LP_CHANGE").trimmed()
-                  << QString::fromStdString(loser.getPlayerName()).trimmed() // Whose life points has changed
+    outDataStream << QString::fromStdString("LP_CHANGE")
+                  << QString::fromStdString(loser.getPlayerName()) // Whose life points has changed
                   << qint32(0); // New life points
     sendDataToServer(buffer);
     blockingLoop.exec();
 
-    // TODO: Stop the game here (or maybe in the server too) somehow!
+
+    // Display a pop-up window for both players that the game has ended and tell them the result.
+    QString loserName = QString::fromStdString(loser.getPlayerName());
+    m_clientName == loserName
+            ? QMessageBox::information(this, tr("GAME END"), tr("DEFEAT"))
+            : QMessageBox::information(this, tr("GAME END"), tr("VICTORY"));
+
+    QEventLoop blockingLoop2;
+    connect(this, &Game::deserializationFinished, &blockingLoop2, &QEventLoop::quit);
+    QByteArray buffer2;
+    QDataStream outDataStream2(&buffer2, QIODevice::WriteOnly);
+    outDataStream2.setVersion(QDataStream::Qt_5_15);
+    outDataStream2 << QString::fromStdString("GAME_END")
+                   << loserName;
+    sendDataToServer(buffer2);
+    blockingLoop2.exec();
+
+
 }
 
 void Game::onSetButtonClick(Card &card)
@@ -1328,7 +1488,7 @@ void Game::onSetButtonClick(Card &card)
     /* Set this card that is to-be-summoned to a global summon target, in order for Zone objects to be able
        to see it. */
     GameExternVars::pCardToBePlacedOnField = &card;
-    std::cout << "Current summon target is: " << GameExternVars::pCardToBePlacedOnField->getCardName() << std::endl;
+    std::cout << "Current Set target is: " << GameExternVars::pCardToBePlacedOnField->getCardName() << std::endl;
 
 
     /* Since both spells/traps and monsters can be Set (but the behavior differs!),
@@ -1336,15 +1496,33 @@ void Game::onSetButtonClick(Card &card)
 
     if(card.getCardType() == CardType::MONSTER_CARD)
     {
+        MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+
+        // Set its position to FACE_DOWN_DEFENSE
+        monsterCard->setPosition(MonsterPosition::FACE_DOWN_DEFENSE);
+
         GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
+    }
+    else if(card.getCardType() == CardType::SPELL_CARD)
+    {
+       SpellCard *spellCard = static_cast<SpellCard *>(&card);
+
+       // Set its position to SET
+       spellCard->setPosition(SpellTrapPosition::SET);
+
+       GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
     }
     else
     {
+        TrapCard *trapCard = static_cast<TrapCard *>(&card);
+        trapCard->setPosition(SpellTrapPosition::SET);
         GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
     }
 
 }
 
+
+// TODO: summonAlready = true , activatedAlready = true at the end of onRedZoneClick?
 void Game::onRedZoneClick(Zone *clickedRedZone)
 {
     Card *card = GameExternVars::pCardToBePlacedOnField;
@@ -1355,21 +1533,19 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
     {
         GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(card, clickedRedZone);
         card->setCardLocation(CardLocation::FIELD);
-        GameExternVars::pCurrentPlayer->field.monsterZone.refresh();
 
-        // Get the monster's position
+        // Read the monster's position
         MonsterCard *pMonsterCard = static_cast<MonsterCard *>(card);
         QString monsterPosition = pMonsterCard->monsterPositionEnumToQString.at(pMonsterCard->getPosition());
 
-        // TODO: Make this a separate function
-        qint32 zoneNumber = 1;
-        for(Zone* zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone)
-        {
-            if(zone == clickedRedZone)
-                break;
+        // If the position is SET, we need to rotate the card and change the pixmap to card_back.jpg
+        if(monsterPosition == QString::fromStdString("FACE_DOWN_DEFENSE"))
+            visuallySetMonster(pMonsterCard);
 
-            zoneNumber++;
-        }
+        GameExternVars::pCurrentPlayer->field.monsterZone.refresh();
+
+        // Find the zone number
+        qint32 zoneNumber = findZoneNumber(*card, GameExternVars::pCurrentPlayer);
 
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
@@ -1383,6 +1559,10 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
                       << monsterPosition;
         sendDataToServer(buffer);
         blockingLoop.exec();
+
+
+        // Set this monster's summon flag to true
+        pMonsterCard->setAlreadySummonedThisTurn(true);
     }
     else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
         GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
@@ -1397,21 +1577,20 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
         {
             SpellCard *pSpellCard = static_cast<SpellCard *>(card);
             spellTrapPosition = pSpellCard->spellTrapPositionEnumToQString.at(pSpellCard->getSpellPosition());
+
+            if(spellTrapPosition == QString::fromStdString("SET"))
+                visuallySetSpell(pSpellCard);
         }
         else
         {
             TrapCard *pTrapCard = static_cast<TrapCard *>(card);
             spellTrapPosition = pTrapCard->spellTrapPositionEnumToQString.at(pTrapCard->getTrapPosition());
+
+            if(spellTrapPosition == QString::fromStdString("SET"))
+                visuallySetTrap(pTrapCard);
         }
 
-        qint32 zoneNumber = 1;
-        for(Zone* zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone)
-        {
-            if(zone == clickedRedZone)
-                break;
-
-            zoneNumber++;
-        }
+        qint32 zoneNumber = findZoneNumber(*card, GameExternVars::pCurrentPlayer);
 
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
@@ -1481,8 +1660,6 @@ void Game::onDataIncoming()
     std::cout << "We are in onDataIncoming" << std::endl;
 
     // Read data that was sent from the server
-
-//     Deserialization
     m_inDataStream.startTransaction();
 
     //First we need to check what header we have
@@ -1495,13 +1672,6 @@ void Game::onDataIncoming()
         return;
 
     m_currentHeader = header;
-
-
-//    if(header == m_currentHeader)
-//    {
-//        QTimer::singleShot(0, this, deserializationFunctionPointer);
-//        return;
-//    }
 
     // Then we call the appropriate deserialization method for that header:
     auto deserializationFunctionPointer = m_deserializationMap.at(m_currentHeader);
@@ -1524,7 +1694,6 @@ void Game::onTestNetworkButtonClick()
 void Game::onWriteDataButtonClick()
 {
     // Testing
-//    GameExternVars::pCurrentPlayer->drawCards(5);
     std::cout << "Current player draws 5 - not actually, this is a test" << std::endl;
     QEventLoop blockingLoop;
     connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
@@ -1629,6 +1798,15 @@ void Game::onCardAddedToScene(Card *card)
     connect(card->cardMenu->attackButton, &QPushButton::clicked, this, [this, card](){
         onAttackButtonClick(*card);
     });
+
+    connect(card->cardMenu->repositionButton, &QPushButton::clicked, this, [this, card](){
+        onRepositionButtonClick(*card);
+    });
+
+    connect(card->cardMenu->attackDirectlyButton, &QPushButton::clicked, this, [this, card]() {
+        onAttackDirectlyButtonClick(*card);
+    });
+
     ui->graphicsView->scene()->addItem(card);
     ui->graphicsView->scene()->addWidget(card->cardMenu);
     card->cardMenu->setVisible(false);

@@ -58,9 +58,8 @@ class MonsterCard : public Card
 public:
 
     MonsterCard( const std::string &cardName,int attackPoints, int defensePoints, int level, MonsterType type,
-                 MonsterKind kind, MonsterAttribute attribute,bool active,MonsterPosition position,bool alreadyAttack,
-                 CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool summonedThisTurn = false);
-
+                 MonsterKind kind, MonsterAttribute attribute,bool active,MonsterPosition position,bool alreadyAttackedThisTurn,
+                 CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool alreadySummonedThisTurn = false);
     virtual ~MonsterCard();
 
     MonsterCard* clone() override;
@@ -96,6 +95,9 @@ public:
 
     void setCardMenu() override;
 
+    void setAlreadyAttackedThisTurn(bool didIAlreadyAttack);
+    void setAlreadySummonedThisTurn(bool wasIAlreadySummonedThisTurn);
+
 protected:
     int attackPoints;
     int defensePoints;
@@ -105,8 +107,8 @@ protected:
     int level;
     bool active;
     MonsterPosition position;
-    bool alreadyAttack;
-    bool summonedThisTurn;
+    bool alreadyAttackedThisTurn;
+    bool alreadySummonedThisTurn;
 
 };
 

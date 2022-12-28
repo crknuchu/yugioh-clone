@@ -106,8 +106,8 @@ public:
     void move(float x,float y);
     void flipCard();
     void addToScene(QGraphicsScene *scene);
-
     bool faceUp = true; //card is turned face up (image is visible) or facedown (back is visible)
+    std::string imagePath;
 
     CardMenu *cardMenu = new CardMenu();
     float height;
@@ -119,8 +119,6 @@ public:
     static const std::map<QString, MonsterPosition> monsterPositionQStringToEnum;
     static const std::map<QString, SpellTrapPosition> spellTrapPositionQStringToEnum;
 
-    int repositionCounter = 0;
-
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
     Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath);
@@ -128,7 +126,6 @@ protected:
     CardType cardType;
     CardLocation cardLocation;
     std::string cardDescription;
-    std::string imagePath;
     bool isActivated = false;
     bool isSetThisTurn = false;
     int playerThatSetThisCard = 1;

@@ -44,16 +44,22 @@ public:
     QPushButton *btnEndPhase;
     QVBoxLayout *verticalLayout;
     QHBoxLayout *horizontalLayout;
-    QLabel *labelCurrentPlayerConst;
-    QLabel *labelCurrentPlayerDynamic;
+    QLabel *labelCurrentPlayerNameConst;
+    QLabel *labelCurrentPlayerNameDynamic;
+    QLabel *labelOtherPlayerNameConst;
+    QLabel *labelOtherPlayerNameDynamic;
     QHBoxLayout *horizontalLayout_2;
-    QLabel *labelHealthPointsConst;
-    QLabel *labelHealthPointsDynamic;
+    QLabel *labelCurrentPlayerLpConst;
+    QLabel *labelCurrentPlayerLpDynamic;
+    QLabel *labelOtherPlayerLpConst;
+    QLabel *labelOtherPlayerLpDynamic;
+    QHBoxLayout *horizontalLayout_4;
+    QLabel *labelServerAddress;
+    QLabel *labelServerPort;
     QHBoxLayout *horizontalLayout_3;
     QTextEdit *textEditAddress;
     QTextEdit *textEditPort;
     QPushButton *btnTestNetwork;
-    QLabel *labelMessageFromServer;
     QPushButton *btnWriteData;
     QMenuBar *menubar;
     QStatusBar *statusbar;
@@ -120,33 +126,68 @@ public:
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
-        labelCurrentPlayerConst = new QLabel(layoutWidget);
-        labelCurrentPlayerConst->setObjectName(QString::fromUtf8("labelCurrentPlayerConst"));
+        labelCurrentPlayerNameConst = new QLabel(layoutWidget);
+        labelCurrentPlayerNameConst->setObjectName(QString::fromUtf8("labelCurrentPlayerNameConst"));
 
-        horizontalLayout->addWidget(labelCurrentPlayerConst);
+        horizontalLayout->addWidget(labelCurrentPlayerNameConst);
 
-        labelCurrentPlayerDynamic = new QLabel(layoutWidget);
-        labelCurrentPlayerDynamic->setObjectName(QString::fromUtf8("labelCurrentPlayerDynamic"));
+        labelCurrentPlayerNameDynamic = new QLabel(layoutWidget);
+        labelCurrentPlayerNameDynamic->setObjectName(QString::fromUtf8("labelCurrentPlayerNameDynamic"));
 
-        horizontalLayout->addWidget(labelCurrentPlayerDynamic);
+        horizontalLayout->addWidget(labelCurrentPlayerNameDynamic);
+
+        labelOtherPlayerNameConst = new QLabel(layoutWidget);
+        labelOtherPlayerNameConst->setObjectName(QString::fromUtf8("labelOtherPlayerNameConst"));
+
+        horizontalLayout->addWidget(labelOtherPlayerNameConst);
+
+        labelOtherPlayerNameDynamic = new QLabel(layoutWidget);
+        labelOtherPlayerNameDynamic->setObjectName(QString::fromUtf8("labelOtherPlayerNameDynamic"));
+
+        horizontalLayout->addWidget(labelOtherPlayerNameDynamic);
 
 
         verticalLayout->addLayout(horizontalLayout);
 
         horizontalLayout_2 = new QHBoxLayout();
         horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
-        labelHealthPointsConst = new QLabel(layoutWidget);
-        labelHealthPointsConst->setObjectName(QString::fromUtf8("labelHealthPointsConst"));
+        labelCurrentPlayerLpConst = new QLabel(layoutWidget);
+        labelCurrentPlayerLpConst->setObjectName(QString::fromUtf8("labelCurrentPlayerLpConst"));
 
-        horizontalLayout_2->addWidget(labelHealthPointsConst);
+        horizontalLayout_2->addWidget(labelCurrentPlayerLpConst);
 
-        labelHealthPointsDynamic = new QLabel(layoutWidget);
-        labelHealthPointsDynamic->setObjectName(QString::fromUtf8("labelHealthPointsDynamic"));
+        labelCurrentPlayerLpDynamic = new QLabel(layoutWidget);
+        labelCurrentPlayerLpDynamic->setObjectName(QString::fromUtf8("labelCurrentPlayerLpDynamic"));
 
-        horizontalLayout_2->addWidget(labelHealthPointsDynamic);
+        horizontalLayout_2->addWidget(labelCurrentPlayerLpDynamic);
+
+        labelOtherPlayerLpConst = new QLabel(layoutWidget);
+        labelOtherPlayerLpConst->setObjectName(QString::fromUtf8("labelOtherPlayerLpConst"));
+
+        horizontalLayout_2->addWidget(labelOtherPlayerLpConst);
+
+        labelOtherPlayerLpDynamic = new QLabel(layoutWidget);
+        labelOtherPlayerLpDynamic->setObjectName(QString::fromUtf8("labelOtherPlayerLpDynamic"));
+
+        horizontalLayout_2->addWidget(labelOtherPlayerLpDynamic);
 
 
         verticalLayout->addLayout(horizontalLayout_2);
+
+        horizontalLayout_4 = new QHBoxLayout();
+        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
+        labelServerAddress = new QLabel(layoutWidget);
+        labelServerAddress->setObjectName(QString::fromUtf8("labelServerAddress"));
+
+        horizontalLayout_4->addWidget(labelServerAddress);
+
+        labelServerPort = new QLabel(layoutWidget);
+        labelServerPort->setObjectName(QString::fromUtf8("labelServerPort"));
+
+        horizontalLayout_4->addWidget(labelServerPort);
+
+
+        verticalLayout->addLayout(horizontalLayout_4);
 
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
@@ -167,11 +208,6 @@ public:
         btnTestNetwork->setObjectName(QString::fromUtf8("btnTestNetwork"));
 
         verticalLayout->addWidget(btnTestNetwork);
-
-        labelMessageFromServer = new QLabel(layoutWidget);
-        labelMessageFromServer->setObjectName(QString::fromUtf8("labelMessageFromServer"));
-
-        verticalLayout->addWidget(labelMessageFromServer);
 
         btnWriteData = new QPushButton(layoutWidget);
         btnWriteData->setObjectName(QString::fromUtf8("btnWriteData"));
@@ -201,7 +237,7 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
-        labelImage->setText(QCoreApplication::translate("MainWindow", "ImageLabel", nullptr));
+        labelImage->setText(QString());
         textBrowserEffect->setHtml(QCoreApplication::translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><meta charset=\"utf-8\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
@@ -209,19 +245,23 @@ public:
 "li.unchecked::marker { content: \"\\2610\"; }\n"
 "li.checked::marker { content: \"\\2612\"; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Monster effect</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", nullptr));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Card effect</p></body></html>", nullptr));
         labelGamePhase->setText(QString());
         btnBattlePhase->setText(QCoreApplication::translate("MainWindow", "Battle Phase", nullptr));
         btnMainPhase2->setText(QCoreApplication::translate("MainWindow", "Main Phase 2", nullptr));
         btnEndPhase->setText(QCoreApplication::translate("MainWindow", "End Phase", nullptr));
-        labelCurrentPlayerConst->setText(QCoreApplication::translate("MainWindow", "Current Player:", nullptr));
-        labelCurrentPlayerDynamic->setText(QString());
-        labelHealthPointsConst->setText(QCoreApplication::translate("MainWindow", "Health Points: ", nullptr));
-        labelHealthPointsDynamic->setText(QString());
+        labelCurrentPlayerNameConst->setText(QCoreApplication::translate("MainWindow", "Current Player:", nullptr));
+        labelCurrentPlayerNameDynamic->setText(QString());
+        labelOtherPlayerNameConst->setText(QCoreApplication::translate("MainWindow", "Other Player:", nullptr));
+        labelOtherPlayerNameDynamic->setText(QString());
+        labelCurrentPlayerLpConst->setText(QCoreApplication::translate("MainWindow", "Life Points:", nullptr));
+        labelCurrentPlayerLpDynamic->setText(QString());
+        labelOtherPlayerLpConst->setText(QCoreApplication::translate("MainWindow", "Life Points:", nullptr));
+        labelOtherPlayerLpDynamic->setText(QString());
+        labelServerAddress->setText(QCoreApplication::translate("MainWindow", "Server address", nullptr));
+        labelServerPort->setText(QCoreApplication::translate("MainWindow", "Server port", nullptr));
         btnTestNetwork->setText(QCoreApplication::translate("MainWindow", "Connect to the server", nullptr));
-        labelMessageFromServer->setText(QCoreApplication::translate("MainWindow", "Message from server", nullptr));
-        btnWriteData->setText(QCoreApplication::translate("MainWindow", "Write data to server", nullptr));
+        btnWriteData->setText(QCoreApplication::translate("MainWindow", "Test write data to server", nullptr));
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi
 
