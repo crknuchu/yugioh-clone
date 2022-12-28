@@ -2,13 +2,13 @@
 #include "headers/Card.h"
 #include "headers/Spellcard.h"
 #include "headers/Monstercard.h"
-
+#include "headers/Trapcard.h"
 
 TEST_CASE("Card","[class][getter][setter][constructor]")
 {
     SECTION("Card method getCardName() will return card name")
     {
-        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::FACE_UP,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
         std::string expected = "Change of Heart";
         std::string output = card.getCardName();
         REQUIRE(output == expected);
@@ -16,7 +16,7 @@ TEST_CASE("Card","[class][getter][setter][constructor]")
 
     SECTION("Card method getCardType() will return card type")
     {
-        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::FACE_UP,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
         CardType expected = CardType::SPELL_CARD;
         CardType output = card.getCardType();
         REQUIRE(output == expected);
@@ -24,7 +24,7 @@ TEST_CASE("Card","[class][getter][setter][constructor]")
 
     SECTION("Card method getCardTypeString() will return string representation of card type ")
     {
-        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::FACE_UP,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
         std::string expected = "spell card";
         std::string output = card.getCardTypeString();
         REQUIRE(output == expected);
@@ -34,7 +34,7 @@ TEST_CASE("Card","[class][getter][setter][constructor]")
 
     SECTION("Card method getCardLocation() will return card location")
     {
-        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::FACE_UP,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
         CardLocation expected = CardLocation::DECK ;
         CardLocation output = card.getCardLocation();
         REQUIRE(output == expected);
@@ -42,7 +42,7 @@ TEST_CASE("Card","[class][getter][setter][constructor]")
 
     SECTION("Card method getCardLocationString() will return string representation of card location")
     {
-        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::FACE_UP,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
         std::string expected = "deck";
         std::string output = card.getCardLocationString();
         REQUIRE(output == expected);
@@ -50,7 +50,7 @@ TEST_CASE("Card","[class][getter][setter][constructor]")
 
     SECTION("Card method getCardDescription() will return card description")
     {
-        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::FACE_UP,"Target 1 monster your opponent controls; take control of it until the End Phase.", ":/resources/pictures/ChangeofHeart.jpg",  false);
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"Target 1 monster your opponent controls; take control of it until the End Phase.", ":/resources/pictures/ChangeofHeart.jpg",  false);
         std::string expected = "Target 1 monster your opponent controls; take control of it until the End Phase.";
         std::string output = card.getCardDescription();
         REQUIRE(output == expected);
@@ -242,3 +242,137 @@ TEST_CASE("Monstercard","[class][getter][setter][constructor]")
 
 
 }
+
+
+TEST_CASE("Spellcard","[class][getter][setter][constructor]")
+{
+    SECTION("Spellcard method getSpellType() will return spell type")
+    {
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+        SpellType expected = SpellType::NORMAL_SPELL;
+        SpellType output = card.getSpellType();
+        REQUIRE(output == expected);
+    }
+
+
+    SECTION("Spellcard method getSpellType() will return string representation of spell type")
+    {
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+        std::string expected = "normal spell";
+        std::string output = card.getSpellTypeString();
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Spellcard method getCardLocationString() will return string representation of spellcard location")
+    {
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+        std::string expected = "deck";
+        std::string output = card.getCardLocationString();
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Spellcard method getSpellPosition() will return spellcard position")
+    {
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+        SpellTrapPosition expected = SpellTrapPosition::NONE;
+        SpellTrapPosition output = card.getSpellPosition();
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Spellcard method setSpellPosition() will set new position")
+    {
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+        SpellTrapPosition expected = SpellTrapPosition::SET;
+        card.setPosition(SpellTrapPosition::SET);
+        SpellTrapPosition output = SpellTrapPosition::SET;
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Spellcard method getActive will return is spell active")
+    {
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+
+        bool output = card.getActive();
+        bool expected = false;
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Spellcard method activate spell will activate spell")
+    {
+        auto card = SpellCard(SpellType::NORMAL_SPELL ,"Change of Heart", CardType::SPELL_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/ChangeofHeart.jpg", false);
+
+        card.activateSpell();
+        bool output = card.getActive();
+        bool expected = true;
+        REQUIRE(output == expected);
+    }
+
+}
+
+
+TEST_CASE("Trapcard","[class][getter][setter][constructor]")
+{
+    SECTION("Trapcard method getTrapType() will return trap type")
+    {
+        auto card = TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+        TrapType expected = TrapType::NORMAL_TRAP;
+        TrapType output = card.getTrapType();
+        REQUIRE(output == expected);
+    }
+
+
+    SECTION("Trapcard method getTrapTypeString() will return string representation of trap type")
+    {
+        auto card = TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+        std::string expected = "normal trap";
+        std::string output = card.getTrapTypeString();
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Trapcard method getCardLocationString() will return string representation of trapcard location")
+    {
+        auto card = TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+        std::string expected = "deck";
+        std::string output = card.getCardLocationString();
+        REQUIRE(output == expected);
+    }
+
+
+    SECTION("Trapcard method getTrapPosition will return trap position")
+    {
+        auto card = TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+        SpellTrapPosition expected = SpellTrapPosition::NONE;
+        SpellTrapPosition output = card.getTrapPosition();
+        REQUIRE(output == expected);
+    }
+
+
+    SECTION("Trapcard method setTrapPosition() will set new position")
+    {
+        auto card = TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+        SpellTrapPosition expected = SpellTrapPosition::SET;
+        card.setPosition(SpellTrapPosition::SET);
+        SpellTrapPosition output = SpellTrapPosition::SET;
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Trapcard method getActive will return is trap active")
+    {
+        auto card = TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+        bool output = card.getActive();
+        bool expected = false;
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Trapcard method activate trap will activate trap")
+    {
+        auto card = TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+        card.activateTrap();
+        bool output = card.getActive();
+        bool expected = true;
+        REQUIRE(output == expected);
+    }
+}
+
+
+
