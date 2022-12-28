@@ -24,7 +24,7 @@ SOURCES += \
         sources/Spellcard.cpp \
         sources/Trapcard.cpp \
         sources/Zone.cpp \
-        sources/main.cpp \
+        #sources/main.cpp \
         sources/Game.cpp \
         sources/CardList.cpp \
         sources/Deck.cpp \
@@ -33,7 +33,9 @@ SOURCES += \
         sources/Player.cpp \
         sources/CardMenu.cpp \
         sources/MonsterZone.cpp \
-        sources/Serializer.cpp
+        sources/Serializer.cpp \
+        tests/catch.cpp \
+        tests/tests.cpp
 
 HEADERS += \
     headers/Field.h \
@@ -61,7 +63,9 @@ HEADERS += \
     headers/CardMenu.h \ 
     headers/MonsterZone.h \
     headers/BotPlayer.h \
-    headers/Serializer.h
+    headers/Serializer.h \
+    tests/catch.hpp
+
 
 RESOURCES += \
         resources.qrc
