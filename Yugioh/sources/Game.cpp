@@ -357,8 +357,16 @@ void Game::onEndPhaseButtonClick()
     std::cout << "End phase button clicked" << std::endl;
     GamePhaseExternVars::currentGamePhase = GamePhases::END_PHASE;
     for(Zone* zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
-        if(!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::TRAP_CARD)
+        if(!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::TRAP_CARD) {
             zone->m_pCard->setIsSetThisTurn(false);
+            zone->m_pCard->setPlayerThatSetThisCard(2);
+        }
+    }
+
+    for(Zone* zone : GameExternVars::pOtherPlayer->field.spellTrapZone.m_spellTrapZone) {
+        if(!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::TRAP_CARD) {
+            zone->m_pCard->setPlayerThatSetThisCard(1);
+        }
     }
     // Set the label text to indicate that we are in the End Phase:
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
@@ -588,10 +596,11 @@ void Game::onActivateButtonClick(Card &card)
         connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
         // Activate the card's effect
         effectActivator.activateEffect(cardName);
-
         if(card.shouldBeSentToGraveyard()) {//this needs to be implemented
             delay();
-            GameExternVars::pCurrentPlayer->sendToGraveyard(card);
+            card.getPlayerThatSetThisCard() == 1 ?
+                        GameExternVars::pCurrentPlayer->sendToGraveyard(card)
+                      : GameExternVars::pOtherPlayer->sendToGraveyard(card);
         }
     }
 }

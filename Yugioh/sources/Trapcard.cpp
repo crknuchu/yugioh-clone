@@ -16,6 +16,7 @@ bool TrapCard::shouldBeSentToGraveyard()
 {
     if(trapType == TrapType::CONTINUOUS_TRAP)
         return false;
+
     return true;
 }
 

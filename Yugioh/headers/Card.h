@@ -62,11 +62,15 @@ public:
 
     bool getIsActivated() const;
 
+    int getPlayerThatSetThisCard() const;
+
     bool getIsSetThisTurn() const;
 
     void setCardLocation(CardLocation newCardLocation);
 
     void setIsActivated(bool isActivated);
+
+    void setPlayerThatSetThisCard(int playerNumber);
 
     void setIsSetThisTurn(bool isSetThisTurn);
 
@@ -105,6 +109,7 @@ protected:
     std::string imagePath;
     bool isActivated = false;
     bool isSetThisTurn = false;
+    int playerThatSetThisCard = 1;
     //cardImage
     // CardMenu *cardMenu = new CardMenu(this);
     

@@ -55,6 +55,11 @@ bool Card::getIsActivated() const
     return this->isActivated;
 }
 
+int Card::getPlayerThatSetThisCard() const
+{
+    return playerThatSetThisCard;
+}
+
 bool Card::getIsSetThisTurn() const
 {
     return this->isSetThisTurn;
@@ -89,6 +94,11 @@ void Card::setCardLocation(CardLocation newCardLocation)
 void Card::setIsActivated(bool isActivated)
 {
     this->isActivated = isActivated;
+}
+
+void Card::setPlayerThatSetThisCard(int playerNumber)
+{
+    this->playerThatSetThisCard = playerNumber;
 }
 
 void Card::setIsSetThisTurn(bool isSetThisTurn)

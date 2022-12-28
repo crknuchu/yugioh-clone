@@ -288,7 +288,12 @@ void EffectActivator::activateJustDesserts()
 
 void EffectActivator::activateReinforcements()
 {
-    MonsterCard* strongestMonster = findHighestATKMonster(*GameExternVars::pCurrentPlayer);
+    MonsterCard* strongestMonster;
+    if(m_card->getPlayerThatSetThisCard() == 1)
+        strongestMonster = findHighestATKMonster(*GameExternVars::pCurrentPlayer);
+    else
+        strongestMonster = findHighestATKMonster(*GameExternVars::pOtherPlayer);
+
     strongestMonster->setAttackPoints(strongestMonster->getAttackPoints() + 500);
 }
 
