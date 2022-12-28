@@ -1268,6 +1268,15 @@ void Game::onCardHoverEnter(Card &card)
 {
     std::cout << "Card " << card.getCardName() << " hover-entered!" << std::endl;
 
+    /* If the card is a monster, we want its ATK/DEF in card description too.
+     * If its not a monster, it will be empty string and won't mess with the description. */
+    std::string atkDefIfMonster = "";
+    if(card.getCardType() == CardType::MONSTER_CARD)
+    {
+        MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+        atkDefIfMonster += "ATK: " + std::to_string(monsterCard->getAttackPoints()) + "  /  DEF: " + std::to_string(monsterCard->getDefensePoints());
+    }
+
     // Set the correct card image
     QPixmap pix;
     pix.load(QString::fromStdString(card.imagePath));
@@ -1275,7 +1284,10 @@ void Game::onCardHoverEnter(Card &card)
     ui->labelImage->setPixmap(pix);
 
     // Set the description text
-    ui->textBrowserEffect->setText(QString::fromStdString(card.getCardDescription()));
+    ui->textBrowserEffect->setText(QString::fromStdString(
+                                                            card.getCardDescription() + "\n\n\n\n"
+                                                            + atkDefIfMonster
+                                                         ));
 
     // Enable card info ui
     ui->labelImage->setVisible(true);
