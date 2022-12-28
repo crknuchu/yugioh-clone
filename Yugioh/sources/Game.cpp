@@ -495,7 +495,7 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
     MonsterCard* monsterCard3 = new MonsterCard("Lord of D", 1200, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
                                               MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
-                                              CardType::MONSTER_CARD, CardLocation::HAND,
+                                              CardType::MONSTER_CARD, CardLocation::FIELD,
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/LordofD.jpg"
                                               );
@@ -1249,7 +1249,6 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         // We need to calculate other UI sizes so we know what QGraphicsView's size needs to be.
         // TODO: Change leftVerticalLayout name to something normal
         const int leftVerticalLayoutWidth = ui->leftVerticalLayout->sizeHint().width();
-    //    qDebug("Layout Width: %d, height: %d", leftVerticalLayoutWidth, leftVerticalLayoutHeight);
 
         m_viewAndSceneWidth = m_windowWidth - (leftVerticalLayoutWidth);
         ui->graphicsView->setFixedSize(m_viewAndSceneWidth, m_windowHeight);
@@ -1258,12 +1257,8 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         // TODO: Check if this is needed
         ui->graphicsView->fitInView(0, 0, m_viewAndSceneWidth, m_windowHeight, Qt::KeepAspectRatio);
 
-    //    std::cout << "Scene width: " << ui->graphicsView->scene()->width();
-
-        // WIP: Background image
-        // TODO: Find another image of the field
         QPixmap background(":/resources/pictures/space.jpeg");
-        background = background.scaled(m_viewAndSceneWidth,  this->size().height() / 2, Qt::IgnoreAspectRatio);
+        background = background.scaled(m_viewAndSceneWidth,  this->size().height(), Qt::IgnoreAspectRatio);
         QBrush brush(QPalette::Window, background);
         ui->graphicsView->setBackgroundBrush(brush);
     }
@@ -1272,14 +1267,17 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 void Game::onCardHoverEnter(Card &card)
 {
     std::cout << "Card " << card.getCardName() << " hover-entered!" << std::endl;
+
+    // Set the correct card image
     QPixmap pix;
     pix.load(QString::fromStdString(card.imagePath));
     pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
     ui->labelImage->setPixmap(pix);
 
-    // TODO: getEffect()
+    // Set the description text
     ui->textBrowserEffect->setText(QString::fromStdString(card.getCardDescription()));
 
+    // Enable card info ui
     ui->labelImage->setVisible(true);
     ui->textBrowserEffect->setVisible(true);
 }
@@ -1301,6 +1299,7 @@ void Game::onCardSelect(Card *card)
          : card->cardMenu->attackDirectlyButton->setVisible(true);
 
     // We only want current client to be able to have a card menu
+        // TODO: Should this be at the beginning of this function?
     if(m_clientID == GameExternVars::currentTurnClientID)
         card->cardMenu->isVisible() == false ? card->cardMenu->show() : card->cardMenu->hide();
 }
@@ -1413,7 +1412,7 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
 
     // Update labels
     ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
-    ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
+    ui->labelOtherPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
 
 
     // Notify the server about health change.
@@ -1433,7 +1432,7 @@ void Game::onGameEnd(Player &loser)
 {
     loser.setPlayerLifePoints(0);
     ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
-    ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
+    ui->labelOtherPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
     std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost because his health points reached 0 !" << std::endl;
 
     // Notify the server
