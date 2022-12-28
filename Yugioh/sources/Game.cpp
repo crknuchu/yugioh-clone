@@ -362,6 +362,22 @@ void Game::visuallySetMonster(MonsterCard *pMonsterCard)
     // TODO: Center the card
 }
 
+void Game::visuallySetSpell(SpellCard *pSpellCard)
+{
+    QPixmap pix;
+    pix.load(":/resources/pictures/card_back.jpg");
+    pix = pix.scaled(QSize(pSpellCard->width, pSpellCard->height), Qt::KeepAspectRatio);
+    pSpellCard->setPixmap(pix);
+}
+
+void Game::visuallySetTrap(TrapCard *pTrapCard)
+{
+    QPixmap pix;
+    pix.load(":/resources/pictures/card_back.jpg");
+    pix = pix.scaled(QSize(pTrapCard->width, pTrapCard->height), Qt::KeepAspectRatio);
+    pTrapCard->setPixmap(pix);
+}
+
 
 
 
@@ -421,24 +437,36 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/LordofD.jpg"
                                               );
+    SpellCard* spellCard1 = new SpellCard(SpellType::NORMAL_SPELL, "Dark Hole", CardType::SPELL_CARD, CardLocation::HAND,
+                                            SpellTrapPosition::NONE, "Description placeholder", ":/resources/pictures/DarkHole.jpg", false);
 
     ui->graphicsView->scene()->addItem(monsterCard1);
     ui->graphicsView->scene()->addWidget(monsterCard1->cardMenu);
     monsterCard1->cardMenu->setVisible(false);
     emit cardAddedToScene(*monsterCard1);
+
     ui->graphicsView->scene()->addItem(monsterCard2);
     ui->graphicsView->scene()->addWidget(monsterCard2->cardMenu);
     monsterCard2->cardMenu->setVisible(false);
     emit cardAddedToScene(*monsterCard2);
+
     ui->graphicsView->scene()->addItem(monsterCard3);
     ui->graphicsView->scene()->addWidget(monsterCard3->cardMenu);
     monsterCard3->cardMenu->setVisible(false);
     emit cardAddedToScene(*monsterCard3);
 
+    ui->graphicsView->scene()->addItem(spellCard1);
+    ui->graphicsView->scene()->addWidget(spellCard1->cardMenu);
+    spellCard1->cardMenu->setVisible(false);
+    emit cardAddedToScene(*spellCard1);
+
+
+
     GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight);
     GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(monsterCard3, 2); //testing purposes
     GameExternVars::pCurrentPlayer->m_hand.addToHand(*monsterCard1);
     GameExternVars::pCurrentPlayer->m_hand.addToHand(*monsterCard2);
+    GameExternVars::pCurrentPlayer->m_hand.addToHand(*spellCard1);
       // TODO: Disable clicks on the cards if its possible, or at least disable card menu for every card that this player has.
         // For loops with pCurrentPlayer and pOtherPlayer's hand and disable each card's menu
             // Important: don't forget to reenable it in onTurnEnd or switchPlayers
@@ -613,12 +641,16 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
             SpellCard *spellCard = static_cast<SpellCard *>(targetCard);
             stPosition = spellCard->spellTrapPositionQStringToEnum.at(positionQString);
             spellCard->setPosition(stPosition);
+
+            // Visually set it
+            visuallySetSpell(spellCard);
         }
         else
         {
             TrapCard *trapCard = static_cast<TrapCard *>(targetCard);
             stPosition = trapCard->spellTrapPositionQStringToEnum.at(positionQString);
             trapCard->setPosition(stPosition);
+            visuallySetTrap(trapCard);
         }
         GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(targetCard, zoneNumber);
     }
@@ -1455,12 +1487,7 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
             spellTrapPosition = pSpellCard->spellTrapPositionEnumToQString.at(pSpellCard->getSpellPosition());
 
             if(spellTrapPosition == QString::fromStdString("SET"))
-            {
-                QPixmap pix;
-                pix.load(":/resources/pictures/card_back.jpg");
-                pix = pix.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
-                card->setPixmap(pix);
-            }
+                visuallySetSpell(pSpellCard);
         }
         else
         {
@@ -1468,12 +1495,7 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
             spellTrapPosition = pTrapCard->spellTrapPositionEnumToQString.at(pTrapCard->getTrapPosition());
 
             if(spellTrapPosition == QString::fromStdString("SET"))
-            {
-                QPixmap pix;
-                pix.load(":/resources/pictures/card_back.jpg");
-                pix = pix.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
-                card->setPixmap(pix);
-            }
+                visuallySetTrap(pTrapCard);
         }
 
         qint32 zoneNumber = 1;

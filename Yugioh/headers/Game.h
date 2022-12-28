@@ -80,6 +80,8 @@ private:
 
   Card* reconstructCard(QString cardName);
   void visuallySetMonster(MonsterCard *monsterCard);
+  void visuallySetSpell(SpellCard *spellCard);
+  void visuallySetTrap(TrapCard *trapCard);
 
 // QT related stuff:
     int m_windowWidth;
