@@ -39,7 +39,8 @@ const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_d
     {"NEW_TURN",                                        &Game::deserializeNewTurn},
     {"EFFECT_ACTIVATED",                                &Game::deserializeEffectActivated},
     {"REPOSITION",                                      &Game::deserializeReposition},
-    {"DESTROY_CARD",                                    &Game::deserializeDestroyCard}
+    {"DESTROY_CARD",                                    &Game::deserializeDestroyCard},
+    {"GAME_END",                                        &Game::deserializeGameEnd}
 };
 
 Game::Game(Player p1, Player p2,int lifePoints,int numberOfCards ,int timePerMove,QWidget *parent )
@@ -978,6 +979,20 @@ void Game::deserializeDestroyCard(QDataStream &deserializationStream)
     notifyServerThatDeserializationHasFinished();
 }
 
+void Game::deserializeGameEnd(QDataStream &deserializationStream)
+{
+    QString loserName;
+    deserializationStream >> loserName;
+
+    // If loserName is our name, it means we lost
+    m_clientName == loserName
+            ? QMessageBox::information(this, tr("GAME END"), tr("DEFEAT"))
+            : QMessageBox::information(this, tr("GAME END"), tr("VICTORY"));
+
+
+    notifyServerThatDeserializationHasFinished();
+}
+
 void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
 {
     std::cout << "Game has started!" << std::endl;
@@ -1000,7 +1015,16 @@ void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
     // Set the m_clientID to clientID so we always know who we are
     m_clientID = clientID;
 
+    // We also want to always know our name
+    clientID == firstToPlay
+            ? m_clientName = QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName())
+            : m_clientName = QString::fromStdString(GameExternVars::pOtherPlayer->getPlayerName());
+
+    // Set the currentTurnClientID extern var
     GameExternVars::currentTurnClientID = firstToPlay;
+
+
+
 
     // We always want to have our field on the bottom, not current player's.
     int flagBottomField, flagUpperField;
@@ -1459,7 +1483,24 @@ void Game::onGameEnd(Player &loser)
     sendDataToServer(buffer);
     blockingLoop.exec();
 
-    // TODO: Stop the game here (or maybe in the server too) somehow!
+
+    // Display a pop-up window for both players that the game has ended and tell them the result.
+    QString loserName = QString::fromStdString(loser.getPlayerName());
+    m_clientName == loserName
+            ? QMessageBox::information(this, tr("GAME END"), tr("DEFEAT"))
+            : QMessageBox::information(this, tr("GAME END"), tr("VICTORY"));
+
+    QEventLoop blockingLoop2;
+    connect(this, &Game::deserializationFinished, &blockingLoop2, &QEventLoop::quit);
+    QByteArray buffer2;
+    QDataStream outDataStream2(&buffer2, QIODevice::WriteOnly);
+    outDataStream2.setVersion(QDataStream::Qt_5_15);
+    outDataStream2 << QString::fromStdString("GAME_END")
+                   << loserName;
+    sendDataToServer(buffer2);
+    blockingLoop2.exec();
+
+
 }
 
 void Game::onSetButtonClick(Card &card)

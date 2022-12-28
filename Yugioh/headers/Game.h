@@ -31,7 +31,7 @@ class Game: public QMainWindow
     using DESERIALIZATION_MEMBER_FUNCTION_POINTER = void(Game::*)(QDataStream &);
 public:
   Game();
-  Game(Player p1, Player p2,int lifePoints = 4000,int numberOfCards = 5 ,int timePerMove = 5,QWidget *parent = nullptr );  // Why is parent's type QWidget and not QMainWindow?
+  Game(Player p1, Player p2,int lifePoints = 4000,int numberOfCards = 5 ,int timePerMove = 5,QWidget *parent = nullptr);
   ~Game();
   int lifePoints ;
   int numberOfCards ;
@@ -97,6 +97,7 @@ private:
   // TODO: Separate class?
     QTcpSocket *m_pTcpSocket = nullptr; // TODO: This will probably have to be in GameExternVars so that EffectActivator can see it
     qint32 m_clientID;
+    QString m_clientName;
     QDataStream m_inDataStream;
     QString m_currentHeader;
     static const std::map<QString, DESERIALIZATION_MEMBER_FUNCTION_POINTER> m_deserializationMap;
@@ -117,6 +118,7 @@ private:
     void deserializeEffectActivated(QDataStream &deserializationStream);
     void deserializeReposition(QDataStream &deserializationStream);
     void deserializeDestroyCard(QDataStream &deserializationStream);
+    void deserializeGameEnd(QDataStream &deserializationStream);
 
 private slots:
     void onGameStart(qint32 firstToPlay, qint32 clientID);
