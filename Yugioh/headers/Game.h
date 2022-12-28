@@ -35,6 +35,7 @@ namespace GameExternVars {
     extern Player *pOtherPlayer;
     extern Card *pCardToBePlacedOnField;
     extern Card *pAttackingMonster;
+    extern Card *pCardToBeReturned;
 }
 
 
@@ -130,13 +131,16 @@ private slots:
     void onHealthPointsChange(Player &);
     void onGameEnd(Player &); // const?
     void onMonsterReborn(Player &);
+    void onChangeOfHeart(Player &, Player &);
 
     // Slots for Zone signal handling
     void onRedZoneClick(Zone *zone);
     void onGreenZoneClick(Zone *zone);
 
+    void onReturnCardToOpponent();
 
 signals:
+    void returnCardToOpponent();
     void mainWindowResized(QResizeEvent *);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();

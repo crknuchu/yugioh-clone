@@ -62,6 +62,7 @@ private:
     void activateRemoveTrap();
     void activateTheFluteOfSummoningDragon();
     void activateTheInexperiencedSpy();
+    void activateChangeOfHeart();
 
     // Trap card effect activations:
     void activateUltimateOffering();
@@ -99,7 +100,7 @@ private:
        Or it could return a vector like it does now, and then we can do the above in the card that calls this. */
     std::vector<MonsterCard*> findFaceUpMonsters(Player &targetPlayer);
 signals:
-
+    void effectChangeOfHeart(Player &, Player &);
     void effectMonsterReborn(Player &);
     void healthPointsChanged(Player &);
     void gameEnded(Player &loser);

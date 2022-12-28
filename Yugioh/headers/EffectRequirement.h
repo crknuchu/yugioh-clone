@@ -17,6 +17,7 @@ public:
 private:
     Card *m_card;
 
+    bool changeofheartReq();
     bool fissureReq();
     bool monsterRebornReq();
 };

@@ -37,7 +37,7 @@ const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> Eff
     {"Sogen",                           &EffectActivator::activateSogen},
     {"The Flute of Summoning Dragon",   &EffectActivator::activateTheFluteOfSummoningDragon},
     {"The Inexperienced Spy",           &EffectActivator::activateTheInexperiencedSpy},
-
+    {"Change of Heart",                 &EffectActivator::activateChangeOfHeart},
     // Traps
     {"Ultimate Offering",   &EffectActivator::activateUltimateOffering},
     {"Castle Walls",        &EffectActivator::activateCastleWalls},
@@ -239,6 +239,11 @@ void EffectActivator::activateTheInexperiencedSpy()
 {
 
 }
+
+void EffectActivator::activateChangeOfHeart(){
+    emit EffectActivator::effectChangeOfHeart(*GameExternVars::pCurrentPlayer, *GameExternVars::pOtherPlayer);
+}
+
 
 // Traps
 void EffectActivator::activateUltimateOffering()

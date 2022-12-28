@@ -74,23 +74,14 @@ void Player::drawCards(){
 
 void Player::fromGraveyardToHand(Card &card){
 
-    int cardInGrave = 0; //flag
-    for (auto it = this->field.graveyard->cbegin(); it != this->field.graveyard->cend(); it++)
+    for (auto it = this->field.graveyard->getGraveyard().begin(); it != this->field.graveyard->getGraveyard().end(); it++)
     {
         if ((*it) == &card) {
-            cardInGrave = 1;
-//            this->field.graveyard->removeFromGraveyard(*it);
+            this->field.graveyard->removeFromGraveyard(card);
             this->m_hand.addToHand(card);
             return;
         }
     }
-
-    if (cardInGrave == 0)
-    {
-        std::cerr<<card.getCardName() << " card is not in grave, can't draw it back"<<std::endl;
-        return;
-    }
-
 
 }
 

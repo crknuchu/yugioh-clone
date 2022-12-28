@@ -23,6 +23,7 @@ Player *GameExternVars::pCurrentPlayer = nullptr;
 Player *GameExternVars::pOtherPlayer = nullptr;
 Card *GameExternVars::pCardToBePlacedOnField = nullptr;
 Card *GameExternVars::pAttackingMonster = nullptr;
+Card *GameExternVars::pCardToBeReturned = nullptr;
 
 void delay()
 {
@@ -257,9 +258,9 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/Hitotsu-MeGiant.jpg"
                                               );
-  SpellCard* testCard2 = new SpellCard(SpellType::NORMAL_SPELL, "Card Destruction",
+  SpellCard* testCard2 = new SpellCard(SpellType::NORMAL_SPELL, "Change of Heart",
                                              CardType::SPELL_CARD, CardLocation::HAND,
-                                             "  Increase your Life Points by 1000 points.  ", ":/resources/pictures/CardDestruction.jpg", true);
+                                             "  Increase your Life Points by 1000 points.  ", ":/resources/pictures/ChangeofHeart.jpg", true);
 
   MonsterCard* testCard3 = new MonsterCard("Blue dragon", 3000, 2500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
@@ -302,6 +303,9 @@ void Game::setupConnections() {
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
     connect(ui->btnMainPhase2, &QPushButton::clicked, this, &Game::onMainPhase2ButtonClick);
     connect(ui->btnEndPhase, &QPushButton::clicked, this, &Game::onEndPhaseButtonClick);
+
+    connect(this, &Game::returnCardToOpponent, this, &Game::onReturnCardToOpponent);
+
 }
 
 bool Game::eventFilter(QObject *obj, QEvent *event)
@@ -359,7 +363,7 @@ void Game::onEndPhaseButtonClick()
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
     //... (something may happen here eventually)
-
+    emit returnCardToOpponent();
     // TODO: More work is needed here...
     std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
     m_currentTurn++;
@@ -600,6 +604,7 @@ void Game::onActivateButtonClick(Card &card)
         connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
 
         connect(&effectActivator, &EffectActivator::effectMonsterReborn, this, &Game::onMonsterReborn);
+        connect(&effectActivator, &EffectActivator::effectChangeOfHeart, this, &Game::onChangeOfHeart);
         // Activate the card's effect
         effectActivator.activateEffect(cardName);
 
@@ -608,7 +613,28 @@ void Game::onActivateButtonClick(Card &card)
         GameExternVars::pCurrentPlayer->sendToGraveyard(card);
     }
 }
+void Game::onChangeOfHeart(Player &current, Player &opponent) {
+    for (Zone *zone : opponent.field.monsterZone.m_monsterZone)
+    {
+        if (!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::MONSTER_CARD)
+        {
+            opponent.field.graveyard->sendToGraveyard(*(zone->m_pCard));
+//            opponent.field.monsterZone.removeFromMonsterZone(zone);
+            bool flag = false;
+            for (Zone *zone1 : current.field.monsterZone.m_monsterZone){
+                if (zone1->isEmpty() && flag == false)
+                {
+                    current.field.monsterZone.placeInMonsterZone(zone->m_pCard, zone1);
+                    flag = true;
+                    GameExternVars::pCardToBeReturned = zone->m_pCard;
+                    zone->m_pCard = nullptr;
+                    return;
+                }
+            }
+        }
+    }
 
+}
 void Game::onMonsterReborn(Player &p)
 {
 //    std::cout<<"POCETAK MONSTER REBORN KARTE "<<std::endl;
@@ -751,3 +777,31 @@ void Game::onCardAddedToScene(Card &card)
     ui->labelImage->setVisible(false);
     ui->textBrowserEffect->setVisible(false);
 }
+
+
+void Game::onReturnCardToOpponent(){
+
+    if(GameExternVars::pCardToBeReturned == nullptr)
+        return;
+    for (Zone *zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone)
+    {
+        if (zone->m_pCard == GameExternVars::pCardToBePlacedOnField)
+        {
+            GameExternVars::pCurrentPlayer->field.monsterZone.removeFromMonsterZone(zone);
+            break;
+        }
+    }
+    for (Zone *zone : GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone)
+    {
+        if (zone->isEmpty())
+        {
+            GameExternVars::pOtherPlayer->field.graveyard->removeFromGraveyard(*GameExternVars::pCardToBeReturned);
+            GameExternVars::pOtherPlayer->field.monsterZone.placeInMonsterZone(GameExternVars::pCardToBeReturned, zone);
+            GameExternVars::pCardToBeReturned = nullptr;
+            return;
+        }
+    }
+}
+
+
+
