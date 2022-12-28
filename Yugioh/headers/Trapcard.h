@@ -14,9 +14,10 @@ class TrapCard : public Card
 {
 public:
 
-    TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool active = false,bool setThisTurn = false);
+    TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool active = false);
 
     TrapCard* clone() override;
+    bool shouldBeSentToGraveyard() override;
     TrapType getTrapType() const;
     std::string getTrapTypeString() const;
 
@@ -25,7 +26,6 @@ public:
 
 protected:
     TrapType trapType;
-    bool setThisTurn;
     bool active;
 };
 

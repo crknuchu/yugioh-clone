@@ -57,7 +57,7 @@ void Player::drawCards(unsigned int numOfCards) {
     else{
         std::vector<Card*> newCards = this->field.deck.draw(numOfCards);
         for (Card* newCard : newCards ){
-            emit cardAddedToScene(*newCard);
+            emit cardAddedToScene(newCard);
             this->m_hand.addToHand(*newCard);
         }
         std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;

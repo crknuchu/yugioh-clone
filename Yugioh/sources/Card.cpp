@@ -17,6 +17,7 @@ Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLoca
     width = pixmap.width();
     setPixmap(pixmap);
     setAcceptHoverEvents(true);
+    this->setZValue(-9);
 }
 
 Card::~Card()
@@ -49,6 +50,16 @@ std::string Card::getCardLocationString() const
     }
 }
 
+bool Card::getIsActivated() const
+{
+    return this->isActivated;
+}
+
+bool Card::getIsSetThisTurn() const
+{
+    return this->isSetThisTurn;
+}
+
 
 CardLocation Card::getCardLocation() const
 {
@@ -73,6 +84,16 @@ std::string Card::getCardTypeString() const
 void Card::setCardLocation(CardLocation newCardLocation)
 {
     cardLocation = newCardLocation;
+}
+
+void Card::setIsActivated(bool isActivated)
+{
+    this->isActivated = isActivated;
+}
+
+void Card::setIsSetThisTurn(bool isSetThisTurn)
+{
+    this->isSetThisTurn = isSetThisTurn;
 }
 
 const std::string &Card::getCardDescription() const

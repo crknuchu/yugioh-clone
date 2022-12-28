@@ -1,16 +1,22 @@
 #include "headers/Trapcard.h"
 #include "headers/EffectRequirement.h"
 
-TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool active,bool setThisTurn)
+TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool active)
     : Card(cardName, cardType, cardLocation, cardDescription,imagePath)
     ,trapType(type)
-    ,setThisTurn(setThisTurn)
     ,active(active)
 {}
 
 TrapCard* TrapCard::clone() {
     return new TrapCard(this->trapType, this->cardName, this->cardType, this->cardLocation,
-                        this->cardDescription, this->imagePath, this->active, this->setThisTurn);
+                        this->cardDescription, this->imagePath, this->active);
+}
+
+bool TrapCard::shouldBeSentToGraveyard()
+{
+    if(trapType == TrapType::CONTINUOUS_TRAP)
+        return false;
+    return true;
 }
 
 TrapType TrapCard::getTrapType() const
@@ -43,10 +49,8 @@ void TrapCard::setCardMenu(){
     bool cardActivationRequirement = effectRequirement.isActivatable(this->cardName);
     if(cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)){
         flagMap.insert("set",true);
-        if(cardActivationRequirement)
-            flagMap.insert("activate",true);
     }
-    if(cardLocation == CardLocation::FIELD && setThisTurn == false && cardActivationRequirement){
+    if(cardLocation == CardLocation::FIELD && getIsSetThisTurn() == false && cardActivationRequirement){
         flagMap.insert("activate",true);
     }
     cardMenu->update(flagMap);

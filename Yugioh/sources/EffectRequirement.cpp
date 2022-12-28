@@ -9,7 +9,10 @@ EffectRequirement::~EffectRequirement(){}
 const std::map<std::string, EffectRequirement::EFFECT_REQUIREMENT_MEMBER_FUNCTION_POINTER> EffectRequirement::effectReqMap = {
     //Spells
     {"Fissure",        &EffectRequirement::fissureReq},
-    {"Monster Reborn", &EffectRequirement::monsterRebornReq}
+    {"Monster Reborn", &EffectRequirement::monsterRebornReq},
+    {"Hane-Hane",      &EffectRequirement::haneHaneReq},
+    //Traps
+    {"Reinforcements", &EffectRequirement::reinforcementsReq}
 };
 
 bool EffectRequirement::isActivatable(const std::string &cardName)
@@ -51,4 +54,16 @@ bool EffectRequirement::monsterRebornReq(){
     }
 
     return isAnyMonsterInGraveyard;
+}
+
+bool EffectRequirement::haneHaneReq() {
+    return EffectRequirement::fissureReq();
+}
+
+bool EffectRequirement::reinforcementsReq() {
+    bool currentPlayerHasMonsters = false;
+    if(!GameExternVars::pCurrentPlayer->field.monsterZone.isEmpty())
+            currentPlayerHasMonsters = true;
+
+    return currentPlayerHasMonsters;
 }

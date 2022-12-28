@@ -27,6 +27,11 @@ MonsterCard* MonsterCard::clone() {
                            this->cardType, this->cardLocation, this->cardDescription, this->imagePath, this->summonedThisTurn);
 }
 
+bool MonsterCard::shouldBeSentToGraveyard()
+{
+    return false;
+}
+
 const std::map<Position, std::string> MonsterCard::positionEnumToString{
     {Position::ATTACK,  "ATTACK"},
     {Position::DEFENSE, "DEFENSE"},
@@ -208,23 +213,6 @@ void MonsterCard::multiplyDefensePoints(float multiplyBy)
     int newPoints = this->defensePoints * multiplyBy;
     this->setDefensePoints(newPoints);
 
-}
-
-bool MonsterCard::normalSummon(Position s){
-    if (this->active == true or this->cardLocation != CardLocation :: HAND )
-        return false; // unsuporeted actions
-    this->active = true;
-    this->position = s;
-    return true;
-}
-
-
-bool MonsterCard::specialSummon(Position s){
-    if ( this->cardLocation == CardLocation :: DECK )
-        return false;
-    active = true;
-    position = s;
-    return true;
 }
 
 void MonsterCard::setCardMenu(){

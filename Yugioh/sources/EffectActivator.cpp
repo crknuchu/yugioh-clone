@@ -116,8 +116,10 @@ void EffectActivator::activateTrapMaster() {
 }
 
 void EffectActivator::activateHaneHane() {
-    std::cout << "Hane-Hane's effect has been activated!" << std::endl;
-    // ...
+    MonsterCard* targetedMonster = findHighestATKMonster(*GameExternVars::pOtherPlayer);
+    Zone* zoneWithTargetedMonster = GameExternVars::pOtherPlayer->field.monsterZone.getZone(targetedMonster);
+    GameExternVars::pOtherPlayer->field.monsterZone.removeFromMonsterZone(zoneWithTargetedMonster);
+    GameExternVars::pOtherPlayer->m_hand.addToHand(*targetedMonster);
 }
 
 // Spells
@@ -286,7 +288,8 @@ void EffectActivator::activateJustDesserts()
 
 void EffectActivator::activateReinforcements()
 {
-
+    MonsterCard* strongestMonster = findHighestATKMonster(*GameExternVars::pCurrentPlayer);
+    strongestMonster->setAttackPoints(strongestMonster->getAttackPoints() + 500);
 }
 
 void EffectActivator::activateReverseTrap()
@@ -473,41 +476,19 @@ std::vector<MonsterCard *> EffectActivator::findLowestATKMonsters(Player &target
 //    return lowestATKMonsters;
 }
 
-std::vector<MonsterCard *> EffectActivator::findHighestATKMonsters(Player &targetPlayer)
+MonsterCard* EffectActivator::findHighestATKMonster(Player &targetPlayer)
 {
-    // TODO: A more functional way (copy_if) for this
+    MonsterCard* highestATKMonster = nullptr;
 
-//    MonsterZone monsterZone(targetPlayer.monsterZone); // TODO: This way of copying vs vec1 = vec2
+    for(Zone* zone : targetPlayer.field.monsterZone.m_monsterZone) {
+        if(!zone->isEmpty()){
+            MonsterCard* monster = static_cast<MonsterCard*>(zone->m_pCard);
+            if(!highestATKMonster || monster->getAttackPoints() > highestATKMonster->getAttackPoints())
+                highestATKMonster = monster;
+        }
+    }
 
-//    // TODO: This should be in MonsterZone class probably
-//    std::vector<MonsterCard> monsters;
-//    for(auto zone : monsterZone)
-//    {
-//        if(!zone->isEmpty())
-//        {
-//            monsters.push_back(*(zone->m_pCard));
-//        }
-//    }
-
-
-
-
-//    std::vector<MonsterCard *> highestATKMonsters;
-//    int maxAttackPoints = INT_MIN;
-//    for(MonsterCard &monster : monsters)
-//    {
-//        int currentMonsterAttackPoints = monster.getAttackPoints();
-//        if(currentMonsterAttackPoints <= maxAttackPoints)
-//            maxAttackPoints = currentMonsterAttackPoints;
-//    }
-
-//    for(MonsterCard &monster : monsters)
-//    {
-//        if(monster.getAttackPoints() == maxAttackPoints)
-//            highestATKMonsters.push_back(&monster);
-//    }
-
-    //    return highestATKMonsters;
+    return highestATKMonster;
 }
 
 std::vector<MonsterCard *> EffectActivator::findFaceUpMonsters(Player &targetPlayer)

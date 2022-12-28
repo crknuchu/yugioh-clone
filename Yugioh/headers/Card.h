@@ -48,6 +48,8 @@ public:
 
     virtual Card* clone() = 0;
 
+    virtual bool shouldBeSentToGraveyard() = 0;
+
     const std::string &getCardName() const;
 
     std::string getCardTypeString() const;
@@ -58,7 +60,15 @@ public:
 
     std::string  getCardLocationString() const;
 
+    bool getIsActivated() const;
+
+    bool getIsSetThisTurn() const;
+
     void setCardLocation(CardLocation newCardLocation);
+
+    void setIsActivated(bool isActivated);
+
+    void setIsSetThisTurn(bool isSetThisTurn);
 
     const std::string &getCardDescription() const;
 
@@ -93,6 +103,8 @@ protected:
     CardLocation cardLocation;
     std::string cardDescription;
     std::string imagePath;
+    bool isActivated = false;
+    bool isSetThisTurn = false;
     //cardImage
     // CardMenu *cardMenu = new CardMenu(this);
     
