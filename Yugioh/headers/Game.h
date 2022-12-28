@@ -77,11 +77,13 @@ private:
   void battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
   void battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
   void damagePlayer(Player &targetPlayer, int howMuch);
-
-  Card* reconstructCard(QString cardName);
   void visuallySetMonster(MonsterCard *monsterCard);
   void visuallySetSpell(SpellCard *spellCard);
   void visuallySetTrap(TrapCard *trapCard);
+
+  Card* reconstructCard(QString cardName);
+
+  qint32 findZoneNumber(Card &targetCard, Player *pWhoOwnsIt);
 
 // QT related stuff:
     int m_windowWidth;
@@ -114,6 +116,7 @@ private:
     void deserializeNewTurn(QDataStream &deserializationStream);
     void deserializeEffectActivated(QDataStream &deserializationStream);
     void deserializeReposition(QDataStream &deserializationStream);
+    void deserializeDestroyCard(QDataStream &deserializationStream);
 
 private slots:
     void onGameStart(qint32 firstToPlay, qint32 clientID);
@@ -124,6 +127,7 @@ private slots:
     void onGamePhaseChange(const GamePhases &newGamePhase);
     void onTurnEnd();
     void onCardAddedToScene(Card &);
+    void onCardDraw(Card *pDrawnCard);
 
 
     // Slots for Card signal handling
@@ -149,7 +153,6 @@ private slots:
 
 
     // Networking slots
-    // TODO: Separate class ?
     void onNetworkErrorOccurred(QAbstractSocket::SocketError socketError);
     void onDataIncoming();
     void onTestNetworkButtonClick();

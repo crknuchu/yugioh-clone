@@ -18,8 +18,8 @@
 //#include "SpellTrapZone.h"
 #include "Field.h"
 
-class Player{ 
-
+class Player : public QObject {
+    Q_OBJECT
 public:
   Player();
   Player(Player &);
@@ -66,6 +66,8 @@ private:
     std::string m_name;
     unsigned m_points;
 
+signals:
+    void cardDrawn(Card *pDrawnCard);
 };
 
 // std::istream &operator>>(std::istream &in, Player &p);

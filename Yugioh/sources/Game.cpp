@@ -39,7 +39,8 @@ const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_d
     {"GAMEPHASE_CHANGED",                               &Game::deserializeGamePhaseChanged},
     {"NEW_TURN",                                        &Game::deserializeNewTurn},
     {"EFFECT_ACTIVATED",                                &Game::deserializeEffectActivated},
-    {"REPOSITION",                                      &Game::deserializeReposition}
+    {"REPOSITION",                                      &Game::deserializeReposition},
+    {"DESTROY_CARD",                                    &Game::deserializeDestroyCard}
 };
 
 Game::Game(Player p1, Player p2,int lifePoints,int numberOfCards ,int timePerMove,QWidget *parent )
@@ -177,13 +178,12 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
            In that case, attacker gets destroyed and the player
            that was controlling it takes damage. */
 
-        // TODO: Notify server that the monster is destroyed                            !!!!
-        GameExternVars::pCurrentPlayer->field.graveyard->sendToGraveyard(attacker);
-        damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference);
         std::cout << "The defender wins!" << std::endl;
-//        GameExternVars::pCurrentPlayer->graveyard.sendToGraveyard(attacker);
+//        damagePlayer(*GameExternVars::pCurrentPlayer, attackPointsDifference); // TODO: Why was this here when we already have it under the loop
+        GameExternVars::pCurrentPlayer->sendToGraveyard(attacker);
+
+
         // Notify the server about the battle outcome
-            // TODO: These can probably be simplified or moved into separate functions since they are similar
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
         QByteArray buffer;
@@ -192,8 +192,7 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
         outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
                       << QString::fromStdString("DEFENDER") // Who won
                       << QString::fromStdString(attacker.getCardName()) // Name of destroyed monster so it can be destroyed in other client's session too
-                      << qint32(3) // Number of the monster zone that the monster was in. // Placeholder for now until getZoneNumber() is implemented.   // Is it even needed?
-                      << qint32(attackPointsDifference);
+                      << qint32(3); // Number of the monster zone that the monster was in. // Placeholder for now until getZoneNumber() is implemented.   // Is it even needed?
         sendDataToServer(buffer);
         blockingLoop.exec();
 
@@ -201,13 +200,8 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
     }
     else if(attackPointsDifference > 0)
     {
-        /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard
-                 Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
-        GameExternVars::pOtherPlayer->field.graveyard->sendToGraveyard(defender);
-        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
+//        damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
         std::cout << "The attacker wins!" << std::endl;
-//        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
-
 
         /* We want to notify the server about the battle outcome.
          * We also have to use QEventLoop to make this client wait until client 2 sends DESERIALIZATION_FINISHED
@@ -220,16 +214,32 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
          *  so we will always enter the loop before that.
          *
          *  TODO: We can make sure that this won't happen by using singleshot QTimer instead of a standard emit call */
-        QEventLoop blockingLoop;
+
+        QEventLoop blockingLoop; // TODO: We can probably reuse blockingLoop
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
+
+        // We need the destroyed monster's zone number
+
+
+
+        GameExternVars::pOtherPlayer->sendToGraveyard(defender);
+
+
+
+
+
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
-        outDataStream << QString::fromStdString("BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS")
-                      << QString::fromStdString("ATTACKER")
-                      << QString::fromStdString(defender.getCardName())
-                      << qint32(3);
+        outDataStream << QString::fromStdString("DESTROY_CARD") // Notify the server that a card was destroyed
+                      << QString::fromStdString("OTHER_PLAYER") // Who owns a card that was destroyed
+                      <<
+
         sendDataToServer(buffer);
+
+
+
+
         blockingLoop.exec();
 
         damagePlayer(*GameExternVars::pOtherPlayer, attackPointsDifference);
@@ -238,10 +248,11 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
     {
         /* This means that both attacking monsters had the same ATK.
          * In that case, both of them get destroyed, but no player takes damage. */
-       GameExternVars::pCurrentPlayer->field.graveyard->sendToGraveyard(attacker);
-       GameExternVars::pOtherPlayer->field.graveyard->sendToGraveyard(defender);
 
         std::cout << "Both monsters die!" << std::endl;
+
+        GameExternVars::pCurrentPlayer->field.graveyard->sendToGraveyard(attacker);
+        GameExternVars::pOtherPlayer->field.graveyard->sendToGraveyard(defender);
 
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
@@ -268,6 +279,7 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
          * Because the defender is in the DEFENSE position, attacker doesn't
          * get destroyed but the player controlling the attacker still takes damage. */
         std::cout << "The defender wins!" << std::endl;
+        GameExternVars::pCurrentPlayer->sendToGraveyard(attacker);
 
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
@@ -288,12 +300,8 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         /* If the attacker was stronger, the defender gets destroyed but the player
          * that was controlling the defender doesn't take damage because it was in
          * DEFENSE position. */
-
-        /* TODO: This should be something like GameExternVars::pOtherPlayer->sendToGraveyard(defender)
-                 Meanwhile, that Player's sendToGraveyard will actually call removeFromHand + sendToGraveyard */
-        GameExternVars::pOtherPlayer->field.graveyard->sendToGraveyard(defender);
         std::cout << "The attacker wins!" << std::endl;
-//        GameExternVars::pOtherPlayer->graveyard.sendToGraveyard(defender);
+        GameExternVars::pOtherPlayer->sendToGraveyard(defender);
 
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
@@ -348,6 +356,29 @@ Card* Game::reconstructCard(QString cardName)
     }
 
     return nullptr;
+}
+
+qint32 Game::findZoneNumber(Card &targetCard, Player *pWhoOwnsIt)
+{
+    qint32 zoneNumber = 1;
+    std::vector<Zone *> targetPartOfField;
+
+    targetCard.getCardType() == CardType::MONSTER_CARD
+        ? targetPartOfField = pWhoOwnsIt->field.monsterZone.m_monsterZone
+        : targetPartOfField = pWhoOwnsIt->field.spellTrapZone.m_spellTrapZone;
+
+    for(Zone *zone : targetPartOfField)
+    {
+        Card *tmpCard = zone->m_pCard;
+        if(tmpCard != nullptr)
+        {
+            if(targetCard.getCardName() == tmpCard->getCardName())
+                break;
+        }
+        zoneNumber++;
+    }
+
+    return zoneNumber;
 }
 
 void Game::visuallySetMonster(MonsterCard *pMonsterCard)
@@ -493,6 +524,8 @@ void Game::setupConnections() {
     connect(this, &Game::cardAddedToScene, this, &Game::onCardAddedToScene);
     connect(this, &Game::gameEndedAfterBattle, this, &Game::onGameEnd); // Same slot for both game endings (one in EffectActivator and one here)
     connect(this, &Game::lifePointsChanged, this, &Game::onLifePointsChange);
+    connect(GameExternVars::pCurrentPlayer, &Player::cardDrawn, this, &Game::onCardDraw);
+    connect(GameExternVars::pOtherPlayer, &Player::cardDrawn, this, &Game::onCardDraw);
 
     // Buttons
     connect(ui->btnBattlePhase, &QPushButton::clicked, this, &Game::onBattlePhaseButtonClick);
@@ -884,7 +917,7 @@ void Game::deserializeReposition(QDataStream &deserializationStream)
     std::cout << "PLACEHOLDER: Here we find " << cardName.toStdString() << " which is in the zone with number " << zoneNumber << std::endl;
 
 
-    Card* targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber]->m_pCard;
+    Card* targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard;
 
     // We know that its a monster
     MonsterCard *targetMonster = static_cast<MonsterCard *>(targetCard);
@@ -894,6 +927,11 @@ void Game::deserializeReposition(QDataStream &deserializationStream)
 
     // Notify the server that deserialization is finished
     notifyServerThatDeserializationHasFinished();
+}
+
+void Game::deserializeDestroyCard(QDataStream &deserializationStream)
+{
+
 }
 
 void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
@@ -1087,15 +1125,6 @@ void Game::onTurnEnd() {
     emit gamePhaseChanged(GamePhaseExternVars::currentGamePhase);
 
     // Main Phase 1 runs until user clicks one of the buttons.
-
-
-
-    // TODO: More testing is needed in onTurnEnd() to confirm everything works perfectly.
-
-    /* FIXME:
-        1) Sometimes both client's buttons are greyed out?
-    */
-
 }
 
 void Game::onCardAddedToScene(Card &card)
@@ -1107,6 +1136,14 @@ void Game::onCardAddedToScene(Card &card)
     // By default we don't want to show card info unless the card is hovered
     ui->labelImage->setVisible(false);
     ui->textBrowserEffect->setVisible(false);
+}
+
+void Game::onCardDraw(Card *pDrawnCard)
+{
+    ui->graphicsView->scene()->addItem(pDrawnCard);
+    ui->graphicsView->scene()->addWidget(pDrawnCard->cardMenu);
+    pDrawnCard->cardMenu->setVisible(false);
+    emit cardAddedToScene(*pDrawnCard);
 }
 
 /* In order to have drag resizes on the main window, we can place CentralWidget in a layout,
@@ -1311,19 +1348,8 @@ void Game::onRepositionButtonClick(Card &card)
     // Change the position
     monsterCard->changePosition();
 
-    qint32 zoneNumber = 0;
-    // Get the zone number of this card (will be needed for deserialization)
-    for(Zone *zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone)
-    {
-        Card *tmpCard = zone->m_pCard;
-        if(tmpCard != nullptr)
-        {
-            if(card.getCardName() == tmpCard->getCardName())
-                break;
-        }
-
-        zoneNumber++;
-    }
+    // Find the zone number
+    qint32 zoneNumber = findZoneNumber(*monsterCard, GameExternVars::pCurrentPlayer);
 
     // Notify the server / other client
     QEventLoop blockingLoop;
@@ -1446,15 +1472,8 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
 
         GameExternVars::pCurrentPlayer->field.monsterZone.refresh();
 
-        // TODO: Make this a separate function
-        qint32 zoneNumber = 1;
-        for(Zone* zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone)
-        {
-            if(zone == clickedRedZone)
-                break;
-
-            zoneNumber++;
-        }
+        // Find the zone number
+        qint32 zoneNumber = findZoneNumber(*card, GameExternVars::pCurrentPlayer);
 
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
@@ -1498,14 +1517,8 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
                 visuallySetTrap(pTrapCard);
         }
 
-        qint32 zoneNumber = 1;
-        for(Zone* zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone)
-        {
-            if(zone == clickedRedZone)
-                break;
 
-            zoneNumber++;
-        }
+        qint32 zoneNumber = findZoneNumber(*card, GameExternVars::pCurrentPlayer);
 
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
