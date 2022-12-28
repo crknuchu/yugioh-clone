@@ -103,8 +103,6 @@ public:
     static const std::map<QString, MonsterPosition> monsterPositionQStringToEnum;
     static const std::map<QString, SpellTrapPosition> spellTrapPositionQStringToEnum;
 
-    int repositionCounter = 0;
-
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.
     Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath);

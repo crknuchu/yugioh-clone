@@ -17,6 +17,8 @@ Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLoca
     width = pixmap.width();
     setPixmap(pixmap);
     setAcceptHoverEvents(true);
+
+    this->setZValue(-9);
 }
 
 Card::~Card()

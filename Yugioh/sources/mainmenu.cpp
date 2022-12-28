@@ -52,8 +52,8 @@ void MainMenu::onStartButtonClick()
     player1->setDeck(deck);
     player2->setDeck(deck);
     m_pGame = new Game(*player1, *player2);
-//    m_pGame->showFullScreen();
-    m_pGame->show();
+    m_pGame->showFullScreen();
+//    m_pGame->show();
 }
 
 

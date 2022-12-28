@@ -258,7 +258,12 @@ void MonsterCard::setCardMenu(){
         flagMap.insert("summon",true);
     }
     cardMenu->update(flagMap);
-    };
+}
+
+void MonsterCard::setAlreadyAttack(bool didIAlreadyAttack)
+{
+    alreadyAttack = didIAlreadyAttack;
+};
 
 
 

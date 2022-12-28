@@ -93,6 +93,8 @@ public:
 
     void setCardMenu() override;
 
+    void setAlreadyAttack(bool didIAlreadyAttack);
+
 protected:
     int attackPoints;
     int defensePoints;

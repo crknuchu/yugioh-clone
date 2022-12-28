@@ -84,6 +84,7 @@ private:
   Card* reconstructCard(QString cardName);
 
   qint32 findZoneNumber(Card &targetCard, Player *pWhoOwnsIt);
+  Zone* findZone(qint32 zoneNumber, QString cardType, Player *pTargetPlayer);
 
 // QT related stuff:
     int m_windowWidth;
@@ -126,7 +127,7 @@ private slots:
     void onMainWindowResize(QResizeEvent *);
     void onGamePhaseChange(const GamePhases &newGamePhase);
     void onTurnEnd();
-    void onCardAddedToScene(Card &);
+    void onCardAddedToScene(Card *addedCard);
     void onCardDraw(Card *pDrawnCard);
 
 
@@ -165,7 +166,7 @@ signals:
     void gameStarted(qint32 firstToPlay, qint32 clientID);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
-    void cardAddedToScene(Card &targetCard);
+    void cardAddedToScene(Card *addedCard);
     void gameEndedAfterBattle(Player &loser);
     void lifePointsChanged(Player &targetPlayer);
     void deserializationFinished();

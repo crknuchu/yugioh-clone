@@ -131,7 +131,6 @@ void Player::sendToGraveyard(Card &card, Zone *zone)
 {
       zone->m_pCard = nullptr; //free space for that zone, card is sent to graveyard ===> zone.isEmpty() returns true after
       this->field.graveyard->sendToGraveyard(card);
-
 }
 
 void Player::sendToGraveyard(Card &card){

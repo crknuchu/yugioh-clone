@@ -4,10 +4,13 @@ Zone::Zone(bool isFieldZone)
     : m_isFieldZone(isFieldZone){}
 
 Zone::Zone(float x, float y)
-    : m_x(x), m_y(y){
+    : m_x(x), m_y(y)
+{
     m_pCard = nullptr;
     setPen(QPen(Qt::white, 2));
     setBrush(Qt::NoBrush);
+
+    setZValue(-10);
 }
 
 Zone::~Zone(){}

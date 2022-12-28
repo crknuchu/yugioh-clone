@@ -83,6 +83,7 @@ void MonsterZone::colorFreeZones() {
 void MonsterZone::colorOccupiedZones() {
     for(Zone *zone : m_monsterZone) {
         if(!zone->isEmpty()) {
+            zone->setZValue(-5);
             zone->setBrush(Qt::green);
             zone->update();
         }
@@ -91,6 +92,7 @@ void MonsterZone::colorOccupiedZones() {
 
 void MonsterZone::refresh() {
     for(Zone *zone : m_monsterZone) {
+        zone->setZValue(-10);
         zone->setBrush(Qt::NoBrush);
         zone->update();
     }
