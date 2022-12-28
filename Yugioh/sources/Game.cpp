@@ -28,7 +28,6 @@ std::vector<Card *> GameExternVars::yugiCards;
 std::vector<Card *> GameExternVars::kaibaCards;
 
 const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_deserializationMap = {
-    {"WELCOME_MESSAGE",                                 &Game::deserializeWelcomeMessage},
     {"START_GAME",                                      &Game::deserializeStartGame},
     {"FIELD_PLACEMENT",                                 &Game::deserializeFieldPlacement},
     {"ADD_CARD_TO_HAND",                                &Game::deserializeAddCardToHand},
@@ -55,6 +54,17 @@ Game::Game(Player p1, Player p2,int lifePoints,int numberOfCards ,int timePerMov
 
 {
     ui->setupUi(this);
+
+    // UI Configuration
+    // Game phase buttons and label:
+    ui->labelGamePhase->setAlignment(Qt::AlignCenter);
+
+    // Card info:
+    ui->labelImage->setAlignment(Qt::AlignCenter);
+
+    // Disable textBrowser until hover
+    ui->textBrowserEffect->setVisible(false);
+
 
     // Setup data stream
     m_inDataStream.setDevice(m_pTcpSocket);
@@ -132,7 +142,8 @@ void Game::switchPlayers() {
     GameExternVars::pOtherPlayer = tmp;
 
     std::cout << "Current player is: " << *GameExternVars::pCurrentPlayer << std::endl;
-    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelCurrentPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelOtherPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pOtherPlayer->getPlayerName()));
 
     // Switch clients too
     GameExternVars::currentTurnClientID == 1 ? GameExternVars::currentTurnClientID = 2 : GameExternVars::currentTurnClientID = 1;
@@ -492,7 +503,7 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
                                               ":/resources/pictures/LordofD.jpg"
                                               );
     SpellCard* spellCard1 = new SpellCard(SpellType::NORMAL_SPELL, "Dark Hole", CardType::SPELL_CARD, CardLocation::HAND,
-                                            SpellTrapPosition::NONE, "Description placeholder", ":/resources/pictures/DarkHole.jpg", false);
+                                            SpellTrapPosition::NONE, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
 
     ui->graphicsView->scene()->addItem(monsterCard1);
     ui->graphicsView->scene()->addWidget(monsterCard1->cardMenu);
@@ -530,12 +541,11 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
 
 
     // Label setup:
-    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelCurrentPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelOtherPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pOtherPlayer->getPlayerName()));
 
-    /* TODO: This is only set here and never updated.
-     * We should emit a signal in EffectActivator whenever the player loses/gains health and then catch it with a slot in game and call this line there.
-     */
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+    ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+    ui->labelOtherPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
 }
 
 
@@ -615,15 +625,6 @@ QByteArray Game::QInt32ToQByteArray(qint32 source)
     QDataStream stream(&tmp, QIODevice::ReadWrite);
     stream << source;
     return tmp;
-}
-
-void Game::deserializeWelcomeMessage(QDataStream &deserializationStream)
-{
-    QString welcomeMessage;
-    deserializationStream >> welcomeMessage;
-
-//    m_messageFromServer = welcomeMessage;
-    ui->labelMessageFromServer->setText(welcomeMessage);
 }
 
 void Game::deserializeStartGame(QDataStream &deserializationStream)
@@ -848,12 +849,12 @@ void Game::deserializeLpChange(QDataStream &deserializationStream)
     if (whoseLifePointsChanged.toStdString() == GameExternVars::pCurrentPlayer->getPlayerName())
     {
         GameExternVars::pCurrentPlayer->setPlayerLifePoints(newLifePoints);
-        ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+        ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
     }
     else
     {
         GameExternVars::pOtherPlayer->setPlayerLifePoints(newLifePoints);
-        ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
+        ui->labelOtherPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
     }
 
     // Notify the server that deserialization is finished
@@ -897,7 +898,8 @@ void Game::deserializeNewTurn(QDataStream &deserializationStream)
     GameExternVars::pOtherPlayer = tmp;
 
     std::cout << "Current player is: " << *GameExternVars::pCurrentPlayer << std::endl;
-    ui->labelCurrentPlayerDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelCurrentPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));
+    ui->labelOtherPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pOtherPlayer->getPlayerName()));
 
     // Update currentTurnClientID
     GameExternVars::currentTurnClientID = newTurnClientID;
@@ -1238,23 +1240,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         m_windowHeight = resizeEvent->size().height();
 
         // Check: Very rarely, this displays the same width/height as the old window
-    //    std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
-
-        // WIP: UI components
-        // Game phase buttons and label:
-        ui->labelGamePhase->setAlignment(Qt::AlignCenter);
-
-        // Card info:
-        ui->labelImage->setAlignment(Qt::AlignCenter);
-
-        // TODO: getEffect()
-    //    ui->textBrowserEffect->setText(monsterCard1->getEffect());
-
-        QPixmap pix;
-        pix.load(":/resources/pictures/blue_eyes.jpg");
-        pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
-        ui->labelImage->setPixmap(pix);
-
+        // std::cout << "New main window width/height: " << m_windowWidth << " / " << m_windowHeight << std::endl;
 
         // GraphicsView and GraphicsScene adjustments:
         this->setWindowTitle("Yu-Gi-Oh!");
@@ -1287,6 +1273,14 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 void Game::onCardHoverEnter(Card &card)
 {
     std::cout << "Card " << card.getCardName() << " hover-entered!" << std::endl;
+    QPixmap pix;
+    pix.load(QString::fromStdString(card.imagePath));
+    pix = pix.scaled(ui->labelImage->size(), Qt::KeepAspectRatio);
+    ui->labelImage->setPixmap(pix);
+
+    // TODO: getEffect()
+    ui->textBrowserEffect->setText(QString::fromStdString(card.getCardDescription()));
+
     ui->labelImage->setVisible(true);
     ui->textBrowserEffect->setVisible(true);
 }
@@ -1418,7 +1412,8 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
     std::cout << "Current health points for player " << targetPlayer.getPlayerName() << " : "<< targetPlayer.getPlayerLifePoints() << std::endl;
 
     // Update labels
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString(std::to_string(targetPlayer.getPlayerLifePoints())));
+    ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+    ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
 
 
     // Notify the server about health change.
@@ -1437,7 +1432,8 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
 void Game::onGameEnd(Player &loser)
 {
     loser.setPlayerLifePoints(0);
-    ui->labelHealthPointsDynamic->setText(QString::fromStdString("0"));
+    ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
+    ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
     std::cout << "The game has ended! Player " << loser.getPlayerName() << " has lost because his health points reached 0 !" << std::endl;
 
     // Notify the server

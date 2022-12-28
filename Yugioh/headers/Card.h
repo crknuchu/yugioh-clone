@@ -90,8 +90,8 @@ public:
     void move(float x,float y);
     void flipCard();
     void addToScene(QGraphicsScene *scene);
-
     bool faceUp = true; //card is turned face up (image is visible) or facedown (back is visible)
+    std::string imagePath;
 
     CardMenu *cardMenu = new CardMenu();
     float height;
@@ -110,7 +110,6 @@ protected:
     CardType cardType;
     CardLocation cardLocation;
     std::string cardDescription;
-    std::string imagePath;
     
 private:
 

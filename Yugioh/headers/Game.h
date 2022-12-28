@@ -105,7 +105,6 @@ private:
     void notifyServerThatDeserializationHasFinished();
     QByteArray QInt32ToQByteArray(qint32 source); // We use qint32 to ensure the number has 4 bytes
 
-    void deserializeWelcomeMessage(QDataStream &deserializationStream);
     void deserializeStartGame(QDataStream &deserializationStream);
     void deserializeFieldPlacement(QDataStream &deserializationStream);
     void deserializeAddCardToHand(QDataStream &deserializationStream);
