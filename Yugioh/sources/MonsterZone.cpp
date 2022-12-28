@@ -2,9 +2,7 @@
 #include <algorithm>
 #include <iostream>
 
-MonsterZone::MonsterZone(){
-    std::cout  << "udjem li ovde" << std::endl;
-}
+MonsterZone::MonsterZone(){}
 
 MonsterZone::~MonsterZone()
 {
@@ -37,6 +35,16 @@ MonsterCard* MonsterZone::removeFromMonsterZone(Zone* targetedZone) {
 void MonsterZone::removeFromMonsterZone(int zoneNumber) {
     Zone* zone = m_monsterZone[zoneNumber];
     removeFromMonsterZone(zone);
+}
+
+Zone* MonsterZone::getZone(Card *card)
+{
+    for(Zone* zone : m_monsterZone) {
+        if(!zone->isEmpty() && zone->m_pCard == card)
+            return zone;
+    }
+
+    return nullptr;
 }
 
 
@@ -91,7 +99,7 @@ void MonsterZone::colorOccupiedZones() {
 
 void MonsterZone::refresh() {
     for(Zone *zone : m_monsterZone) {
-        zone->setBrush(Qt::NoBrush);
+        zone->setBrush(QColor(0,0,200,30));
         zone->update();
     }
 }
@@ -104,8 +112,26 @@ bool MonsterZone::isFull() const {
     return true;
 }
 
+bool MonsterZone::isEmpty() const {
+    for(Zone* zone : m_monsterZone) {
+        if(!zone->isEmpty())
+            return false;
+    }
+
+    return true;
+}
+
 float MonsterZone::getWidth() const
 {
     return m_width;
 }
 
+float MonsterZone::size() const {
+    float size = 0;
+    for(Zone* zone : m_monsterZone) {
+        if(!zone->isEmpty())
+            size++;
+    }
+
+    return size;
+}

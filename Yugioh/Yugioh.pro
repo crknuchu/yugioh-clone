@@ -12,6 +12,7 @@ QT +=   widgets \
 
 SOURCES += \
         sources/BotPlayer.cpp \
+        sources/EffectRequirement.cpp \
         sources/Field.cpp \
         sources/FieldZone.cpp \
         sources/GameSettings.cpp \
@@ -36,6 +37,7 @@ SOURCES += \
         sources/Serializer.cpp
 
 HEADERS += \
+    headers/EffectRequirement.h \
     headers/Field.h \
     headers/FieldZone.h \
     headers/GameSettings.h \

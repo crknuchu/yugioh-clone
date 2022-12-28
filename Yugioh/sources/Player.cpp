@@ -56,8 +56,9 @@ void Player::drawCards(unsigned int numOfCards) {
     }
     else{
         std::vector<Card*> newCards = this->field.deck.draw(numOfCards);
-        for (unsigned i = 0; i < newCards.size(); i++){
-            this->m_hand.addToHand(*newCards[i]);
+        for (Card* newCard : newCards ){
+            emit cardAddedToScene(newCard);
+            this->m_hand.addToHand(*newCard);
         }
         std::cout << "The player " << this->getPlayerName() << " gets " << newCards.size() << " cards." << std::endl;
     }
@@ -77,7 +78,8 @@ void Player::fromGraveyardToHand(Card &card){
     for (auto it = this->field.graveyard->getGraveyard().cbegin(); it != this->field.graveyard->getGraveyard().cend(); it++)
     {
         if ((*it) == &card) {
-            this->field.graveyard->removeFromGraveyard(card);
+//            cardInGrave = 1;
+//            this->field.graveyard->removeFromGraveyard(*it);
             this->m_hand.addToHand(card);
             return;
         }
@@ -138,16 +140,36 @@ void Player::sendToGraveyard(Card &card){
         //removing from deck, not sure if is it legal move
         for (auto it = this->field.deck.getDeck().begin(); it != this->field.deck.getDeck().end(); it++){
             if ((*it) == &card){
-                this->field.deck.getDeck().erase(it);
+//                this->field.deck.erase(it);
                 this->field.graveyard->sendToGraveyard(card);
                 std::cout<< (*it)->getCardName()<<" successfully removed from deck"<<std::endl;
                 return;
             }
-        }  
+        }
+
+        int position = 0; //can't put this in for loop bcs of auto iterator
+        for (auto it = this->field.monsterZone.m_monsterZone.cbegin(); it != this->field.monsterZone.m_monsterZone.cend(); it++, position++){
+            if ((*it)->m_pCard == &card){
+//                this->field.monsterZone.m_monsterZone.erase(it);//delete from vector of cards
+                this->field.monsterZone.removeFromMonsterZone(position);
+                this->field.graveyard->sendToGraveyard(card);
+                std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
+                return;
+            }
+        }
+        position = 0;
+        for (auto it = this->field.spellTrapZone.m_spellTrapZone.cbegin(); it != this->field.spellTrapZone.m_spellTrapZone.cend(); it++, position++){
+            if ((*it)->m_pCard == &card){
+//                this->field.spellTrapZone.m_spellTrapZone.erase(it);
+                this->field.spellTrapZone.removeFromSpellTrapZone(position);
+                this->field.graveyard->sendToGraveyard(card);
+                return;
+            }
+        }
 
         for (auto it = this->m_hand.cbegin(); it != this->m_hand.cend(); it++){
             if ((*it) == &card){
-               this->m_hand.removeFromHand(card);
+//               this->m_hand.erase(it);
                this->field.graveyard->sendToGraveyard(card);
                std::cout<< (*it)->getCardName() << " succesfully removed from hand"<<std::endl;
                return;
@@ -158,6 +180,11 @@ void Player::sendToGraveyard(Card &card){
        std::cerr<<card.getCardName()<<" can't be removed"<<std::endl;
 //        throw e;
     }
+}
+
+void Player::discard(Card &card) {
+    Card* removedCard = this->m_hand.removeFromHand(card);
+    this->field.graveyard->sendToGraveyard(*removedCard);
 }
 
 // --------------------------------------------

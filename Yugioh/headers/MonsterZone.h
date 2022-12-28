@@ -15,11 +15,14 @@ public:
     void placeInMonsterZone(Card*, int);
     MonsterCard* removeFromMonsterZone(Zone*);
     void removeFromMonsterZone(int);
+    Zone* getZone(Card*);
     float getWidth() const;
     bool isFull() const;
+    bool isEmpty() const;
     void colorFreeZones();
     void colorOccupiedZones();
     void refresh();
+    float size() const;
     std::vector<Zone*> m_monsterZone;
 
 private:

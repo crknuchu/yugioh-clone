@@ -1,4 +1,5 @@
 #include "headers/Spellcard.h"
+#include "headers/EffectRequirement.h"
 
 SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardType, CardLocation cardLocation, SpellTrapPosition position,
                      const std::string &cardDescription, std::string imagePath, bool active)
@@ -7,6 +8,25 @@ SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardT
     ,active(active)
     ,position(position)
 {}
+
+SpellCard* SpellCard::clone() {
+    return new SpellCard(this->type, this->cardName, this->cardType, this->cardLocation, this->position,
+                         this->cardDescription, this->imagePath, this->active);
+}
+
+bool SpellCard::shouldBeSentToGraveyard()
+{
+    if(type == SpellType::CONTINUOUS_SPELL)
+        return false;
+
+    if(type == SpellType::EQUIP_SPELL)
+        return false;
+
+    if(type == SpellType::FIELD_SPELL)
+        return false;
+
+    return true;
+}
 
 SpellType SpellCard::getSpellType() const
 {
@@ -46,12 +66,15 @@ void SpellCard::activateSpell()
 void SpellCard::setCardMenu(){
 
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
-
-    if(cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)){
+    EffectRequirement effectRequirement(*this);
+    bool cardActivationRequirement = effectRequirement.isActivatable(this->cardName);
+    if(cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1
+                                              || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)){
         flagMap.insert("set",true);
-        flagMap.insert("activate",true);
+        if(cardActivationRequirement)
+            flagMap.insert("activate",true);
     }
-     if(cardLocation == CardLocation::FIELD){
+     if(cardLocation == CardLocation::FIELD && cardActivationRequirement){
          flagMap.insert("activate",true);
         }
      cardMenu->update(flagMap);

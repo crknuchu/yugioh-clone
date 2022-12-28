@@ -18,6 +18,8 @@ class SpellCard : public Card
 public:
     SpellCard(SpellType type,const std::string &cardName, CardType cardType, CardLocation cardLocation, SpellTrapPosition position, const std::string &cardDescription,std::string imagePath,bool active = false);
 
+    SpellCard* clone() override;
+    bool shouldBeSentToGraveyard() override;
     SpellType getSpellType() const;
     std::string getSpellTypeString() const;
     SpellTrapPosition getSpellPosition() const;

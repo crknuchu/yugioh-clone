@@ -1,5 +1,6 @@
 #include "headers/EffectActivator.h"
 #include "headers/Game.h"
+#include "headers/EffectRequirement.h"
 // Maybe unneeded
 //enum class PhasePart {
 //    BEGINNING,
@@ -22,16 +23,18 @@ const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> Eff
     {"Hane-Hane",               &EffectActivator::activateHaneHane},
 
     // Spells
-    {"Dark Energy",                     &EffectActivator::activateDarkEnergy},
-    {"Invigoration",                    &EffectActivator::activateInvigoration},
-    {"Sogen",                           &EffectActivator::activateSogen},
     {"Ancient Telescope",               &EffectActivator::activateAncientTelescope},
+    {"Card Destruction",                &EffectActivator::activateCardDestruction},
+    {"Dark Energy",                     &EffectActivator::activateDarkEnergy},
     {"Dark Hole",                       &EffectActivator::activateDarkHole},
     {"De-Spell",                        &EffectActivator::activateDeSpell},
+    {"Dian Keto the Cure Master",       &EffectActivator::activateDianKetoTheCureMaster},
     {"Fissure",                         &EffectActivator::activateFissure},
+    {"Invigoration",                    &EffectActivator::activateInvigoration},
     {"Monster Reborn",                  &EffectActivator::activateMonsterReborn},
     {"Ookazi",                          &EffectActivator::activateOokazi},
     {"Remove Trap",                     &EffectActivator::activateRemoveTrap},
+    {"Sogen",                           &EffectActivator::activateSogen},
     {"The Flute of Summoning Dragon",   &EffectActivator::activateTheFluteOfSummoningDragon},
     {"The Inexperienced Spy",           &EffectActivator::activateTheInexperiencedSpy},
 
@@ -111,8 +114,10 @@ void EffectActivator::activateTrapMaster() {
 }
 
 void EffectActivator::activateHaneHane() {
-    std::cout << "Hane-Hane's effect has been activated!" << std::endl;
-    // ...
+    MonsterCard* targetedMonster = findHighestATKMonster(*GameExternVars::pOtherPlayer);
+    Zone* zoneWithTargetedMonster = GameExternVars::pOtherPlayer->field.monsterZone.getZone(targetedMonster);
+    GameExternVars::pOtherPlayer->field.monsterZone.removeFromMonsterZone(zoneWithTargetedMonster);
+    GameExternVars::pOtherPlayer->m_hand.addToHand(*targetedMonster);
 }
 
 // Spells
@@ -123,6 +128,9 @@ void EffectActivator::activateDarkEnergy()
 
 void EffectActivator::activateInvigoration()
 {
+//An EARTH monster equipped with this card
+//increases its ATK by 400 points and decreases its DEF by 200 points.
+
 
 }
 
@@ -136,9 +144,32 @@ void EffectActivator::activateAncientTelescope()
 
 }
 
+void EffectActivator::activateCardDestruction() {
+    float currentPlayerHandSize = GameExternVars::pCurrentPlayer->m_hand.size();
+    for(Card* card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
+        GameExternVars::pCurrentPlayer->discard(*card);
+    }
+
+    GameExternVars::pCurrentPlayer->drawCards(currentPlayerHandSize);
+
+    float opponentHandSize = GameExternVars::pOtherPlayer->m_hand.size();
+    for(Card* card : GameExternVars::pOtherPlayer->m_hand.getHand()) {
+        GameExternVars::pOtherPlayer->discard(*card);
+    }
+    GameExternVars::pOtherPlayer->drawCards(opponentHandSize);
+}
+
 void EffectActivator::activateDarkHole()
 {
+    for(Zone* zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
+        if(!zone->isEmpty())
+            GameExternVars::pCurrentPlayer->sendToGraveyard(*zone->m_pCard, zone);
+    }
 
+    for(Zone* zone : GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone) {
+        if(!zone->isEmpty())
+            GameExternVars::pOtherPlayer->sendToGraveyard(*zone->m_pCard, zone);
+    }
 }
 
 void EffectActivator::activateDeSpell()
@@ -146,19 +177,80 @@ void EffectActivator::activateDeSpell()
 
 }
 
+void EffectActivator::activateDianKetoTheCureMaster() {
+    changeHealthPointsBy(1000, *GameExternVars::pCurrentPlayer);
+}
+
 void EffectActivator::activateFissure()
 {
+    std::vector<Zone *>monsters = GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone;
+    std::cout<<GameExternVars::pOtherPlayer->getPlayerName();
+    int lowestATK = 100000;
+    Card *destroyCard = nullptr;
+    Zone *destroyZone = nullptr;
+
+
+    for (Zone *zone : monsters)
+    {
+        if (zone->isEmpty())
+            continue;
+        if (!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::MONSTER_CARD)
+        {
+
+            MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+
+
+            if (m->getAttackPoints() < lowestATK)
+            {
+                lowestATK = m->getAttackPoints();
+                destroyCard = zone->m_pCard;
+                destroyZone = zone;
+            }
+
+        }
+    }
+    if (destroyCard == nullptr || destroyZone == nullptr)
+        return;
+    GameExternVars::pOtherPlayer->sendToGraveyard(*destroyCard, destroyZone);
 
 }
 
 void EffectActivator::activateMonsterReborn()
 {
+    //we want to reborn strongest monster
+    MonsterCard* strongestMonsterInEitherGraveyard = nullptr;
+    int whichGraveyard = 1;
+    for(Card* card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard()) {
+        if(card->getCardType() == CardType::MONSTER_CARD) {
+            MonsterCard* monsterInGraveyard = static_cast<MonsterCard*>(card);
+            if(!strongestMonsterInEitherGraveyard ||
+                    strongestMonsterInEitherGraveyard->getAttackPoints() < monsterInGraveyard->getAttackPoints())
+                strongestMonsterInEitherGraveyard = monsterInGraveyard;
+        }
+    }
 
+    for(Card* card : GameExternVars::pOtherPlayer->field.graveyard->getGraveyard()) {
+        if(card->getCardType() == CardType::MONSTER_CARD) {
+            MonsterCard* monsterInGraveyard = static_cast<MonsterCard*>(card);
+            if(!strongestMonsterInEitherGraveyard ||
+                    strongestMonsterInEitherGraveyard->getAttackPoints() < monsterInGraveyard->getAttackPoints()) {
+                strongestMonsterInEitherGraveyard = monsterInGraveyard;
+                whichGraveyard = 2;
+            }
+        }
+    }
+
+    whichGraveyard == 1 ?
+                GameExternVars::pCurrentPlayer->field.graveyard->removeFromGraveyard(*strongestMonsterInEitherGraveyard)
+              : GameExternVars::pOtherPlayer->field.graveyard->removeFromGraveyard(*strongestMonsterInEitherGraveyard);
+
+    GameExternVars::pCardToBePlacedOnField = strongestMonsterInEitherGraveyard;
+    GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
 }
 
 void EffectActivator::activateOokazi()
 {
-
+    changeHealthPointsBy(-800, *GameExternVars::pOtherPlayer);
 }
 
 void EffectActivator::activateRemoveTrap()
@@ -194,7 +286,13 @@ void EffectActivator::activateJustDesserts()
 
 void EffectActivator::activateReinforcements()
 {
+    MonsterCard* strongestMonster;
+    if(m_card->getPlayerThatSetThisCard() == 1)
+        strongestMonster = findHighestATKMonster(*GameExternVars::pCurrentPlayer);
+    else
+        strongestMonster = findHighestATKMonster(*GameExternVars::pOtherPlayer);
 
+    strongestMonster->setAttackPoints(strongestMonster->getAttackPoints() + 500);
 }
 
 void EffectActivator::activateReverseTrap()
@@ -248,7 +346,7 @@ void EffectActivator::returnToHand(Card &targetCard, const GamePhases &inWhichGa
 
 void EffectActivator::destroyCard(Card &targetCard, Player &targetPlayer)
 {
-    targetPlayer.field.graveyard->sendToGraveyard(targetCard);
+    targetPlayer.sendToGraveyard(targetCard);
 }
 
 void EffectActivator::destroyCards(std::vector<Card*> &targetCards, Player &targetPlayer)
@@ -381,41 +479,19 @@ std::vector<MonsterCard *> EffectActivator::findLowestATKMonsters(Player &target
 //    return lowestATKMonsters;
 }
 
-std::vector<MonsterCard *> EffectActivator::findHighestATKMonsters(Player &targetPlayer)
+MonsterCard* EffectActivator::findHighestATKMonster(Player &targetPlayer)
 {
-    // TODO: A more functional way (copy_if) for this
+    MonsterCard* highestATKMonster = nullptr;
 
-//    MonsterZone monsterZone(targetPlayer.monsterZone); // TODO: This way of copying vs vec1 = vec2
+    for(Zone* zone : targetPlayer.field.monsterZone.m_monsterZone) {
+        if(!zone->isEmpty()){
+            MonsterCard* monster = static_cast<MonsterCard*>(zone->m_pCard);
+            if(!highestATKMonster || monster->getAttackPoints() > highestATKMonster->getAttackPoints())
+                highestATKMonster = monster;
+        }
+    }
 
-//    // TODO: This should be in MonsterZone class probably
-//    std::vector<MonsterCard> monsters;
-//    for(auto zone : monsterZone)
-//    {
-//        if(!zone->isEmpty())
-//        {
-//            monsters.push_back(*(zone->m_pCard));
-//        }
-//    }
-
-
-
-
-//    std::vector<MonsterCard *> highestATKMonsters;
-//    int maxAttackPoints = INT_MIN;
-//    for(MonsterCard &monster : monsters)
-//    {
-//        int currentMonsterAttackPoints = monster.getAttackPoints();
-//        if(currentMonsterAttackPoints <= maxAttackPoints)
-//            maxAttackPoints = currentMonsterAttackPoints;
-//    }
-
-//    for(MonsterCard &monster : monsters)
-//    {
-//        if(monster.getAttackPoints() == maxAttackPoints)
-//            highestATKMonsters.push_back(&monster);
-//    }
-
-    //    return highestATKMonsters;
+    return highestATKMonster;
 }
 
 std::vector<MonsterCard *> EffectActivator::findFaceUpMonsters(Player &targetPlayer)

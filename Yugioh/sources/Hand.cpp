@@ -9,13 +9,19 @@ Hand::Hand(std::vector<Card*> &initialHand)
     :CardList(initialHand){}
 
 std::vector<Card*> Hand::getHand() const{
-    return m_cardList;
+    return this->m_cardList;
 }
 
-void Hand::setHandCoordinates(float windowWidth, float windowHeight) {
+void Hand::setHandCoordinates(float windowWidth, float windowHeight, int playerNumber) {
     float cardHeight = 150;
-    m_x = windowWidth / 4;
-    m_y = windowHeight - cardHeight - 50;
+    if(playerNumber == 1) {
+        m_x = windowWidth / 4;
+        m_y = windowHeight - cardHeight - 50;
+    }
+    else if(playerNumber == 2){
+        m_x = windowWidth / 4;
+        m_y = 0;
+    }
 }
 
 void Hand::addToHand(Card &card) {
@@ -26,8 +32,38 @@ void Hand::addToHand(Card &card) {
     m_cardList.push_back(&card);
 }
 
-Card* Hand::removeFromHand(Card &card) {
-    auto it = std::find(m_cardList.begin(), m_cardList.end(), &card);
+Card* Hand::removeFromHand(Card &cardToBeRemoved) {
+    float gap = 20;
+    bool found = false;
+    std::vector<Card*> cardsToBeFixed;
+    for(Card* card : m_cardList) {
+        if(found) {
+            cardsToBeFixed.push_back(card);
+        }
+
+        if(card->getCardName() == cardToBeRemoved.getCardName())
+            found = true;
+    }
+    auto it = std::find(m_cardList.begin(), m_cardList.end(), &cardToBeRemoved);
+    m_x -= (cardToBeRemoved.getWidth() + gap);
     m_cardList.erase(it);
-    return &card;
+
+    fixCardsPosition(cardsToBeFixed);
+    return &cardToBeRemoved;
+}
+
+void Hand::fixCardsPosition(std::vector<Card *> &cardsToBeFixed) {
+    float gap = 20;
+    for(Card* card : cardsToBeFixed) {
+        auto it = std::find(m_cardList.begin(), m_cardList.end(), card);
+        m_cardList.erase(it);
+        m_x -= (card->getWidth() + gap);
+    }
+
+    for(Card* card : cardsToBeFixed)
+        addToHand(*card);
+}
+
+float Hand::size() const {
+    return this->m_cardList.size();
 }

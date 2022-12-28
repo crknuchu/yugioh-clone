@@ -60,8 +60,11 @@ public:
     MonsterCard( const std::string &cardName,int attackPoints, int defensePoints, int level, MonsterType type,
                  MonsterKind kind, MonsterAttribute attribute,bool active,MonsterPosition position,bool alreadyAttack,
                  CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool summonedThisTurn = false);
+
     virtual ~MonsterCard();
 
+    MonsterCard* clone() override;
+    bool shouldBeSentToGraveyard() override;
     int getAttackPoints() const;
     int getDefensePoints() const;
     MonsterType getMonsterType() const;

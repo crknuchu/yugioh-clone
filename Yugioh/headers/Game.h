@@ -120,7 +120,8 @@ private slots:
     void onMainWindowResize(QResizeEvent *);
     void onGamePhaseChange(const GamePhases &newGamePhase);
     void onTurnEnd();
-    void onCardAddedToScene(Card &);
+    void onCardAddedToScene(Card *);
+    void onActivateFromHand(Card &);
 
 
     // Slots for Card signal handling
@@ -159,10 +160,10 @@ signals:
     void gameStarted(qint32 firstToPlay, qint32 clientID);
     void gamePhaseChanged(const GamePhases &newGamePhase);
     void turnEnded();
-    void cardAddedToScene(Card &targetCard);
     void gameEndedAfterBattle(Player &loser);
     void lifePointsChanged(Player &targetPlayer);
     void deserializationFinished();
+    void activateFromHand(Card &);
 };
 
 #endif // GAME_H

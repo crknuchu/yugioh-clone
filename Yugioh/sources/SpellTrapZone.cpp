@@ -87,7 +87,7 @@ void SpellTrapZone::colorOccupiedZones() {
 
 void SpellTrapZone::refresh() {
     for(Zone *zone : m_spellTrapZone) {
-        zone->setBrush(Qt::NoBrush);
+        zone->setBrush(QColor(0,200,0,30));
         zone->update();
     }
 }

@@ -1,5 +1,5 @@
 #include "headers/Monstercard.h"
-
+#include "headers/EffectRequirement.h"
 
 MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, 
                         MonsterKind kind, MonsterAttribute attribute,bool active, MonsterPosition position,
@@ -21,6 +21,17 @@ MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defe
 MonsterCard::~MonsterCard()
 {
 
+}
+
+MonsterCard* MonsterCard::clone() {
+    return new MonsterCard(this->cardName, this->attackPoints, this->defensePoints, this->level, this->type,
+                           this->monsterKind, this->attribute, this->active, this->position, this->alreadyAttack,
+                           this->cardType, this->cardLocation, this->cardDescription, this->imagePath, this->summonedThisTurn);
+}
+
+bool MonsterCard::shouldBeSentToGraveyard()
+{
+    return false;
 }
 
 int MonsterCard::getAttackPoints() const
@@ -241,8 +252,9 @@ bool MonsterCard::specialSummon(MonsterPosition monsterPos){
 }
 
 void MonsterCard::setCardMenu(){
-    QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
-
+    QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}, {"flip",false}};
+    EffectRequirement effectRequirement(*this);
+    bool cardActivationRequirement = effectRequirement.isActivatable(this->cardName);
     if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("set", true);
         flagMap.insert("summon", true);
@@ -250,7 +262,7 @@ void MonsterCard::setCardMenu(){
     if(cardLocation == CardLocation::FIELD  && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1|| GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("reposition",true);
     }
-    if(monsterKind == MonsterKind::EFFECT_MONSTER){
+    if(monsterKind == MonsterKind::EFFECT_MONSTER && cardLocation == CardLocation::FIELD && cardActivationRequirement){
         flagMap.insert("activate",true);
     }
     if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == MonsterPosition::ATTACK){
