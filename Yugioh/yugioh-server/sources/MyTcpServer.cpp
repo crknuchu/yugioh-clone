@@ -46,18 +46,6 @@ void MyTcpServer:: onNewConnection()
         m_buffers.insert(clientSocket, pBuffer);
         m_sizes.insert(clientSocket, pSize);
 
-
-//         Notify the client that it connected successfully
-        // FIXME: If this is uncommented, for some reason header will never be START_GAME
-//        {
-//            QByteArray buffer;
-//            QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-//            outDataStream.setVersion(QDataStream::Qt_5_15);
-//            outDataStream << QString::fromStdString("WELCOME_MESSAGE");
-//            outDataStream << QString::fromStdString("Hello from the server!"); // This writes the "Hello from the server!" in notifyBuffer
-//            clientSocket->write(buffer);
-//        }
-
         // We want to start the game only when 2 clients connect to the server
         if(m_numOfClients == 2)
         {
@@ -96,8 +84,9 @@ void MyTcpServer::onClientDisconnect()
     delete buffer;
     delete s;
 
-    // FIXME: Double messages after client reconnects and sends message again
-
+    // If the number of clients reached 0 (the game ended and they disconnected), stop the server too
+//    if(m_numOfClients == 0)
+//        m_pServer->close();
 }
 
 

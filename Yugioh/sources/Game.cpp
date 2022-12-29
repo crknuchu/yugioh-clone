@@ -1077,7 +1077,6 @@ void Game::deserializeGameEnd(QDataStream &deserializationStream)
             ? QMessageBox::information(this, tr("GAME END"), tr("DEFEAT"))
             : QMessageBox::information(this, tr("GAME END"), tr("VICTORY"));
 
-
     notifyServerThatDeserializationHasFinished();
 
     // Close this window
