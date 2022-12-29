@@ -13,6 +13,8 @@ const std::map<std::string, EffectRequirement::EFFECT_REQUIREMENT_MEMBER_FUNCTIO
     {"Monster Reborn",              &EffectRequirement::monsterRebornReq},
     {"Change of Heart",             &EffectRequirement::changeofheartReq},
     {"Hane-Hane",                   &EffectRequirement::haneHaneReq},
+    {"Invigoration",                &EffectRequirement::invigorationReq},
+    {"Sword Of Dark Destruction",   &EffectRequirement::swordOfDarkDestructionReq},
     //Traps
     {"Reinforcements", &EffectRequirement::reinforcementsReq}
 };
@@ -31,6 +33,38 @@ bool EffectRequirement::isActivatable(const std::string &cardName)
     return condition;
 }
 
+
+bool EffectRequirement::invigorationReq(){
+    std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
+
+    for (Zone *zone : monsters)
+    {
+        if (zone->isEmpty())
+            continue;
+        
+        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD && m->getAttribute() == MonsterAttribute::EARTH)
+            return true;
+        else 
+            return false;
+    }
+}
+
+bool EffectRequirement::swordOfDarkDestructionReq(){
+    std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
+
+    for (Zone *zone : monsters)
+    {
+        if (zone->isEmpty())
+            continue;
+        
+        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD && m->getAttribute() == MonsterAttribute::DARK)
+            return true;
+        else 
+            return false;
+    }
+}
 
 bool EffectRequirement::fissureReq() {
     bool opponentHasMonsters = false;

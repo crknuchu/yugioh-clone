@@ -22,6 +22,8 @@ private:
     bool monsterRebornReq();
     bool haneHaneReq();
     bool reinforcementsReq();
+    bool invigorationReq();
+    bool swordOfDarkDestructionReq();
 };
 
 #endif // EFFECTREQUIREMENT_H

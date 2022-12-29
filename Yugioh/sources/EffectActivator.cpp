@@ -39,7 +39,7 @@ const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> Eff
     {"The Inexperienced Spy",           &EffectActivator::activateTheInexperiencedSpy},
     {"Sword Of Dark Destruction",       &EffectActivator::activateSwordOfDarkDestruction},
     {"Change of Heart",                 &EffectActivator::activateChangeOfHeart},
-    
+
     // Traps
     {"Ultimate Offering",   &EffectActivator::activateUltimateOffering},
     {"Castle Walls",        &EffectActivator::activateCastleWalls},
@@ -163,7 +163,7 @@ void EffectActivator::activateSwordOfDarkDestruction()
 
     strongestMonster->setAttackPoints(strongestMonster->getAttackPoints()+400);
     strongestMonster->setDefensePoints(strongestMonster->getDefensePoints()-200); 
-    
+
 }
 
 
@@ -174,7 +174,7 @@ void EffectActivator::activateInvigoration()
 
 
     std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
-    std::cout<<GameExternVars::pOtherPlayer->getPlayerName();
+    // std::cout<<GameExternVars::pOtherPlayer->getPlayerName();
     int highestAtk = -1;
 
     MonsterCard* strongestMonster = nullptr;
@@ -204,8 +204,6 @@ void EffectActivator::activateInvigoration()
 
     strongestMonster->setAttackPoints(strongestMonster->getAttackPoints()+400);
     strongestMonster->setDefensePoints(strongestMonster->getDefensePoints()+200);    
-    std::cout<<"AAAAAAAAAAAAAAAAa"<<std::endl;
-    std::cout<<strongestMonster->getCardName()<<std::endl;
 }
 
 void EffectActivator::activateSogen()
