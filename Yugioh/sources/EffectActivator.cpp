@@ -40,6 +40,7 @@ const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> Eff
     {"Sword Of Dark Destruction",       &EffectActivator::activateSwordOfDarkDestruction},
     {"Change of Heart",                 &EffectActivator::activateChangeOfHeart},
     {"Book of Secret Arts",             &EffectActivator::activateBookOfSecretArts},
+    {"Yami",                            &EffectActivator::activateYami},
 
     // Traps
     {"Ultimate Offering",   &EffectActivator::activateUltimateOffering},
@@ -116,6 +117,29 @@ void EffectActivator::activateTheWickedWormBeast() {
 void EffectActivator::activateTrapMaster() {
     std::cout << "Trap Master's effect has been activated!" << std::endl;
     // ...
+}
+
+void EffectActivator::activateYami(){
+    std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
+
+    for (Zone *zone : monsters)
+    {
+        if (zone->isEmpty())
+            continue;
+        
+        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD)
+        {
+            if(m->getMonsterType() == MonsterType::SPELLCASTER || m->getMonsterType() == MonsterType::FIEND){
+                m->setAttackPoints(m->getAttackPoints()+300);
+                m->setDefensePoints(m->getDefensePoints()+300);
+            }
+            else if(m->getMonsterType() == MonsterType::FAIRY){
+                m->setAttackPoints(m->getAttackPoints()-200);
+                m->setDefensePoints(m->getDefensePoints()-200);
+            }
+        }
+    }
 }
 
 void EffectActivator::activateBookOfSecretArts(){

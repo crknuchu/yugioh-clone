@@ -15,7 +15,8 @@ const std::map<std::string, EffectRequirement::EFFECT_REQUIREMENT_MEMBER_FUNCTIO
     {"Hane-Hane",                   &EffectRequirement::haneHaneReq},
     {"Invigoration",                &EffectRequirement::invigorationReq},
     {"Sword Of Dark Destruction",   &EffectRequirement::swordOfDarkDestructionReq},
-    {"Book of Secret Arts",        &EffectRequirement::bookOfSecretArtsReq},
+    {"Book of Secret Arts",         &EffectRequirement::bookOfSecretArtsReq},
+    {"Yami",                        &EffectRequirement::yamiReq},
     //Traps
     {"Reinforcements", &EffectRequirement::reinforcementsReq}
 };
@@ -34,6 +35,30 @@ bool EffectRequirement::isActivatable(const std::string &cardName)
     return condition;
 }
 
+bool EffectRequirement::yamiReq(){
+    std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
+
+    for (Zone *zone : monsters)
+    {
+        if (zone->isEmpty())
+            continue;
+        
+        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD)
+        {
+            if(m->getMonsterType() == MonsterType::SPELLCASTER)
+                return true;
+            else if(m->getMonsterType() == MonsterType::FIEND)
+                return true;
+            else if(m->getMonsterType() == MonsterType::FAIRY)
+                return true;
+            else
+                return false;
+        }
+        else 
+            return false;
+    }
+}
 
 bool EffectRequirement::bookOfSecretArtsReq(){
     std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;

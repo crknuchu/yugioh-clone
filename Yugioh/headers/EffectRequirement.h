@@ -25,6 +25,7 @@ private:
     bool invigorationReq();
     bool swordOfDarkDestructionReq();
     bool bookOfSecretArtsReq();
+    bool yamiReq();
 };
 
 #endif // EFFECTREQUIREMENT_H

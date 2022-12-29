@@ -65,6 +65,7 @@ private:
     void activateSwordOfDarkDestruction();
     void activateChangeOfHeart();
     void activateBookOfSecretArts();
+    void activateYami();
 
     // Trap card effect activations:
     void activateUltimateOffering();
