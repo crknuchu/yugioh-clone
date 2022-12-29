@@ -2,9 +2,7 @@
 #include <algorithm>
 #include <iostream>
 
-MonsterZone::MonsterZone(){
-    std::cout  << "udjem li ovde" << std::endl;
-}
+MonsterZone::MonsterZone(){}
 
 MonsterZone::~MonsterZone()
 {

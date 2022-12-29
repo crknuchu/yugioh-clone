@@ -33,14 +33,9 @@ public:
   Game();
   Game(Player p1, Player p2,int lifePoints = 4000,int numberOfCards = 5 ,int timePerMove = 5,QWidget *parent = nullptr );  // Why is parent's type QWidget and not QMainWindow?
   ~Game();
-  int lifePoints ;
-  int numberOfCards ;
-  int timePerMove ;
 
 
   // Public member functions:
-  void start();
-  GamePhases setGamePhase() const;
 
   int getLifePoints() const;
   void setLifePoints(int newLifePoints);
@@ -61,10 +56,12 @@ private:
   Player m_player1;  
   Player m_player2;
   int m_currentTurn;
-  int counter = 0;
   int resizeCount = 0;
   int m_viewAndSceneWidth;
 
+  int m_lifePoints;
+  int m_numberOfCards;
+  int m_timePerMove;
 
 
   // Private member functions:
@@ -88,7 +85,6 @@ private:
     bool eventFilter(QObject *obj, QEvent *event) override;
 
 // Networking:
-  // TODO: Separate class?
     QTcpSocket *m_pTcpSocket = nullptr; // TODO: This will probably have to be in GameExternVars so that EffectActivator can see it
     qint32 m_clientID;
     QDataStream m_inDataStream;

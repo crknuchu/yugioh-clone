@@ -44,12 +44,12 @@ const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_d
 
 Game::Game(Player p1, Player p2,int lifePoints,int numberOfCards ,int timePerMove,QWidget *parent )
     : QMainWindow(parent),
-      lifePoints(lifePoints),
-      numberOfCards(numberOfCards),
-      timePerMove(timePerMove),
       ui(new Ui::MainWindow),
       m_player1(p1),
       m_player2(p2),
+      m_lifePoints(lifePoints),
+      m_numberOfCards(numberOfCards),
+      m_timePerMove(timePerMove),
       m_pTcpSocket(new QTcpSocket(this))
 
 {
@@ -97,32 +97,32 @@ Game::~Game() {
 
 int Game::getTimePerMove() const
 {
-    return timePerMove;
+    return m_timePerMove;
 }
 
 void Game::setTimePerMove(int newTimePerMove)
 {
-    timePerMove = newTimePerMove;
+    m_timePerMove = newTimePerMove;
 }
 
 int Game::getNumberOfCards() const
 {
-    return numberOfCards;
+    return m_numberOfCards;
 }
 
 void Game::setNumberOfCards(int newNumberOfCards)
 {
-    numberOfCards = newNumberOfCards;
+    m_numberOfCards = newNumberOfCards;
 }
 
 int Game::getLifePoints() const
 {
-    return lifePoints;
+    return m_lifePoints;
 }
 
 void Game::setLifePoints(int newLifePoints)
 {
-    lifePoints = newLifePoints;
+    m_lifePoints = newLifePoints;
 }
 
 void Game::switchPlayers() {
