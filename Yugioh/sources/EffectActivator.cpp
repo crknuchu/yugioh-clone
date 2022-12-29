@@ -39,6 +39,7 @@ const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> Eff
     {"The Inexperienced Spy",           &EffectActivator::activateTheInexperiencedSpy},
     {"Sword Of Dark Destruction",       &EffectActivator::activateSwordOfDarkDestruction},
     {"Change of Heart",                 &EffectActivator::activateChangeOfHeart},
+    {"Book of Secret Arts",             &EffectActivator::activateBookOfSecretArts},
 
     // Traps
     {"Ultimate Offering",   &EffectActivator::activateUltimateOffering},
@@ -116,6 +117,42 @@ void EffectActivator::activateTrapMaster() {
     std::cout << "Trap Master's effect has been activated!" << std::endl;
     // ...
 }
+
+void EffectActivator::activateBookOfSecretArts(){
+
+    std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
+    // std::cout<<GameExternVars::pOtherPlayer->getPlayerName();
+    int highestAtk = -1;
+
+    MonsterCard* strongestMonster = nullptr;
+    Zone *strongestMonsterZone = nullptr;
+
+
+    for (Zone *zone : monsters)
+    {
+        if (zone->isEmpty())
+            continue;
+        
+        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD && m->getMonsterType() == MonsterType::SPELLCASTER)
+        {
+
+            if (m->getAttackPoints() >= highestAtk)
+            {
+                highestAtk = m->getAttackPoints();
+                strongestMonster = m;
+                strongestMonsterZone = zone;
+            }
+
+        }
+    }
+    if (strongestMonster == nullptr || strongestMonsterZone == nullptr)
+        return;
+
+    strongestMonster->setAttackPoints(strongestMonster->getAttackPoints()+300);
+    strongestMonster->setDefensePoints(strongestMonster->getDefensePoints()+300);
+}
+
 
 void EffectActivator::activateHaneHane() {
     MonsterCard* targetedMonster = findHighestATKMonster(*GameExternVars::pOtherPlayer);

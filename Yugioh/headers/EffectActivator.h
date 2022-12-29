@@ -64,6 +64,7 @@ private:
     void activateTheInexperiencedSpy();
     void activateSwordOfDarkDestruction();
     void activateChangeOfHeart();
+    void activateBookOfSecretArts();
 
     // Trap card effect activations:
     void activateUltimateOffering();

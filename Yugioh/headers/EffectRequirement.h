@@ -24,6 +24,7 @@ private:
     bool reinforcementsReq();
     bool invigorationReq();
     bool swordOfDarkDestructionReq();
+    bool bookOfSecretArtsReq();
 };
 
 #endif // EFFECTREQUIREMENT_H
