@@ -49,8 +49,8 @@ Card* Hand::removeFromHand(Card &cardToBeRemoved) {
     auto it = std::find(m_cardList.begin(), m_cardList.end(), &cardToBeRemoved);
     m_x -= (cardToBeRemoved.getWidth() + gap);
     m_cardList.erase(it);
-
-    fixCardsPosition(cardsToBeFixed);
+    if(cardsToBeFixed.size() != 0)
+        fixCardsPosition(cardsToBeFixed);
     return &cardToBeRemoved;
 }
 

@@ -509,12 +509,10 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
     ui->labelGamePhase->setText(QString::fromStdString("DRAW PHASE")); // We hardcode it here since both clients are in sync here
 
     // The first one gets 6 cards
-    GameExternVars::pCurrentPlayer->field.deck.shuffleDeck();
-    GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight, 1);
+//    GameExternVars::pCurrentPlayer->field.deck.shuffleDeck();
     GameExternVars::pCurrentPlayer->drawCards(6);
     // The other one gets 5 cards
-    GameExternVars::pOtherPlayer->field.deck.shuffleDeck();
-    GameExternVars::pOtherPlayer->m_hand.setHandCoordinates(windowWidth, windowHeight, 2);
+//    GameExternVars::pOtherPlayer->field.deck.shuffleDeck();
     GameExternVars::pOtherPlayer->drawCards(5);
 
     GamePhaseExternVars::currentGamePhase = GamePhases::STANDBY_PHASE;
@@ -715,6 +713,7 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
             visuallySetMonster(monsterCard);
 
         // Place it on the field
+        GameExternVars::pCurrentPlayer->m_hand.removeFromHand(*targetCard);
         GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(targetCard, zoneNumber);
     }
     else
@@ -736,6 +735,7 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
             trapCard->setPosition(stPosition);
             visuallySetTrap(trapCard);
         }
+        GameExternVars::pCurrentPlayer->m_hand.removeFromHand(*targetCard);
         GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(targetCard, zoneNumber);
     }
 
@@ -1089,6 +1089,7 @@ void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
 
 
     GameExternVars::pCurrentPlayer->field.setField(flagBottomField, m_viewAndSceneWidth, m_windowHeight);
+    GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(m_viewAndSceneWidth, m_windowHeight, flagBottomField);
     for(auto zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
@@ -1106,6 +1107,7 @@ void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
     ui->graphicsView->scene()->addItem(GameExternVars::pCurrentPlayer->field.fieldZone);
 
     GameExternVars::pOtherPlayer->field.setField(flagUpperField, m_viewAndSceneWidth,m_windowHeight);
+    GameExternVars::pOtherPlayer->m_hand.setHandCoordinates(m_viewAndSceneWidth, m_windowHeight, flagUpperField);
     for(auto zone : GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone) {
         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
