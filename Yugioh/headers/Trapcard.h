@@ -23,7 +23,7 @@ public:
     void activateTrap();
     void setCardMenu() override;
 
-protected:
+private:
     TrapType trapType;
     bool setThisTurn;
     bool active;

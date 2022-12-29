@@ -99,7 +99,7 @@ public:
 
     static const std::map<Position, std::string> positionEnumToString;
 
-protected:
+private:
     int attackPoints;
     int defensePoints;
     MonsterType type;

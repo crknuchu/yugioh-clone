@@ -32,9 +32,9 @@ enum class CardLocation
     DECK,
     GRAVEYARD,
     FIELD,
-    //ATTACK,
-    //DEFENSE,
-    //SPELL_TRAP_ZONE
+    ATTACK,
+    DEFENSE,
+    SPELL_TRAP_ZONE
 };
 
 class Card : public QObject, public QGraphicsPixmapItem

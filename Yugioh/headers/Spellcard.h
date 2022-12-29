@@ -24,7 +24,7 @@ public:
     void setCardMenu() override;
 
 
-protected:
+private:
     SpellType type;
     bool active;
 

@@ -22,16 +22,16 @@ GameSettings::GameSettings(QWidget *parent) :
 
     ui->SetTimePerMove->addItem("3");
     ui->SetTimePerMove->addItem("5");
+    ui->SetTimePerMove->addItem("6");
     ui->SetTimePerMove->addItem("10");
     ui->SetTimePerMove->addItem("20");
-    ui->SetTimePerMove->addItem("30");
 
+    ui->SetInitialNumberOfCards->addItem("3");
+    ui->SetInitialNumberOfCards->addItem("4");
     ui->SetInitialNumberOfCards->addItem("5");
     ui->SetInitialNumberOfCards->addItem("6");
     ui->SetInitialNumberOfCards->addItem("7");
-    ui->SetInitialNumberOfCards->addItem("8");
-    ui->SetInitialNumberOfCards->addItem("9");
-    ui->SetInitialNumberOfCards->addItem("10");
+
 
 
     ui->ChooseDeck->addItem("Yugi's deck");
@@ -50,6 +50,32 @@ GameSettings::~GameSettings()
     delete ui;
 }
 
+
+
+const std::map<LifePoints, int> GameSettings::getLifePointsEnumToInt{
+    {LifePoints::MINIMAL_POINTS, 2000},
+    {LifePoints::SMALLER_POINTS, 4000},
+    {LifePoints::STANDARD_POINTS, 8000},
+    {LifePoints::BIGGER_POINTS, 10000},
+    {LifePoints::MAXIMUM_POINTS, 16000}
+};
+
+const std::map<NumberOfCards, int> GameSettings::getNumberOfCardsEnumToInt{
+    {NumberOfCards::MINIMAL_CARDS, 3},
+    {NumberOfCards::SMALLER_CARDS, 4},
+    {NumberOfCards::STANDARD_CARDS, 5},
+    {NumberOfCards::BIGGER_CARDS, 6},
+    {NumberOfCards::MAXIMUM_CARDS, 7}
+};
+
+
+const std::map<TimePerMove, int> GameSettings::getTimePerMoveEnumToInt{
+   {TimePerMove::MINIMAL_TIME, 3},
+   {TimePerMove::SMALLER_TIME, 5},
+   {TimePerMove::STANDARD_TIME, 6},
+   {TimePerMove::BIGGER_TIME, 10},
+   {TimePerMove::MAXIMUM_TIME , 20}
+};
 
 
 

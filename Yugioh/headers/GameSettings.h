@@ -65,6 +65,11 @@ public:
     LifePoints getLifePoints() const;
     void setLifePoints(LifePoints newLifePoints);
 
+    static const std::map<TimePerMove, int> getTimePerMoveEnumToInt;
+    static const std::map<NumberOfCards, int> getNumberOfCardsEnumToInt;
+    static const std::map<LifePoints, int> getLifePointsEnumToInt;
+
+
 signals:
     void okButtonClicked();
     void helpClicked();
