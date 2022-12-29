@@ -62,6 +62,7 @@ private:
     void activateRemoveTrap();
     void activateTheFluteOfSummoningDragon();
     void activateTheInexperiencedSpy();
+    void activateSwordOfDarkDestruction();
 
     // Trap card effect activations:
     void activateUltimateOffering();

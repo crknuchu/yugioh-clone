@@ -275,17 +275,23 @@ void Game::firstTurnSetup(float windowWidth, float windowHeight) {
                                              CardType::SPELL_CARD, CardLocation::HAND,
                                              "  blablabla.  ", ":/resources/pictures/Invigoration.jpg", true);
 
+    SpellCard* testCard6 = new SpellCard(SpellType::NORMAL_SPELL, "Sword Of Dark Destruction",
+                                             CardType::SPELL_CARD, CardLocation::HAND,
+                                             "  blablabla.  ", ":/resources/pictures/SwordofDarkDestruction.jpg", true);
+
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard1);
-  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard2);
+//   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard2);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard3);
 //   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard4);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard5);
+  emit GameExternVars::pCurrentPlayer->cardAddedToScene(*testCard6);
 
   GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard3, 2); //testing purposes
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard1);
-  GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
+//   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
 //   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard5);
+  GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard6);
 }
 
 
@@ -713,6 +719,12 @@ void Game::onBlueZoneClick(Zone *clickedBlueZone) {
     if(pickedMonster->getAttribute() == MonsterAttribute::EARTH){
         pickedMonster->setAttackPoints(pickedMonster->getAttackPoints()+400);
         pickedMonster->setDefensePoints(pickedMonster->getDefensePoints()+200);
+    }
+    //sword of dark destruction
+    else if(pickedMonster->getAttribute() == MonsterAttribute::DARK){
+        pickedMonster->setAttackPoints(pickedMonster->getAttackPoints()+400);
+        pickedMonster->setDefensePoints(pickedMonster->getDefensePoints()-200);
+        std::cout<<pickedMonster->getDefensePoints()<<std::endl;
     }
 
     GameExternVars::pCurrentPlayer->field.monsterZone.refresh();
