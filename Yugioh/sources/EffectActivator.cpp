@@ -73,6 +73,7 @@ void EffectActivator::setCard(Card &card) {
 // Card effect activation functions:
 // Monsters
 void EffectActivator::activateLordOfD(bool isOpponentActivating) {
+    Q_UNUSED(isOpponentActivating);
     /* Neither player can target Dragon monsters on the field with card effects. */
     std::cout << "Lord of D's effect has been activated!" << std::endl;
 
@@ -97,6 +98,7 @@ void EffectActivator::activateLordOfD(bool isOpponentActivating) {
 }
 
 void EffectActivator::activateMysteriousPuppeteer(bool isOpponentActivating) {
+    Q_UNUSED(isOpponentActivating);
     /* Each time you or your opponent Normal Summons or Flip Summons a monster,
      * increase your Life Points by 500 points. */
     std::cout << "Mysterious Puppeteer's effect has been activated!" << std::endl;
@@ -104,16 +106,19 @@ void EffectActivator::activateMysteriousPuppeteer(bool isOpponentActivating) {
 }
 
 void EffectActivator::activateTheWickedWormBeast(bool isOpponentActivating) {
+    Q_UNUSED(isOpponentActivating);
     std::cout << "The Wicked Worm Beast's effect has been activated!" << std::endl;
     // ...
 }
 
 void EffectActivator::activateTrapMaster(bool isOpponentActivating) {
+    Q_UNUSED(isOpponentActivating);
     std::cout << "Trap Master's effect has been activated!" << std::endl;
     // ...
 }
 
 void EffectActivator::activateHaneHane(bool isOpponentActivating) {
+    Q_UNUSED(isOpponentActivating);
     MonsterCard* targetedMonster = findHighestATKMonster(*GameExternVars::pOtherPlayer);
     Zone* zoneWithTargetedMonster = GameExternVars::pOtherPlayer->field.monsterZone.getZone(targetedMonster);
     GameExternVars::pOtherPlayer->field.monsterZone.removeFromMonsterZone(zoneWithTargetedMonster);
@@ -123,28 +128,29 @@ void EffectActivator::activateHaneHane(bool isOpponentActivating) {
 // Spells
 void EffectActivator::activateDarkEnergy(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateInvigoration(bool isOpponentActivating)
 {
 //An EARTH monster equipped with this card
 //increases its ATK by 400 points and decreases its DEF by 200 points.
-
+    Q_UNUSED(isOpponentActivating);
 
 }
 
 void EffectActivator::activateSogen(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateAncientTelescope(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateCardDestruction(bool isOpponentActivating) {
+    Q_UNUSED(isOpponentActivating);
     float currentPlayerHandSize = GameExternVars::pCurrentPlayer->m_hand.size();
     for(Card* card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
         GameExternVars::pCurrentPlayer->discard(*card);
@@ -161,6 +167,7 @@ void EffectActivator::activateCardDestruction(bool isOpponentActivating) {
 
 void EffectActivator::activateDarkHole(bool isOpponentActivating)
 {
+    Q_UNUSED(isOpponentActivating);
     for(Zone* zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
         if(!zone->isEmpty())
             GameExternVars::pCurrentPlayer->sendToGraveyard(*zone->m_pCard, zone);
@@ -174,31 +181,29 @@ void EffectActivator::activateDarkHole(bool isOpponentActivating)
 
 void EffectActivator::activateDeSpell(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateDianKetoTheCureMaster(bool isOpponentActivating) {
+    Q_UNUSED(isOpponentActivating);
     changeHealthPointsBy(1000, *GameExternVars::pCurrentPlayer);
 }
 
 void EffectActivator::activateFissure(bool isOpponentActivating)
 {
+    Q_UNUSED(isOpponentActivating);
     std::vector<Zone *>monsters = GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone;
-    std::cout<<GameExternVars::pOtherPlayer->getPlayerName();
     int lowestATK = 100000;
-    Card *destroyCard = nullptr;
-    Zone *destroyZone = nullptr;
+    Card *destroyCard;
+    Zone *destroyZone;
 
 
     for (Zone *zone : monsters)
     {
-        if (zone->isEmpty())
-            continue;
         if (!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::MONSTER_CARD)
         {
 
-            MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
-
+            MonsterCard *m = static_cast<MonsterCard *>(zone->m_pCard);
 
             if (m->getAttackPoints() < lowestATK)
             {
@@ -209,8 +214,7 @@ void EffectActivator::activateFissure(bool isOpponentActivating)
 
         }
     }
-    if (destroyCard == nullptr || destroyZone == nullptr)
-        return;
+
     GameExternVars::pOtherPlayer->sendToGraveyard(*destroyCard, destroyZone);
 
 }
@@ -252,42 +256,44 @@ void EffectActivator::activateMonsterReborn(bool isOpponentActivating)
 
 void EffectActivator::activateOokazi(bool isOpponentActivating)
 {
+    Q_UNUSED(isOpponentActivating);
     changeHealthPointsBy(-800, *GameExternVars::pOtherPlayer);
 }
 
 void EffectActivator::activateRemoveTrap(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateTheFluteOfSummoningDragon(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateTheInexperiencedSpy(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 // Traps
 void EffectActivator::activateUltimateOffering(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateCastleWalls(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateJustDesserts(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateReinforcements(bool isOpponentActivating)
 {
+    Q_UNUSED(isOpponentActivating);
     MonsterCard* strongestMonster;
     if(m_card->getPlayerThatSetThisCard() == 1)
         strongestMonster = findHighestATKMonster(*GameExternVars::pCurrentPlayer);
@@ -299,17 +305,17 @@ void EffectActivator::activateReinforcements(bool isOpponentActivating)
 
 void EffectActivator::activateReverseTrap(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateTrapHole(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 void EffectActivator::activateTwoProngedAttack(bool isOpponentActivating)
 {
-
+    Q_UNUSED(isOpponentActivating);
 }
 
 

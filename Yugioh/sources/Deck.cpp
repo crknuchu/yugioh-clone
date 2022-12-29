@@ -43,12 +43,7 @@ std::vector<Card*> Deck::draw(int numberOfCards) {
     return cards;
 }
 
-void Deck::shuffleDeck()
+void Deck::shuffleDeck(unsigned seed)
 {
-    //generating new random seed every time we call shuffle function
-    unsigned seed = std::chrono::system_clock::now()
-                        .time_since_epoch()
-                        .count();
-
     shuffle(m_cardList.begin(), m_cardList.end(), std::default_random_engine(seed));
 }

@@ -512,10 +512,10 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
     ui->labelGamePhase->setText(QString::fromStdString("DRAW PHASE")); // We hardcode it here since both clients are in sync here
 
     // The first one gets 6 cards
-//    GameExternVars::pCurrentPlayer->field.deck.shuffleDeck();
+    GameExternVars::pCurrentPlayer->field.deck.shuffleDeck(1);
     GameExternVars::pCurrentPlayer->drawCards(6);
     // The other one gets 5 cards
-//    GameExternVars::pOtherPlayer->field.deck.shuffleDeck();
+    GameExternVars::pOtherPlayer->field.deck.shuffleDeck(2);
     GameExternVars::pOtherPlayer->drawCards(5);
 
     GamePhaseExternVars::currentGamePhase = GamePhases::STANDBY_PHASE;
@@ -694,10 +694,18 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
 
 
     // TODO: Here we will recreate the card in the future and put it in the correct zone.
-    Card* targetCard = reconstructCard(cardName);
+    Card* targetCard;
+    for(Card* card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
+        if(cardName.toStdString() == card->getCardName())
+            targetCard = card;
+    }
+
+    for(Card* card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard()) {
+        if(cardName.toStdString() == card->getCardName())
+            targetCard = card;
+    }
 
 
-    std::cout << *targetCard << std::endl;
     if(targetCard == nullptr)
     {
         std::cerr << "reconstructCard() failed in deserializeFieldPlacement!" << std::endl;
@@ -705,7 +713,7 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
     }
 
     // Add the card to the scene
-    ui->graphicsView->scene()->addItem(targetCard);
+//    ui->graphicsView->scene()->addItem(targetCard);
     GameExternVars::pCurrentPlayer->m_hand.removeFromHand(*targetCard);
     if (cardType == "monster card")
     {

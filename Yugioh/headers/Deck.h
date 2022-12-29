@@ -12,7 +12,7 @@ public:
     std::vector<Card*> getDeck() const;
     Card* draw();
     std::vector<Card*> draw(int numberOfCards);
-    void shuffleDeck();
+    void shuffleDeck(unsigned seed);
 
     std::vector<Card *> uiDeck;
 };
