@@ -80,7 +80,7 @@ private:
     void visuallySetMonster(MonsterCard *monsterCard);
     void visuallySetSpell(SpellCard *spellCard);
     void visuallySetTrap(TrapCard *trapCard);
-    void visuallyFlipMonster(MonsterCard *monsterCard);
+    void visuallyFlipMonster(MonsterCard *monsterCard, qreal degrees);
     void visuallyFlipSpell(SpellCard *spellCard);
     void visuallyFlipTrap(TrapCard *trapCard);
 

@@ -346,7 +346,7 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
 
         // Flip the destroyed monster if it was in FACE_DOWN_DEFENSE position
         if(defender.getPosition() == MonsterPosition::FACE_DOWN_DEFENSE)
-            visuallyFlipMonster(&defender);
+            visuallyFlipMonster(&defender, -180);
 
         // We need the destroyed monster's zone number
         qint32 defenderZoneNumber = findZoneNumber(defender, GameExternVars::pOtherPlayer);
@@ -457,11 +457,11 @@ void Game::visuallySetTrap(TrapCard *pTrapCard)
     pTrapCard->setPixmap(pix);
 }
 
-void Game::visuallyFlipMonster(MonsterCard *pMonsterCard)
+void Game::visuallyFlipMonster(MonsterCard *pMonsterCard, qreal degrees)
 {
     // FIXME: We can't use this for both flipping our and opponent's cards, since our cards will be rotated by 180 degress which is something we don't want to do.
     QTransform transformationMatrix;
-    transformationMatrix.rotate(-180);
+    transformationMatrix.rotate(degrees);
     QPixmap pix;
     pix.load(QString::fromStdString(pMonsterCard->imagePath));
     pix = pix.scaled(QSize(pMonsterCard->width, pMonsterCard->height), Qt::KeepAspectRatio);
@@ -1004,7 +1004,7 @@ void Game::deserializeDestroyCard(QDataStream &deserializationStream)
         MonsterCard *pMonsterCard = static_cast<MonsterCard *>(pDestroyedCard);
         MonsterPosition position = pMonsterCard->getPosition();
         if(position == MonsterPosition::FACE_DOWN_DEFENSE)
-            visuallyFlipMonster(pMonsterCard);
+            visuallyFlipMonster(pMonsterCard, 0);
     }
     else if(cardType == QString::fromStdString("spell card"))
     {

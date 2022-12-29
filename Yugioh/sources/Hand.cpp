@@ -33,10 +33,12 @@ void Hand::addToHand(Card &card) {
 }
 
 Card* Hand::removeFromHand(Card &cardToBeRemoved) {
+    std::cout << "Card to be removed: " << cardToBeRemoved << std::endl;
     float gap = 20;
     bool found = false;
     std::vector<Card*> cardsToBeFixed;
     for(Card* card : m_cardList) {
+        std::cout << "Card in loop: " << *card << std::endl;
         if(found) {
             cardsToBeFixed.push_back(card);
         }
