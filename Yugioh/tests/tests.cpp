@@ -491,7 +491,7 @@ TEST_CASE("EffectActivator","[class][getter][setter][function]")
     }
 }
 
-// MonsterZone tests
+// MonsterZone  tests
 TEST_CASE("MonsterZone","[class][getter][setter][functions]")
 {
     SECTION("Function placeInMonsterZone(Card*, Zone*) should place the given card in the given zone")
@@ -646,6 +646,167 @@ TEST_CASE("MonsterZone","[class][getter][setter][functions]")
 
         int actualNumberOfZonesThatDontHaveColor = 0;
         for(Zone* zone : pMonsterZone->m_monsterZone)
+            if(zone->brush() == Qt::NoBrush)
+                actualNumberOfZonesThatDontHaveColor ++;
+
+        REQUIRE(actualNumberOfZonesThatDontHaveColor == expectedNumberOfZonesThatDontHaveColor);
+    }
+}
+
+// SpellTrapZone tests
+TEST_CASE("SpellTrapZone","[class][getter][setter][functions]")
+{
+    SECTION("Function placeInSpellZone(Card*, Zone*) should place the given card in the given zone")
+    {
+        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+        pSpellTrapZone->setSpellTrapZone(10, 10);
+
+        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+        pSpellTrapZone->placeInSpellTrapZone(card, pSpellTrapZone->m_spellTrapZone[0]);
+
+        REQUIRE_FALSE(pSpellTrapZone->m_spellTrapZone[0]->m_pCard == nullptr);
+    }
+
+    SECTION("Function placeInSpellTrapZone(Card*, int) should place the given card in the zone with a given number")
+    {
+        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+        pSpellTrapZone->setSpellTrapZone(10, 10);
+
+        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+        pSpellTrapZone->placeInSpellTrapZone(card, 3);
+
+        REQUIRE_FALSE(pSpellTrapZone->m_spellTrapZone[2]->m_pCard == nullptr);
+    }
+
+    SECTION("Function removeFromSpellTrapZone(Zone*) will remove the spell from the given zone and return that removed spell")
+    {
+        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+        pSpellTrapZone->setSpellTrapZone(10, 10);
+
+        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+        pSpellTrapZone->placeInSpellTrapZone(card, pSpellTrapZone->m_spellTrapZone[0]);
+
+        Card* expected = card;
+        Card* output = pSpellTrapZone->removeFromSpellTrapZone(pSpellTrapZone->m_spellTrapZone[0]);
+
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Function removeFromSpellTrapZone(int) will remove the spell from the given zone but won't return it")
+    {
+        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+        pSpellTrapZone->setSpellTrapZone(10, 10);
+
+        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+        pSpellTrapZone->placeInSpellTrapZone(card, pSpellTrapZone->m_spellTrapZone[0]);
+
+        Card* expected = nullptr;
+        pSpellTrapZone->removeFromSpellTrapZone(0);
+
+
+        Card* output = pSpellTrapZone->m_spellTrapZone[0]->m_pCard;
+
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Getter getWidth will return correct width")
+    {
+        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+
+        float x = 10, y = 10;
+        pSpellTrapZone->setSpellTrapZone(x, y);
+
+        // The width of the monster zone should be 5 * zone.width + 5 * gap.width
+        // Gap width is 20 by default and there are always 5 zones
+        // We also add x at the end since that was the start coordinates for creation of monster zone
+        Zone* zone = new Zone(x, y);
+        float gap = 20;
+
+        float expected = 5 * (zone->getWidth() + gap) + x;
+        float output = pSpellTrapZone->getWidth();
+
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Function isFull will return true only if all zones are filled")
+    {
+        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+
+        float x = 10, y = 10;
+        pSpellTrapZone->setSpellTrapZone(x, y);
+
+        bool expected = false;
+        bool outcome = pSpellTrapZone->isFull();
+
+        REQUIRE(outcome == expected);
+    }
+
+    SECTION("Function colorOccupiedZones makes zones with spells be painted green")
+    {
+        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+        float x = 10, y = 10;
+        pSpellTrapZone->setSpellTrapZone(x, y);
+
+        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+        Zone* zone = pSpellTrapZone->m_spellTrapZone[0];
+        pSpellTrapZone->placeInSpellTrapZone(card, zone);
+
+        pSpellTrapZone->colorOccupiedZones();
+
+        QBrush expected = Qt::green;
+        QBrush outcome = zone->brush();
+
+        REQUIRE(outcome == expected);
+    }
+
+    SECTION("Function colorFreeZones makes zones without spells be painted red")
+    {
+        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+        float x = 10, y = 10;
+        pSpellTrapZone->setSpellTrapZone(x, y);
+
+        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+        Zone* zone = pSpellTrapZone->m_spellTrapZone[0];
+        pSpellTrapZone->placeInSpellTrapZone(card, zone);
+
+        int expectedNumberOfRedZones = 4;
+
+        // Act
+        pSpellTrapZone->colorFreeZones();
+
+        int actualNumberOfRedZones = 0;
+        for(Zone* zone : pSpellTrapZone->m_spellTrapZone)
+            if(zone->brush() == Qt::red)
+                actualNumberOfRedZones++;
+
+        REQUIRE(actualNumberOfRedZones == expectedNumberOfRedZones);
+    }
+
+    SECTION("Function refresh makes all zones have no color")
+    {
+        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+        float x = 10, y = 10;
+        pSpellTrapZone->setSpellTrapZone(x, y);
+
+        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+        Zone* zone = pSpellTrapZone->m_spellTrapZone[0];
+        pSpellTrapZone->placeInSpellTrapZone(card, zone);
+
+        // Make zones red
+        pSpellTrapZone->colorFreeZones();
+        int expectedNumberOfZonesThatDontHaveColor = 5;
+
+        // Refresh them (act)
+        pSpellTrapZone->refresh();
+
+        int actualNumberOfZonesThatDontHaveColor = 0;
+        for(Zone* zone : pSpellTrapZone->m_spellTrapZone)
             if(zone->brush() == Qt::NoBrush)
                 actualNumberOfZonesThatDontHaveColor ++;
 
