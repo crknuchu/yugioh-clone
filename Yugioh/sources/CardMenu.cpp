@@ -14,7 +14,8 @@ void CardMenu::setUpLayout()
     layout->addWidget(summonButton);        
     layout->addWidget(repositionButton);
     layout->addWidget(attackButton); 
-    layout->addWidget(attackDirectlyButton);       
+    layout->addWidget(attackDirectlyButton);
+    layout->addWidget(flipButton);
 }
 
 void CardMenu::update(QMap<QString,bool> flags)
@@ -49,6 +50,12 @@ void CardMenu::update(QMap<QString,bool> flags)
     else{
         attackButton->hide();
     }    
+    if(flags["flip"] == true){
+        flipButton->show();
+    }
+    else{
+        flipButton->hide();
+    }
     //attackDirectly to be implemented later
     // if(flags["attackDirectly"] == true){
     //     attackDirectlyButton->show();

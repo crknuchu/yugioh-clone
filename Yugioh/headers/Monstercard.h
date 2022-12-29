@@ -59,7 +59,7 @@ public:
 
     MonsterCard( const std::string &cardName,int attackPoints, int defensePoints, int level, MonsterType type,
                  MonsterKind kind, MonsterAttribute attribute,bool active,MonsterPosition position,bool alreadyAttackedThisTurn,
-                 CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool alreadySummonedThisTurn = false);
+                 CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath, bool isSummonedThisTurn = false);
     virtual ~MonsterCard();
 
     MonsterCard* clone() override;
@@ -74,6 +74,10 @@ public:
     std::string getAttributeString() const;
     int getLevel() const;
     MonsterPosition getPosition() const;
+    bool getIsSummonedThisTurn() const;
+    bool getIsRepositionedThisTurn() const;
+    void setIsRepositionThisTurn(bool isRepositioned);
+    void setIsSummonedThisTurn(bool isSummoned);
     void setPosition(const MonsterPosition &newPosition); // Just a setter
     void changePosition(); // Calls a setter + changes the pixmap
 
@@ -96,7 +100,8 @@ public:
     void setCardMenu() override;
 
     void setAlreadyAttackedThisTurn(bool didIAlreadyAttack);
-    void setAlreadySummonedThisTurn(bool wasIAlreadySummonedThisTurn);
+
+    static bool globalSummonedThisTurn;
 
 protected:
     int attackPoints;
@@ -108,8 +113,8 @@ protected:
     bool active;
     MonsterPosition position;
     bool alreadyAttackedThisTurn;
-    bool alreadySummonedThisTurn;
-
+    bool isSummonedThisTurn;
+    bool isRepositionedThisTurn;
 };
 
 

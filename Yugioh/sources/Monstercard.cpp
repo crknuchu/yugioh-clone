@@ -4,7 +4,7 @@
 MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, 
                         MonsterKind kind, MonsterAttribute attribute,bool active, MonsterPosition position,
                         bool alreadyAttack, CardType cardType, CardLocation cardLocation, 
-                        const std::string &cardDescription, std::string imagePath, bool summonedThisTurn)
+                        const std::string &cardDescription, std::string imagePath, bool isSummonedThisTurn)
     : Card(cardName, cardType, cardLocation, cardDescription,imagePath)
     ,attackPoints(attackPoints)
     ,defensePoints(defensePoints)
@@ -15,7 +15,7 @@ MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defe
     ,active(active)
     ,position(position)
     ,alreadyAttackedThisTurn(alreadyAttack)
-    ,alreadySummonedThisTurn(summonedThisTurn)
+    ,isSummonedThisTurn(isSummonedThisTurn)
 {}
 
 MonsterCard::~MonsterCard()
@@ -26,7 +26,7 @@ MonsterCard::~MonsterCard()
 MonsterCard* MonsterCard::clone() {
     return new MonsterCard(this->cardName, this->attackPoints, this->defensePoints, this->level, this->type,
                            this->monsterKind, this->attribute, this->active, this->position, this->alreadyAttackedThisTurn,
-                           this->cardType, this->cardLocation, this->cardDescription, this->imagePath, this->alreadySummonedThisTurn);
+                           this->cardType, this->cardLocation, this->cardDescription, this->imagePath);
 }
 
 bool MonsterCard::shouldBeSentToGraveyard()
@@ -163,6 +163,26 @@ MonsterPosition MonsterCard::getPosition() const
     return position;
 }
 
+bool MonsterCard::getIsSummonedThisTurn() const
+{
+    return this->isSummonedThisTurn;
+}
+
+bool MonsterCard::getIsRepositionedThisTurn() const
+{
+    return this->isRepositionedThisTurn;
+}
+
+void MonsterCard::setIsRepositionThisTurn(bool isRepositioned)
+{
+    this->isRepositionedThisTurn = isRepositioned;
+}
+
+void MonsterCard::setIsSummonedThisTurn(bool isSummoned)
+{
+    this->isSummonedThisTurn = isSummoned;
+}
+
 void MonsterCard::setPosition(const MonsterPosition &newPosition)
 {
     position = newPosition;
@@ -254,20 +274,20 @@ bool MonsterCard::specialSummon(MonsterPosition monsterPos){
 void MonsterCard::setCardMenu(){
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}, {"flip",false}};
     EffectRequirement effectRequirement(*this);
-    bool cardActivationRequirement = effectRequirement.isActivatable(this->cardName);
-    if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && alreadySummonedThisTurn == false){
+    if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)
+            && !globalSummonedThisTurn){
         flagMap.insert("set", true);
         flagMap.insert("summon", true);
     }
-    if(cardLocation == CardLocation::FIELD  && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1|| GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && alreadySummonedThisTurn == false){
-        flagMap.insert("reposition",true);
-    }
-    if(monsterKind == MonsterKind::EFFECT_MONSTER && cardLocation == CardLocation::FIELD && cardActivationRequirement){
-        flagMap.insert("activate",true);
+    if(cardLocation == CardLocation::FIELD  && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1|| GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)
+            && !isSummonedThisTurn && !isRepositionedThisTurn){
+        if(position == MonsterPosition::FACE_DOWN_DEFENSE)
+            flagMap.insert("flip", true);
+        else
+            flagMap.insert("reposition",true);
     }
     if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE && this->alreadyAttackedThisTurn == false && this->position == MonsterPosition::ATTACK){
         flagMap.insert("attack",true);
-        flagMap.insert("summon",true);
     }
     cardMenu->update(flagMap);
 }
@@ -276,11 +296,6 @@ void MonsterCard::setAlreadyAttackedThisTurn(bool didIAlreadyAttack)
 {
     alreadyAttackedThisTurn = didIAlreadyAttack;
 }
-
-void MonsterCard::setAlreadySummonedThisTurn(bool wasIAlreadySummonedThisTurn)
-{
-    alreadySummonedThisTurn = wasIAlreadySummonedThisTurn;
-};
 
 
 

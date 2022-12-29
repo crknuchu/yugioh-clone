@@ -119,6 +119,7 @@ private:
     void deserializeNewTurn(QDataStream &deserializationStream);
     void deserializeEffectActivated(QDataStream &deserializationStream);
     void deserializeReposition(QDataStream &deserializationStream);
+    void deserializeFlip(QDataStream &deserializationStream);
     void deserializeDestroyCard(QDataStream &deserializationStream);
     void deserializeGameEnd(QDataStream &deserializationStream);
 
@@ -146,6 +147,7 @@ private slots:
     void onAttackButtonClick(Card &card);
     void onRepositionButtonClick(Card &card);
     void onAttackDirectlyButtonClick(Card &card);
+    void onFlipButtonClick(Card &card);
 
     // Slots for EffectActivator signal handling
     void onLifePointsChange(Player &);

@@ -52,14 +52,14 @@ Card* EffectActivator::getCard() const {
     return m_card;
 }
 
-void EffectActivator::activateEffect(const std::string &cardName)
+void EffectActivator::activateEffect(const std::string &cardName, bool isOpponentActivating)
 {
     try {
         auto effectFunctionPointer = effectMap.at(cardName);
 
         // (effectActivator.*funcPointer)(); // This is the same as the invoke call below.
         // If the first argument is a pointer to member func, invoke expects an object that owns it to be a first argument.
-        std::invoke(effectFunctionPointer, this);
+        std::invoke(effectFunctionPointer, this, isOpponentActivating);
     } catch(std::out_of_range &e) {
         std::cerr << "Error: That card doesn't have an effect! Out of range exception from: " << e.what() << std::endl;
     }
@@ -72,7 +72,7 @@ void EffectActivator::setCard(Card &card) {
 
 // Card effect activation functions:
 // Monsters
-void EffectActivator::activateLordOfD() {
+void EffectActivator::activateLordOfD(bool isOpponentActivating) {
     /* Neither player can target Dragon monsters on the field with card effects. */
     std::cout << "Lord of D's effect has been activated!" << std::endl;
 
@@ -96,24 +96,24 @@ void EffectActivator::activateLordOfD() {
 //    increaseATK(, 500);
 }
 
-void EffectActivator::activateMysteriousPuppeteer() {
+void EffectActivator::activateMysteriousPuppeteer(bool isOpponentActivating) {
     /* Each time you or your opponent Normal Summons or Flip Summons a monster,
      * increase your Life Points by 500 points. */
     std::cout << "Mysterious Puppeteer's effect has been activated!" << std::endl;
     // ...
 }
 
-void EffectActivator::activateTheWickedWormBeast() {
+void EffectActivator::activateTheWickedWormBeast(bool isOpponentActivating) {
     std::cout << "The Wicked Worm Beast's effect has been activated!" << std::endl;
     // ...
 }
 
-void EffectActivator::activateTrapMaster() {
+void EffectActivator::activateTrapMaster(bool isOpponentActivating) {
     std::cout << "Trap Master's effect has been activated!" << std::endl;
     // ...
 }
 
-void EffectActivator::activateHaneHane() {
+void EffectActivator::activateHaneHane(bool isOpponentActivating) {
     MonsterCard* targetedMonster = findHighestATKMonster(*GameExternVars::pOtherPlayer);
     Zone* zoneWithTargetedMonster = GameExternVars::pOtherPlayer->field.monsterZone.getZone(targetedMonster);
     GameExternVars::pOtherPlayer->field.monsterZone.removeFromMonsterZone(zoneWithTargetedMonster);
@@ -121,12 +121,12 @@ void EffectActivator::activateHaneHane() {
 }
 
 // Spells
-void EffectActivator::activateDarkEnergy()
+void EffectActivator::activateDarkEnergy(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateInvigoration()
+void EffectActivator::activateInvigoration(bool isOpponentActivating)
 {
 //An EARTH monster equipped with this card
 //increases its ATK by 400 points and decreases its DEF by 200 points.
@@ -134,17 +134,17 @@ void EffectActivator::activateInvigoration()
 
 }
 
-void EffectActivator::activateSogen()
+void EffectActivator::activateSogen(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateAncientTelescope()
+void EffectActivator::activateAncientTelescope(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateCardDestruction() {
+void EffectActivator::activateCardDestruction(bool isOpponentActivating) {
     float currentPlayerHandSize = GameExternVars::pCurrentPlayer->m_hand.size();
     for(Card* card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
         GameExternVars::pCurrentPlayer->discard(*card);
@@ -159,7 +159,7 @@ void EffectActivator::activateCardDestruction() {
     GameExternVars::pOtherPlayer->drawCards(opponentHandSize);
 }
 
-void EffectActivator::activateDarkHole()
+void EffectActivator::activateDarkHole(bool isOpponentActivating)
 {
     for(Zone* zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
         if(!zone->isEmpty())
@@ -172,16 +172,16 @@ void EffectActivator::activateDarkHole()
     }
 }
 
-void EffectActivator::activateDeSpell()
+void EffectActivator::activateDeSpell(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateDianKetoTheCureMaster() {
+void EffectActivator::activateDianKetoTheCureMaster(bool isOpponentActivating) {
     changeHealthPointsBy(1000, *GameExternVars::pCurrentPlayer);
 }
 
-void EffectActivator::activateFissure()
+void EffectActivator::activateFissure(bool isOpponentActivating)
 {
     std::vector<Zone *>monsters = GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone;
     std::cout<<GameExternVars::pOtherPlayer->getPlayerName();
@@ -215,7 +215,7 @@ void EffectActivator::activateFissure()
 
 }
 
-void EffectActivator::activateMonsterReborn()
+void EffectActivator::activateMonsterReborn(bool isOpponentActivating)
 {
     //we want to reborn strongest monster
     MonsterCard* strongestMonsterInEitherGraveyard = nullptr;
@@ -244,47 +244,49 @@ void EffectActivator::activateMonsterReborn()
                 GameExternVars::pCurrentPlayer->field.graveyard->removeFromGraveyard(*strongestMonsterInEitherGraveyard)
               : GameExternVars::pOtherPlayer->field.graveyard->removeFromGraveyard(*strongestMonsterInEitherGraveyard);
 
-    GameExternVars::pCardToBePlacedOnField = strongestMonsterInEitherGraveyard;
-    GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
+    if(!isOpponentActivating) {
+        GameExternVars::pCardToBePlacedOnField = strongestMonsterInEitherGraveyard;
+        GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
+    }
 }
 
-void EffectActivator::activateOokazi()
+void EffectActivator::activateOokazi(bool isOpponentActivating)
 {
     changeHealthPointsBy(-800, *GameExternVars::pOtherPlayer);
 }
 
-void EffectActivator::activateRemoveTrap()
+void EffectActivator::activateRemoveTrap(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateTheFluteOfSummoningDragon()
+void EffectActivator::activateTheFluteOfSummoningDragon(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateTheInexperiencedSpy()
+void EffectActivator::activateTheInexperiencedSpy(bool isOpponentActivating)
 {
 
 }
 
 // Traps
-void EffectActivator::activateUltimateOffering()
+void EffectActivator::activateUltimateOffering(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateCastleWalls()
+void EffectActivator::activateCastleWalls(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateJustDesserts()
+void EffectActivator::activateJustDesserts(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateReinforcements()
+void EffectActivator::activateReinforcements(bool isOpponentActivating)
 {
     MonsterCard* strongestMonster;
     if(m_card->getPlayerThatSetThisCard() == 1)
@@ -295,17 +297,17 @@ void EffectActivator::activateReinforcements()
     strongestMonster->setAttackPoints(strongestMonster->getAttackPoints() + 500);
 }
 
-void EffectActivator::activateReverseTrap()
+void EffectActivator::activateReverseTrap(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateTrapHole()
+void EffectActivator::activateTrapHole(bool isOpponentActivating)
 {
 
 }
 
-void EffectActivator::activateTwoProngedAttack()
+void EffectActivator::activateTwoProngedAttack(bool isOpponentActivating)
 {
 
 }

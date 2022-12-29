@@ -41,9 +41,12 @@ const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_d
     {"NEW_TURN",                                        &Game::deserializeNewTurn},
     {"EFFECT_ACTIVATED",                                &Game::deserializeEffectActivated},
     {"REPOSITION",                                      &Game::deserializeReposition},
+    {"FLIP",                                            &Game::deserializeFlip},
     {"DESTROY_CARD",                                    &Game::deserializeDestroyCard},
     {"GAME_END",                                        &Game::deserializeGameEnd}
 };
+
+bool MonsterCard::globalSummonedThisTurn = false;
 
 void delay()
 {
@@ -528,15 +531,18 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
     //just a placeholder code for hand
     MonsterCard* testCard1 = new MonsterCard("Hane-Hane", 450, 500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                              MonsterAttribute::EARTH, false, MonsterPosition::ATTACK, false,
+                                              MonsterAttribute::EARTH, false, MonsterPosition::FACE_DOWN_DEFENSE, false,
                                               CardType::MONSTER_CARD, CardLocation::FIELD,
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/HaneHane.jpg"
                                               );
-    TrapCard* testCard2 = new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
-                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
-                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
-                                            ":/resources/pictures/Reinforcements.jpg", true);
+    MonsterCard* testCard2 = new MonsterCard("Hane-Hane", 450, 500, 4,
+                                              MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                              MonsterAttribute::EARTH, false, MonsterPosition::FACE_DOWN_DEFENSE, false,
+                                              CardType::MONSTER_CARD, CardLocation::FIELD,
+                                              "Neither player can target Dragon monsters on the field with card effects.",
+                                              ":/resources/pictures/HaneHane.jpg"
+                                              );
 
     MonsterCard* testCard3 = new MonsterCard("Trap Master", 500, 1500, 4,
                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
@@ -545,11 +551,11 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
                                               "Neither player can target Dragon monsters on the field with card effects.",
                                               ":/resources/pictures/TrapMaster.jpg"
                                               );
-    SpellCard* testCard4 = new SpellCard(SpellType::NORMAL_SPELL, "Monster Reborn",
+    SpellCard* testCard4 = new SpellCard(SpellType::NORMAL_SPELL, "Card Destruction",
                                             CardType::SPELL_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
                                             "  An EARTH monster equipped with this card increases "
                                             "its ATK by 400 points and decreases its DEF by 200 points.",
-                                            ":/resources/pictures/MonsterReborn.jpg", true);
+                                            ":/resources/pictures/CardDestruction.jpg", true);
 
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard1);
   emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard2);
@@ -558,6 +564,7 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
 
   //testing purposes
   GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard1, 2);
+  visuallySetMonster(testCard1);
   GameExternVars::pOtherPlayer->field.monsterZone.placeInMonsterZone(testCard3,2);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
@@ -699,7 +706,7 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
 
     // Add the card to the scene
     ui->graphicsView->scene()->addItem(targetCard);
-
+    GameExternVars::pCurrentPlayer->m_hand.removeFromHand(*targetCard);
     if (cardType == "monster card")
     {
         MonsterCard *monsterCard = static_cast<MonsterCard *>(targetCard);
@@ -713,7 +720,6 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
             visuallySetMonster(monsterCard);
 
         // Place it on the field
-        GameExternVars::pCurrentPlayer->m_hand.removeFromHand(*targetCard);
         GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(targetCard, zoneNumber);
     }
     else
@@ -726,16 +732,18 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
             spellCard->setPosition(stPosition);
 
             // Visually set it
-            visuallySetSpell(spellCard);
+            if(stPosition == SpellTrapPosition::SET)
+                visuallySetSpell(spellCard);
         }
         else
         {
             TrapCard *trapCard = static_cast<TrapCard *>(targetCard);
             stPosition = trapCard->spellTrapPositionQStringToEnum.at(positionQString);
             trapCard->setPosition(stPosition);
-            visuallySetTrap(trapCard);
+            if(stPosition == SpellTrapPosition::SET)
+                visuallySetTrap(trapCard);
         }
-        GameExternVars::pCurrentPlayer->m_hand.removeFromHand(*targetCard);
+
         GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(targetCard, zoneNumber);
     }
 
@@ -942,16 +950,21 @@ void Game::deserializeEffectActivated(QDataStream &deserializationStream)
 {
     // Get the name of the opponent's card that activated the effect
     QString cardName;
-    deserializationStream >> cardName;
+    QString cardType;
+    qint32 zoneNumber;
+    deserializationStream >> cardName
+                          >> cardType
+                          >> zoneNumber;
 
+    Card* targetCard;
+    cardType == "monster card"
+            ? targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard
+            : targetCard = GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone[zoneNumber - 1]->m_pCard;
 
-    /* TODO: We can't just create an EffectActivator here and use activateEffect(cardName). There are problems with that:
-     * 1) What if the effect includes some kind of user input? We can't let this client act like he activated the effect
-     * 2) ...
-     *
-     * It's probably better if we have the consequences of the effect activations sent here and then just apply them.
-     */
-
+    EffectActivator effectActivator(*targetCard);
+    connect(&effectActivator, &EffectActivator::lifePointsChanged, this, &Game::onLifePointsChange);
+    connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
+    effectActivator.activateEffect(targetCard->getCardName(), true);
     std::cout << "PLACEHOLDER COUT: The opponent has activated " << cardName.toStdString() << "'s effect." << std::endl;
 
     // Notify the server that deserialization is finished
@@ -972,6 +985,25 @@ void Game::deserializeReposition(QDataStream &deserializationStream)
 
     // Change its position
     targetMonster->changePosition();
+
+    // Notify the server that deserialization is finished
+    notifyServerThatDeserializationHasFinished();
+}
+
+void Game::deserializeFlip(QDataStream &deserializationStream)
+{
+    QString cardName;
+    qint32 zoneNumber;
+    deserializationStream >> cardName
+                          >> zoneNumber;
+
+    Card* targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard;
+
+    // We know that its a monster
+    MonsterCard *targetMonster = static_cast<MonsterCard *>(targetCard);
+
+    // Change its position
+    visuallyFlipMonster(targetMonster, 180);
 
     // Notify the server that deserialization is finished
     notifyServerThatDeserializationHasFinished();
@@ -1161,6 +1193,17 @@ void Game::onEndPhaseButtonClick()
     std::cout << "End phase button clicked" << std::endl;
 
     GamePhaseExternVars::currentGamePhase = GamePhases::END_PHASE;
+
+    for(Zone* zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
+        if(!zone->isEmpty()) {
+            MonsterCard* monster = static_cast<MonsterCard*>(zone->m_pCard);
+            monster->setAlreadyAttackedThisTurn(false);
+            monster->setIsRepositionThisTurn(false);
+            monster->setIsSummonedThisTurn(false);
+        }
+    }
+    MonsterCard::globalSummonedThisTurn = false;
+
     for(Zone* zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
         if(!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::TRAP_CARD) {
             zone->m_pCard->setIsSetThisTurn(false);
@@ -1357,7 +1400,9 @@ void Game::onCardSelect(Card *card)
 void Game::onActivateFromHand(Card &activatedCard) {
     //its only spell card for now that can be activated from hand
     activatedCard.setIsActivated(true);
-    GameExternVars::pCardToBePlacedOnField = &activatedCard;
+    SpellCard* activatedSpellCard = static_cast<SpellCard*>(&activatedCard);
+    activatedSpellCard->setPosition(SpellTrapPosition::FACE_UP);
+    GameExternVars::pCardToBePlacedOnField = activatedSpellCard;
     GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
 }
 
@@ -1373,40 +1418,49 @@ void Game::onActivateButtonClick(Card &card)
         emit activateFromHand(card);
     }
     else {
-    
+
         // Effect activator is needed for effect handling
         EffectActivator effectActivator(card);
         // We connect every signal from EffectActivator to our slots in Game:
         connect(&effectActivator, &EffectActivator::lifePointsChanged, this, &Game::onLifePointsChange);
         connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
-        
-            // Notify the server / other client
+        effectActivator.activateEffect(cardName, false);
+
+        qint32 zoneNumber = findZoneNumber(card, GameExternVars::pCurrentPlayer);
+
+        // Notify the server / other client
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
         QByteArray buffer;
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
         outDataStream << QString::fromStdString("EFFECT_ACTIVATED")
-                      << QString::fromStdString(cardName); // Who activated the effect
+                      << QString::fromStdString(cardName) // Who activated the effect
+                      << QString::fromStdString(card.getCardTypeString())
+                      << zoneNumber;
+
         sendDataToServer(buffer);
         blockingLoop.exec();
 
-        
-    QEventLoop blockingLoop2;
-    connect(this, &Game::deserializationFinished, &blockingLoop2, &QEventLoop::quit);
-        // Activate the card's effect
-        effectActivator.activateEffect(cardName);
-    blockingLoop2.exec();
-        
-
-    // TODO: Blocking loop for sendToGraveyard?
-
-    if(card.shouldBeSentToGraveyard()) {//this needs to be implemented
-        delay();
-        card.getPlayerThatSetThisCard() == 1 ?
+        if(card.shouldBeSentToGraveyard()) {//this needs to be implemented
+            delay();
+            card.getPlayerThatSetThisCard() == 1 ?
                     GameExternVars::pCurrentPlayer->sendToGraveyard(card)
                   : GameExternVars::pOtherPlayer->sendToGraveyard(card);
-    }
+
+            QEventLoop blockingLoop2;
+            connect(this, &Game::deserializationFinished, &blockingLoop2, &QEventLoop::quit);
+            QByteArray buffer2;
+            QDataStream outDataStream2(&buffer2, QIODevice::WriteOnly);
+            outDataStream2.setVersion(QDataStream::Qt_5_15);
+            outDataStream2 << QString::fromStdString("DESTROY_CARD") // Notify the server that a card was destroyed
+                           << QString::fromStdString("CURRENT_PLAYER") // Who owns a card that was destroyed
+                           << QString::fromStdString(card.getCardTypeString())
+                           << zoneNumber; // Where is the monster card located
+
+            sendDataToServer(buffer2);
+            blockingLoop2.exec();
+        }
     }
 }
 
@@ -1426,6 +1480,8 @@ void Game::onSummonButtonClick(Card &card) {
     // Set the monster's position explicitly to ATTACK (since thats the only one allowed when summoning)
     MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
     monsterCard->setPosition(MonsterPosition::ATTACK);
+    monsterCard->setIsSummonedThisTurn(true);
+    MonsterCard::globalSummonedThisTurn = true;
 
     // Color the free zones so user can select one to place.
     GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
@@ -1451,7 +1507,7 @@ void Game::onRepositionButtonClick(Card &card)
 
     // Change the position
     monsterCard->changePosition();
-
+    monsterCard->setIsRepositionThisTurn(true);
     // Find the zone number
     qint32 zoneNumber = findZoneNumber(*monsterCard, GameExternVars::pCurrentPlayer);
 
@@ -1472,6 +1528,35 @@ void Game::onAttackDirectlyButtonClick(Card &card)
 {
     MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
     damagePlayer(*GameExternVars::pOtherPlayer, monsterCard->getAttackPoints());
+}
+
+void Game::onFlipButtonClick(Card &card)
+{
+    MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+    visuallyFlipMonster(monsterCard, 0);
+    monsterCard->setPosition(MonsterPosition::ATTACK);
+    monsterCard->setIsRepositionThisTurn(true);
+
+    qint32 zoneNumber = findZoneNumber(*monsterCard, GameExternVars::pCurrentPlayer);
+
+    // Notify the server / other client
+    QEventLoop blockingLoop;
+    connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
+    QByteArray buffer;
+    QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
+    outDataStream.setVersion(QDataStream::Qt_5_15);
+    outDataStream << QString::fromStdString("FLIP")
+                  << QString::fromStdString(monsterCard->getCardName()) // TODO: This is maybe unneeded, since we can locate the monster by just using the zone number
+                  << zoneNumber; // Zone number, so we can locate the monster
+    sendDataToServer(buffer);
+    blockingLoop.exec();
+
+    EffectRequirement effectRequirement(*monsterCard);
+    bool cardActivationRequirement = effectRequirement.isActivatable(monsterCard->getCardName());
+    if(cardActivationRequirement) {
+        delay();
+        onActivateButtonClick(*monsterCard);
+    }
 }
 
 
@@ -1560,6 +1645,8 @@ void Game::onSetButtonClick(Card &card)
 
         // Set its position to FACE_DOWN_DEFENSE
         monsterCard->setPosition(MonsterPosition::FACE_DOWN_DEFENSE);
+        monsterCard->setIsSummonedThisTurn(true);
+        MonsterCard::globalSummonedThisTurn = true;
 
         GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
     }
@@ -1580,6 +1667,7 @@ void Game::onSetButtonClick(Card &card)
     }
 
 }
+
 
 
 // TODO: summonAlready = true , activatedAlready = true at the end of onRedZoneClick?
@@ -1622,7 +1710,7 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
 
 
         // Set this monster's summon flag to true
-        pMonsterCard->setAlreadySummonedThisTurn(true);
+        pMonsterCard->setIsSummonedThisTurn(true);
     }
     else if(card->getCardType() == CardType::SPELL_CARD || card->getCardType() == CardType::TRAP_CARD) {
         GameExternVars::pCurrentPlayer->field.spellTrapZone.placeInSpellTrapZone(card, clickedRedZone);
@@ -1637,7 +1725,6 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
         {
             SpellCard *pSpellCard = static_cast<SpellCard *>(card);
             spellTrapPosition = pSpellCard->spellTrapPositionEnumToQString.at(pSpellCard->getSpellPosition());
-
             if(spellTrapPosition == QString::fromStdString("SET"))
                 visuallySetSpell(pSpellCard);
         }
@@ -1666,7 +1753,7 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
         sendDataToServer(buffer);
         blockingLoop.exec();
     }
-    
+
     if(card->getIsActivated()) {
         card->cardMenu->activateButton->click();
     }
@@ -1819,30 +1906,6 @@ int Game::getTimePerMoveJson(){
 void Game::onCardAddedToScene(Card *card)
 {
     //Needed to show a card
-//    if(card->scene()) {
-//        Card* cardCopy = card->clone();
-//        std::cout << *cardCopy << std::endl;
-//        connect(cardCopy, &Card::cardSelected, this, &Game::onCardSelect);
-//        connect(cardCopy, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
-//        connect(cardCopy, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
-//        connect(cardCopy->cardMenu->activateButton, &QPushButton::clicked, this, [this, cardCopy](){
-//            onActivateButtonClick(*cardCopy);
-//        });
-//        connect(cardCopy->cardMenu->setButton, &QPushButton::clicked, this, [this, cardCopy](){
-//            onSetButtonClick(*cardCopy);
-//        });
-//        connect(cardCopy->cardMenu->summonButton, &QPushButton::clicked, this, [this, card](){
-//            onSummonButtonClick(*card);
-//        });
-//        connect(cardCopy->cardMenu->attackButton, &QPushButton::clicked, this, [this, card](){
-//            onAttackButtonClick(*card);
-//        });
-//        ui->graphicsView->scene()->addItem(cardCopy);
-//        ui->graphicsView->scene()->addWidget(cardCopy->cardMenu);
-//        cardCopy->cardMenu->setVisible(false);
-//        cardCopy->move(card->pos().x(), card->pos().y());
-//    }
-//    else {
     connect(card, &Card::cardSelected, this, &Game::onCardSelect);
     connect(card, &Card::cardHoveredEnter, this, &Game::onCardHoverEnter);
     connect(card, &Card::cardHoveredLeave, this, &Game::onCardHoverLeave);
@@ -1858,20 +1921,18 @@ void Game::onCardAddedToScene(Card *card)
     connect(card->cardMenu->attackButton, &QPushButton::clicked, this, [this, card](){
         onAttackButtonClick(*card);
     });
-
     connect(card->cardMenu->repositionButton, &QPushButton::clicked, this, [this, card](){
         onRepositionButtonClick(*card);
     });
-
     connect(card->cardMenu->attackDirectlyButton, &QPushButton::clicked, this, [this, card]() {
         onAttackDirectlyButtonClick(*card);
     });
-
+    connect(card->cardMenu->flipButton, &QPushButton::clicked, this, [this, card](){
+        onFlipButtonClick(*card);
+    });
     ui->graphicsView->scene()->addItem(card);
     ui->graphicsView->scene()->addWidget(card->cardMenu);
     card->cardMenu->setVisible(false);
-//    }
-
     // By default we don't want to show card info unless the card is hovered
     ui->labelImage->setVisible(false);
     ui->textBrowserEffect->setVisible(false);

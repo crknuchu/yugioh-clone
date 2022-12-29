@@ -20,14 +20,14 @@ class EffectActivator : public QObject {
    Q_OBJECT
    
     // Our type that represents a pointer to EffectActivator member function that accept no arguments and return void
-    using EFFECT_MEMBER_FUNCTION_POINTER = void (EffectActivator::*)(void);
+    using EFFECT_MEMBER_FUNCTION_POINTER = void (EffectActivator::*)(bool);
 public:
     EffectActivator() = delete;
     EffectActivator(Card &);
     ~EffectActivator();
 
     static const std::map<std::string, EFFECT_MEMBER_FUNCTION_POINTER> effectMap;
-    void activateEffect(const std::string &cardName);
+    void activateEffect(const std::string &cardName, bool isOpponentActivating);
 
 
     // Public member functions
@@ -41,36 +41,36 @@ private:
     // Private member functions
     // Deck 1:
     // Monster card effect activations:
-    void activateLordOfD();
-    void activateMysteriousPuppeteer();
-    void activateTheWickedWormBeast();
-    void activateTrapMaster();
-    void activateHaneHane();
+    void activateLordOfD(bool isOpponentActivating);
+    void activateMysteriousPuppeteer(bool isOpponentActivating);
+    void activateTheWickedWormBeast(bool isOpponentActivating);
+    void activateTrapMaster(bool isOpponentActivating);
+    void activateHaneHane(bool isOpponentActivating);
 
     // Spell card effect activations:
-    void activateCardDestruction();
-    void activateDarkEnergy();
-    void activateInvigoration();
-    void activateSogen();
-    void activateAncientTelescope();
-    void activateDarkHole();
-    void activateDeSpell();
-    void activateDianKetoTheCureMaster();
-    void activateFissure();
-    void activateMonsterReborn();
-    void activateOokazi();
-    void activateRemoveTrap();
-    void activateTheFluteOfSummoningDragon();
-    void activateTheInexperiencedSpy();
+    void activateCardDestruction(bool isOpponentActivating);
+    void activateDarkEnergy(bool isOpponentActivating);
+    void activateInvigoration(bool isOpponentActivating);
+    void activateSogen(bool isOpponentActivating);
+    void activateAncientTelescope(bool isOpponentActivating);
+    void activateDarkHole(bool isOpponentActivating);
+    void activateDeSpell(bool isOpponentActivating);
+    void activateDianKetoTheCureMaster(bool isOpponentActivating);
+    void activateFissure(bool isOpponentActivating);
+    void activateMonsterReborn(bool isOpponentActivating);
+    void activateOokazi(bool isOpponentActivating);
+    void activateRemoveTrap(bool isOpponentActivating);
+    void activateTheFluteOfSummoningDragon(bool isOpponentActivating);
+    void activateTheInexperiencedSpy(bool isOpponentActivating);
 
     // Trap card effect activations:
-    void activateUltimateOffering();
-    void activateCastleWalls();
-    void activateJustDesserts();
-    void activateReinforcements();
-    void activateReverseTrap();
-    void activateTrapHole();
-    void activateTwoProngedAttack();
+    void activateUltimateOffering(bool isOpponentActivating);
+    void activateCastleWalls(bool isOpponentActivating);
+    void activateJustDesserts(bool isOpponentActivating);
+    void activateReinforcements(bool isOpponentActivating);
+    void activateReverseTrap(bool isOpponentActivating);
+    void activateTrapHole(bool isOpponentActivating);
+    void activateTwoProngedAttack(bool isOpponentActivating);
 
 
 
