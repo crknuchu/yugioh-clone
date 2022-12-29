@@ -70,6 +70,7 @@ public:
     virtual ~MonsterCard();
 
     MonsterCard* clone() override;
+    bool shouldBeSentToGraveyard() override;
     int getAttackPoints() const;
     int getDefensePoints() const;
     MonsterType getMonsterType() const;

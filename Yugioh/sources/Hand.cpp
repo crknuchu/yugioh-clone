@@ -32,13 +32,36 @@ void Hand::addToHand(Card &card) {
     m_cardList.push_back(&card);
 }
 
-Card* Hand::removeFromHand(Card &card) {
+Card* Hand::removeFromHand(Card &cardToBeRemoved) {
     float gap = 20;
-    auto it = std::find(m_cardList.begin(), m_cardList.end(), &card);
-    m_x -= (card.getWidth() + gap);
-    std::cout << m_x << std::endl;
+    bool found = false;
+    std::vector<Card*> cardsToBeFixed;
+    for(Card* card : m_cardList) {
+        if(found) {
+            cardsToBeFixed.push_back(card);
+        }
+
+        if(card->getCardName() == cardToBeRemoved.getCardName())
+            found = true;
+    }
+    auto it = std::find(m_cardList.begin(), m_cardList.end(), &cardToBeRemoved);
+    m_x -= (cardToBeRemoved.getWidth() + gap);
     m_cardList.erase(it);
-    return &card;
+
+    fixCardsPosition(cardsToBeFixed);
+    return &cardToBeRemoved;
+}
+
+void Hand::fixCardsPosition(std::vector<Card *> &cardsToBeFixed) {
+    float gap = 20;
+    for(Card* card : cardsToBeFixed) {
+        auto it = std::find(m_cardList.begin(), m_cardList.end(), card);
+        m_cardList.erase(it);
+        m_x -= (card->getWidth() + gap);
+    }
+
+    for(Card* card : cardsToBeFixed)
+        addToHand(*card);
 }
 
 float Hand::size() const {

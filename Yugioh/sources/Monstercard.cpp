@@ -1,5 +1,5 @@
 #include "headers/Monstercard.h"
-
+#include "headers/EffectRequirement.h"
 
 MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defensePoints, int level, MonsterType type, MonsterKind kind, MonsterAttribute attribute,bool active,Position position,bool alreadyAttack, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath,bool summonedThisTurn)
     : Card(cardName, cardType, cardLocation, cardDescription,imagePath)
@@ -25,6 +25,11 @@ MonsterCard* MonsterCard::clone() {
     return new MonsterCard(this->cardName, this->attackPoints, this->defensePoints, this->level, this->type,
                            this->monsterKind, this->attribute, this->active, this->position, this->alreadyAttack,
                            this->cardType, this->cardLocation, this->cardDescription, this->imagePath, this->summonedThisTurn);
+}
+
+bool MonsterCard::shouldBeSentToGraveyard()
+{
+    return false;
 }
 
 const std::map<Position, std::string> MonsterCard::positionEnumToString{
@@ -210,26 +215,10 @@ void MonsterCard::multiplyDefensePoints(float multiplyBy)
 
 }
 
-bool MonsterCard::normalSummon(Position s){
-    if (this->active == true or this->cardLocation != CardLocation :: HAND )
-        return false; // unsuporeted actions
-    this->active = true;
-    this->position = s;
-    return true;
-}
-
-
-bool MonsterCard::specialSummon(Position s){
-    if ( this->cardLocation == CardLocation :: DECK )
-        return false;
-    active = true;
-    position = s;
-    return true;
-}
-
 void MonsterCard::setCardMenu(){
-    QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
-
+    QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}, {"flip",false}};
+    EffectRequirement effectRequirement(*this);
+    bool cardActivationRequirement = effectRequirement.isActivatable(this->cardName);
     if (cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("set",true);
         flagMap.insert("summon",true);
@@ -237,7 +226,7 @@ void MonsterCard::setCardMenu(){
     if(cardLocation == CardLocation::FIELD  && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1|| GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2) && summonedThisTurn == false){
         flagMap.insert("reposition",true);
     }
-    if(monsterKind == MonsterKind::EFFECT_MONSTER){
+    if(monsterKind == MonsterKind::EFFECT_MONSTER && cardLocation == CardLocation::FIELD && cardActivationRequirement){
         flagMap.insert("activate",true);
     }
     if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE && this->alreadyAttack == false && this->position == Position::ATTACK){

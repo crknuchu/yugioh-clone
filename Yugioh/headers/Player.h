@@ -91,7 +91,7 @@ public:
   Field field;
 
 signals:
-  void cardAddedToScene(Card &);
+  void cardAddedToScene(Card *);
 private:
     std::string m_name;
     unsigned m_points;
