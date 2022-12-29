@@ -344,6 +344,10 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
 
+        // Flip the destroyed monster if it was in FACE_DOWN_DEFENSE position
+        if(defender.getPosition() == MonsterPosition::FACE_DOWN_DEFENSE)
+            visuallyFlipMonster(&defender);
+
         // We need the destroyed monster's zone number
         qint32 defenderZoneNumber = findZoneNumber(defender, GameExternVars::pOtherPlayer);
         Zone *pZoneOfTheDestroyedCard = findZone(defenderZoneNumber, QString::fromStdString("monster card"), GameExternVars::pOtherPlayer);
@@ -449,6 +453,35 @@ void Game::visuallySetTrap(TrapCard *pTrapCard)
 {
     QPixmap pix;
     pix.load(":/resources/pictures/card_back.jpg");
+    pix = pix.scaled(QSize(pTrapCard->width, pTrapCard->height), Qt::KeepAspectRatio);
+    pTrapCard->setPixmap(pix);
+}
+
+void Game::visuallyFlipMonster(MonsterCard *pMonsterCard)
+{
+    // FIXME: We can't use this for both flipping our and opponent's cards, since our cards will be rotated by 180 degress which is something we don't want to do.
+    QTransform transformationMatrix;
+    transformationMatrix.rotate(-180);
+    QPixmap pix;
+    pix.load(QString::fromStdString(pMonsterCard->imagePath));
+    pix = pix.scaled(QSize(pMonsterCard->width, pMonsterCard->height), Qt::KeepAspectRatio);
+    pMonsterCard->setPixmap(pix.transformed(transformationMatrix));
+}
+
+void Game::visuallyFlipSpell(SpellCard *pSpellCard)
+{
+    // FIXME: We can't use this for both flipping our and opponent's cards, since our cards will be rotated by 180 degress which is something we don't want to do.
+    QPixmap pix;
+    pix.load(QString::fromStdString(pSpellCard->imagePath));
+    pix = pix.scaled(QSize(pSpellCard->width, pSpellCard->height), Qt::KeepAspectRatio);
+    pSpellCard->setPixmap(pix);
+}
+
+void Game::visuallyFlipTrap(TrapCard *pTrapCard)
+{
+    // FIXME: We can't use this for both flipping our and opponent's cards, since our cards will be rotated by 180 degress which is something we don't want to do.
+    QPixmap pix;
+    pix.load(QString::fromStdString(pTrapCard->imagePath));
     pix = pix.scaled(QSize(pTrapCard->width, pTrapCard->height), Qt::KeepAspectRatio);
     pTrapCard->setPixmap(pix);
 }
@@ -965,6 +998,29 @@ void Game::deserializeDestroyCard(QDataStream &deserializationStream)
     Zone *pZoneOfTheDestroyedCard = findZone(zoneNumber, cardType, pPlayerWhoOwnedTheDestroyedCard);
     Card *pDestroyedCard = pZoneOfTheDestroyedCard->m_pCard;
 
+    // If the card was set, we need to make it be face up (so it won't be face-down in the graveyard)
+    if(cardType == QString::fromStdString("monster card"))
+    {
+        MonsterCard *pMonsterCard = static_cast<MonsterCard *>(pDestroyedCard);
+        MonsterPosition position = pMonsterCard->getPosition();
+        if(position == MonsterPosition::FACE_DOWN_DEFENSE)
+            visuallyFlipMonster(pMonsterCard);
+    }
+    else if(cardType == QString::fromStdString("spell card"))
+    {
+        SpellCard *pSpellCard = static_cast<SpellCard *>(pDestroyedCard);
+        SpellTrapPosition position = pSpellCard->getSpellPosition();
+        if(position == SpellTrapPosition::SET)
+            visuallyFlipSpell(pSpellCard);
+    }
+    else
+    {
+        TrapCard *pTrapCard = static_cast<TrapCard *>(pDestroyedCard);
+        SpellTrapPosition position = pTrapCard->getTrapPosition();
+        if(position == SpellTrapPosition::SET)
+            visuallyFlipTrap(pTrapCard);
+    }
+
     // Actually destroy it
     pPlayerWhoOwnedTheDestroyedCard->sendToGraveyard(*pDestroyedCard, pZoneOfTheDestroyedCard); // TODO: Change all other occurences and add zone parameter
 
@@ -1102,9 +1158,6 @@ void Game::onEndPhaseButtonClick()
 {
     std::cout << "End phase button clicked" << std::endl;
 
-    std::cout << "Current client turn : " << GameExternVars::currentTurnClientID << std::endl;
-
-
     GamePhaseExternVars::currentGamePhase = GamePhases::END_PHASE;
     for(Zone* zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
         if(!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::TRAP_CARD) {
@@ -1163,6 +1216,7 @@ void Game::onTurnEnd() {
     if(m_clientID != GameExternVars::currentTurnClientID)
     {
         this->ui->btnBattlePhase->setEnabled(false);
+        this->ui->btnMainPhase2->setEnabled(false);
         this->ui->btnEndPhase->setEnabled(false);
     }
 

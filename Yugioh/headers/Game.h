@@ -67,24 +67,26 @@ private:
 
 
 
-  // Private member functions:
-  int randomGenerator(const int limit) const;
-  int decideWhoPlaysFirst() const;
-  void firstTurnSetup(qint32 firstToPlay, qint32 clientID, float, float);
-  void switchPlayers();
+    // Private member functions:
+    int randomGenerator(const int limit) const;
+    int decideWhoPlaysFirst() const;
+    void firstTurnSetup(qint32 firstToPlay, qint32 clientID, float, float);
+    void switchPlayers();
 
-  void damageCalculation(Card *attackingMonster, Card *attackedMonster);
-  void battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
-  void battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
-  void damagePlayer(Player &targetPlayer, int howMuch);
-  void visuallySetMonster(MonsterCard *monsterCard);
-  void visuallySetSpell(SpellCard *spellCard);
-  void visuallySetTrap(TrapCard *trapCard);
+    void damageCalculation(Card *attackingMonster, Card *attackedMonster);
+    void battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
+    void battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender);
+    void damagePlayer(Player &targetPlayer, int howMuch);
+    void visuallySetMonster(MonsterCard *monsterCard);
+    void visuallySetSpell(SpellCard *spellCard);
+    void visuallySetTrap(TrapCard *trapCard);
+    void visuallyFlipMonster(MonsterCard *monsterCard);
+    void visuallyFlipSpell(SpellCard *spellCard);
+    void visuallyFlipTrap(TrapCard *trapCard);
 
-  Card* reconstructCard(QString cardName);
-
-  qint32 findZoneNumber(Card &targetCard, Player *pWhoOwnsIt);
-  Zone* findZone(qint32 zoneNumber, QString cardType, Player *pTargetPlayer);
+    Card* reconstructCard(QString cardName);
+    qint32 findZoneNumber(Card &targetCard, Player *pWhoOwnsIt);
+    Zone* findZone(qint32 zoneNumber, QString cardType, Player *pTargetPlayer);
 
 // QT related stuff:
     int m_windowWidth;
