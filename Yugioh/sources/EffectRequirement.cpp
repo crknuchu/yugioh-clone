@@ -7,7 +7,7 @@ EffectRequirement::EffectRequirement(Card &card)
 EffectRequirement::~EffectRequirement(){}
 
 const std::map<std::string, EffectRequirement::EFFECT_REQUIREMENT_MEMBER_FUNCTION_POINTER> EffectRequirement::effectReqMap = {
-    //Spells
+    //Spells test
     {"Fissure",        &EffectRequirement::fissureReq},
     {"Monster Reborn", &EffectRequirement::monsterRebornReq},
     {"Hane-Hane",      &EffectRequirement::haneHaneReq},
