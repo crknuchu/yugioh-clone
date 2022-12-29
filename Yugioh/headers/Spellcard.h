@@ -26,7 +26,9 @@ public:
     void setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters) override;
 
 
-protected:
+    bool getActive() const;
+
+private:
     SpellType type;
     bool active;
 

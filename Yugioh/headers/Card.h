@@ -4,8 +4,6 @@
 #include "CardMenu.h"
 #include "headers/GamePhase.h"
 
-
-
 #include <string>
 #include <vector>
 #include <QGraphicsPixmapItem>
@@ -30,9 +28,9 @@ enum class CardLocation
     DECK,
     GRAVEYARD,
     FIELD,
-    //ATTACK,
-    //DEFENSE,
-    //SPELL_TRAP_ZONE
+    ATTACK,
+    DEFENSE,
+    SPELL_TRAP_ZONE
 };
 
 class Card: public QObject, public QGraphicsPixmapItem
@@ -48,8 +46,6 @@ public:
 
     CardType getCardType() const;
 
-
-
     CardLocation getCardLocation() const;
 
     std::string  getCardLocationString() const;
@@ -57,8 +53,6 @@ public:
     void setCardLocation(CardLocation newCardLocation);
 
     const std::string &getCardDescription() const;
-
-    //virtual void placeCardOnField();
 
     virtual void setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters) = 0 ;
 
@@ -78,14 +72,12 @@ public:
 
 
 protected:
-    // Constructor is protected in order to restrict call to it to Card's child classes.
     Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription, QGraphicsPixmapItem *parent = 0);
     std::string cardName;
     CardType cardType;
     CardLocation cardLocation;
     std::string cardDescription;
 
-    // CardMenu *cardMenu = new CardMenu(this);
     
 
 

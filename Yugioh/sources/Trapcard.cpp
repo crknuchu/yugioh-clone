@@ -48,4 +48,9 @@ void TrapCard::setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters){
         flagMap.insert("activate",true);
     }
     cardMenu->update(flagMap);
+}
+
+bool TrapCard::getActive() const
+{
+    return active;
 };

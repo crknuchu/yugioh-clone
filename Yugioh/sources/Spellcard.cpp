@@ -53,4 +53,9 @@ void SpellCard::setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters){
          flagMap.insert("activate",true);
         }
      cardMenu->update(flagMap);
+}
+
+bool SpellCard::getActive() const
+{
+    return active;
 };

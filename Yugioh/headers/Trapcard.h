@@ -23,7 +23,9 @@ public:
     void activateTrap();
     void setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters) override;
 
-protected:
+    bool getActive() const;
+
+private:
     TrapType trapType;
     bool setThisTurn;
     bool active;

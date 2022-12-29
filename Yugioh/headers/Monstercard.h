@@ -95,7 +95,7 @@ public:
 
     void setCardMenu(bool isMonsterZoneFull,bool doesOpponentHaveMonsters) override;
 
-protected:
+private:
     int attackPoints;
     int defensePoints;
     MonsterType type;
