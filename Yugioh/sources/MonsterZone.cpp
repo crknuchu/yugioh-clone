@@ -106,4 +106,3 @@ float MonsterZone::getWidth() const
 {
     return m_width;
 }
-

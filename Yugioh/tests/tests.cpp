@@ -379,7 +379,7 @@
 
 
 // Game tests
-TEST_CASE("Game","[class][getter][setter][constructor]")
+TEST_CASE("Game","[class][getter][setter]")
 {
 
     SECTION("Getter getLifePoints will return life points specified in the constructor")
@@ -465,7 +465,7 @@ TEST_CASE("Game","[class][getter][setter][constructor]")
 }
 
 // EffectActivator tests
-TEST_CASE("EffectActivator","[class][getter][setter][constructor]")
+TEST_CASE("EffectActivator","[class][getter][setter][function]")
 {
     SECTION("Getter getCard will return the card that is bound to this EffectActivator object")
     {
@@ -488,5 +488,167 @@ TEST_CASE("EffectActivator","[class][getter][setter][constructor]")
         Card* output = effectActivator.getCard();
         Card* expected = newCard;
         REQUIRE(output == expected);
+    }
+}
+
+// MonsterZone tests
+TEST_CASE("MonsterZone","[class][getter][setter][functions]")
+{
+    SECTION("Function placeInMonsterZone(Card*, Zone*) should place the given card in the given zone")
+    {
+        MonsterZone *pMonsterZone = new MonsterZone();
+        pMonsterZone->setMonsterZone(10, 10);
+
+        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+        pMonsterZone->placeInMonsterZone(card, pMonsterZone->m_monsterZone[0]);
+
+        REQUIRE_FALSE(pMonsterZone->m_monsterZone[0]->m_pCard == nullptr);
+    }
+
+    SECTION("Function placeInMonsterZone(Card*, int) should place the given card in the zone with a given number")
+    {
+        MonsterZone *pMonsterZone = new MonsterZone();
+        pMonsterZone->setMonsterZone(10, 10);
+
+        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+        pMonsterZone->placeInMonsterZone(card, 3);
+
+        REQUIRE_FALSE(pMonsterZone->m_monsterZone[2]->m_pCard == nullptr);
+    }
+
+    SECTION("Function removeFromMonsterZone(Zone*) will remove the monster from the given zone and return that removed monster")
+    {
+        MonsterZone *pMonsterZone = new MonsterZone();
+        pMonsterZone->setMonsterZone(10, 10);
+
+        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+        pMonsterZone->placeInMonsterZone(card, pMonsterZone->m_monsterZone[0]);
+
+        Card* expected = card;
+        Card* output = pMonsterZone->removeFromMonsterZone(pMonsterZone->m_monsterZone[0]);
+
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Function removeFromMonsterZone(int) will remove the monster from the given zone but won't return that monster")
+    {
+        MonsterZone *pMonsterZone = new MonsterZone();
+        pMonsterZone->setMonsterZone(10, 10);
+
+        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+        pMonsterZone->placeInMonsterZone(card, pMonsterZone->m_monsterZone[0]);
+
+        Card* expected = nullptr;
+        pMonsterZone->removeFromMonsterZone(0);
+
+
+        Card* output = pMonsterZone->m_monsterZone[0]->m_pCard;
+
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Getter getWidth will return correct width")
+    {
+        MonsterZone *pMonsterZone = new MonsterZone();
+
+        float x = 10, y = 10;
+        pMonsterZone->setMonsterZone(x, y);
+
+        // The width of the monster zone should be 5 * zone.width + 5 * gap.width
+        // Gap width is 20 by default and there are always 5 zones
+        // We also add x at the end since that was the start coordinates for creation of monster zone
+        Zone* zone = new Zone(x, y);
+        float gap = 20;
+
+        float expected = 5 * (zone->getWidth() + gap) + x;
+        float output = pMonsterZone->getWidth();
+
+        REQUIRE(output == expected);
+    }
+
+    SECTION("Function isFull will return true only if all zones are filled")
+    {
+        MonsterZone *pMonsterZone = new MonsterZone();
+
+        float x = 10, y = 10;
+        pMonsterZone->setMonsterZone(x, y);
+
+        bool expected = false;
+        bool outcome = pMonsterZone->isFull();
+
+        REQUIRE(outcome == expected);
+    }
+
+    SECTION("Function colorOccupiedZones makes zones with monsters be painted green")
+    {
+        MonsterZone *pMonsterZone = new MonsterZone();
+        float x = 10, y = 10;
+        pMonsterZone->setMonsterZone(x, y);
+
+        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+        Zone* zone = pMonsterZone->m_monsterZone[0];
+        pMonsterZone->placeInMonsterZone(card, zone);
+
+        pMonsterZone->colorOccupiedZones();
+
+        QBrush expected = Qt::green;
+        QBrush outcome = zone->brush();
+
+        REQUIRE(outcome == expected);
+    }
+
+    SECTION("Function colorFreeZones makes zones without monsters be painted red")
+    {
+        MonsterZone *pMonsterZone = new MonsterZone();
+        float x = 10, y = 10;
+        pMonsterZone->setMonsterZone(x, y);
+
+        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+        Zone* zone = pMonsterZone->m_monsterZone[0];
+        pMonsterZone->placeInMonsterZone(card, zone);
+
+        int expectedNumberOfRedZones = 4;
+
+        // Act
+        pMonsterZone->colorFreeZones();
+
+        int actualNumberOfRedZones = 0;
+        for(Zone* zone : pMonsterZone->m_monsterZone)
+            if(zone->brush() == Qt::red)
+                actualNumberOfRedZones++;
+
+        REQUIRE(actualNumberOfRedZones == expectedNumberOfRedZones);
+    }
+
+    SECTION("Function refresh makes all zones have no color")
+    {
+        MonsterZone *pMonsterZone = new MonsterZone();
+        float x = 10, y = 10;
+        pMonsterZone->setMonsterZone(x, y);
+
+        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+        Zone* zone = pMonsterZone->m_monsterZone[0];
+        pMonsterZone->placeInMonsterZone(card, zone);
+
+        // Make zones red
+        pMonsterZone->colorFreeZones();
+        int expectedNumberOfZonesThatDontHaveColor = 5;
+
+        // Refresh them (act)
+        pMonsterZone->refresh();
+
+        int actualNumberOfZonesThatDontHaveColor = 0;
+        for(Zone* zone : pMonsterZone->m_monsterZone)
+            if(zone->brush() == Qt::NoBrush)
+                actualNumberOfZonesThatDontHaveColor ++;
+
+        REQUIRE(actualNumberOfZonesThatDontHaveColor == expectedNumberOfZonesThatDontHaveColor);
     }
 }
