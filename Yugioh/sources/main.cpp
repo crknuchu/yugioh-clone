@@ -23,7 +23,6 @@ int main(int argc,char **argv)
     player1->setDeck(d1);
     player2->setDeck(d2);
     Game* game = new Game(*player1, *player2);
-//    m.showFullScreen();
     game->showFullScreen();
 
     return app.exec();

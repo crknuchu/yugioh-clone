@@ -39,7 +39,6 @@ public:
 
 
   // Public member functions:
-  void start();
   GamePhases setGamePhase() const;
 
   int getLifePoints() const;

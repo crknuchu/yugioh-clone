@@ -1079,6 +1079,9 @@ void Game::deserializeGameEnd(QDataStream &deserializationStream)
 
 
     notifyServerThatDeserializationHasFinished();
+
+    // Close this window
+    this->close();
 }
 
 void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
@@ -1411,7 +1414,16 @@ void Game::onActivateFromHand(Card &activatedCard) {
     SpellCard* activatedSpellCard = static_cast<SpellCard*>(&activatedCard);
     activatedSpellCard->setPosition(SpellTrapPosition::FACE_UP);
     GameExternVars::pCardToBePlacedOnField = activatedSpellCard;
-    GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
+
+    if(activatedSpellCard->getSpellType() == SpellType::FIELD_SPELL)
+    {
+        activatedSpellCard->setZValue(1);
+        GameExternVars::pCurrentPlayer->field.fieldZone->putInZone(activatedSpellCard);
+    }
+    else
+        GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
+
+
 }
 
 // Slots for card menu UI
@@ -1452,9 +1464,9 @@ void Game::onActivateButtonClick(Card &card)
 
         if(card.shouldBeSentToGraveyard()) {//this needs to be implemented
             delay();
-            card.getPlayerThatSetThisCard() == 1 ?
-                    GameExternVars::pCurrentPlayer->sendToGraveyard(card)
-                  : GameExternVars::pOtherPlayer->sendToGraveyard(card);
+            card.getPlayerThatSetThisCard() == 1
+                    ? GameExternVars::pCurrentPlayer->sendToGraveyard(card)
+                    : GameExternVars::pOtherPlayer->sendToGraveyard(card);
 
             QEventLoop blockingLoop2;
             connect(this, &Game::deserializationFinished, &blockingLoop2, &QEventLoop::quit);
@@ -1629,6 +1641,8 @@ void Game::onGameEnd(Player &loser)
     blockingLoop2.exec();
 
 
+    // Close this window
+    this->close();
 }
 
 void Game::onSetButtonClick(Card &card)
