@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "headers/Game.h"
 #include "headers/GameSettings.h"
+#include "qmediaplayer.h"
 
 namespace Ui {
 class MainMenu;
@@ -31,13 +32,14 @@ private slots:
 
     void updateValues();
 
-    void on_btnDeckSettings_clicked();
+    void on_btnMusic_clicked();
 
 private:
     Ui::MainMenu *ui;
     Game *m_pGame;
     GameSettings *m_pGameSettings;
-
+    QMediaPlayer *music;
+    bool musicActive=true;
 };
 
 

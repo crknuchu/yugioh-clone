@@ -50,34 +50,6 @@ GameSettings::~GameSettings()
     delete ui;
 }
 
-int GameSettings::getTimePerMove() const
-{
-    return timePerMove;
-}
-
-void GameSettings::setTimePerMove(int newTimePerMove)
-{
-    timePerMove = newTimePerMove;
-}
-
-int GameSettings::getNumberOfCards() const
-{
-    return numberOfCards;
-}
-
-int GameSettings::getLifePoints() const
-{
-    return lifePoints;
-}
-
-void GameSettings::setLifePoints(int newLifePoints){
-    lifePoints = newLifePoints;
-}
-
-void GameSettings::setNumberOfCards(int newNumberOfCards)
-{
-    numberOfCards = newNumberOfCards;
-}
 
 
 
@@ -85,22 +57,22 @@ void GameSettings::onSetLifepointsCurrentIndexChanged(int index)
 {
     switch (index) {
     case 0:
-        lifePoints = 2000;
+        lifePoints = LifePoints::MINIMAL_POINTS;
         break;
     case 1:
-        lifePoints = 4000;
+        lifePoints = LifePoints::SMALLER_POINTS;
         break;
     case 2:
-        lifePoints = 8000;
+        lifePoints = LifePoints::STANDARD_POINTS;
         break;
     case 3:
-        lifePoints = 10000;
+        lifePoints = LifePoints::BIGGER_POINTS;
         break;
     case 4:
-        lifePoints = 16000;
+        lifePoints = LifePoints::MAXIMUM_POINTS;
         break;
     default:
-        lifePoints = 4000;
+        lifePoints = LifePoints::STANDARD_POINTS;
         break;
     }
 }
@@ -110,22 +82,22 @@ void GameSettings::onSetTimePerMoveCurrentIndexChanged(int index)
 {
     switch (index) {
     case 0:
-        timePerMove = 3;
+        timePerMove = TimePerMove::MINIMAL_TIME;
         break;
     case 1:
-        timePerMove = 5;
+        timePerMove = TimePerMove::SMALLER_TIME;
         break;
     case 2:
-        timePerMove =10;
+        timePerMove =TimePerMove::STANDARD_TIME;
         break;
     case 3:
-        timePerMove= 20;
+        timePerMove= TimePerMove::BIGGER_TIME;
         break;
     case 4:
-        timePerMove = 30;
+        timePerMove = TimePerMove::MAXIMUM_TIME;
         break;
     default:
-        timePerMove = 5;
+        timePerMove = TimePerMove::STANDARD_TIME;
         break;
     }
 }
@@ -135,25 +107,22 @@ void GameSettings::onSetInitialNumberOfCardsCurrentIndexChanged(int index)
 {
     switch (index) {
     case 0:
-        numberOfCards = 5;
+        numberOfCards = NumberOfCards::MINIMAL_CARDS;
         break;
     case 1:
-        numberOfCards = 6;
+        numberOfCards = NumberOfCards::SMALLER_CARDS;;
         break;
     case 2:
-        numberOfCards =7;
+        numberOfCards =NumberOfCards::STANDARD_CARDS;
         break;
     case 3:
-        numberOfCards= 8;
+        numberOfCards= NumberOfCards::BIGGER_CARDS;
         break;
     case 4:
-        numberOfCards = 9;
-        break;
-    case 5:
-        numberOfCards = 10;
+        numberOfCards = NumberOfCards::MAXIMUM_CARDS;
         break;
     default:
-        numberOfCards = 5;
+        numberOfCards = NumberOfCards::STANDARD_CARDS;
         break;
     }
 
@@ -193,5 +162,35 @@ void GameSettings::on_ChooseDeck_activated(int index)
         this->deck = Decks::YUGI;
         break;
     }
+}
+
+LifePoints GameSettings::getLifePoints() const
+{
+    return lifePoints;
+}
+
+void GameSettings::setLifePoints(LifePoints newLifePoints)
+{
+    lifePoints = newLifePoints;
+}
+
+NumberOfCards GameSettings::getNumberOfCards() const
+{
+    return numberOfCards;
+}
+
+void GameSettings::setNumberOfCards(NumberOfCards newNumberOfCards)
+{
+    numberOfCards = newNumberOfCards;
+}
+
+TimePerMove GameSettings::getTimePerMove() const
+{
+    return timePerMove;
+}
+
+void GameSettings::setTimePerMove(TimePerMove newTimePerMove)
+{
+    timePerMove = newTimePerMove;
 }
 

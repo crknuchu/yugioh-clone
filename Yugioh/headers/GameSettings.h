@@ -12,6 +12,35 @@ enum class Decks
     KAIBA
 };
 
+enum class LifePoints
+{
+    MINIMAL_POINTS,
+    SMALLER_POINTS,
+    STANDARD_POINTS,
+    BIGGER_POINTS,
+    MAXIMUM_POINTS
+};
+
+
+
+enum class TimePerMove
+{
+    MINIMAL_TIME,
+    SMALLER_TIME,
+    STANDARD_TIME,
+    BIGGER_TIME,
+    MAXIMUM_TIME
+};
+
+enum class NumberOfCards
+{
+    MINIMAL_CARDS,
+    SMALLER_CARDS,
+    STANDARD_CARDS,
+    BIGGER_CARDS,
+    MAXIMUM_CARDS
+};
+
 
 namespace Ui {
 class GameSettings;
@@ -25,20 +54,16 @@ public:
     explicit GameSettings(QWidget *parent = nullptr);
     ~GameSettings();
 
-    int timePerMove ;
-    int numberOfCards ;
-    int lifePoints ;
-    Decks deck;
 
 
-    int getLifePoints() const;
-    void setLifePoints(int newLifePoints);
+    TimePerMove getTimePerMove() const;
+    void setTimePerMove(TimePerMove newTimePerMove);
 
-    int getNumberOfCards() const;
-    void setNumberOfCards(int newNumberOfCards);
+    NumberOfCards getNumberOfCards() const;
+    void setNumberOfCards(NumberOfCards newNumberOfCards);
 
-    int getTimePerMove() const;
-    void setTimePerMove(int newTimePerMove);
+    LifePoints getLifePoints() const;
+    void setLifePoints(LifePoints newLifePoints);
 
 signals:
     void okButtonClicked();
@@ -56,13 +81,18 @@ private slots:
     void onLeaveButtonClick();
 
 
-
     void onHelpButtonClick();
 
 
     void on_ChooseDeck_activated(int index);
 
+
+
 private:
+    TimePerMove timePerMove ;
+    NumberOfCards numberOfCards ;
+    LifePoints lifePoints ;
+    Decks deck;
     Ui::GameSettings *ui;
 };
 

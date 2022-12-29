@@ -37,6 +37,9 @@ public:
     QPushButton *btnGameSettings;
     QSpacerItem *verticalSpacer_4;
 
+    QSpacerItem *music;
+    QSpacerItem *verticalSpacer_6;
+
     QSpacerItem *verticalSpacer_5;
     QPushButton *btnQuit;
     QStatusBar *statusbar;

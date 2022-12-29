@@ -1,5 +1,5 @@
 #include "headers/mainmenu.h"
-#include "headers/ui_mainmenu.h"
+#include "ui_mainmenu.h"
 #include "headers/Game.h"
 #include "headers/Player.h"
 #include "headers/GameSettings.h"
@@ -23,9 +23,11 @@ MainMenu::MainMenu(QWidget *parent) :
     QPalette palette;
     palette.setBrush(QPalette::Window, bkgnd);
     this->setPalette(palette);
-    QMediaPlayer * music = new QMediaPlayer();
+
+    music = new QMediaPlayer();
     music->setMedia(QUrl("qrc:/resources/sounds/illusion.mp3"));
-    // music->play();
+    music->play();
+
 
 
 }
@@ -67,21 +69,32 @@ void MainMenu::setGame(Game *newGame)
 void MainMenu::updateValues()
 {
     //to do save as json file?
-    if(!m_pGame)
-    {
-        m_pGame->setLifePoints(m_pGameSettings->getLifePoints());
-        m_pGame->setNumberOfCards(m_pGame->getNumberOfCards());
-        m_pGame->setTimePerMove(m_pGame->getTimePerMove());
-    }
+   //LifePoints::STANDARD_POINTS if(!m_pGame)
+    //{
+    //    m_pGame->setLifePoints(m_pGameSettings->getLifePoints());
+    //    m_pGame->setNumberOfCards(m_pGame->getNumberOfCards());
+    //    m_pGame->setTimePerMove(m_pGame->getTimePerMove());
+    //}
 }
 
 
 
 
-
-
-void MainMenu::on_btnDeckSettings_clicked()
+void MainMenu::on_btnMusic_clicked()
 {
+    if(!musicActive)
+    {
+    music->play();
+    musicActive = true;
+    ui->btnMusic->setText("MUSIC : ON");
+
+    }
+    else{
+    music->stop();
+    musicActive = false;
+    ui->btnMusic->setText("MUSIC : OFF");
+
+    }
 
 }
 
