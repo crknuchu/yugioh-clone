@@ -127,11 +127,40 @@ void EffectActivator::activateDarkEnergy()
 
 void EffectActivator::activateInvigoration()
 {
-    // prvo treba da se zone gde se nalaze moja cudovista oboje (EARTH)
-    GameExternVars::pCurrentPlayer->field.monsterZone.colorAvailableZones(MonsterAttribute::DARK); //temp for testing, change to EARTH
-    // to treba da bude neka fja koja prima argument ili EARTH ili npr spellcaster
-    // kada se oboje polja treba da se klikne na kartu i da se efekat odradi
-    // u slot koji hvata klik 
+
+    std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
+    std::cout<<GameExternVars::pOtherPlayer->getPlayerName();
+    int highestAtk = -1;
+
+    MonsterCard* strongestMonster = nullptr;
+    Zone *strongestMonsterZone = nullptr;
+
+
+    for (Zone *zone : monsters)
+    {
+        if (zone->isEmpty())
+            continue;
+        
+        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD && m->getAttribute() == MonsterAttribute::EARTH)
+        {
+
+            if (m->getAttackPoints() >= highestAtk)
+            {
+                highestAtk = m->getAttackPoints();
+                strongestMonster = m;
+                strongestMonsterZone = zone;
+            }
+
+        }
+    }
+    if (strongestMonster == nullptr || strongestMonsterZone == nullptr)
+        return;
+
+    strongestMonster->setAttackPoints(strongestMonster->getAttackPoints()+400);
+    strongestMonster->setDefensePoints(strongestMonster->getDefensePoints()+200);    
+    std::cout<<"AAAAAAAAAAAAAAAAa"<<std::endl;
+    std::cout<<strongestMonster->getCardName()<<std::endl;
 }
 
 void EffectActivator::activateSogen()
