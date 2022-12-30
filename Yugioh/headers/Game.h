@@ -87,6 +87,7 @@ private:
     qint32 findZoneNumber(Card &targetCard, Player *pWhoOwnsIt);
     Zone* findZone(qint32 zoneNumber, QString cardType, Player *pTargetPlayer);
 
+
 // QT related stuff:
     int m_windowWidth;
     int m_windowHeight;

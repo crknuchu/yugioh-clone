@@ -476,6 +476,7 @@ void Game::visuallySetMonster(MonsterCard *pMonsterCard)
     transformationMatrix.rotate(90);
     pMonsterCard->setPixmap(pix.transformed(transformationMatrix));
 
+    pMonsterCard->move(pMonsterCard->x() - pMonsterCard->width / 5 , pMonsterCard->y() + pMonsterCard->height / 5 );
     // TODO: Center the card
 }
 
@@ -552,6 +553,25 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
     // The other one gets 5 cards
     GameExternVars::pOtherPlayer->field.deck.shuffleDeck(2);
     GameExternVars::pOtherPlayer->drawCards(5);
+
+
+    // We need to make other player's cards have card_back.jpg pixmap
+    if(m_clientID == firstToPlay)
+    {
+        QPixmap cardBackPixmap(":/resources/pictures/card_back.jpg");
+        for(Card *card : GameExternVars::pOtherPlayer->m_hand.getHand()) {
+            cardBackPixmap = cardBackPixmap.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
+            card->setPixmap(cardBackPixmap);
+        }
+    }
+    else
+    {
+        QPixmap cardBackPixmap(":/resources/pictures/card_back.jpg");
+        for(Card *card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
+            cardBackPixmap = cardBackPixmap.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
+            card->setPixmap(cardBackPixmap);
+        }
+    }
 
     GamePhaseExternVars::currentGamePhase = GamePhases::STANDBY_PHASE;
     ui->labelGamePhase->setText(QString::fromStdString("STANDBY PHASE"));
@@ -1252,6 +1272,16 @@ void Game::onTurnEnd() {
     // The current player draws a card (this is not optional).
     GameExternVars::pCurrentPlayer->drawCards(1);
 
+    // Hide the card that we have drawn just now for the other player
+    Card* cardThatWeGotJustNow = GameExternVars::pCurrentPlayer->m_hand.getHand().back();
+
+    if(m_clientID != GameExternVars::currentTurnClientID)
+    {
+        QPixmap cardBackPixmap(":/resources/pictures/card_back.jpg");
+        cardBackPixmap = cardBackPixmap.scaled(QSize(cardThatWeGotJustNow->width, cardThatWeGotJustNow->height), Qt::KeepAspectRatio);
+        cardThatWeGotJustNow->setPixmap(cardBackPixmap);
+    }
+
     // Notify the server
     QEventLoop blockingLoop;
     connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
@@ -1349,9 +1379,13 @@ void Game::onCardHoverEnter(Card &card)
     // Set the description text
     ui->textBrowserEffect->setText(QString::fromStdString(card.getCardDescription() + "\n\n\n" + atkDefIfMonster));
 
-    // Enable card info ui
-    ui->labelImage->setVisible(true);
-    ui->textBrowserEffect->setVisible(true);
+    // Enable card info ui only if we hover our cards and not opponent's
+    // Our cards are always at the bottom half of the scene
+    if(card.y() >= m_windowHeight / 2)
+    {
+        ui->labelImage->setVisible(true);
+        ui->textBrowserEffect->setVisible(true);
+    }
 }
 void Game::onCardHoverLeave(Card &card)
 {
