@@ -10,9 +10,9 @@ int main(int argc,char **argv)
 {
     QApplication app(argc, argv);
 
-    MainMenu mainMenu;
+    // MainMenu mainMenu;
 
-    mainMenu.show();
+    // mainMenu.show();
 
     return Catch::Session().run(argc,argv);
 }
