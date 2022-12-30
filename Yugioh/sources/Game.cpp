@@ -471,8 +471,10 @@ Zone *Game::findZone(qint32 zoneNumber, QString cardType, Player *pTargetPlayer)
 void Game::visuallySetMonster(MonsterCard *pMonsterCard)
 {
     QPixmap pix;
-    pix.load(":/resources/pictures/card_back.jpg");
-    pix = pix.scaled(QSize(pMonsterCard->width, pMonsterCard->height), Qt::KeepAspectRatio);
+    if(pMonsterCard->getPosition() == MonsterPosition::FACE_DOWN_DEFENSE) {
+        pix.load(":/resources/pictures/card_back.jpg");
+        pix = pix.scaled(QSize(pMonsterCard->width, pMonsterCard->height), Qt::KeepAspectRatio);
+    }
     QTransform transformationMatrix;
     transformationMatrix.rotate(90);
     pMonsterCard->setPixmap(pix.transformed(transformationMatrix));

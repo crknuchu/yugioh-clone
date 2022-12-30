@@ -197,6 +197,9 @@ void MonsterCard::changePosition()
         // Change the actual position
         setPosition(MonsterPosition::FACE_UP_DEFENSE);
 
+        this->move(this->x() - this->width / 5 , this->y() + this->height / 5 );
+
+
         // Change it on the scene
         transformationMatrix.rotate(90);
         setPixmap(pixmap().transformed(transformationMatrix));
@@ -204,8 +207,12 @@ void MonsterCard::changePosition()
     else if(oldPosition == MonsterPosition::FACE_UP_DEFENSE)
     {
         setPosition(MonsterPosition::ATTACK);
+
         transformationMatrix.rotate(-90);
         setPixmap(pixmap().transformed(transformationMatrix));
+
+
+        this->move(this->x() + this->width / 5 , this->y() - this->height / 5 );
     }
 }
 
