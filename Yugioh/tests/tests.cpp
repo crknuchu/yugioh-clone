@@ -3,6 +3,9 @@
 #include "headers/Spellcard.h"
 #include "headers/Monstercard.h"
 #include "headers/Trapcard.h"
+#include "headers/Deck.h"
+#include "headers/Graveyard.h"
+#include "headers/Hand.h"
 
 TEST_CASE("Card","[class][getter][setter][constructor]")
 {
@@ -374,5 +377,258 @@ TEST_CASE("Trapcard","[class][getter][setter][constructor]")
     }
 }
 
+TEST_CASE("Deck", "[constructor][getter]") {
+    SECTION("Deck method getDeck returns vector<Card*> with size of 0 if deck is empty") {
+        Deck deck = Deck();
+        const int expectedSize = 0;
 
+        const int result = deck.getDeck().size();
+
+        REQUIRE(result == expectedSize);
+    }
+
+    SECTION("Deck method getDeck returns vector<Card*> with size of 1 if deck has one card") {
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+        std::vector<Card*> testVector = {testCard};
+        Deck deck = Deck(testVector);
+        const int expectedSize = 1;
+
+        const int result = deck.getDeck().size();
+
+        REQUIRE(result == expectedSize);
+    }
+}
+
+TEST_CASE("Deck", "[method]") {
+    SECTION("Deck draw method without parameters returns one card") {
+      TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+      std::vector<Card*> testVector = {testCard};
+      Deck deck = Deck(testVector);
+      const Card* expected  = testCard;
+
+      const Card* result = deck.draw();
+
+      REQUIRE(expected == result);
+    }
+
+    SECTION("Deck draw method without parameters deletes front card in deck") {
+      TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+      std::vector<Card*> testVector = {testCard, testCard};
+      Deck deck = Deck(testVector);
+      deck.draw();
+      const int expectedSize = 1;
+
+      const int result = deck.getDeck().size();
+
+      REQUIRE(expectedSize == result);
+    }
+
+    SECTION("Deck draw method given number returns vector<Card*> size of that number") {
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+        std::vector<Card*> testVector = {testCard, testCard, testCard, testCard};
+        Deck deck = Deck(testVector);
+        int number = 2;
+        std::vector<Card*> drawnCards = deck.draw(number);
+        const int expectedSize = number;
+
+        const int result = drawnCards.size();
+
+        REQUIRE(expectedSize == result);
+    }
+
+    SECTION("Deck draw method given number n deletes n cards from front of deck") {
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+        std::vector<Card*> testVector = {testCard, testCard, testCard, testCard};
+        Deck deck = Deck(testVector);
+        int number = 3;
+        const int expectedSize = deck.getDeck().size() - number;
+
+        std::vector<Card*> drawnCards = deck.draw(number);
+        const int result = deck.getDeck().size();
+
+        REQUIRE(expectedSize == result);
+    }
+
+    SECTION("Deck shuffleDeck doesnt change the size of the deck") {
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+        std::vector<Card*> testVector = {testCard, testCard, testCard, testCard};
+        Deck deck = Deck(testVector);
+        const int expectedSize = deck.getDeck().size();
+
+        deck.shuffleDeck();
+        const int result = deck.getDeck().size();
+
+        REQUIRE(expectedSize == result);
+    }
+}
+
+TEST_CASE("Graveyard", "[getter][constructor]") {
+     SECTION("Graveyard method  getGraveyard returns vector<Card*> with size of 0 if graveyard is empty") {
+        const int expectedSize = 0;
+
+        Graveyard graveyard = Graveyard();
+        const int result = graveyard.getGraveyard().size();
+
+        REQUIRE(result == expectedSize);
+    }
+}
+
+TEST_CASE("Graveyard", "[function]") {
+    SECTION("Graveyard sendToGraveyard method increases size of graveyard by 1") {
+        Graveyard graveyard = Graveyard();
+        const int expectedSize = graveyard.getGraveyard().size() + 1;
+
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+        graveyard.sendToGraveyard(*testCard);
+        const int result = graveyard.getGraveyard().size();
+
+        REQUIRE(expectedSize == result);
+    }
+
+    SECTION("Graveyard sendToGraveyard method sets sent cards location to Graveyard") {
+        const auto expected = CardLocation::GRAVEYARD;
+
+        Graveyard graveyard = Graveyard();
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+        graveyard.sendToGraveyard(*testCard);
+        const auto result = testCard->getCardLocation();
+
+        REQUIRE(expected == result);
+    }
+
+    SECTION("Graveyard removeFromGraveyard method returns given card from graveyard") {
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                                CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                                "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                                ":/resources/pictures/Reinforcements.jpg", true);
+        const Card* expected = testCard;
+
+        Graveyard graveyard = Graveyard();
+        graveyard.sendToGraveyard(*testCard); //needed to have something on graveyard
+        const Card* result = graveyard.removeFromGraveyard(*testCard);
+
+        REQUIRE(expected == result);
+    }
+
+    SECTION("Graveyard removeFromGraveyard method decreases size of graveyard by 1") {
+        Graveyard graveyard = Graveyard();
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+        graveyard.sendToGraveyard(*testCard);
+        const int expectedSize = graveyard.getGraveyard().size() - 1;
+
+        graveyard.removeFromGraveyard(*testCard);
+        const int result = graveyard.getGraveyard().size();
+
+        REQUIRE(expectedSize == result);
+    }
+}
+
+TEST_CASE("Hand", "[constructor][getter]") {
+
+    SECTION("Hand method  getHand returns vector<Card*> with size of 0 if hand is empty") {
+        const int expectedSize = 0;
+
+        Hand hand = Hand();
+        const int result = hand.getHand().size();
+
+        REQUIRE(result == expectedSize);
+    }
+}
+
+TEST_CASE("Hand", "[function]") {
+
+    SECTION("Hand size method returns 0 if hand is empty") {
+
+        const int expected = 0;
+
+        Hand hand = Hand();
+        const int result = hand.size();
+
+        REQUIRE(expected == result);
+    }
+
+    SECTION("Hand addToHand method increases size of graveyard by 1") {
+        Hand hand = Hand();
+        const int expectedSize = hand.getHand().size() + 1;
+
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+        hand.addToHand(*testCard);
+        const int result = hand.getHand().size();
+
+        REQUIRE(expectedSize == result);
+    }
+
+    SECTION("Hand addToHand method sets added cards location to Hand") {
+        const auto expected = CardLocation::HAND;
+
+        Hand hand = Hand();
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+        hand.addToHand(*testCard);
+        const auto result = testCard->getCardLocation();
+
+        REQUIRE(expected == result);
+    }
+
+    SECTION("Hand removeFromHand method returns given card from hand") {
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                                CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                                "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                                ":/resources/pictures/Reinforcements.jpg", true);
+        const Card* expected = testCard;
+
+        Hand hand = Hand();
+        hand.addToHand(*testCard); //needed to have something in hand
+        const Card* result = hand.removeFromHand(*testCard);
+
+        REQUIRE(expected == result);
+    }
+
+    SECTION("Hand removeFromHand method decreases size of hand by 1") {
+        Hand hand = Hand();
+        TrapCard* testCard= new TrapCard(TrapType::NORMAL_TRAP, "Reinforcements",
+                                            CardType::TRAP_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+                                            "Target 1 face-up monster on the field; it gains 500 ATK until the end of this turn.",
+                                            ":/resources/pictures/Reinforcements.jpg", true);
+        hand.addToHand(*testCard);
+        const int expectedSize = hand.getHand().size() - 1;
+
+        hand.removeFromHand(*testCard);
+        const int result = hand.getHand().size();
+
+        REQUIRE(expectedSize == result);
+    }
+}
 

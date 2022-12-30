@@ -26,6 +26,7 @@ Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
 Graveyard::~Graveyard(){}
 
 void Graveyard::sendToGraveyard(Card &card) {
+    card.setCardLocation(CardLocation::GRAVEYARD);
     m_cardList.push_back(&card);
 }
 
