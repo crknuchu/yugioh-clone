@@ -331,6 +331,7 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
 
     if(defender.getPosition() == MonsterPosition::FACE_DOWN_DEFENSE) {
          visuallyFlipMonster(&defender, -180);
+         defender.setPosition(MonsterPosition::FACE_UP_DEFENSE);
 
          QEventLoop blockingLoop1;
          connect(this, &Game::deserializationFinished, &blockingLoop1, &QEventLoop::quit);
@@ -927,8 +928,8 @@ void Game::deserializeNewTurn(QDataStream &deserializationStream)
 void Game::deserializeEffectActivated(QDataStream &deserializationStream)
 {
     // Get the name of the opponent's card that activated the effect
-    QString cardName;
     QString whichPlayerActivatedEffect;
+    QString cardName;
     QString cardType;
     qint32 zoneNumber;
     deserializationStream >> whichPlayerActivatedEffect
@@ -954,6 +955,28 @@ void Game::deserializeEffectActivated(QDataStream &deserializationStream)
     whichPlayerActivatedEffect == QString::fromStdString("CURRENT_PLAYER")
             ? effectActivator.activateEffect(targetCard->getCardName(), true)
             : effectActivator.activateEffect(targetCard->getCardName(), false);
+
+
+    if(m_clientID == GameExternVars::currentTurnClientID)
+    {
+        QPixmap cardBackPixmap(":/resources/pictures/card_back.jpg");
+        for(Card *card : GameExternVars::pOtherPlayer->m_hand.getHand()) {
+            cardBackPixmap = cardBackPixmap.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
+            card->setPixmap(cardBackPixmap);
+        }
+    }
+    else
+    {
+        QPixmap cardBackPixmap(":/resources/pictures/card_back.jpg");
+        for(Card *card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
+            cardBackPixmap = cardBackPixmap.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
+            card->setPixmap(cardBackPixmap);
+        }
+    }
+
+
+
+
 
     // Notify the server that deserialization is finished
     notifyServerThatDeserializationHasFinished();
@@ -1029,7 +1052,7 @@ void Game::deserializeDestroyCard(QDataStream &deserializationStream)
     {
         MonsterCard *pMonsterCard = static_cast<MonsterCard *>(pDestroyedCard);
         MonsterPosition position = pMonsterCard->getPosition();
-        if(position == MonsterPosition::FACE_DOWN_DEFENSE)
+        if(position == MonsterPosition::FACE_UP_DEFENSE || position == MonsterPosition::ATTACK)
             visuallyFlipMonster(pMonsterCard, 0);
     }
     else if(cardType == QString::fromStdString("spell card"))
@@ -1460,8 +1483,26 @@ void Game::onActivateButtonClick(Card &card)
         connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
         effectActivator.activateEffect(cardName, true);
 
-        qint32 zoneNumber = findZoneNumber(card, GameExternVars::pCurrentPlayer);
+        if(m_clientID == GameExternVars::currentTurnClientID)
+        {
+            QPixmap cardBackPixmap(":/resources/pictures/card_back.jpg");
+            for(Card *card : GameExternVars::pOtherPlayer->m_hand.getHand()) {
+                cardBackPixmap = cardBackPixmap.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
+                card->setPixmap(cardBackPixmap);
+            }
+        }
+        else
+        {
+            QPixmap cardBackPixmap(":/resources/pictures/card_back.jpg");
+            for(Card *card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
+                cardBackPixmap = cardBackPixmap.scaled(QSize(card->width, card->height), Qt::KeepAspectRatio);
+                card->setPixmap(cardBackPixmap);
+            }
+        }
 
+
+
+        qint32 zoneNumber = findZoneNumber(card, GameExternVars::pCurrentPlayer);
         // Notify the server / other client
         QEventLoop blockingLoop;
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
