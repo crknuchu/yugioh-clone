@@ -33,8 +33,6 @@ const std::map<QString, Game::DESERIALIZATION_MEMBER_FUNCTION_POINTER> Game::m_d
     {"START_GAME",                                      &Game::deserializeStartGame},
     {"FIELD_PLACEMENT",                                 &Game::deserializeFieldPlacement},
     {"ADD_CARD_TO_HAND",                                &Game::deserializeAddCardToHand},
-    {"BATTLE_BETWEEN_ATTACK_POSITION_MONSTERS",         &Game::deserializeBattleBetweenAttackPositionMonsters},
-    {"BATTLE_BETWEEN_DIFFERENT_POSITION_MONSTERS",      &Game::deserializeBattleBetweenDifferentPositionMonsters},
     {"LP_CHANGE",                                       &Game::deserializeLpChange},
     {"DESERIALIZATION_FINISHED",                        &Game::deserializeDeserializationFinished},
     {"GAMEPHASE_CHANGED",                               &Game::deserializeGamePhaseChanged},
@@ -329,6 +327,45 @@ void Game::battleBetweenTwoAttackPositionMonsters(MonsterCard &attacker, Monster
 void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, MonsterCard &defender)
 {
     int pointsDifference = attacker.getAttackPoints() - defender.getDefensePoints();
+    qint32 defenderZoneNumber = findZoneNumber(defender, GameExternVars::pOtherPlayer);
+
+    if(defender.getPosition() == MonsterPosition::FACE_DOWN_DEFENSE) {
+         visuallyFlipMonster(&defender, -180);
+
+         QEventLoop blockingLoop1;
+         connect(this, &Game::deserializationFinished, &blockingLoop1, &QEventLoop::quit);
+         QByteArray buffer1;
+         QDataStream outDataStream1(&buffer1, QIODevice::WriteOnly);
+         outDataStream1.setVersion(QDataStream::Qt_5_15);
+         outDataStream1 << QString::fromStdString("FLIP")
+                       << QString::fromStdString("OTHER_PLAYER")
+                       << QString::fromStdString(defender.getCardName()) // TODO: This is maybe unneeded, since we can locate the monster by just using the zone number
+                       << defenderZoneNumber; // Zone number, so we can locate the monster
+         sendDataToServer(buffer1);
+         blockingLoop1.exec();
+
+         EffectRequirement effectRequirement(defender);
+         bool cardActivationReq = effectRequirement.isActivatable(defender.getCardName());
+         if(cardActivationReq) {
+            EffectActivator effectActivator(defender);
+            effectActivator.activateEffect(defender.getCardName(),  false);
+
+            QEventLoop blockingLoop2;
+            connect(this, &Game::deserializationFinished, &blockingLoop2, &QEventLoop::quit);
+            QByteArray buffer2;
+            QDataStream outDataStream2(&buffer2, QIODevice::WriteOnly);
+            outDataStream2.setVersion(QDataStream::Qt_5_15);
+            outDataStream2 << QString::fromStdString("EFFECT_ACTIVATED")
+                           << QString::fromStdString("OTHER_PLAYER")
+                           << QString::fromStdString(defender.getCardName()) // Who activated the effect
+                           << QString::fromStdString(defender.getCardTypeString())
+                           << defenderZoneNumber;
+
+            sendDataToServer(buffer2);
+            blockingLoop2.exec();
+         }
+    }
+
     if(pointsDifference < 0)
     {
         /* This means that the attacker is weaker than the defender.
@@ -348,11 +385,8 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
 
         // Flip the destroyed monster if it was in FACE_DOWN_DEFENSE position
-        if(defender.getPosition() == MonsterPosition::FACE_DOWN_DEFENSE)
-            visuallyFlipMonster(&defender, -180);
 
         // We need the destroyed monster's zone number
-        qint32 defenderZoneNumber = findZoneNumber(defender, GameExternVars::pOtherPlayer);
         Zone *pZoneOfTheDestroyedCard = findZone(defenderZoneNumber, QString::fromStdString("monster card"), GameExternVars::pOtherPlayer);
         Card *pDestroyedCard = pZoneOfTheDestroyedCard->m_pCard;
         GameExternVars::pOtherPlayer->sendToGraveyard(*pDestroyedCard, pZoneOfTheDestroyedCard);
@@ -372,6 +406,7 @@ void Game::battleBetweenTwoDifferentPositionMonsters(MonsterCard &attacker, Mons
         // If the pointsDifference is 0 then nothing happens
         std::cout << "No monster dies!" << std::endl;
     }
+
 }
 
 void Game::damagePlayer(Player &targetPlayer, int howMuch)
@@ -793,88 +828,6 @@ void Game::deserializeAddCardToHand(QDataStream &deserializationStream)
     notifyServerThatDeserializationHasFinished();
 }
 
-void Game::deserializeBattleBetweenAttackPositionMonsters(QDataStream &deserializationStream)
-{
-    std::cout << "Battle between 2 attacking monsters begins!" << std::endl;
-    // We first check who won ("ATTACKER", "DEFENDER", "NOONE")
-    QString whoWon;
-    deserializationStream >> whoWon;
-
-    // If whoWon was NOONE, then both monsters got destroyed
-    if(whoWon == QString::fromStdString("NOONE"))
-    {
-        QString playerWhoInitiatedAttack, attackerCardName, defenderCardName;
-        qint32 attackerZoneNumber, defenderZoneNumber;
-
-        deserializationStream >> playerWhoInitiatedAttack
-                              >> attackerCardName
-                              >> defenderCardName
-                              >> attackerZoneNumber
-                              >> defenderZoneNumber;
-
-        std::cout << "Both monsters die!" << std::endl;
-
-        // TODO: Reconstruct the Card objects from card names
-            /* Is this even needed? They will already be reconstructed when we deserialize the summons,
-             * so we could just do destroyMonster() probably, after we get the pointer to both monsters */
-
-        // TODO: Call destroyMonster() that will be implemented, for both monsters.
-    }
-    else if(whoWon == QString::fromStdString("ATTACKER"))
-    {
-        QString defenderCardName;
-        qint32 defenderZoneNumber;
-        deserializationStream >> defenderCardName
-                              >> defenderZoneNumber;
-
-        std::cout << "The opponent's attacker monster wins!" << std::endl;
-        // TODO: get a pointer to the defender
-        // TODO: currentPlayer->destroyMonster(defender)
-    }
-    else
-    {
-        QString attackerCardName;
-        qint32 attackerZoneNumber;
-
-        deserializationStream >> attackerCardName
-                              >> attackerZoneNumber;
-        std::cout << "The defender wins!" << std::endl;
-    }
-
-
-    notifyServerThatDeserializationHasFinished();
-}
-
-void Game::deserializeBattleBetweenDifferentPositionMonsters(QDataStream &deserializationStream)
-{
-    std::cout << "Battle between 2 different position monsters begins!" << std::endl;
-    // We first check who won ("ATTACKER", "DEFENDER", "NOONE")
-    QString whoWon;
-    deserializationStream >> whoWon;
-
-    // If whoWon was NOONE, then both monsters got destroyed
-    if(whoWon == QString::fromStdString("NOONE"))
-        std::cout << "No one wins!" << std::endl;
-    else if(whoWon == QString::fromStdString("ATTACKER"))
-    {
-        QString defenderCardName;
-        qint32 defenderZoneNumber;
-
-        deserializationStream >> defenderCardName
-                              >> defenderZoneNumber;
-
-        std::cout << "The attacker wins!" << std::endl;
-
-        // TODO: get a pointer to the defender
-        // TODO: currentPlayer->destroyMonster(defender)
-    }
-    else
-        std::cout << "The defender wins!" << std::endl;
-
-    // Notify the server that deserialization is finished
-    notifyServerThatDeserializationHasFinished();
-}
-
 void Game::deserializeLpChange(QDataStream &deserializationStream)
 {
     std::cout << "We are in deserializeLpChange" << std::endl;
@@ -958,21 +911,32 @@ void Game::deserializeEffectActivated(QDataStream &deserializationStream)
 {
     // Get the name of the opponent's card that activated the effect
     QString cardName;
+    QString whichPlayerActivatedEffect;
     QString cardType;
     qint32 zoneNumber;
-    deserializationStream >> cardName
+    deserializationStream >> whichPlayerActivatedEffect
+                          >> cardName
                           >> cardType
                           >> zoneNumber;
 
     Card* targetCard;
-    cardType == "monster card"
-            ? targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard
-            : targetCard = GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone[zoneNumber - 1]->m_pCard;
+    if(whichPlayerActivatedEffect == QString::fromStdString("CURRENT_PLAYER")) {
+        cardType == "monster card"
+                ? targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard
+                : targetCard = GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone[zoneNumber - 1]->m_pCard;
+    }
+    else {
+        cardType == "monster card"
+                ? targetCard = GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard
+                : targetCard = GameExternVars::pOtherPlayer->field.spellTrapZone.m_spellTrapZone[zoneNumber - 1]->m_pCard;
+    }
 
     EffectActivator effectActivator(*targetCard);
     connect(&effectActivator, &EffectActivator::lifePointsChanged, this, &Game::onLifePointsChange);
     connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
-    effectActivator.activateEffect(targetCard->getCardName(), true);
+    whichPlayerActivatedEffect == QString::fromStdString("CURRENT_PLAYER")
+            ? effectActivator.activateEffect(targetCard->getCardName(), true)
+            : effectActivator.activateEffect(targetCard->getCardName(), false);
     std::cout << "PLACEHOLDER COUT: The opponent has activated " << cardName.toStdString() << "'s effect." << std::endl;
 
     // Notify the server that deserialization is finished
@@ -1001,11 +965,16 @@ void Game::deserializeReposition(QDataStream &deserializationStream)
 void Game::deserializeFlip(QDataStream &deserializationStream)
 {
     QString cardName;
+    QString whichPlayerFlipped;
     qint32 zoneNumber;
-    deserializationStream >> cardName
+    deserializationStream >> whichPlayerFlipped
+                          >> cardName
                           >> zoneNumber;
 
-    Card* targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard;
+    Card* targetCard;
+    whichPlayerFlipped == QString::fromStdString("CURRENT_PLAYER")
+            ? targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard
+            : targetCard = GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard;
 
     // We know that its a monster
     MonsterCard *targetMonster = static_cast<MonsterCard *>(targetCard);
@@ -1443,7 +1412,7 @@ void Game::onActivateButtonClick(Card &card)
         // We connect every signal from EffectActivator to our slots in Game:
         connect(&effectActivator, &EffectActivator::lifePointsChanged, this, &Game::onLifePointsChange);
         connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
-        effectActivator.activateEffect(cardName, false);
+        effectActivator.activateEffect(cardName, true);
 
         qint32 zoneNumber = findZoneNumber(card, GameExternVars::pCurrentPlayer);
 
@@ -1454,6 +1423,7 @@ void Game::onActivateButtonClick(Card &card)
         QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
         outDataStream.setVersion(QDataStream::Qt_5_15);
         outDataStream << QString::fromStdString("EFFECT_ACTIVATED")
+                      << QString::fromStdString("CURRENT_PLAYER")
                       << QString::fromStdString(cardName) // Who activated the effect
                       << QString::fromStdString(card.getCardTypeString())
                       << zoneNumber;
@@ -1565,6 +1535,7 @@ void Game::onFlipButtonClick(Card &card)
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
     outDataStream << QString::fromStdString("FLIP")
+                  << QString::fromStdString("CURRENT_PLAYER")
                   << QString::fromStdString(monsterCard->getCardName()) // TODO: This is maybe unneeded, since we can locate the monster by just using the zone number
                   << zoneNumber; // Zone number, so we can locate the monster
     sendDataToServer(buffer);

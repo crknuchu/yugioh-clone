@@ -118,11 +118,15 @@ void EffectActivator::activateTrapMaster(bool isOpponentActivating) {
 }
 
 void EffectActivator::activateHaneHane(bool isOpponentActivating) {
-    Q_UNUSED(isOpponentActivating);
-    MonsterCard* targetedMonster = findHighestATKMonster(*GameExternVars::pOtherPlayer);
-    Zone* zoneWithTargetedMonster = GameExternVars::pOtherPlayer->field.monsterZone.getZone(targetedMonster);
-    GameExternVars::pOtherPlayer->field.monsterZone.removeFromMonsterZone(zoneWithTargetedMonster);
-    GameExternVars::pOtherPlayer->m_hand.addToHand(*targetedMonster);
+    Player* targetPlayer;
+    isOpponentActivating
+            ? targetPlayer = GameExternVars::pOtherPlayer
+            : targetPlayer = GameExternVars::pCurrentPlayer;
+
+    MonsterCard* targetedMonster = findHighestATKMonster(*targetPlayer);
+    Zone* zoneWithTargetedMonster = targetPlayer->field.monsterZone.getZone(targetedMonster);
+    targetPlayer->field.monsterZone.removeFromMonsterZone(zoneWithTargetedMonster);
+    targetPlayer->m_hand.addToHand(*targetedMonster);
 }
 
 // Spells

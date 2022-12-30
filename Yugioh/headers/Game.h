@@ -110,8 +110,6 @@ private:
     void deserializeStartGame(QDataStream &deserializationStream);
     void deserializeFieldPlacement(QDataStream &deserializationStream);
     void deserializeAddCardToHand(QDataStream &deserializationStream);
-    void deserializeBattleBetweenAttackPositionMonsters(QDataStream &deserializationStream);
-    void deserializeBattleBetweenDifferentPositionMonsters(QDataStream &deserializationStream);
     void deserializeLpChange(QDataStream &deserializationStream);
     void deserializeDeserializationFinished(QDataStream &deserializationStream);
     void deserializeGamePhaseChanged(QDataStream &deserializationStream);
