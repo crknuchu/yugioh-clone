@@ -127,6 +127,19 @@ void EffectActivator::activateHaneHane(bool isOpponentActivating) {
     Zone* zoneWithTargetedMonster = targetPlayer->field.monsterZone.getZone(targetedMonster);
     targetPlayer->field.monsterZone.removeFromMonsterZone(zoneWithTargetedMonster);
     targetPlayer->m_hand.addToHand(*targetedMonster);
+
+    // We don't want to see the card that we return to the hand
+    if(isOpponentActivating)
+    {
+        QPixmap pix;
+        pix.load(":/resources/pictures/card_back.jpg");
+
+        QTransform transformationMatrix;
+        transformationMatrix.rotate(180);
+        pix = pix.scaled(QSize(targetedMonster->width, targetedMonster->height), Qt::KeepAspectRatio);
+
+        targetedMonster->setPixmap(pix.transformed(transformationMatrix));
+    }
 }
 
 // Spells

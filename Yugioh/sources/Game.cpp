@@ -477,7 +477,6 @@ void Game::visuallySetMonster(MonsterCard *pMonsterCard)
     pMonsterCard->setPixmap(pix.transformed(transformationMatrix));
 
     pMonsterCard->move(pMonsterCard->x() - pMonsterCard->width / 5 , pMonsterCard->y() + pMonsterCard->height / 5 );
-    // TODO: Center the card
 }
 
 void Game::visuallySetSpell(SpellCard *pSpellCard)
@@ -760,15 +759,13 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
             targetCard = card;
     }
 
-
-    if(targetCard == nullptr)
-    {
-        std::cerr << "reconstructCard() failed in deserializeFieldPlacement!" << std::endl;
-        return;
-    }
+    // Set the original pixmap
+    QPixmap originalPixmap;
+    originalPixmap.load(QString::fromStdString(targetCard->imagePath));
+    originalPixmap = originalPixmap.scaled(QSize(targetCard->width, targetCard->height), Qt::KeepAspectRatio);
+    targetCard->setPixmap(originalPixmap);
 
     // Add the card to the scene
-//    ui->graphicsView->scene()->addItem(targetCard);
     GameExternVars::pCurrentPlayer->m_hand.removeFromHand(*targetCard);
     if (cardType == "monster card")
     {
@@ -957,7 +954,6 @@ void Game::deserializeEffectActivated(QDataStream &deserializationStream)
     whichPlayerActivatedEffect == QString::fromStdString("CURRENT_PLAYER")
             ? effectActivator.activateEffect(targetCard->getCardName(), true)
             : effectActivator.activateEffect(targetCard->getCardName(), false);
-    std::cout << "PLACEHOLDER COUT: The opponent has activated " << cardName.toStdString() << "'s effect." << std::endl;
 
     // Notify the server that deserialization is finished
     notifyServerThatDeserializationHasFinished();
@@ -982,7 +978,7 @@ void Game::deserializeReposition(QDataStream &deserializationStream)
     notifyServerThatDeserializationHasFinished();
 }
 
-void Game::deserializeFlip(QDataStream &deserializationStream)
+ void Game::deserializeFlip(QDataStream &deserializationStream)
 {
     QString cardName;
     QString whichPlayerFlipped;
@@ -1000,6 +996,7 @@ void Game::deserializeFlip(QDataStream &deserializationStream)
     MonsterCard *targetMonster = static_cast<MonsterCard *>(targetCard);
 
     // Change its position
+    targetMonster->setPosition(MonsterPosition::ATTACK);
     visuallyFlipMonster(targetMonster, 180);
 
     // Notify the server that deserialization is finished
@@ -1361,13 +1358,29 @@ void Game::onCardHoverEnter(Card &card)
 {
     std::cout << "Card " << card.getCardName() << " hover-entered!" << std::endl;
 
+    QString cardPosition;
+
     /* If the card is a monster, we want its ATK/DEF in card description too.
      * If its not a monster, it will be empty string and won't mess with the description. */
     std::string atkDefIfMonster = "";
     if(card.getCardType() == CardType::MONSTER_CARD)
     {
-        MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
-        atkDefIfMonster += "ATK: " + std::to_string(monsterCard->getAttackPoints()) + "  /  DEF: " + std::to_string(monsterCard->getDefensePoints());
+        MonsterCard *pMonsterCard = static_cast<MonsterCard *>(&card);
+        atkDefIfMonster += "ATK: " + std::to_string(pMonsterCard->getAttackPoints()) + "  /  DEF: " + std::to_string(pMonsterCard->getDefensePoints());
+
+        cardPosition = MonsterCard::monsterPositionEnumToQString.at(pMonsterCard->getPosition());
+    }
+    else if(card.getCardType() == CardType::SPELL_CARD)
+    {
+        SpellCard *pSpellCard = static_cast<SpellCard *>(&card);
+
+        cardPosition = SpellCard::spellTrapPositionEnumToQString.at(pSpellCard->getSpellPosition());
+    }
+    else
+    {
+        TrapCard *pTrapCard = static_cast<TrapCard *>(&card);
+
+        cardPosition = TrapCard::spellTrapPositionEnumToQString.at(pTrapCard->getTrapPosition());
     }
 
     // Set the correct card image
@@ -1381,7 +1394,7 @@ void Game::onCardHoverEnter(Card &card)
 
     // Enable card info ui only if we hover our cards and not opponent's
     // Our cards are always at the bottom half of the scene
-    if(card.y() >= m_windowHeight / 2)
+    if(card.y() >= m_windowHeight / 2 || (card.y() < m_windowHeight / 2 && cardPosition != "FACE_DOWN_DEFENSE" && cardPosition != "SET"))
     {
         ui->labelImage->setVisible(true);
         ui->textBrowserEffect->setVisible(true);
@@ -1404,9 +1417,8 @@ void Game::onCardSelect(Card *card)
          ? card->cardMenu->attackDirectlyButton->setVisible(false)
          : card->cardMenu->attackDirectlyButton->setVisible(true);
 
-    // We only want current client to be able to have a card menu
-        // TODO: Should this be at the beginning of this function?
-    if(m_clientID == GameExternVars::currentTurnClientID)
+    // We only want current client to be able to see card menus, and only on his own cards
+    if(m_clientID == GameExternVars::currentTurnClientID && card->y() >= m_windowHeight / 2)
         card->cardMenu->isVisible() == false ? card->cardMenu->show() : card->cardMenu->hide();
 }
 
