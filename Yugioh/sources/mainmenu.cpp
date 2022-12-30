@@ -68,6 +68,7 @@ void MainMenu::setGame(Game *newGame)
 
 void MainMenu::updateValues()
 {
+    //
     //to do save as json file?
    //LifePoints::STANDARD_POINTS if(!m_pGame)
     //{

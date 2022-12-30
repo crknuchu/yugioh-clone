@@ -1,6 +1,8 @@
 #ifndef GAMESETTINGS_H
 #define GAMESETTINGS_H
-
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <qfile.h>
 #include <QDialog>
 #include <QDesktopServices>
 #include <QUrl>
@@ -65,23 +67,16 @@ public:
     LifePoints getLifePoints() const;
     void setLifePoints(LifePoints newLifePoints);
 
-    static const std::map<TimePerMove, int> getTimePerMoveEnumToInt;
-    static const std::map<NumberOfCards, int> getNumberOfCardsEnumToInt;
-    static const std::map<LifePoints, int> getLifePointsEnumToInt;
-
+    static const QMap<TimePerMove, int> getTimePerMoveEnumToInt;
+    static const QMap<NumberOfCards, int> getNumberOfCardsEnumToInt;
+    static const QMap<LifePoints, int> getLifePointsEnumToInt;
+    static const QMap<Decks,QString> getDeckEnumToString;
 
 signals:
     void okButtonClicked();
     void helpClicked();
 
 private slots:
-    void onSetLifepointsCurrentIndexChanged(int index);
-
-    void onSetTimePerMoveCurrentIndexChanged(int index);
-
-    void onSetInitialNumberOfCardsCurrentIndexChanged(int index);
-
-    void onOkButtonClick();
 
     void onLeaveButtonClick();
 
@@ -89,11 +84,22 @@ private slots:
     void onHelpButtonClick();
 
 
-    void on_ChooseDeck_activated(int index);
+    //void on_ChooseDeck_activated(int index);
 
 
+
+    void on_okButton_clicked();
+
+    void on_SetLifepoints_activated(int index);
+
+    void on_SetTimePerMove_activated(int index);
+
+    void on_SetInitialNumberOfCards_activated(int index);
+
+    void on_ChooseDeck_currentIndexChanged(int index);
 
 private:
+    void saveGameSettingsJson(int lifePoints,int numberOfCards,int timePerMove,QString deck);
     TimePerMove timePerMove ;
     NumberOfCards numberOfCards ;
     LifePoints lifePoints ;

@@ -1,6 +1,8 @@
 #ifndef MAINMENU_H
 #define MAINMENU_H
 
+#include <QJsonObject>
+#include <QJsonDocument>
 #include <QMainWindow>
 #include "headers/Game.h"
 #include "headers/GameSettings.h"
@@ -19,8 +21,6 @@ public:
     ~MainMenu();
 
     void setGame(Game *newGame);
-
-
 
 
 private slots:

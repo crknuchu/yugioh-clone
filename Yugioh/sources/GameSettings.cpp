@@ -37,7 +37,6 @@ GameSettings::GameSettings(QWidget *parent) :
     ui->ChooseDeck->addItem("Yugi's deck");
     ui->ChooseDeck->addItem("Kaiba's deck");
 
-    connect(ui->okButton , &QPushButton::clicked , this, &GameSettings::onOkButtonClick);
 
     connect(ui->leaveButton, &QPushButton::clicked, this, &GameSettings::onLeaveButtonClick);
 
@@ -52,7 +51,7 @@ GameSettings::~GameSettings()
 
 
 
-const std::map<LifePoints, int> GameSettings::getLifePointsEnumToInt{
+const QMap<LifePoints, int> GameSettings::getLifePointsEnumToInt{
     {LifePoints::MINIMAL_POINTS, 2000},
     {LifePoints::SMALLER_POINTS, 4000},
     {LifePoints::STANDARD_POINTS, 8000},
@@ -60,7 +59,7 @@ const std::map<LifePoints, int> GameSettings::getLifePointsEnumToInt{
     {LifePoints::MAXIMUM_POINTS, 16000}
 };
 
-const std::map<NumberOfCards, int> GameSettings::getNumberOfCardsEnumToInt{
+const QMap<NumberOfCards, int> GameSettings::getNumberOfCardsEnumToInt{
     {NumberOfCards::MINIMAL_CARDS, 3},
     {NumberOfCards::SMALLER_CARDS, 4},
     {NumberOfCards::STANDARD_CARDS, 5},
@@ -69,7 +68,7 @@ const std::map<NumberOfCards, int> GameSettings::getNumberOfCardsEnumToInt{
 };
 
 
-const std::map<TimePerMove, int> GameSettings::getTimePerMoveEnumToInt{
+const QMap<TimePerMove, int> GameSettings::getTimePerMoveEnumToInt{
    {TimePerMove::MINIMAL_TIME, 3},
    {TimePerMove::SMALLER_TIME, 5},
    {TimePerMove::STANDARD_TIME, 6},
@@ -77,90 +76,11 @@ const std::map<TimePerMove, int> GameSettings::getTimePerMoveEnumToInt{
    {TimePerMove::MAXIMUM_TIME , 20}
 };
 
+const QMap<Decks,QString> GameSettings::getDeckEnumToString{
+    {Decks::KAIBA, "KAIBA"},
+    {Decks::YUGI, "YUGI" }
+};
 
-
-void GameSettings::onSetLifepointsCurrentIndexChanged(int index)
-{
-    switch (index) {
-    case 0:
-        lifePoints = LifePoints::MINIMAL_POINTS;
-        break;
-    case 1:
-        lifePoints = LifePoints::SMALLER_POINTS;
-        break;
-    case 2:
-        lifePoints = LifePoints::STANDARD_POINTS;
-        break;
-    case 3:
-        lifePoints = LifePoints::BIGGER_POINTS;
-        break;
-    case 4:
-        lifePoints = LifePoints::MAXIMUM_POINTS;
-        break;
-    default:
-        lifePoints = LifePoints::STANDARD_POINTS;
-        break;
-    }
-}
-
-
-void GameSettings::onSetTimePerMoveCurrentIndexChanged(int index)
-{
-    switch (index) {
-    case 0:
-        timePerMove = TimePerMove::MINIMAL_TIME;
-        break;
-    case 1:
-        timePerMove = TimePerMove::SMALLER_TIME;
-        break;
-    case 2:
-        timePerMove =TimePerMove::STANDARD_TIME;
-        break;
-    case 3:
-        timePerMove= TimePerMove::BIGGER_TIME;
-        break;
-    case 4:
-        timePerMove = TimePerMove::MAXIMUM_TIME;
-        break;
-    default:
-        timePerMove = TimePerMove::STANDARD_TIME;
-        break;
-    }
-}
-
-
-void GameSettings::onSetInitialNumberOfCardsCurrentIndexChanged(int index)
-{
-    switch (index) {
-    case 0:
-        numberOfCards = NumberOfCards::MINIMAL_CARDS;
-        break;
-    case 1:
-        numberOfCards = NumberOfCards::SMALLER_CARDS;;
-        break;
-    case 2:
-        numberOfCards =NumberOfCards::STANDARD_CARDS;
-        break;
-    case 3:
-        numberOfCards= NumberOfCards::BIGGER_CARDS;
-        break;
-    case 4:
-        numberOfCards = NumberOfCards::MAXIMUM_CARDS;
-        break;
-    default:
-        numberOfCards = NumberOfCards::STANDARD_CARDS;
-        break;
-    }
-
-}
-
-
-
-void GameSettings::onOkButtonClick()
-{
-    emit okButtonClicked();
-    close();
-}
 
 void GameSettings::onLeaveButtonClick(){
     close();
@@ -175,20 +95,42 @@ void GameSettings::onHelpButtonClick()
 }
 
 
-void GameSettings::on_ChooseDeck_activated(int index)
+//void GameSettings::on_ChooseDeck_activated(int index)
+//{
+//    switch (index) {
+//    case 0:
+//        this->deck = Decks::YUGI;
+//        break;
+//    case 1:
+//        this->deck = Decks::KAIBA;
+//        break;
+//    default:
+//        this->deck = Decks::YUGI;
+//        break;
+//    }
+//}
+
+
+void GameSettings::saveGameSettingsJson(int lifePoints,int numberOfCards,int timePerMove, QString deck)
 {
-    switch (index) {
-    case 0:
-        this->deck = Decks::YUGI;
-        break;
-    case 1:
-        this->deck = Decks::KAIBA;
-        break;
-    default:
-        this->deck = Decks::YUGI;
-        break;
-    }
+    QJsonObject obj;
+    obj.insert("lifepoints",lifePoints);
+    obj.insert("numberofcards",numberOfCards);
+    obj.insert("timepermove",timePerMove);
+    obj.insert("deck", deck);
+    QString path = qApp->applicationDirPath();
+    path.append("/deck_settings.json");
+    //qWarning() << path;
+
+    QFile file;
+    file.setFileName(path);
+    file.open(QIODevice::WriteOnly | QIODevice::Text);
+    QJsonDocument d(obj);
+    file.write(d.toJson());
+    file.close();
+    return;
 }
+
 
 LifePoints GameSettings::getLifePoints() const
 {
@@ -218,5 +160,108 @@ TimePerMove GameSettings::getTimePerMove() const
 void GameSettings::setTimePerMove(TimePerMove newTimePerMove)
 {
     timePerMove = newTimePerMove;
+
+
+}
+
+
+void GameSettings::on_okButton_clicked()
+{
+
+    saveGameSettingsJson( getLifePointsEnumToInt[this->lifePoints]  ,getNumberOfCardsEnumToInt[this->numberOfCards],getTimePerMoveEnumToInt[this->timePerMove],getDeckEnumToString[this->deck]);
+    close();
+}
+
+
+
+
+void GameSettings::on_SetLifepoints_activated(int index)
+{
+    switch (index) {
+    case 0:
+        lifePoints = LifePoints::MINIMAL_POINTS;
+        break;
+    case 1:
+        lifePoints = LifePoints::SMALLER_POINTS;
+        break;
+    case 2:
+        lifePoints = LifePoints::STANDARD_POINTS;
+        break;
+    case 3:
+        lifePoints = LifePoints::BIGGER_POINTS;
+        break;
+    case 4:
+        lifePoints = LifePoints::MAXIMUM_POINTS;
+        break;
+    default:
+        lifePoints = LifePoints::STANDARD_POINTS;
+        break;
+    }
+}
+
+
+void GameSettings::on_SetTimePerMove_activated(int index)
+{
+    switch (index) {
+    case 0:
+        timePerMove = TimePerMove::MINIMAL_TIME;
+        break;
+    case 1:
+        timePerMove = TimePerMove::SMALLER_TIME;
+        break;
+    case 2:
+        timePerMove =TimePerMove::STANDARD_TIME;
+        break;
+    case 3:
+        timePerMove= TimePerMove::BIGGER_TIME;
+        break;
+    case 4:
+        timePerMove = TimePerMove::MAXIMUM_TIME;
+        break;
+    default:
+        timePerMove = TimePerMove::STANDARD_TIME;
+        break;
+    }
+}
+
+
+void GameSettings::on_SetInitialNumberOfCards_activated(int index)
+{
+    switch (index) {
+    case 0:
+        numberOfCards = NumberOfCards::MINIMAL_CARDS;
+        break;
+    case 1:
+        numberOfCards = NumberOfCards::SMALLER_CARDS;
+        break;
+    case 2:
+        numberOfCards =NumberOfCards::STANDARD_CARDS;
+        break;
+    case 3:
+        numberOfCards= NumberOfCards::BIGGER_CARDS;
+        break;
+    case 4:
+        numberOfCards = NumberOfCards::MAXIMUM_CARDS;
+        break;
+    default:
+        numberOfCards = NumberOfCards::STANDARD_CARDS;
+        break;
+    }
+}
+
+
+void GameSettings::on_ChooseDeck_currentIndexChanged(int index)
+{
+    switch (index) {
+    case 0:
+        this->deck = Decks::YUGI;
+        break;
+    case 1:
+        this->deck = Decks::KAIBA;
+        break;
+    default:
+        this->deck = Decks::YUGI;
+        break;
+    }
 }
 
