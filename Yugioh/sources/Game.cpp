@@ -102,10 +102,10 @@ Game::Game(Player p1, Player p2, int lifePoints, int numberOfCards, int timePerM
 
 
     // Set the global decks of both players
-        // TODO: Kaiba.json
-    Serializer s;
-    s.loadFromJson(":/resources/yugi.json");
-    GameExternVars::yugiCards = s.getCards();
+    //     // TODO: Kaiba.json
+    // Serializer s;
+    // s.loadFromJson(":/resources/yugi.json");
+    // GameExternVars::yugiCards = s.getCards();
 //    s.loadFromJson(":/resources/kaiba.json");
 
 }
@@ -589,45 +589,45 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
 
 
     //just a placeholder code for hand
-    MonsterCard* testCard1 = new MonsterCard("Hane-Hane", 450, 500, 4,
-                                              MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                              MonsterAttribute::EARTH, false, MonsterPosition::FACE_DOWN_DEFENSE, false,
-                                              CardType::MONSTER_CARD, CardLocation::FIELD,
-                                              "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/HaneHane.jpg"
-                                              );
-    MonsterCard* testCard2 = new MonsterCard("Hane-Hane", 450, 500, 4,
-                                              MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                              MonsterAttribute::EARTH, false, MonsterPosition::FACE_DOWN_DEFENSE, false,
-                                              CardType::MONSTER_CARD, CardLocation::FIELD,
-                                              "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/HaneHane.jpg"
-                                              );
+//     MonsterCard* testCard1 = new MonsterCard("Hane-Hane", 450, 500, 4,
+//                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+//                                               MonsterAttribute::EARTH, false, MonsterPosition::FACE_DOWN_DEFENSE, false,
+//                                               CardType::MONSTER_CARD, CardLocation::FIELD,
+//                                               "Neither player can target Dragon monsters on the field with card effects.",
+//                                               ":/resources/pictures/HaneHane.jpg"
+//                                               );
+//     MonsterCard* testCard2 = new MonsterCard("Hane-Hane", 450, 500, 4,
+//                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+//                                               MonsterAttribute::EARTH, false, MonsterPosition::FACE_DOWN_DEFENSE, false,
+//                                               CardType::MONSTER_CARD, CardLocation::FIELD,
+//                                               "Neither player can target Dragon monsters on the field with card effects.",
+//                                               ":/resources/pictures/HaneHane.jpg"
+//                                               );
 
-    MonsterCard* testCard3 = new MonsterCard("Trap Master", 500, 1500, 4,
-                                              MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
-                                              MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
-                                              CardType::MONSTER_CARD, CardLocation::GRAVEYARD,
-                                              "Neither player can target Dragon monsters on the field with card effects.",
-                                              ":/resources/pictures/TrapMaster.jpg"
-                                              );
-    SpellCard* testCard4 = new SpellCard(SpellType::NORMAL_SPELL, "Card Destruction",
-                                            CardType::SPELL_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
-                                            "  An EARTH monster equipped with this card increases "
-                                            "its ATK by 400 points and decreases its DEF by 200 points.",
-                                            ":/resources/pictures/CardDestruction.jpg", true);
+//     MonsterCard* testCard3 = new MonsterCard("Trap Master", 500, 1500, 4,
+//                                               MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+//                                               MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+//                                               CardType::MONSTER_CARD, CardLocation::GRAVEYARD,
+//                                               "Neither player can target Dragon monsters on the field with card effects.",
+//                                               ":/resources/pictures/TrapMaster.jpg"
+//                                               );
+//     SpellCard* testCard4 = new SpellCard(SpellType::NORMAL_SPELL, "Card Destruction",
+//                                             CardType::SPELL_CARD, CardLocation::HAND, SpellTrapPosition::NONE,
+//                                             "  An EARTH monster equipped with this card increases "
+//                                             "its ATK by 400 points and decreases its DEF by 200 points.",
+//                                             ":/resources/pictures/CardDestruction.jpg", true);
 
-  emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard1);
-  emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard2);
-  emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard3);
-  emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard4);
+//   emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard1);
+//   emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard2);
+//   emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard3);
+//   emit GameExternVars::pCurrentPlayer->cardAddedToScene(testCard4);
 
-  //testing purposes
-  GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard1, 2);
-  visuallySetMonster(testCard1);
-  GameExternVars::pOtherPlayer->field.monsterZone.placeInMonsterZone(testCard3,2);
-  GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
-  GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
+//   //testing purposes
+//   GameExternVars::pCurrentPlayer->field.monsterZone.placeInMonsterZone(testCard1, 2);
+//   visuallySetMonster(testCard1);
+//   GameExternVars::pOtherPlayer->field.monsterZone.placeInMonsterZone(testCard3,2);
+//   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard2);
+//   GameExternVars::pCurrentPlayer->m_hand.addToHand(*testCard4);
 //  GameExternVars::pCurrentPlayer->field.graveyard->sendToGraveyard(new testCard);
     // Label setup:
     ui->labelCurrentPlayerNameDynamic->setText(QString::fromStdString(GameExternVars::pCurrentPlayer->getPlayerName()));

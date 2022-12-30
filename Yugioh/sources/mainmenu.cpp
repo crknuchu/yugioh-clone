@@ -55,6 +55,8 @@ void MainMenu::onStartButtonClick()
    Deck d2 = Deck(yugiCards2);
    player1->setDeck(d1);
    player2->setDeck(d2);
+   player1->setPlayerLifePoints(this->getLifePointsJson());
+   player2->setPlayerLifePoints(this->getLifePointsJson());
    m_pGame = new Game(*player1, *player2,this->getLifePointsJson(),this->getNumberOfCardsJson(),this->getTimePerMoveJson());
    m_pGame->showFullScreen();
 }
@@ -70,6 +72,7 @@ int MainMenu::getLifePointsJson(){
     QJsonObject obj = d.object();
 
     int lifePoints = d["lifepoints"].toInt();
+    qWarning() << lifePoints;
     return lifePoints;
 }
 
