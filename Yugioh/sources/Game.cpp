@@ -1575,6 +1575,9 @@ void Game::onAttackButtonClick(Card &attackingMonster)
 
    // Color opponent's monsters
    GameExternVars::pOtherPlayer->field.monsterZone.colorOccupiedZones();
+
+
+    attackingMonster.cardMenu->setVisible(false);
 }
 
 void Game::onRepositionButtonClick(Card &card)
@@ -1607,6 +1610,8 @@ void Game::onAttackDirectlyButtonClick(Card &card)
 {
     MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
     damagePlayer(*GameExternVars::pOtherPlayer, monsterCard->getAttackPoints());
+
+    card.cardMenu->setVisible(false);
 }
 
 void Game::onFlipButtonClick(Card &card)
@@ -1637,6 +1642,9 @@ void Game::onFlipButtonClick(Card &card)
         delay();
         onActivateButtonClick(*monsterCard);
     }
+
+
+    card.cardMenu->setVisible(false);
 }
 
 
@@ -1858,6 +1866,9 @@ void Game::onGreenZoneClick(Zone *clickedGreenZone) {
 
     // Do the damage calculation
     damageCalculation(GameExternVars::pAttackingMonster, attackedMonster);
+
+
+
 }
 
 void Game::onNetworkErrorOccurred(QAbstractSocket::SocketError socketError)
