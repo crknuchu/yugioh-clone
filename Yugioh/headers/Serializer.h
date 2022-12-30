@@ -21,7 +21,10 @@ class Serializer //change name to JsonSerializer
 {
 public:
     Serializer();
+
     void loadFromJson(QString s);
+
+
     std::vector<Card*> getCards();
 
 private:

@@ -31,12 +31,15 @@ public:
     QVBoxLayout *verticalLayout_3;
     QSpacerItem *verticalSpacer;
     QPushButton *btnStart;
-    QSpacerItem *verticalSpacer_2;
-    QPushButton *btnDeckSettings;
+
+    QPushButton *btnProfileSettings;
     QSpacerItem *verticalSpacer_3;
     QPushButton *btnGameSettings;
     QSpacerItem *verticalSpacer_4;
-    QPushButton *btnProfileSettings;
+
+    QSpacerItem *music;
+    QSpacerItem *verticalSpacer_6;
+
     QSpacerItem *verticalSpacer_5;
     QPushButton *btnQuit;
     QStatusBar *statusbar;
@@ -90,18 +93,9 @@ public:
 
         verticalLayout_3->addWidget(btnStart);
 
-        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        verticalLayout_3->addItem(verticalSpacer_2);
 
-        btnDeckSettings = new QPushButton(centralwidget);
-        btnDeckSettings->setObjectName(QString::fromUtf8("btnDeckSettings"));
-        sizePolicy.setHeightForWidth(btnDeckSettings->sizePolicy().hasHeightForWidth());
-        btnDeckSettings->setSizePolicy(sizePolicy);
-        btnDeckSettings->setStyleSheet(QString::fromUtf8("background-color: qconicalgradient(cx:0.5, cy:0.5, angle:0, stop:0 rgba(35, 40, 3, 255), stop:0.16 rgba(136, 106, 22, 255), stop:0.225 rgba(166, 140, 41, 255), stop:0.285 rgba(204, 181, 74, 255), stop:0.345 rgba(235, 219, 102, 255), stop:0.415 rgba(245, 236, 112, 255), stop:0.52 rgba(209, 190, 76, 255), stop:0.57 rgba(187, 156, 51, 255), stop:0.635 rgba(168, 142, 42, 255), stop:0.695 rgba(202, 174, 68, 255), stop:0.75 rgba(218, 202, 86, 255), stop:0.815 rgba(208, 187, 73, 255), stop:0.88 rgba(187, 156, 51, 255), stop:0.935 rgba(137, 108, 26, 255), stop:1 rgba(35, 40, 3, 255));\n"
-""));
 
-        verticalLayout_3->addWidget(btnDeckSettings);
 
         verticalSpacer_3 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -156,9 +150,9 @@ public:
         MainMenu->setWindowTitle(QCoreApplication::translate("MainMenu", "MainWindow", nullptr));
         label->setText(QCoreApplication::translate("MainMenu", "Yu-Gi-Oh!", nullptr));
         btnStart->setText(QCoreApplication::translate("MainMenu", "START", nullptr));
-        btnDeckSettings->setText(QCoreApplication::translate("MainMenu", "PROFILE SETTINGS", nullptr));
+
         btnGameSettings->setText(QCoreApplication::translate("MainMenu", "GAME SETTINGS", nullptr));
-        btnProfileSettings->setText(QCoreApplication::translate("MainMenu", "DECK SETTINGS", nullptr));
+        btnProfileSettings->setText(QCoreApplication::translate("MainMenu", "PROFILE SETTINGS", nullptr));
         btnQuit->setText(QCoreApplication::translate("MainMenu", "QUIT", nullptr));
     } // retranslateUi
 

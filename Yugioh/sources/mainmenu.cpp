@@ -1,5 +1,5 @@
 #include "headers/mainmenu.h"
-#include "headers/ui_mainmenu.h"
+#include "ui_mainmenu.h"
 #include "headers/Game.h"
 #include "headers/Player.h"
 #include "headers/GameSettings.h"
@@ -81,13 +81,14 @@ void MainMenu::setGame(Game *newGame)
 
 void MainMenu::updateValues()
 {
+    //
     //to do save as json file?
-    if(!m_pGame)
-    {
-        m_pGame->setLifePoints(m_pGameSettings->getLifePoints());
-        m_pGame->setNumberOfCards(m_pGame->getNumberOfCards());
-        m_pGame->setTimePerMove(m_pGame->getTimePerMove());
-    }
+   //LifePoints::STANDARD_POINTS if(!m_pGame)
+    //{
+    //    m_pGame->setLifePoints(m_pGameSettings->getLifePoints());
+    //    m_pGame->setNumberOfCards(m_pGame->getNumberOfCards());
+    //    m_pGame->setTimePerMove(m_pGame->getTimePerMove());
+    //}
 }
 
 void MainMenu::saveDeckSettingsJson(int lifePoints,int numberOfCards,int timePerMove)
@@ -108,5 +109,25 @@ void MainMenu::saveDeckSettingsJson(int lifePoints,int numberOfCards,int timePer
     file.write(d.toJson());
     file.close();
     return;
+}
+
+
+
+void MainMenu::on_btnMusic_clicked()
+{
+    if(!musicActive)
+    {
+    music->play();
+    musicActive = true;
+    ui->btnMusic->setText("MUSIC : ON");
+
+    }
+    else{
+    music->stop();
+    musicActive = false;
+    ui->btnMusic->setText("MUSIC : OFF");
+
+    }
+
 }
 

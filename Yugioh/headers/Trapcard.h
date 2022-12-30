@@ -26,7 +26,7 @@ public:
     void setCardMenu() override;
     void setPosition(SpellTrapPosition newPosition);
 
-protected:
+private:
     TrapType trapType;
     bool active;
     SpellTrapPosition position;

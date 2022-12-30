@@ -1,7 +1,49 @@
 #ifndef GAMESETTINGS_H
 #define GAMESETTINGS_H
-
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <qfile.h>
 #include <QDialog>
+#include <QDesktopServices>
+#include <QUrl>
+
+
+enum class Decks
+{
+    YUGI,
+    KAIBA
+};
+
+enum class LifePoints
+{
+    MINIMAL_POINTS,
+    SMALLER_POINTS,
+    STANDARD_POINTS,
+    BIGGER_POINTS,
+    MAXIMUM_POINTS
+};
+
+
+
+enum class TimePerMove
+{
+    MINIMAL_TIME,
+    SMALLER_TIME,
+    STANDARD_TIME,
+    BIGGER_TIME,
+    MAXIMUM_TIME
+};
+
+enum class NumberOfCards
+{
+    MINIMAL_CARDS,
+    SMALLER_CARDS,
+    STANDARD_CARDS,
+    BIGGER_CARDS,
+    MAXIMUM_CARDS
+};
+
+
 namespace Ui {
 class GameSettings;
 }
@@ -14,39 +56,54 @@ public:
     explicit GameSettings(QWidget *parent = nullptr);
     ~GameSettings();
 
-    int timePerMove ;
-    int numberOfCards ;
-    int lifePoints ;
 
 
+    TimePerMove getTimePerMove() const;
+    void setTimePerMove(TimePerMove newTimePerMove);
 
-    int getLifePoints() const;
-    void setLifePoints(int newLifePoints);
+    NumberOfCards getNumberOfCards() const;
+    void setNumberOfCards(NumberOfCards newNumberOfCards);
 
-    int getNumberOfCards() const;
-    void setNumberOfCards(int newNumberOfCards);
+    LifePoints getLifePoints() const;
+    void setLifePoints(LifePoints newLifePoints);
 
-    int getTimePerMove() const;
-    void setTimePerMove(int newTimePerMove);
+    static const QMap<TimePerMove, int> getTimePerMoveEnumToInt;
+    static const QMap<NumberOfCards, int> getNumberOfCardsEnumToInt;
+    static const QMap<LifePoints, int> getLifePointsEnumToInt;
+    static const QMap<Decks,QString> getDeckEnumToString;
 
 signals:
     void okButtonClicked();
-
+    void helpClicked();
 
 private slots:
-    void onSetLifepointsCurrentIndexChanged(int index);
-
-    void onSetTimePerMoveCurrentIndexChanged(int index);
-
-    void onSetInitialNumberOfCardsCurrentIndexChanged(int index);
-
-    void onOkButtonClick();
 
     void onLeaveButtonClick();
 
 
+    void onHelpButtonClick();
+
+
+    //void on_ChooseDeck_activated(int index);
+
+
+
+    void on_okButton_clicked();
+
+    void on_SetLifepoints_activated(int index);
+
+    void on_SetTimePerMove_activated(int index);
+
+    void on_SetInitialNumberOfCards_activated(int index);
+
+    void on_ChooseDeck_currentIndexChanged(int index);
 
 private:
+    void saveGameSettingsJson(int lifePoints,int numberOfCards,int timePerMove,QString deck);
+    TimePerMove timePerMove ;
+    NumberOfCards numberOfCards ;
+    LifePoints lifePoints ;
+    Decks deck;
     Ui::GameSettings *ui;
 };
 

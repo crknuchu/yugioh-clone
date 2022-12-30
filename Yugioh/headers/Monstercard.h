@@ -103,7 +103,7 @@ public:
 
     static bool globalSummonedThisTurn;
 
-protected:
+private:
     int attackPoints;
     int defensePoints;
     MonsterType type;

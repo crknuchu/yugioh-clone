@@ -29,6 +29,7 @@ SOURCES += \
         sources/Game.cpp \
         sources/CardList.cpp \
         sources/Deck.cpp \
+        sources/DeckSettings.cpp \
         sources/Graveyard.cpp \
         sources/Hand.cpp \
         sources/Player.cpp \
@@ -51,6 +52,7 @@ HEADERS += \
     headers/Game.h \
     headers/CardList.h \
     headers/Deck.h \
+    headers/DeckSettings.cpp \
     headers/Graveyard.h \
     headers/Hand.h \
     headers/Player.h \
@@ -71,6 +73,7 @@ RESOURCES += \
 FORMS += \
     sources/GameSettings.ui \
     sources/mainmenu.ui \
+    source/DeckSettings.ui \
     sources/mainwindow.ui
 
 

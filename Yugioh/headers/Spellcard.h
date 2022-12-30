@@ -29,7 +29,7 @@ public:
 
 
 
-protected:
+private:
     SpellType type;
     bool active;
     SpellTrapPosition position;
