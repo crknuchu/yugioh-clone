@@ -109,7 +109,7 @@ void MyTcpServer::onDataIncoming() {
         // Append the byte array returned by readAll to our buffer
         pBuffer->append(pSocket->readAll());
 
-        // TODO (check): This while loop should ensure that we read the complete data
+        // In this loop we ensure that we get complete data
         while((size == 0 && pBuffer->size() >= 4) || (size > 0 && pBuffer->size() >= size)) //While we can process data, process it
         {
             if (size == 0 && pBuffer->size() >= 4) // If the data's size has been received completely, we store it
@@ -132,8 +132,6 @@ void MyTcpServer::onDataIncoming() {
     }
 }
 
-
-// TODO: Check if dataReceived signal needs to be connected to this slot by using queued connection
 void MyTcpServer::onDataReceived(QByteArray &receivedData, QTcpSocket *pSenderSocket)
 {
     std::cout << "We are in onDataReceived" << std::endl;
@@ -153,7 +151,6 @@ void MyTcpServer::onDataReceived(QByteArray &receivedData, QTcpSocket *pSenderSo
     }
 }
 
-// TODO: QInt vs QInt32
 qint32 MyTcpServer::QByteArrayToQInt32(QByteArray source)
 {
     qint32 tmp;
