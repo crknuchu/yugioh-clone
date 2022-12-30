@@ -22,8 +22,6 @@ public:
 
     void setGame(Game *newGame);
 
-    void saveDeckSettingsJson(int lifePoints,int numberOfCards,int timePerMove);
-
 
 private slots:
     void onStartButtonClick();
@@ -32,7 +30,7 @@ private slots:
 
     void on_btnGameSettings_clicked();
 
-    void updateValues();
+
 
     void on_btnMusic_clicked();
 

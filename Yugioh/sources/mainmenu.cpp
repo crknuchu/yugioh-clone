@@ -1,5 +1,5 @@
 #include "headers/mainmenu.h"
-#include "ui_mainmenu.h"
+#include "headers/ui_mainmenu.h"
 #include "headers/Game.h"
 #include "headers/Player.h"
 #include "headers/GameSettings.h"
@@ -25,10 +25,10 @@ MainMenu::MainMenu(QWidget *parent) :
     QPalette palette;
     palette.setBrush(QPalette::Window, bkgnd);
     this->setPalette(palette);
-//    QMediaPlayer * music = new QMediaPlayer();
-//    music->setSaource(QUrl("qrc:/resources/sounds/illusion.mp3")); // in qt5 is setMedia()
-//    music->play();
-
+    QMediaPlayer * music = new QMediaPlayer();
+    music->setMedia(QUrl("qrc:/resources/sounds/illusion.mp3")); // in qt5 is setMedia()
+    music->play();
+    musicActive = true;
 
 
     connect(ui->btnStart, &QPushButton::clicked, this, &MainMenu::onStartButtonClick);
@@ -71,7 +71,6 @@ void MainMenu::on_btnGameSettings_clicked()
     m_pGameSettings = new GameSettings();
     m_pGameSettings->show();
 
-    connect(m_pGameSettings, &GameSettings::okButtonClicked, this, &MainMenu::updateValues);
 }
 
 void MainMenu::setGame(Game *newGame)
@@ -79,42 +78,10 @@ void MainMenu::setGame(Game *newGame)
     m_pGame = newGame;
 }
 
-void MainMenu::updateValues()
-{
-    //
-    //to do save as json file?
-   //LifePoints::STANDARD_POINTS if(!m_pGame)
-    //{
-    //    m_pGame->setLifePoints(m_pGameSettings->getLifePoints());
-    //    m_pGame->setNumberOfCards(m_pGame->getNumberOfCards());
-    //    m_pGame->setTimePerMove(m_pGame->getTimePerMove());
-    //}
-}
-
-void MainMenu::saveDeckSettingsJson(int lifePoints,int numberOfCards,int timePerMove)
-{
-    QJsonObject obj;
-    obj.insert("lifepoints",lifePoints);
-    obj.insert("numberofcards",numberOfCards);
-    obj.insert("timepermove",timePerMove);
-
-    QString path = qApp->applicationDirPath();
-    path.append("/resources/deck_settings.json");
-    qWarning() << path;
-
-    QFile file;
-    file.setFileName(path);
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QJsonDocument d(obj);
-    file.write(d.toJson());
-    file.close();
-    return;
-}
-
-
 
 void MainMenu::on_btnMusic_clicked()
 {
+
     if(!musicActive)
     {
     music->play();
@@ -122,12 +89,11 @@ void MainMenu::on_btnMusic_clicked()
     ui->btnMusic->setText("MUSIC : ON");
 
     }
-    else{
+    else
+    {
     music->stop();
     musicActive = false;
     ui->btnMusic->setText("MUSIC : OFF");
-
     }
-
 }
 

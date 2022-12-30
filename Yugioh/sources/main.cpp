@@ -19,12 +19,16 @@ int main(int argc,char **argv)
     Player* player2 = new Player("Milan");
     std::vector<Card*> yugiCards1 = s1.getCards();
     std::vector<Card*> yugiCards2 = s2.getCards();
-    Deck d1 = Deck(yugiCards1);
-    Deck d2 = Deck(yugiCards2);
-    player1->setDeck(d1);
-    player2->setDeck(d2);
-    Game* game = new Game(*player1, *player2);
-    game->showFullScreen();
+    //Deck d1 = Deck(yugiCards1);
+    //Deck d2 = Deck(yugiCards2);
+    //player1->setDeck(d1);
+    //player2->setDeck(d2);
+    //Game* game = new Game(*player1, *player2);
+    //game->showFullScreen();
+
+    //MainMenu m;
+    m.showFullScreen();
+
 
     return app.exec();
 }
