@@ -1,5 +1,5 @@
 #include "headers/DeckSettings.h"
-#include "ui_decksettings.h"
+#include "headers/ui_decksettings.h"
 
 deckSettings::deckSettings(QWidget *parent) :
     QDialog(parent),

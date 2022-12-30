@@ -498,13 +498,16 @@ void Game::visuallySetTrap(TrapCard *pTrapCard)
 
 void Game::visuallyFlipMonster(MonsterCard *pMonsterCard, qreal degrees)
 {
-    // FIXME: We can't use this for both flipping our and opponent's cards, since our cards will be rotated by 180 degress which is something we don't want to do.
+    pMonsterCard->move(pMonsterCard->x() + pMonsterCard->width / 5 , pMonsterCard->y() - pMonsterCard->height / 5 );
+
     QTransform transformationMatrix;
     transformationMatrix.rotate(degrees);
     QPixmap pix;
     pix.load(QString::fromStdString(pMonsterCard->imagePath));
     pix = pix.scaled(QSize(pMonsterCard->width, pMonsterCard->height), Qt::KeepAspectRatio);
     pMonsterCard->setPixmap(pix.transformed(transformationMatrix));
+
+
 }
 
 void Game::visuallyFlipSpell(SpellCard *pSpellCard)

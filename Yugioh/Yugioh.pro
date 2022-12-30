@@ -52,7 +52,7 @@ HEADERS += \
     headers/Game.h \
     headers/CardList.h \
     headers/Deck.h \
-    headers/DeckSettings.cpp \
+    headers/DeckSettings.h \
     headers/Graveyard.h \
     headers/Hand.h \
     headers/Player.h \
@@ -62,6 +62,7 @@ HEADERS += \
     headers/Zone.h \
     headers/ui_mainwindow.h \
     headers/ui_mainmenu.h \
+    headers/ui_decksettings.h \
     headers/CardMenu.h \ 
     headers/MonsterZone.h \
     headers/BotPlayer.h \
@@ -73,7 +74,7 @@ RESOURCES += \
 FORMS += \
     sources/GameSettings.ui \
     sources/mainmenu.ui \
-    source/DeckSettings.ui \
+    sources/DeckSettings.ui \
     sources/mainwindow.ui
 
 
