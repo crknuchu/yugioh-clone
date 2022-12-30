@@ -43,23 +43,77 @@ MainMenu::~MainMenu()
 
 void MainMenu::onStartButtonClick()
 {
-//    Serializer s1;
-//    Serializer s2;
-//    s1.loadFromJson(":/resources/yugi.json");
-//    s2.loadFromJson(":/resources/yugi.json");
-//    Player* player1 = new Player("Nikola");
-//    Player* player2 = new Player("Milan");
-//    std::vector<Card*> yugiCards1 = s1.getCards();
-//    std::vector<Card*> yugiCards2 = s2.getCards();
-//    Deck d1 = Deck(yugiCards1);
-//    Deck d2 = Deck(yugiCards2);
-//    player1->setDeck(d1);
-//    player2->setDeck(d2);
-//    m_pGame = new Game(*player1, *player2);
-//    m_pGame->showFullScreen();
-//    m_pGame->show();
+   Serializer s1;
+   Serializer s2;
+   s1.loadFromJson(":/resources/yugi.json");
+   s2.loadFromJson(":/resources/kaiba.json");
+   Player* player1 = new Player("Nikola");
+   Player* player2 = new Player("Milan");
+   std::vector<Card*> yugiCards1 = s1.getCards();
+   std::vector<Card*> yugiCards2 = s2.getCards();
+   Deck d1 = Deck(yugiCards1);
+   Deck d2 = Deck(yugiCards2);
+   player1->setDeck(d1);
+   player2->setDeck(d2);
+   m_pGame = new Game(*player1, *player2,this->getLifePointsJson(),this->getNumberOfCardsJson(),this->getTimePerMoveJson());
+   m_pGame->showFullScreen();
 }
 
+int MainMenu::getLifePointsJson(){
+    QString val;
+    QFile file;
+    file.setFileName(":/resources/deck_settings.json");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    val = file.readAll();
+    file.close();
+    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject obj = d.object();
+
+    int lifePoints = d["lifepoints"].toInt();
+    return lifePoints;
+}
+
+int MainMenu::getNumberOfCardsJson(){
+    QString val;
+    QFile file;
+    file.setFileName(":/resources/deck_settings.json");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    val = file.readAll();
+    file.close();
+    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject obj = d.object();
+
+    int numberOfCards = d["numberofcards"].toInt();
+    return numberOfCards;
+}
+
+int MainMenu::getTimePerMoveJson(){
+    QString val;
+    QFile file;
+    file.setFileName(":/resources/deck_settings.json");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    val = file.readAll();
+    file.close();
+    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject obj = d.object();
+
+    int timePerMove = d["timepermove"].toInt();
+    return timePerMove;
+}
+
+QString MainMenu::getDeckJson(){
+    QString val;
+    QFile file;
+    file.setFileName(":/resources/deck_settings.json");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    val = file.readAll();
+    file.close();
+    QJsonDocument d = QJsonDocument::fromJson(val.toUtf8());
+    QJsonObject obj = d.object();
+
+    QString deck = d["deck"].toString();
+    return deck;
+}
 
 void MainMenu::on_btnQuit_clicked()
 {

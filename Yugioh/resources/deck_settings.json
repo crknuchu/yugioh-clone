@@ -1,5 +1,6 @@
 {
-    "lifepoints":4000,
-    "numberofcards":5,
-    "timepermove":5
+    "deck": "KAIBA",
+    "lifepoints": 1111,
+    "numberofcards": 3,
+    "timepermove": 3
 }

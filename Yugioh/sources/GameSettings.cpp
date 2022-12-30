@@ -119,8 +119,7 @@ void GameSettings::saveGameSettingsJson(int lifePoints,int numberOfCards,int tim
     obj.insert("timepermove",timePerMove);
     obj.insert("deck", deck);
     QString path = qApp->applicationDirPath();
-    path.append("/deck_settings.json");
-    //qWarning() << path;
+    path.append("/resources/deck_settings.json");
 
     QFile file;
     file.setFileName(path);

@@ -30,7 +30,10 @@ private slots:
 
     void on_btnGameSettings_clicked();
 
-
+    int getLifePointsJson();
+    int getNumberOfCardsJson();
+    int getTimePerMoveJson();
+    QString getDeckJson();
 
     void on_btnMusic_clicked();
 

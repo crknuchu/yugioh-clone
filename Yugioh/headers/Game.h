@@ -31,11 +31,12 @@ class Game: public QMainWindow
     using DESERIALIZATION_MEMBER_FUNCTION_POINTER = void(Game::*)(QDataStream &);
 public:
   Game();
-  Game(Player p1, Player p2,int lifePoints = 4000,int numberOfCards = 5 ,int timePerMove = 5,QWidget *parent = nullptr);
+  Game(Player p1, Player p2,int lifePoints,int numberOfCards,int timePerMove,QWidget *parent = nullptr);
   ~Game();
   int lifePoints ;
   int numberOfCards ;
   int timePerMove ;
+  QString deck;
 
 
   // Public member functions:
@@ -43,15 +44,12 @@ public:
 
   int getLifePoints() const;
   void setLifePoints(int newLifePoints);
-  int getLifePointsJson();
 
   int getNumberOfCards() const;
   void setNumberOfCards(int newNumberOfCards);
-  int getNumberOfCardsJson();
 
   int getTimePerMove() const;
   void setTimePerMove(int newTimePerMove);
-  int getTimePerMoveJson();
 
 private:
   Ui::MainWindow *ui;
