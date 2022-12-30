@@ -47,8 +47,7 @@ public:
 
 
   bool isCardInGrave(Card &c);
-
-
+  std::vector<Card *>drawenCards(unsigned int num);
   std::string getPlayerName() const;
   unsigned getPlayerLifePoints() const;
   void setPlayerLifePoints(unsigned points);

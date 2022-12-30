@@ -6,6 +6,7 @@
 #include "headers/Game.h"
 #include "headers/Player.h"
 #include "headers/EffectActivator.h"
+#include "headers/mainmenu.h"
 
 //TEST_CASE("Card","[class][getter][setter][constructor]")
 //{
@@ -379,437 +380,919 @@
 
 
 // Game tests
-TEST_CASE("Game","[class][getter][setter]")
+//TEST_CASE("Game","[class][getter][setter]")
+//{
+
+//    SECTION("Getter getLifePoints will return life points specified in the constructor")
+//    {
+//        Player *player1 = new Player("Nikola");
+//        Player *player2 = new Player("Milan");
+//        Game *m_pGame = new Game(*player1, *player2, 5000);
+
+//        int output = m_pGame->getLifePoints();
+//        int expected = 5000;
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Setter setLifePoints will set m_lifePoints to the specified value")
+//    {
+//        Player *player1 = new Player("Nikola");
+//        Player *player2 = new Player("Milan");
+//        Game *m_pGame = new Game(*player1, *player2);
+
+//        m_pGame->setLifePoints(5000);
+//        int output = m_pGame->getLifePoints();
+//        int expected = 5000;
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Getter getNumberOfCards will return number of cards specified in the constructor")
+//    {
+//        Player *player1 = new Player("Nikola");
+//        Player *player2 = new Player("Milan");
+//        Game *m_pGame = new Game(*player1, *player2, 5000, 10);
+
+//        int output = m_pGame->getNumberOfCards();
+//        int expected = 10;
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Setter setNumberOfCards will set m_numberOfCards to the specified value")
+//    {
+//        Player *player1 = new Player("Nikola");
+//        Player *player2 = new Player("Milan");
+//        Game *m_pGame = new Game(*player1, *player2);
+
+//        m_pGame->setNumberOfCards(10);
+//        int output = m_pGame->getNumberOfCards();
+//        int expected = 10;
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Getter getTimePerMove will return time per move specified in the constructor")
+//    {
+//        Player *player1 = new Player("Nikola");
+//        Player *player2 = new Player("Milan");
+//        Game *m_pGame = new Game(*player1, *player2, 5000, 10, 100);
+
+//        int output = m_pGame->getTimePerMove();
+//        int expected = 100;
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Setter setTimePerMove will set m_timePerMove to the specified value")
+//    {
+//        Player *player1 = new Player("Nikola");
+//        Player *player2 = new Player("Milan");
+//        Game *m_pGame = new Game(*player1, *player2);
+
+//        m_pGame->setTimePerMove(100);
+//        int output = m_pGame->getTimePerMove();
+//        int expected = 100;
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Setter setGamePhase will set m_timePerMove to the specified value")
+//    {
+//        Player *player1 = new Player("Nikola");
+//        Player *player2 = new Player("Milan");
+//        Game *m_pGame = new Game(*player1, *player2);
+
+//        m_pGame->setTimePerMove(100);
+//        int output = m_pGame->getTimePerMove();
+//        int expected = 100;
+//        REQUIRE(output == expected);
+//    }
+//}
+
+//// EffectActivator tests
+//TEST_CASE("EffectActivator","[class][getter][setter][function]")
+//{
+//    SECTION("Getter getCard will return the card that is bound to this EffectActivator object")
+//    {
+//        Card* card = new TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+
+//        EffectActivator effectActivator(*card);
+//        Card* output = effectActivator.getCard();
+//        Card* expected = card;
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Setter setCard will set the card that is bound to this EffectActivator object")
+//    {
+//        Card* oldCard = new TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+//        Card* newCard = new TrapCard(TrapType::NORMAL_TRAP ,"NEW CARD", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+
+//        EffectActivator effectActivator(*oldCard);
+//        effectActivator.setCard(*newCard);
+
+//        Card* output = effectActivator.getCard();
+//        Card* expected = newCard;
+//        REQUIRE(output == expected);
+//    }
+//}
+
+//// MonsterZone  tests
+//TEST_CASE("MonsterZone","[class][getter][setter][functions]")
+//{
+//    SECTION("Function placeInMonsterZone(Card*, Zone*) should place the given card in the given zone")
+//    {
+//        MonsterZone *pMonsterZone = new MonsterZone();
+//        pMonsterZone->setMonsterZone(10, 10);
+
+//        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+//                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+//        pMonsterZone->placeInMonsterZone(card, pMonsterZone->m_monsterZone[0]);
+
+//        REQUIRE_FALSE(pMonsterZone->m_monsterZone[0]->m_pCard == nullptr);
+//    }
+
+//    SECTION("Function placeInMonsterZone(Card*, int) should place the given card in the zone with a given number")
+//    {
+//        MonsterZone *pMonsterZone = new MonsterZone();
+//        pMonsterZone->setMonsterZone(10, 10);
+
+//        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+//                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+//        pMonsterZone->placeInMonsterZone(card, 3);
+
+//        REQUIRE_FALSE(pMonsterZone->m_monsterZone[2]->m_pCard == nullptr);
+//    }
+
+//    SECTION("Function removeFromMonsterZone(Zone*) will remove the monster from the given zone and return that removed monster")
+//    {
+//        MonsterZone *pMonsterZone = new MonsterZone();
+//        pMonsterZone->setMonsterZone(10, 10);
+
+//        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+//                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+//        pMonsterZone->placeInMonsterZone(card, pMonsterZone->m_monsterZone[0]);
+
+//        Card* expected = card;
+//        Card* output = pMonsterZone->removeFromMonsterZone(pMonsterZone->m_monsterZone[0]);
+
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Function removeFromMonsterZone(int) will remove the monster from the given zone but won't return that monster")
+//    {
+//        MonsterZone *pMonsterZone = new MonsterZone();
+//        pMonsterZone->setMonsterZone(10, 10);
+
+//        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+//                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+//        pMonsterZone->placeInMonsterZone(card, pMonsterZone->m_monsterZone[0]);
+
+//        Card* expected = nullptr;
+//        pMonsterZone->removeFromMonsterZone(0);
+
+
+//        Card* output = pMonsterZone->m_monsterZone[0]->m_pCard;
+
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Getter getWidth will return correct width")
+//    {
+//        MonsterZone *pMonsterZone = new MonsterZone();
+
+//        float x = 10, y = 10;
+//        pMonsterZone->setMonsterZone(x, y);
+
+//        // The width of the monster zone should be 5 * zone.width + 5 * gap.width
+//        // Gap width is 20 by default and there are always 5 zones
+//        // We also add x at the end since that was the start coordinates for creation of monster zone
+//        Zone* zone = new Zone(x, y);
+//        float gap = 20;
+
+//        float expected = 5 * (zone->getWidth() + gap) + x;
+//        float output = pMonsterZone->getWidth();
+
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Function isFull will return true only if all zones are filled")
+//    {
+//        MonsterZone *pMonsterZone = new MonsterZone();
+
+//        float x = 10, y = 10;
+//        pMonsterZone->setMonsterZone(x, y);
+
+//        bool expected = false;
+//        bool outcome = pMonsterZone->isFull();
+
+//        REQUIRE(outcome == expected);
+//    }
+
+//    SECTION("Function colorOccupiedZones makes zones with monsters be painted green")
+//    {
+//        MonsterZone *pMonsterZone = new MonsterZone();
+//        float x = 10, y = 10;
+//        pMonsterZone->setMonsterZone(x, y);
+
+//        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+//                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+//        Zone* zone = pMonsterZone->m_monsterZone[0];
+//        pMonsterZone->placeInMonsterZone(card, zone);
+
+//        pMonsterZone->colorOccupiedZones();
+
+//        QBrush expected = Qt::green;
+//        QBrush outcome = zone->brush();
+
+//        REQUIRE(outcome == expected);
+//    }
+
+//    SECTION("Function colorFreeZones makes zones without monsters be painted red")
+//    {
+//        MonsterZone *pMonsterZone = new MonsterZone();
+//        float x = 10, y = 10;
+//        pMonsterZone->setMonsterZone(x, y);
+
+//        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+//                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+//        Zone* zone = pMonsterZone->m_monsterZone[0];
+//        pMonsterZone->placeInMonsterZone(card, zone);
+
+//        int expectedNumberOfRedZones = 4;
+
+//        // Act
+//        pMonsterZone->colorFreeZones();
+
+//        int actualNumberOfRedZones = 0;
+//        for(Zone* zone : pMonsterZone->m_monsterZone)
+//            if(zone->brush() == Qt::red)
+//                actualNumberOfRedZones++;
+
+//        REQUIRE(actualNumberOfRedZones == expectedNumberOfRedZones);
+//    }
+
+//    SECTION("Function refresh makes all zones have no color")
+//    {
+//        MonsterZone *pMonsterZone = new MonsterZone();
+//        float x = 10, y = 10;
+//        pMonsterZone->setMonsterZone(x, y);
+
+//        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
+//                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
+//        Zone* zone = pMonsterZone->m_monsterZone[0];
+//        pMonsterZone->placeInMonsterZone(card, zone);
+
+//        // Make zones red
+//        pMonsterZone->colorFreeZones();
+//        int expectedNumberOfZonesThatDontHaveColor = 5;
+
+//        // Refresh them (act)
+//        pMonsterZone->refresh();
+
+//        int actualNumberOfZonesThatDontHaveColor = 0;
+//        for(Zone* zone : pMonsterZone->m_monsterZone)
+//            if(zone->brush() == Qt::NoBrush)
+//                actualNumberOfZonesThatDontHaveColor ++;
+
+//        REQUIRE(actualNumberOfZonesThatDontHaveColor == expectedNumberOfZonesThatDontHaveColor);
+//    }
+//}
+
+//// SpellTrapZone tests
+//TEST_CASE("SpellTrapZone","[class][getter][setter][functions]")
+//{
+//    SECTION("Function placeInSpellZone(Card*, Zone*) should place the given card in the given zone")
+//    {
+//        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+//        pSpellTrapZone->setSpellTrapZone(10, 10);
+
+//        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+//        pSpellTrapZone->placeInSpellTrapZone(card, pSpellTrapZone->m_spellTrapZone[0]);
+
+//        REQUIRE_FALSE(pSpellTrapZone->m_spellTrapZone[0]->m_pCard == nullptr);
+//    }
+
+//    SECTION("Function placeInSpellTrapZone(Card*, int) should place the given card in the zone with a given number")
+//    {
+//        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+//        pSpellTrapZone->setSpellTrapZone(10, 10);
+
+//        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+//        pSpellTrapZone->placeInSpellTrapZone(card, 3);
+
+//        REQUIRE_FALSE(pSpellTrapZone->m_spellTrapZone[2]->m_pCard == nullptr);
+//    }
+
+//    SECTION("Function removeFromSpellTrapZone(Zone*) will remove the spell from the given zone and return that removed spell")
+//    {
+//        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+//        pSpellTrapZone->setSpellTrapZone(10, 10);
+
+//        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+//        pSpellTrapZone->placeInSpellTrapZone(card, pSpellTrapZone->m_spellTrapZone[0]);
+
+//        Card* expected = card;
+//        Card* output = pSpellTrapZone->removeFromSpellTrapZone(pSpellTrapZone->m_spellTrapZone[0]);
+
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Function removeFromSpellTrapZone(int) will remove the spell from the given zone but won't return it")
+//    {
+//        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+//        pSpellTrapZone->setSpellTrapZone(10, 10);
+
+//        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+//        pSpellTrapZone->placeInSpellTrapZone(card, pSpellTrapZone->m_spellTrapZone[0]);
+
+//        Card* expected = nullptr;
+//        pSpellTrapZone->removeFromSpellTrapZone(0);
+
+
+//        Card* output = pSpellTrapZone->m_spellTrapZone[0]->m_pCard;
+
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Getter getWidth will return correct width")
+//    {
+//        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+
+//        float x = 10, y = 10;
+//        pSpellTrapZone->setSpellTrapZone(x, y);
+
+//        // The width of the monster zone should be 5 * zone.width + 5 * gap.width
+//        // Gap width is 20 by default and there are always 5 zones
+//        // We also add x at the end since that was the start coordinates for creation of monster zone
+//        Zone* zone = new Zone(x, y);
+//        float gap = 20;
+
+//        float expected = 5 * (zone->getWidth() + gap) + x;
+//        float output = pSpellTrapZone->getWidth();
+
+//        REQUIRE(output == expected);
+//    }
+
+//    SECTION("Function isFull will return true only if all zones are filled")
+//    {
+//        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+
+//        float x = 10, y = 10;
+//        pSpellTrapZone->setSpellTrapZone(x, y);
+
+//        bool expected = false;
+//        bool outcome = pSpellTrapZone->isFull();
+
+//        REQUIRE(outcome == expected);
+//    }
+
+//    SECTION("Function colorOccupiedZones makes zones with spells be painted green")
+//    {
+//        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+//        float x = 10, y = 10;
+//        pSpellTrapZone->setSpellTrapZone(x, y);
+
+//        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+//        Zone* zone = pSpellTrapZone->m_spellTrapZone[0];
+//        pSpellTrapZone->placeInSpellTrapZone(card, zone);
+
+//        pSpellTrapZone->colorOccupiedZones();
+
+//        QBrush expected = Qt::green;
+//        QBrush outcome = zone->brush();
+
+//        REQUIRE(outcome == expected);
+//    }
+
+//    SECTION("Function colorFreeZones makes zones without spells be painted red")
+//    {
+//        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+//        float x = 10, y = 10;
+//        pSpellTrapZone->setSpellTrapZone(x, y);
+
+//        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+//        Zone* zone = pSpellTrapZone->m_spellTrapZone[0];
+//        pSpellTrapZone->placeInSpellTrapZone(card, zone);
+
+//        int expectedNumberOfRedZones = 4;
+
+//        // Act
+//        pSpellTrapZone->colorFreeZones();
+
+//        int actualNumberOfRedZones = 0;
+//        for(Zone* zone : pSpellTrapZone->m_spellTrapZone)
+//            if(zone->brush() == Qt::red)
+//                actualNumberOfRedZones++;
+
+//        REQUIRE(actualNumberOfRedZones == expectedNumberOfRedZones);
+//    }
+
+//    SECTION("Function refresh makes all zones have no color")
+//    {
+//        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
+//        float x = 10, y = 10;
+//        pSpellTrapZone->setSpellTrapZone(x, y);
+
+//        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
+
+//        Zone* zone = pSpellTrapZone->m_spellTrapZone[0];
+//        pSpellTrapZone->placeInSpellTrapZone(card, zone);
+
+//        // Make zones red
+//        pSpellTrapZone->colorFreeZones();
+//        int expectedNumberOfZonesThatDontHaveColor = 5;
+
+//        // Refresh them (act)
+//        pSpellTrapZone->refresh();
+
+//        int actualNumberOfZonesThatDontHaveColor = 0;
+//        for(Zone* zone : pSpellTrapZone->m_spellTrapZone)
+//            if(zone->brush() == Qt::NoBrush)
+//                actualNumberOfZonesThatDontHaveColor ++;
+
+//        REQUIRE(actualNumberOfZonesThatDontHaveColor == expectedNumberOfZonesThatDontHaveColor);
+//    }
+//}
+
+TEST_CASE("Player", "[class][getter][setter][function")
 {
-
-    SECTION("Getter getLifePoints will return life points specified in the constructor")
+    SECTION("Function will return player name")
     {
-        Player *player1 = new Player("Nikola");
-        Player *player2 = new Player("Milan");
-        Game *m_pGame = new Game(*player1, *player2, 5000);
+        Player p("Dusan", 2000);
+        std::string expect_name = "Dusan";
+        std::string output_name = p.getPlayerName();
 
-        int output = m_pGame->getLifePoints();
-        int expected = 5000;
-        REQUIRE(output == expected);
+        REQUIRE(expect_name == output_name);
     }
 
-    SECTION("Setter setLifePoints will set m_lifePoints to the specified value")
+    SECTION("Function will return player life points")
     {
-        Player *player1 = new Player("Nikola");
-        Player *player2 = new Player("Milan");
-        Game *m_pGame = new Game(*player1, *player2);
+        Player p("Dusan", 2000);
+        int expected_points = 2000;
+        int output_points = p.getPlayerLifePoints();
 
-        m_pGame->setLifePoints(5000);
-        int output = m_pGame->getLifePoints();
-        int expected = 5000;
-        REQUIRE(output == expected);
+        REQUIRE(expected_points == output_points);
     }
 
-    SECTION("Getter getNumberOfCards will return number of cards specified in the constructor")
+    SECTION("Function will return player life points")
     {
-        Player *player1 = new Player("Nikola");
-        Player *player2 = new Player("Milan");
-        Game *m_pGame = new Game(*player1, *player2, 5000, 10);
+        Player p("Dusan");
+        int expected_points = 8000;
+        int output_points = p.getPlayerLifePoints();
 
-        int output = m_pGame->getNumberOfCards();
-        int expected = 10;
-        REQUIRE(output == expected);
+        REQUIRE(expected_points == output_points);
     }
 
-    SECTION("Setter setNumberOfCards will set m_numberOfCards to the specified value")
-    {
-        Player *player1 = new Player("Nikola");
-        Player *player2 = new Player("Milan");
-        Game *m_pGame = new Game(*player1, *player2);
+    SECTION("Function will set new life points"){
+        Player p("Dusan", 3000);
+        p.setPlayerLifePoints(200);
 
-        m_pGame->setNumberOfCards(10);
-        int output = m_pGame->getNumberOfCards();
-        int expected = 10;
-        REQUIRE(output == expected);
+        int output_points = p.getPlayerLifePoints();
+        int expected_points = 200;
+
+        REQUIRE(output_points == expected_points);
     }
 
-    SECTION("Getter getTimePerMove will return time per move specified in the constructor")
+    SECTION("Function will set new life points")
     {
-        Player *player1 = new Player("Nikola");
-        Player *player2 = new Player("Milan");
-        Game *m_pGame = new Game(*player1, *player2, 5000, 10, 100);
+        Player p("Dusan");
+        p.setPlayerLifePoints(2000);
 
-        int output = m_pGame->getTimePerMove();
-        int expected = 100;
-        REQUIRE(output == expected);
+        int output_points = p.getPlayerLifePoints();
+        int expected_points = 2000;
+
+        REQUIRE(output_points == expected_points);
     }
 
-    SECTION("Setter setTimePerMove will set m_timePerMove to the specified value")
+    SECTION("Function will do direct damage to player")
     {
-        Player *player1 = new Player("Nikola");
-        Player *player2 = new Player("Milan");
-        Game *m_pGame = new Game(*player1, *player2);
+        Player p("Dusan");
 
-        m_pGame->setTimePerMove(100);
-        int output = m_pGame->getTimePerMove();
-        int expected = 100;
-        REQUIRE(output == expected);
+        int output_points = p.doDirectDamage(2000);
+        int expected_points = 6000;
+
+        REQUIRE(output_points == expected_points);
     }
 
-    SECTION("Setter setGamePhase will set m_timePerMove to the specified value")
+    SECTION("Function will do direct damage to player")
     {
-        Player *player1 = new Player("Nikola");
-        Player *player2 = new Player("Milan");
-        Game *m_pGame = new Game(*player1, *player2);
+        Player p("Dusan", 4000);
 
-        m_pGame->setTimePerMove(100);
-        int output = m_pGame->getTimePerMove();
-        int expected = 100;
-        REQUIRE(output == expected);
+        int output_points = p.doDirectDamage(2000);
+        int expected_points = 2000;
+
+        REQUIRE(output_points == expected_points);
+    }
+
+    SECTION("Function will add points to player")
+    {
+        Player p("Dusan", 4000);
+        p.addPoints(2000);
+
+        int output_points = p.getPlayerLifePoints();
+        int expected_points = 6000;
+
+        REQUIRE(output_points == expected_points);
+    }
+
+    SECTION("Function will add points to player")
+    {
+        Player p("Dusan");
+        p.addPoints(2000);
+
+        int output_points = p.getPlayerLifePoints();
+        int expected_points = 10000;
+
+        REQUIRE(output_points == expected_points);
+    }
+
+    SECTION("Function will set deck for player")
+    {
+        Deck d;
+        Player p("dusan");
+        p.setDeck(d);
+
+        Deck output_deck = p.field.deck;
+        Deck expected_deck = d;
+
+        REQUIRE(expected_deck == output_deck);
+    }
+
+    SECTION("Function will return size of deck")
+    {
+        Player p("dusan");
+
+        p.field.deck = {};
+        int expected_size = 0;
+        int output_size_of_deck = p.field.deck.getDeck().size();
+
+        REQUIRE(expected_size == output_size_of_deck);
+
+    }
+
+    SECTION("Function will return deck")
+    {
+        Player p("dusan");
+
+        MonsterCard* monsterCard1 = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+        MonsterCard* monsterCard2 = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+        MonsterCard* monsterCard3 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/LordofD.jpg"
+                                                  );
+
+        std::vector<Card *> niz = {monsterCard1, monsterCard2, monsterCard3};
+        Deck d(niz);
+        p.field.deck = d;
+        int expected_size = 3;
+        int output_size_of_deck = p.field.deck.getDeck().size();
+
+        REQUIRE(expected_size == output_size_of_deck);
+
+    }
+
+    SECTION("Function will draw cards from deck and put it in player's hand")
+    {
+        Player p("dusan");
+
+        MonsterCard* monsterCard1 = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+        MonsterCard* monsterCard2 = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+        MonsterCard* monsterCard3 = new MonsterCard("Lord of D", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/LordofD.jpg"
+                                                  );
+
+        std::vector<Card *> niz = {monsterCard1, monsterCard2, monsterCard3};
+        Deck d(niz);
+        p.field.deck = d;
+        int expected_size = 2;
+        std::vector<Card *> output_vector = p.drawenCards(2);
+        int output_size_of_deck = p.m_hand.getHand().size();
+        REQUIRE(expected_size == output_size_of_deck);
+
+    }
+
+    SECTION("Function won't put any card in player's hand")
+    {
+        Player p("dusan");
+
+        std::vector<Card *> niz = {};
+        Deck d(niz);
+        p.field.deck = d;
+        int expected_size = 0;
+        std::vector<Card *> output_vector = p.drawenCards(2z);
+        int output_size_of_deck = p.m_hand.getHand().size();
+        REQUIRE(expected_size == output_size_of_deck);
+
+    }
+
+    SECTION("Function will return card from graveyard to hand")
+    {
+        Player p("dusan");
+
+        MonsterCard* monsterCard1 = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+
+        p.field.graveyard->sendToGraveyard(*monsterCard1);
+        p.fromGraveyardToHand(*monsterCard1);
+        int expected_size = 1;
+        int output_size = p.m_hand.getHand().size();
+
+        REQUIRE(expected_size == output_size);
+    }
+
+    SECTION("Function will return card from graveyard to hand")
+    {
+        Player p("dusan");
+
+        MonsterCard* monsterCard1 = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+
+        p.field.graveyard->sendToGraveyard(*monsterCard1);
+        p.fromGraveyardToHand(*monsterCard1);
+        Card* expected_card = p.m_hand.getHand()[0];
+        Card *output_card = monsterCard1;
+
+        REQUIRE(expected_card == output_card);
+    }
+
+
+    SECTION("Function will delete card from graveyard")
+    {
+        Player p("dusan");
+
+        MonsterCard* monsterCard1 = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+
+        p.field.graveyard->sendToGraveyard(*monsterCard1);
+        p.fromGraveyardToHand(*monsterCard1);
+        int expected_size = 0;
+        int output_size = p.field.graveyard->getGraveyard().size();
+        REQUIRE(expected_size == output_size);
+    }
+
+    SECTION("Function check if card is at graveyard")
+    {
+        Player p("dusan");
+
+        MonsterCard* monsterCard1 = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+
+        p.field.graveyard->sendToGraveyard(*monsterCard1);
+        bool expected_flag = true;
+        int output_flag = p.isCardInGrave(*monsterCard1);
+        REQUIRE(expected_flag == output_flag);
+    }
+
+    SECTION("Function check if card is at graveyard")
+    {
+        Player p("dusan");
+
+        MonsterCard* monsterCard1 = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+
+        bool expected_flag = false;
+        int output_flag = p.isCardInGrave(*monsterCard1);
+        REQUIRE(expected_flag == output_flag);
+    }
+
+    SECTION("Card is sent to graveyard, zone is free")
+    {
+        Zone *zone = new Zone(true);
+        MonsterCard* monsterCard = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+        zone->m_pCard = nullptr;
+        Player d("dusan");
+        d.field.monsterZone.placeInMonsterZone(monsterCard, zone);
+        d.sendToGraveyard(*monsterCard, zone);
+        Card *expected_card = nullptr;
+        Card *output_card = zone->m_pCard;
+
+        REQUIRE(expected_card == output_card);
+
+    }
+
+    SECTION("Function remove card from hand and send it to graveyard")
+    {
+        MonsterCard* monsterCard = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+        Player d("dusan");
+        d.m_hand.addToHand(*monsterCard);
+
+        d.sendToGraveyard(*monsterCard);
+
+        int expected_size = 0;
+        int output_size = d.m_hand.getHand().size();
+
+        CHECK(expected_size == output_size);
+
+        expected_size = 1;
+        output_size = d.field.graveyard->getGraveyard().size();
+
+        REQUIRE(expected_size == output_size);
+    }
+
+    SECTION("Function check opponent monster field")
+    {
+        Zone *zone = new Zone(true);
+        zone->m_pCard = nullptr;
+        MonsterCard* monsterCard = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
+        Player *d = new Player("dusan");
+        zone->m_pCard = monsterCard;
+        d->field.monsterZone.m_monsterZone.push_back(zone);
+        Player *p = new Player("pera");
+
+        int expected_size= 1;
+        int output_size = p->checkOpponentGround(*d);
+        REQUIRE(expected_size == output_size);
+
     }
 }
-
-// EffectActivator tests
-TEST_CASE("EffectActivator","[class][getter][setter][function]")
+TEST_CASE("Zone", "[class][getters][setters][functions]")
 {
-    SECTION("Getter getCard will return the card that is bound to this EffectActivator object")
+    SECTION("Function test if zone is empty")
     {
-        Card* card = new TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+        Zone z(true);
 
-        EffectActivator effectActivator(*card);
-        Card* output = effectActivator.getCard();
-        Card* expected = card;
-        REQUIRE(output == expected);
+        bool expected_zone = true;
+        bool output_zone = z.isEmpty();
+
+        REQUIRE(expected_zone == output_zone);
     }
 
-    SECTION("Setter setCard will set the card that is bound to this EffectActivator object")
+    SECTION("Function will put card in zone")
     {
-        Card* oldCard = new TrapCard(TrapType::NORMAL_TRAP ,"Ultimate Offering", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
-        Card* newCard = new TrapCard(TrapType::NORMAL_TRAP ,"NEW CARD", CardType::TRAP_CARD, CardLocation::DECK, SpellTrapPosition::NONE,"...", ":/resources/pictures/UltimateOffering.jpg", false);
+        MonsterCard* monsterCard = new MonsterCard("Trap Master", 3000, 2500, 4,
+                                                  MonsterType::SPELLCASTER, MonsterKind::EFFECT_MONSTER,
+                                                  MonsterAttribute::DARK, false, MonsterPosition::ATTACK, false,
+                                                  CardType::MONSTER_CARD, CardLocation::HAND,
+                                                  "Neither player can target Dragon monsters on the field with card effects.",
+                                                  ":/resources/pictures/TrapMaster.jpg"
+                                                  );
 
-        EffectActivator effectActivator(*oldCard);
-        effectActivator.setCard(*newCard);
+        Zone *z = new Zone(false);
+        z->putInZone(monsterCard);
 
-        Card* output = effectActivator.getCard();
-        Card* expected = newCard;
-        REQUIRE(output == expected);
+        Card *expected_card = monsterCard;
+        Card *output_card = z->m_pCard;
+
+        REQUIRE(output_card == expected_card);
     }
+
+
+    SECTION("Function don't put any card in zone")
+    {
+
+        Zone *z = new Zone(false);
+        z->m_pCard = nullptr;
+        bool flag = true;
+        bool output_card = z->isEmpty();
+
+        REQUIRE(output_card == flag);
+    }
+
+    SECTION("Function return width for zone")
+    {
+        Zone *z = new Zone(false);
+
+        float expected_width = 100;
+        float output_width = z->getWidth();
+
+        REQUIRE(expected_width == output_width);
+    }
+
+    SECTION("Function return width for zone")
+    {
+        Zone *z = new Zone(150, 100);
+
+        float expected_width = 100;
+        float output_width = z->getWidth();
+
+        REQUIRE(expected_width == output_width);
+    }
+
+    SECTION("Function return height for zone")
+    {
+        Zone *z = new Zone(false);
+
+        float expected_width = 100;
+        float output_width = z->getWidth();
+
+        REQUIRE(expected_width == output_width);
+    }
+
+    SECTION("Function return height for zone")
+    {
+        Zone *z = new Zone(150, 100);
+
+        float expected_width = 100;
+        float output_width = z->getWidth();
+
+        REQUIRE(expected_width == output_width);
+    }
+
+    SECTION("FUNCTION WILL SET NEW COORDINATES")
+    {
+        Zone *z = new Zone(false);
+
+        z->setCoordinates(100, 100);
+
+        float expected_width = 100;
+        float expected_height = 100;
+
+        float output_width = z->getWidth();
+        float output_height = z->getHeight();
+
+        CHECK(expected_width == output_width);
+        REQUIRE(expected_height == output_height);
+
+    }
+
 }
 
-// MonsterZone  tests
-TEST_CASE("MonsterZone","[class][getter][setter][functions]")
+TEST_CASE("MAIN MENU", "[setter][class]")
 {
-    SECTION("Function placeInMonsterZone(Card*, Zone*) should place the given card in the given zone")
+    SECTION("Set game function")
     {
-        MonsterZone *pMonsterZone = new MonsterZone();
-        pMonsterZone->setMonsterZone(10, 10);
+        Game *g = new Game();
+        MainMenu *m;
+        m->setGame(g);
 
-        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
-                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
-        pMonsterZone->placeInMonsterZone(card, pMonsterZone->m_monsterZone[0]);
+        Game *expected_game = g;
+        Game *output_game = m->getGame();
 
-        REQUIRE_FALSE(pMonsterZone->m_monsterZone[0]->m_pCard == nullptr);
-    }
-
-    SECTION("Function placeInMonsterZone(Card*, int) should place the given card in the zone with a given number")
-    {
-        MonsterZone *pMonsterZone = new MonsterZone();
-        pMonsterZone->setMonsterZone(10, 10);
-
-        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
-                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
-        pMonsterZone->placeInMonsterZone(card, 3);
-
-        REQUIRE_FALSE(pMonsterZone->m_monsterZone[2]->m_pCard == nullptr);
-    }
-
-    SECTION("Function removeFromMonsterZone(Zone*) will remove the monster from the given zone and return that removed monster")
-    {
-        MonsterZone *pMonsterZone = new MonsterZone();
-        pMonsterZone->setMonsterZone(10, 10);
-
-        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
-                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
-        pMonsterZone->placeInMonsterZone(card, pMonsterZone->m_monsterZone[0]);
-
-        Card* expected = card;
-        Card* output = pMonsterZone->removeFromMonsterZone(pMonsterZone->m_monsterZone[0]);
-
-        REQUIRE(output == expected);
-    }
-
-    SECTION("Function removeFromMonsterZone(int) will remove the monster from the given zone but won't return that monster")
-    {
-        MonsterZone *pMonsterZone = new MonsterZone();
-        pMonsterZone->setMonsterZone(10, 10);
-
-        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
-                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
-        pMonsterZone->placeInMonsterZone(card, pMonsterZone->m_monsterZone[0]);
-
-        Card* expected = nullptr;
-        pMonsterZone->removeFromMonsterZone(0);
-
-
-        Card* output = pMonsterZone->m_monsterZone[0]->m_pCard;
-
-        REQUIRE(output == expected);
-    }
-
-    SECTION("Getter getWidth will return correct width")
-    {
-        MonsterZone *pMonsterZone = new MonsterZone();
-
-        float x = 10, y = 10;
-        pMonsterZone->setMonsterZone(x, y);
-
-        // The width of the monster zone should be 5 * zone.width + 5 * gap.width
-        // Gap width is 20 by default and there are always 5 zones
-        // We also add x at the end since that was the start coordinates for creation of monster zone
-        Zone* zone = new Zone(x, y);
-        float gap = 20;
-
-        float expected = 5 * (zone->getWidth() + gap) + x;
-        float output = pMonsterZone->getWidth();
-
-        REQUIRE(output == expected);
-    }
-
-    SECTION("Function isFull will return true only if all zones are filled")
-    {
-        MonsterZone *pMonsterZone = new MonsterZone();
-
-        float x = 10, y = 10;
-        pMonsterZone->setMonsterZone(x, y);
-
-        bool expected = false;
-        bool outcome = pMonsterZone->isFull();
-
-        REQUIRE(outcome == expected);
-    }
-
-    SECTION("Function colorOccupiedZones makes zones with monsters be painted green")
-    {
-        MonsterZone *pMonsterZone = new MonsterZone();
-        float x = 10, y = 10;
-        pMonsterZone->setMonsterZone(x, y);
-
-        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
-                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
-        Zone* zone = pMonsterZone->m_monsterZone[0];
-        pMonsterZone->placeInMonsterZone(card, zone);
-
-        pMonsterZone->colorOccupiedZones();
-
-        QBrush expected = Qt::green;
-        QBrush outcome = zone->brush();
-
-        REQUIRE(outcome == expected);
-    }
-
-    SECTION("Function colorFreeZones makes zones without monsters be painted red")
-    {
-        MonsterZone *pMonsterZone = new MonsterZone();
-        float x = 10, y = 10;
-        pMonsterZone->setMonsterZone(x, y);
-
-        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
-                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
-        Zone* zone = pMonsterZone->m_monsterZone[0];
-        pMonsterZone->placeInMonsterZone(card, zone);
-
-        int expectedNumberOfRedZones = 4;
-
-        // Act
-        pMonsterZone->colorFreeZones();
-
-        int actualNumberOfRedZones = 0;
-        for(Zone* zone : pMonsterZone->m_monsterZone)
-            if(zone->brush() == Qt::red)
-                actualNumberOfRedZones++;
-
-        REQUIRE(actualNumberOfRedZones == expectedNumberOfRedZones);
-    }
-
-    SECTION("Function refresh makes all zones have no color")
-    {
-        MonsterZone *pMonsterZone = new MonsterZone();
-        float x = 10, y = 10;
-        pMonsterZone->setMonsterZone(x, y);
-
-        Card* card = new MonsterCard("Sibirski plavac", 3000, 2500, 8, MonsterType::DRAGON, MonsterKind::NORMAL_MONSTER, MonsterAttribute::LIGHT, false,
-                                     MonsterPosition::ATTACK, false, CardType::MONSTER_CARD, CardLocation::FIELD, "test desc", ":/resources/pictures/blue_eyes.jpg", false);
-        Zone* zone = pMonsterZone->m_monsterZone[0];
-        pMonsterZone->placeInMonsterZone(card, zone);
-
-        // Make zones red
-        pMonsterZone->colorFreeZones();
-        int expectedNumberOfZonesThatDontHaveColor = 5;
-
-        // Refresh them (act)
-        pMonsterZone->refresh();
-
-        int actualNumberOfZonesThatDontHaveColor = 0;
-        for(Zone* zone : pMonsterZone->m_monsterZone)
-            if(zone->brush() == Qt::NoBrush)
-                actualNumberOfZonesThatDontHaveColor ++;
-
-        REQUIRE(actualNumberOfZonesThatDontHaveColor == expectedNumberOfZonesThatDontHaveColor);
-    }
-}
-
-// SpellTrapZone tests
-TEST_CASE("SpellTrapZone","[class][getter][setter][functions]")
-{
-    SECTION("Function placeInSpellZone(Card*, Zone*) should place the given card in the given zone")
-    {
-        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
-        pSpellTrapZone->setSpellTrapZone(10, 10);
-
-        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
-        pSpellTrapZone->placeInSpellTrapZone(card, pSpellTrapZone->m_spellTrapZone[0]);
-
-        REQUIRE_FALSE(pSpellTrapZone->m_spellTrapZone[0]->m_pCard == nullptr);
-    }
-
-    SECTION("Function placeInSpellTrapZone(Card*, int) should place the given card in the zone with a given number")
-    {
-        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
-        pSpellTrapZone->setSpellTrapZone(10, 10);
-
-        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
-
-        pSpellTrapZone->placeInSpellTrapZone(card, 3);
-
-        REQUIRE_FALSE(pSpellTrapZone->m_spellTrapZone[2]->m_pCard == nullptr);
-    }
-
-    SECTION("Function removeFromSpellTrapZone(Zone*) will remove the spell from the given zone and return that removed spell")
-    {
-        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
-        pSpellTrapZone->setSpellTrapZone(10, 10);
-
-        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
-
-        pSpellTrapZone->placeInSpellTrapZone(card, pSpellTrapZone->m_spellTrapZone[0]);
-
-        Card* expected = card;
-        Card* output = pSpellTrapZone->removeFromSpellTrapZone(pSpellTrapZone->m_spellTrapZone[0]);
-
-        REQUIRE(output == expected);
-    }
-
-    SECTION("Function removeFromSpellTrapZone(int) will remove the spell from the given zone but won't return it")
-    {
-        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
-        pSpellTrapZone->setSpellTrapZone(10, 10);
-
-        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
-
-        pSpellTrapZone->placeInSpellTrapZone(card, pSpellTrapZone->m_spellTrapZone[0]);
-
-        Card* expected = nullptr;
-        pSpellTrapZone->removeFromSpellTrapZone(0);
-
-
-        Card* output = pSpellTrapZone->m_spellTrapZone[0]->m_pCard;
-
-        REQUIRE(output == expected);
-    }
-
-    SECTION("Getter getWidth will return correct width")
-    {
-        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
-
-        float x = 10, y = 10;
-        pSpellTrapZone->setSpellTrapZone(x, y);
-
-        // The width of the monster zone should be 5 * zone.width + 5 * gap.width
-        // Gap width is 20 by default and there are always 5 zones
-        // We also add x at the end since that was the start coordinates for creation of monster zone
-        Zone* zone = new Zone(x, y);
-        float gap = 20;
-
-        float expected = 5 * (zone->getWidth() + gap) + x;
-        float output = pSpellTrapZone->getWidth();
-
-        REQUIRE(output == expected);
-    }
-
-    SECTION("Function isFull will return true only if all zones are filled")
-    {
-        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
-
-        float x = 10, y = 10;
-        pSpellTrapZone->setSpellTrapZone(x, y);
-
-        bool expected = false;
-        bool outcome = pSpellTrapZone->isFull();
-
-        REQUIRE(outcome == expected);
-    }
-
-    SECTION("Function colorOccupiedZones makes zones with spells be painted green")
-    {
-        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
-        float x = 10, y = 10;
-        pSpellTrapZone->setSpellTrapZone(x, y);
-
-        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
-
-        Zone* zone = pSpellTrapZone->m_spellTrapZone[0];
-        pSpellTrapZone->placeInSpellTrapZone(card, zone);
-
-        pSpellTrapZone->colorOccupiedZones();
-
-        QBrush expected = Qt::green;
-        QBrush outcome = zone->brush();
-
-        REQUIRE(outcome == expected);
-    }
-
-    SECTION("Function colorFreeZones makes zones without spells be painted red")
-    {
-        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
-        float x = 10, y = 10;
-        pSpellTrapZone->setSpellTrapZone(x, y);
-
-        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
-
-        Zone* zone = pSpellTrapZone->m_spellTrapZone[0];
-        pSpellTrapZone->placeInSpellTrapZone(card, zone);
-
-        int expectedNumberOfRedZones = 4;
-
-        // Act
-        pSpellTrapZone->colorFreeZones();
-
-        int actualNumberOfRedZones = 0;
-        for(Zone* zone : pSpellTrapZone->m_spellTrapZone)
-            if(zone->brush() == Qt::red)
-                actualNumberOfRedZones++;
-
-        REQUIRE(actualNumberOfRedZones == expectedNumberOfRedZones);
-    }
-
-    SECTION("Function refresh makes all zones have no color")
-    {
-        SpellTrapZone *pSpellTrapZone = new SpellTrapZone();
-        float x = 10, y = 10;
-        pSpellTrapZone->setSpellTrapZone(x, y);
-
-        Card* card = new SpellCard(SpellType::NORMAL_SPELL, "Dark hole", CardType::SPELL_CARD, CardLocation::FIELD, SpellTrapPosition::FACE_UP, "Destroy all monsters on the field.", ":/resources/pictures/DarkHole.jpg", false);
-
-        Zone* zone = pSpellTrapZone->m_spellTrapZone[0];
-        pSpellTrapZone->placeInSpellTrapZone(card, zone);
-
-        // Make zones red
-        pSpellTrapZone->colorFreeZones();
-        int expectedNumberOfZonesThatDontHaveColor = 5;
-
-        // Refresh them (act)
-        pSpellTrapZone->refresh();
-
-        int actualNumberOfZonesThatDontHaveColor = 0;
-        for(Zone* zone : pSpellTrapZone->m_spellTrapZone)
-            if(zone->brush() == Qt::NoBrush)
-                actualNumberOfZonesThatDontHaveColor ++;
-
-        REQUIRE(actualNumberOfZonesThatDontHaveColor == expectedNumberOfZonesThatDontHaveColor);
+        REQUIRE(expected_game == output_game);
     }
 }

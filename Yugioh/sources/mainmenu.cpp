@@ -75,6 +75,10 @@ void MainMenu::setGame(Game *newGame)
     m_pGame = newGame;
 }
 
+Game* MainMenu::getGame()
+{
+    return this->m_pGame;
+}
 void MainMenu::updateValues()
 {
     //to do save as json file?

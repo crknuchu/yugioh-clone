@@ -31,8 +31,8 @@ float Zone::getHeight() const {
 }
 
 void Zone::setCoordinates(float x, float y) {
-    m_x = x;
-    m_y = y;
+    this->m_width = x;
+    this->m_height = y;
 }
 
 #include <iostream>

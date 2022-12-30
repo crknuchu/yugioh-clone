@@ -23,7 +23,7 @@ public:
 
     void saveDeckSettingsJson(int lifePoints,int numberOfCards,int timePerMove);
 
-
+    Game *getGame();
 
 
 private slots:
