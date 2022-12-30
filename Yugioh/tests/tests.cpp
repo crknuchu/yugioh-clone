@@ -7,6 +7,7 @@
 #include "headers/Player.h"
 #include "headers/EffectActivator.h"
 #include "headers/Serializer.h"
+#include <QMap>
 
 //TEST_CASE("Card","[class][getter][setter][constructor]")
 //{
@@ -818,9 +819,10 @@
 //Serializer tests
 TEST_CASE("Serializer","[class]")
 {
+    Serializer *s = new Serializer();
+
     SECTION("Test if serializer loads entire kaiba deck")
     {
-        Serializer *s = new Serializer();
         s->loadFromJson(":/resources/kaiba.json");
         std::vector<Card*> deck = s->getCards();
         int deckSize = deck.size();
@@ -830,7 +832,6 @@ TEST_CASE("Serializer","[class]")
 
     SECTION("Test if serializer loads entire yugi deck")
     {
-        Serializer *s = new Serializer();
         s->loadFromJson(":/resources/yugi.json");
         std::vector<Card*> deck = s->getCards();
         int deckSize = deck.size();
@@ -840,7 +841,6 @@ TEST_CASE("Serializer","[class]")
 
     SECTION("Test if serializer loads objects corectly by checking names(yugi")
     {
-        Serializer *s = new Serializer();
         s->loadFromJson(":/resources/yugi.json");
         std::vector<Card*> deck = s->getCards();
 
@@ -854,7 +854,6 @@ TEST_CASE("Serializer","[class]")
 
     SECTION("Test if serializer loads objects corectly by checking names(kaiba)")
     {
-        Serializer *s = new Serializer();
         s->loadFromJson(":/resources/kaiba.json");
         std::vector<Card*> deck = s->getCards();
 
@@ -867,3 +866,151 @@ TEST_CASE("Serializer","[class]")
     }
 }
 
+//CardMenu tests
+TEST_CASE("CardMenu","[class]")
+{
+    MonsterCard *monster = new MonsterCard("Name",0,0,0,MonsterType::AQUA,MonsterKind::NORMAL_MONSTER,MonsterAttribute::DARK,false,MonsterPosition::NONE,false,CardType::MONSTER_CARD,CardLocation::DECK,"description",":/resources/pictures/AncientElf.jpg",false);
+
+    SECTION("Creation of cardmenu (not visible)")
+    {
+        bool isCardMenuVisible = monster->cardMenu->isVisible();
+        bool expected = false;
+        REQUIRE(isCardMenuVisible == expected);
+    }
+
+    SECTION("Creation of cardmenu (visible)")
+    {
+        monster->cardMenu->setVisible(true);
+        bool isCardMenuVisible = monster->cardMenu->isVisible();
+        bool expected = true;
+        REQUIRE(isCardMenuVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() activate button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["activate"] = true;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->activateButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() set button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["set"] = true;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->setButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() summon button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["summon"] = true;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->summonButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() reposition button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["reposition"] = true;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->repositionButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() attack button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["attack"] = true;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->attackButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Creation of cardmenu (visible)")
+    {
+        monster->cardMenu->setVisible(false);
+        bool isCardMenuVisible = monster->cardMenu->isVisible();
+        bool expected = false;
+        REQUIRE(isCardMenuVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() activate button")
+    {
+        monster->cardMenu->setVisible(false);
+        QMap<QString,bool> flags;
+        flags["activate"] = false;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->activateButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() set button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["set"] = false;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->setButton->isVisible();
+        bool expected = false;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() summon button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["summon"] = false;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->summonButton->isVisible();
+        bool expected = false;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() reposition button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["reposition"] = false;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->repositionButton->isVisible();
+        bool expected = false;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() attack button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["attack"] = false;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->attackButton->isVisible();
+        bool expected = false;
+        REQUIRE(isButtonVisible == expected);
+    }
+}
