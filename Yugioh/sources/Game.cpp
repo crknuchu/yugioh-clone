@@ -74,7 +74,6 @@ Game::Game(Player p1, Player p2, int lifePoints, int numberOfCards, int timePerM
     ui->enemyAvatar->hide();
     ui->enemyName->hide();
     ui->namePlayer->hide();
-
     // UI Configuration
     // Game phase buttons and label:
     ui->labelGamePhase->setAlignment(Qt::AlignCenter);
@@ -554,10 +553,10 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
       this->ui->btnEndPhase->setEnabled(false);
     }
 
-    ui->labelCurrentPlayerLpDynamic->hide();
-    ui->labelOtherPlayerLpDynamic->hide();
-    ui->labelCurrentPlayerLpConst->hide();
-    ui->labelOtherPlayerLpConst->hide();
+//    ui->labelCurrentPlayerLpDynamic->hide();
+//    ui->labelOtherPlayerLpDynamic->hide();
+//    ui->labelCurrentPlayerLpConst->hide();
+//    ui->labelOtherPlayerLpConst->hide();
 
     std::cout << "The first one to play is " << GameExternVars::pCurrentPlayer->getPlayerName() << std::endl;
     m_currentTurn = 1;
@@ -685,6 +684,9 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
 
     ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
     ui->labelOtherPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
+
+    ui->progressBar->setValue(GameExternVars::pCurrentPlayer->getPlayerLifePoints());
+    ui->enemyPoints->setValue(GameExternVars::pOtherPlayer->getPlayerLifePoints());
 
 }
 
@@ -913,7 +915,6 @@ void Game::deserializeLpChange(QDataStream &deserializationStream)
 
     deserializationStream >> whoseLifePointsChanged
                           >> newLifePoints;
-
     // Now we need to actually set the targeted player's lp to newLifePoints
     if (whoseLifePointsChanged.toStdString() == GameExternVars::pCurrentPlayer->getPlayerName())
     {
@@ -1154,9 +1155,9 @@ void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
     std::cout << "Game has started!" << std::endl;
 
     std::cout << "First one to play is client with id " << firstToPlay << std::endl;
-
-    ui->enemyPoints->setValue(this->m_player2.getPlayerLifePoints());
-    ui->progressBar->setValue(this->m_player1.getPlayerLifePoints());
+    //std::cout<<ui->labelCurrentPlayerNameDynamic->text().toStdString()<<std::endl;
+//    ui->enemyPoints->setValue(ui->labelOtherPlayerLpDynamic->text().toUInt());
+//    ui->progressBar->setValue(ui->labelCurrentPlayerNameDynamic->text().toUInt());
     ui->progressBar->show();
     ui->enemyPoints->show();
     ui->avatarPlayer->show();
@@ -1314,7 +1315,7 @@ void Game::onEndPhaseButtonClick()
     m_currentTurn++;
     emit turnEnded();
     // ui->progressBar->setValue(m_player1.getPlayerLifePoints() - 100);
-    // m_player1.setPlayerLifePoints(m_player1.getPlayerLifePoints() - 100);
+    // ayerLifePoints(m_player1.getPlayerLifePoints() - 100);
 
 }
 
@@ -1481,7 +1482,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
 //        ui->avatarPlayer->setBaseSize(200, 250);
         ui->progressBar->setMaximum(this->m_player1.getPlayerLifePoints());
         ui->progressBar->setMinimum(0);
-        ui->progressBar->setValue(this->m_player1.getPlayerLifePoints());
+//        ui->progressBar->setValue(this->m_player1.getPlayerLifePoints());
         ui->progressBar->setFormat("%v");
         ui->progressBar->setRange(0, 8000);
 
@@ -1491,7 +1492,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         ui->enemyPoints->setMinimum(0);
         ui->enemyPoints->setRange(0, 8000);
         ui->enemyPoints->setFormat("%v");
-        ui->enemyPoints->setValue(this->m_player2.getPlayerLifePoints());
+//        ui->enemyPoints->setValue(this->m_player2.getPlayerLifePoints());
 
         QPixmap avatar(":/resources/pictures/kaiba.png");
 
