@@ -17,10 +17,15 @@ public:
 private:
     Card *m_card;
 
+    bool changeofheartReq();
     bool fissureReq();
     bool monsterRebornReq();
     bool haneHaneReq();
     bool reinforcementsReq();
+    bool invigorationReq();
+    bool swordOfDarkDestructionReq();
+    bool bookOfSecretArtsReq();
+    bool yamiReq();
 };
 
 #endif // EFFECTREQUIREMENT_H

@@ -63,6 +63,10 @@ private:
     void activateTheFluteOfSummoningDragon(bool isOpponentActivating);
     void activateTheInexperiencedSpy(bool isOpponentActivating);
 
+    void activateSwordOfDarkDestruction(bool isOpponentActivating);
+    void activateChangeOfHeart(bool isOpponentActivating);
+    void activateBookOfSecretArts(bool isOpponentActivating);
+    void activateYami(bool isOpponentActivating);
     // Trap card effect activations:
     void activateUltimateOffering(bool isOpponentActivating);
     void activateCastleWalls(bool isOpponentActivating);
@@ -100,6 +104,9 @@ private:
     std::vector<MonsterCard*> findFaceUpMonsters(Player &targetPlayer);
 signals:
     void lifePointsChanged(Player &);
+    void effectChangeOfHeart(Player &, Player &);
+    void effectMonsterReborn(Player &);
+    void healthPointsChanged(Player &);
     void gameEnded(Player &loser);
 };
 

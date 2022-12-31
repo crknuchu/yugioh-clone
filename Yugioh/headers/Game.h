@@ -23,6 +23,7 @@ namespace GameExternVars {
     extern qint32 currentTurnClientID;
     extern std::vector<Card *> yugiCards;
     extern std::vector<Card *> kaibaCards;
+    extern Card *pCardToBeReturned;
 }
 
 class Game: public QMainWindow
@@ -148,11 +149,15 @@ private slots:
     // Slots for EffectActivator signal handling
     void onLifePointsChange(Player &);
     void onGameEnd(Player &); // const?
+    void onMonsterReborn(Player &);
+    void onChangeOfHeart(Player &, Player &);
 
     // Slots for Zone signal handling
     void onRedZoneClick(Zone *zone);
     void onGreenZoneClick(Zone *zone);
+    void onBlueZoneClick(Zone *zone);
 
+    void onReturnCardToOpponent();
 
     // Networking slots
     void onNetworkErrorOccurred(QAbstractSocket::SocketError socketError);
@@ -163,6 +168,7 @@ private slots:
     void onWriteDataButtonClick();
 
 signals:
+    void returnCardToOpponent();
     void mainWindowResized(QResizeEvent *);
     void gameStarted(qint32 firstToPlay, qint32 clientID);
     void gamePhaseChanged(const GamePhases &newGamePhase);

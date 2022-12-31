@@ -74,12 +74,10 @@ void Player::drawCards(){
 
 void Player::fromGraveyardToHand(Card &card){
 
-
-    for (auto it = this->field.graveyard->getGraveyard().cbegin(); it != this->field.graveyard->getGraveyard().cend(); it++)
+    for (auto it = this->field.graveyard->getGraveyard().begin(); it != this->field.graveyard->getGraveyard().end(); it++)
     {
         if ((*it) == &card) {
-//            cardInGrave = 1;
-//            this->field.graveyard->removeFromGraveyard(*it);
+            this->field.graveyard->removeFromGraveyard(card);
             this->m_hand.addToHand(card);
             return;
         }
