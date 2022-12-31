@@ -67,6 +67,13 @@ Game::Game(Player p1, Player p2, int lifePoints, int numberOfCards, int timePerM
 {
     ui->setupUi(this);
 
+    ui->progressBar->hide();
+    ui->enemyPoints->hide();
+    ui->avatarPlayer->hide();
+    ui->enemyAvatar->hide();
+    ui->enemyName->hide();
+    ui->namePlayer->hide();
+
     // UI Configuration
     // Game phase buttons and label:
     ui->labelGamePhase->setAlignment(Qt::AlignCenter);
@@ -545,6 +552,11 @@ void Game::firstTurnSetup(qint32 firstToPlay, qint32 clientID, float windowWidth
       this->ui->btnBattlePhase->setEnabled(false);
       this->ui->btnEndPhase->setEnabled(false);
     }
+
+    ui->labelCurrentPlayerLpDynamic->hide();
+    ui->labelOtherPlayerLpDynamic->hide();
+    ui->labelCurrentPlayerLpConst->hide();
+    ui->labelOtherPlayerLpConst->hide();
 
     std::cout << "The first one to play is " << GameExternVars::pCurrentPlayer->getPlayerName() << std::endl;
     m_currentTurn = 1;
@@ -1102,6 +1114,15 @@ void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
 
     std::cout << "First one to play is client with id " << firstToPlay << std::endl;
 
+    ui->enemyPoints->setValue(this->m_player2.getPlayerLifePoints());
+    ui->progressBar->setValue(this->m_player1.getPlayerLifePoints());
+    ui->progressBar->show();
+    ui->enemyPoints->show();
+    ui->avatarPlayer->show();
+    ui->enemyAvatar->show();
+    ui->enemyName->show();
+    ui->namePlayer->show();
+
 
     // Set up pointers to current and other player
     if (firstToPlay == 1)
@@ -1248,8 +1269,8 @@ void Game::onEndPhaseButtonClick()
     std::cout << "Turn " << m_currentTurn << " ends." << std::endl << std::endl;
     m_currentTurn++;
     emit turnEnded();
-    ui->progressBar->setValue(m_player1.getPlayerLifePoints() - 100);
-    m_player1.setPlayerLifePoints(m_player1.getPlayerLifePoints() - 100);
+    // ui->progressBar->setValue(m_player1.getPlayerLifePoints() - 100);
+    // m_player1.setPlayerLifePoints(m_player1.getPlayerLifePoints() - 100);
 
 }
 
@@ -1717,6 +1738,8 @@ void Game::onLifePointsChange(Player &targetPlayer) // const?
     // Update labels
     ui->labelCurrentPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pCurrentPlayer->getPlayerLifePoints())));
     ui->labelOtherPlayerLpDynamic->setText(QString::fromStdString(std::to_string(GameExternVars::pOtherPlayer->getPlayerLifePoints())));
+    ui->progressBar->setValue(GameExternVars::pCurrentPlayer->getPlayerLifePoints());
+    ui->enemyPoints->setValue(GameExternVars::pOtherPlayer->getPlayerLifePoints());
 
 
     // Notify the server about health change.
