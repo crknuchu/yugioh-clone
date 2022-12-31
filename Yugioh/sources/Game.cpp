@@ -1394,7 +1394,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                 ui->avatarPlayer->setMaximumHeight(200);
                 ui->avatarPlayer->setMaximumWidth(200);
                 ui->avatarPlayer->setAlignment(Qt::AlignCenter);
-                ui->namePlayer->setText(QString::fromUtf8(this->m_player1.getPlayerName()));
+                ui->namePlayer->setText(QString::fromStdString(this->m_player1.getPlayerName()));
                 break;
             }
             case (avatars::KAIBA):{
@@ -1407,7 +1407,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
                 ui->avatarPlayer->setMaximumHeight(200);
                 ui->avatarPlayer->setMaximumWidth(200);
                 ui->avatarPlayer->setAlignment(Qt::AlignCenter);
-                ui->namePlayer->setText(QString::fromUtf8(this->m_player1.getPlayerName()));
+                ui->namePlayer->setText(QString::fromStdString(this->m_player1.getPlayerName()));
 
 
                 break;
@@ -1421,7 +1421,7 @@ void Game::onMainWindowResize(QResizeEvent *resizeEvent)
         ui->progressBar->setRange(0, 8000);
 
 
-        ui->enemyName->setText(QString::fromUtf8(this->m_player2.getPlayerName()));
+        ui->enemyName->setText(QString::fromStdString(this->m_player2.getPlayerName()));
         ui->enemyPoints->setMaximum(this->m_player2.getPlayerLifePoints());
         ui->enemyPoints->setMinimum(0);
         ui->enemyPoints->setRange(0, 8000);
