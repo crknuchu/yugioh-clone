@@ -7,6 +7,7 @@
 #include "headers/Player.h"
 #include "headers/EffectActivator.h"
 #include "headers/mainmenu.h"
+#include "headers/Serializer.h"
 
 TEST_CASE("Card","[class][getter][setter][constructor]")
 {
@@ -1555,5 +1556,331 @@ TEST_CASE("Hand", "[constructor][getter]") {
         const int result = hand.getHand().size();
 
         REQUIRE(expectedSize == result);
+    }
+}
+
+//Serializer tests
+TEST_CASE("Serializer","[class]")
+{
+    Serializer *s = new Serializer();
+
+    SECTION("Test if serializer loads entire kaiba deck")
+    {
+        s->loadFromJson(":/resources/kaiba.json");
+        std::vector<Card*> deck = s->getCards();
+        int deckSize = deck.size();
+        int expectedSize = 50;
+        REQUIRE(deckSize == expectedSize);
+    }
+
+    SECTION("Test if serializer loads entire yugi deck")
+    {
+        s->loadFromJson(":/resources/yugi.json");
+        std::vector<Card*> deck = s->getCards();
+        int deckSize = deck.size();
+        int expectedSize = 50;
+        REQUIRE(deckSize == expectedSize);
+    }
+
+    SECTION("Test if serializer loads objects corectly by checking names(yugi")
+    {
+        s->loadFromJson(":/resources/yugi.json");
+        std::vector<Card*> deck = s->getCards();
+
+        std::string expectedNames = ",Dark Magician,Gaia The Fierce Knight,Summoned Skull,Curse of Dragon,Ansatsu,Doma The Angel of Silence,Neo the Magic Swordsman,Man-Eating Treasure Chest,Great White,Baron of the Fiend Sword,Mystic Clown,Sorcerer of the Doomed,Ancient Elf,Witty Phantom,Winged Dragon Guardian of the Fortress 1,Celtic Guardian,Feral Imp,Magical Ghost,Beaver Warrior,Mystical Elf,DragonZombie,Giant Solider of Stone,Mammoth Graveyard,Silver Fang,Claw Reacher,The Stern Mystic,Wall of Illusion,Trap Master,Man-Eater Bug,Change of Heart,De-Spell,Remove Trap,Dark Hole,Fissure,Soul Exchange,Card Destruction,Monster Reborn,Dian Keto the Cure Master,Last Will,Sword of Dark Destruction,Book of Secret Arts,Yami,Castle Walls,Reverse Trap,Trap Hole,Waboku,Reinforcements,Two-Pronged Attack,Ultimate Offering,Dragon Capture Jar";
+
+        std::string names;
+        for(auto card:deck)
+            names = names + "," + card->getCardName();
+        REQUIRE(names == expectedNames);
+    }
+
+    SECTION("Test if serializer loads objects corectly by checking names(kaiba)")
+    {
+        s->loadFromJson(":/resources/kaiba.json");
+        std::vector<Card*> deck = s->getCards();
+
+        std::string expectedNames = ",Hane-Hane,Blue-Eyes White Dragon,Judge Man,Swordstalker,Gyakutenno Megami,Rude Kaiser,La Jinn the Mystical Genie of the Lamp,Battle Ox,Ryu-Kishin Powered,Rogue Doll,Skull Red Bird,Kojikocy,Koumori Dragon,Pale Beast,Destroyer Golem,Mystic Clown,Uraby,Mystic Horseman,Dark Titan of Terror,D. Human,Ogre of the Black Shadow,Terra the Terrible,Dark Assailant,Hitotsu-Me Giant,Master & Expert,Ryu-Kishin,Unknown Warrior of Fiend,Lord of D.,Mysterious Puppeteer,The Wicked Worm Beast,Trap Master,Dark Energy,Invigoration,Sogen,Dark Hole,De-Spell,Ancient Telescope,Monster Reborn,Ookazi,Fissure,Remove Trap,The Flute of Summoning Dragon,The Inexperienced Spy,Ultimate Offering,Castle Walls,Just Desserts,Reinforcements,Reverse Trap,Trap Hole,Two-Pronged Attack";
+
+        std::string names;
+        for(auto card:deck)
+            names = names + "," + card->getCardName();
+        REQUIRE(names == expectedNames);
+    }
+}
+
+//CardMenu tests
+TEST_CASE("CardMenu","[class]")
+{
+    MonsterCard *monster = new MonsterCard("Name",0,0,0,MonsterType::AQUA,MonsterKind::NORMAL_MONSTER,MonsterAttribute::DARK,false,MonsterPosition::NONE,false,CardType::MONSTER_CARD,CardLocation::DECK,"description",":/resources/pictures/AncientElf.jpg",false);
+
+    SECTION("Creation of cardmenu (not visible)")
+    {
+        bool isCardMenuVisible = monster->cardMenu->isVisible();
+        bool expected = false;
+        REQUIRE(isCardMenuVisible == expected);
+    }
+
+    SECTION("Creation of cardmenu (visible)")
+    {
+        monster->cardMenu->setVisible(true);
+        bool isCardMenuVisible = monster->cardMenu->isVisible();
+        bool expected = true;
+        REQUIRE(isCardMenuVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() activate button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["activate"] = true;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->activateButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() set button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["set"] = true;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->setButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() summon button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["summon"] = true;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->summonButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() reposition button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["reposition"] = true;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->repositionButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() attack button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["attack"] = true;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->attackButton->isVisible();
+        bool expected = true;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Creation of cardmenu (visible)")
+    {
+        monster->cardMenu->setVisible(false);
+        bool isCardMenuVisible = monster->cardMenu->isVisible();
+        bool expected = false;
+        REQUIRE(isCardMenuVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() activate button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["activate"] = false;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->activateButton->isVisible();
+        bool expected = false;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() set button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["set"] = false;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->setButton->isVisible();
+        bool expected = false;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() summon button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["summon"] = false;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->summonButton->isVisible();
+        bool expected = false;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() reposition button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["reposition"] = false;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->repositionButton->isVisible();
+        bool expected = false;
+        REQUIRE(isButtonVisible == expected);
+    }
+
+    SECTION("Test Cardmenu update() attack button")
+    {
+        monster->cardMenu->setVisible(true);
+        QMap<QString,bool> flags;
+        flags["attack"] = false;
+        monster->cardMenu->update(flags);
+
+        bool isButtonVisible = monster->cardMenu->attackButton->isVisible();
+        bool expected = false;
+        REQUIRE(isButtonVisible == expected);
+    }
+}
+
+//gamesettings
+TEST_CASE("GameSettings","[class]")
+{
+    GameSettings *g = new GameSettings();
+    SECTION("test lifepoints getter and setter")
+    {
+        g->setLifePoints(LifePoints::MAXIMUM_POINTS);
+        LifePoints output = g->getLifePoints();
+        LifePoints expected = LifePoints::MAXIMUM_POINTS;
+        REQUIRE(output==expected);
+    }
+
+    SECTION("test timepermove getter and setter")
+    {
+        g->setTimePerMove(TimePerMove::MAXIMUM_TIME);
+        TimePerMove output = g->getTimePerMove();
+        TimePerMove expected = TimePerMove::MAXIMUM_TIME;
+        REQUIRE(output==expected);
+    }
+
+    SECTION("test numberofcards getter and setter")
+    {
+        g->setNumberOfCards(NumberOfCards::MAXIMUM_CARDS);
+        NumberOfCards output = g->getNumberOfCards();
+        NumberOfCards expected = NumberOfCards::MAXIMUM_CARDS;
+        REQUIRE(output==expected);
+    }
+    SECTION("test setlifepointscurrentindexchanged")
+    {
+        g->on_SetLifepoints_activated(0);
+        LifePoints output = g->getLifePoints();
+        LifePoints expected = LifePoints::MINIMAL_POINTS;
+        REQUIRE(output==expected);
+    }
+    SECTION("test setlifepointscurrentindexchanged")
+    {
+        g->on_SetLifepoints_activated(1);
+        LifePoints output = g->getLifePoints();
+        LifePoints expected = LifePoints::SMALLER_POINTS;
+        REQUIRE(output==expected);
+    }
+    SECTION("test setlifepointscurrentindexchanged")
+    {
+        g->on_SetLifepoints_activated(2);
+        LifePoints output = g->getLifePoints();
+        LifePoints expected = LifePoints::STANDARD_POINTS;
+        REQUIRE(output==expected);
+    }
+    SECTION("test setlifepointscurrentindexchanged")
+    {
+        g->on_SetLifepoints_activated(3);
+        LifePoints output = g->getLifePoints();
+        LifePoints expected = LifePoints::BIGGER_POINTS;
+        REQUIRE(output==expected);
+    }
+    SECTION("test setlifepointscurrentindexchanged")
+    {
+        g->on_SetLifepoints_activated(4);
+        LifePoints output = g->getLifePoints();
+        LifePoints expected = LifePoints::MAXIMUM_POINTS;
+        REQUIRE(output==expected);
+    }
+    SECTION("test settimepermovecurrentindexchanged")
+    {
+        g->on_SetTimePerMove_activated(0);
+        TimePerMove output = g->getTimePerMove();
+        TimePerMove expected = TimePerMove::MINIMAL_TIME;
+        REQUIRE(output==expected);
+    }
+    SECTION("test settimepermovecurrentindexchanged")
+    {
+        g->on_SetTimePerMove_activated(1);
+        TimePerMove output = g->getTimePerMove();
+        TimePerMove expected = TimePerMove::SMALLER_TIME;
+        REQUIRE(output==expected);
+    }
+    SECTION("test settimepermovecurrentindexchanged")
+    {
+        g->on_SetTimePerMove_activated(2);
+        TimePerMove output = g->getTimePerMove();
+        TimePerMove expected = TimePerMove::BIGGER_TIME;
+        REQUIRE(output==expected);
+    }
+    SECTION("test settimepermovecurrentindexchanged")
+    {
+        g->on_SetTimePerMove_activated(3);
+        TimePerMove output = g->getTimePerMove();
+        TimePerMove expected = TimePerMove::MAXIMUM_TIME;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+        g->on_SetInitialNumberOfCards_activated(0);
+        NumberOfCards output = g->getNumberOfCards();
+        NumberOfCards expected = NumberOfCards::MINIMAL_CARDS;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+         g->on_SetInitialNumberOfCards_activated(1);
+        NumberOfCards output = g->getNumberOfCards();
+        NumberOfCards expected = NumberOfCards::SMALLER_CARDS;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+        g->on_SetInitialNumberOfCards_activated(2);
+        NumberOfCards output = g->getNumberOfCards();
+        NumberOfCards expected = NumberOfCards::STANDARD_CARDS;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+        g->on_SetInitialNumberOfCards_activated(3);
+        NumberOfCards output = g->getNumberOfCards();
+        NumberOfCards expected = NumberOfCards::BIGGER_CARDS;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+        g->on_SetInitialNumberOfCards_activated(4);
+        NumberOfCards output = g->getNumberOfCards();
+        NumberOfCards expected = NumberOfCards::MAXIMUM_CARDS;
+        REQUIRE(output==expected);
     }
 }
