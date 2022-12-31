@@ -1156,8 +1156,8 @@ void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
 
     std::cout << "First one to play is client with id " << firstToPlay << std::endl;
     //std::cout<<ui->labelCurrentPlayerNameDynamic->text().toStdString()<<std::endl;
-//    ui->enemyPoints->setValue(ui->labelOtherPlayerLpDynamic->text().toUInt());
-//    ui->progressBar->setValue(ui->labelCurrentPlayerNameDynamic->text().toUInt());
+    ui->enemyPoints->setValue(8000);
+    ui->progressBar->setValue(8000);
     ui->progressBar->show();
     ui->enemyPoints->show();
     ui->avatarPlayer->show();
