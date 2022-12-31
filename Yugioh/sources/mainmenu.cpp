@@ -8,7 +8,8 @@
 #include <QDir>
 #include <QScreen>
 #include <QMediaPlayer>
-
+//#include "headers/profilesettings.h"
+#include "sources/profilesettings.h"
 
 MainMenu::MainMenu(QWidget *parent) :
     QMainWindow(parent),
@@ -26,12 +27,13 @@ MainMenu::MainMenu(QWidget *parent) :
     palette.setBrush(QPalette::Window, bkgnd);
     this->setPalette(palette);
     music = new QMediaPlayer();
-    music->setMedia(QUrl("qrc:/resources/sounds/illusion.mp3")); // in qt5 is setMedia()
-    music->play();
+    // music->setMedia(QUrl("qrc:/resources/sounds/illusion.mp3")); // in qt5 is setMedia()
+    // music->play();
     musicActive = true;
 
 
     connect(ui->btnStart, &QPushButton::clicked, this, &MainMenu::onStartButtonClick);
+    connect(ui->btnProfileSettings_2, &QPushButton::clicked, this, &MainMenu::on_btnProfileSettings_clicked);
 }
 
 MainMenu::~MainMenu()
@@ -121,6 +123,14 @@ QString MainMenu::getDeckJson(){
 void MainMenu::on_btnQuit_clicked()
 {
     close();
+}
+
+void MainMenu::on_btnProfileSettings_clicked(){
+
+    profileSettings *p = new profileSettings();
+    p->show();
+
+    //need to update values after closing/saving
 }
 
 void MainMenu::on_btnGameSettings_clicked()

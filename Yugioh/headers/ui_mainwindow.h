@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.7
+** Created by: Qt User Interface Compiler version 5.15.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -14,8 +14,10 @@
 #include <QtWidgets/QGraphicsView>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
@@ -38,7 +40,6 @@ public:
     QTextBrowser *textBrowserEffect;
     QSpacerItem *verticalSpacer_2;
     QLabel *labelGamePhase;
-    QSpacerItem *verticalSpacer;
     QPushButton *btnBattlePhase;
     QPushButton *btnMainPhase2;
     QPushButton *btnEndPhase;
@@ -61,6 +62,16 @@ public:
     QTextEdit *textEditPort;
     QPushButton *btnConnect;
     QPushButton *btnWriteData;
+    QWidget *verticalLayoutWidget_2;
+    QVBoxLayout *verticalLayout_6;
+    QLabel *enemyAvatar;
+    QLineEdit *enemyName;
+    QProgressBar *enemyPoints;
+    QWidget *verticalLayoutWidget;
+    QVBoxLayout *verticalLayout_3;
+    QLabel *avatarPlayer;
+    QLineEdit *namePlayer;
+    QProgressBar *progressBar;
     QMenuBar *menubar;
     QStatusBar *statusbar;
     QToolBar *toolBar;
@@ -74,7 +85,7 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         graphicsView = new QGraphicsView(centralwidget);
         graphicsView->setObjectName(QString::fromUtf8("graphicsView"));
-        graphicsView->setGeometry(QRect(423, 9, 1191, 761));
+        graphicsView->setGeometry(QRect(433, 9, 1181, 711));
         layoutWidget = new QWidget(centralwidget);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
         layoutWidget->setGeometry(QRect(10, 10, 401, 761));
@@ -101,10 +112,6 @@ public:
         labelGamePhase->setObjectName(QString::fromUtf8("labelGamePhase"));
 
         leftVerticalLayout->addWidget(labelGamePhase);
-
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-
-        leftVerticalLayout->addItem(verticalSpacer);
 
         btnBattlePhase = new QPushButton(layoutWidget);
         btnBattlePhase->setObjectName(QString::fromUtf8("btnBattlePhase"));
@@ -217,6 +224,52 @@ public:
 
         leftVerticalLayout->addLayout(verticalLayout);
 
+        verticalLayoutWidget_2 = new QWidget(centralwidget);
+        verticalLayoutWidget_2->setObjectName(QString::fromUtf8("verticalLayoutWidget_2"));
+        verticalLayoutWidget_2->setGeometry(QRect(1450, 10, 161, 221));
+        verticalLayout_6 = new QVBoxLayout(verticalLayoutWidget_2);
+        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
+        verticalLayout_6->setContentsMargins(0, 0, 0, 0);
+        enemyAvatar = new QLabel(verticalLayoutWidget_2);
+        enemyAvatar->setObjectName(QString::fromUtf8("enemyAvatar"));
+
+        verticalLayout_6->addWidget(enemyAvatar);
+
+        enemyName = new QLineEdit(verticalLayoutWidget_2);
+        enemyName->setObjectName(QString::fromUtf8("enemyName"));
+
+        verticalLayout_6->addWidget(enemyName);
+
+        enemyPoints = new QProgressBar(verticalLayoutWidget_2);
+        enemyPoints->setObjectName(QString::fromUtf8("enemyPoints"));
+        enemyPoints->setValue(24);
+
+        verticalLayout_6->addWidget(enemyPoints);
+
+        verticalLayoutWidget = new QWidget(centralwidget);
+        verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
+        verticalLayoutWidget->setGeometry(QRect(450, 580, 161, 221));
+        verticalLayout_3 = new QVBoxLayout(verticalLayoutWidget);
+        verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
+        verticalLayout_3->setContentsMargins(0, 0, 0, 0);
+        avatarPlayer = new QLabel(verticalLayoutWidget);
+        avatarPlayer->setObjectName(QString::fromUtf8("avatarPlayer"));
+
+        verticalLayout_3->addWidget(avatarPlayer);
+
+        namePlayer = new QLineEdit(verticalLayoutWidget);
+        namePlayer->setObjectName(QString::fromUtf8("namePlayer"));
+
+        verticalLayout_3->addWidget(namePlayer);
+
+        progressBar = new QProgressBar(verticalLayoutWidget);
+        progressBar->setObjectName(QString::fromUtf8("progressBar"));
+        progressBar->setMaximum(8000);
+        progressBar->setValue(8000);
+        progressBar->setInvertedAppearance(false);
+
+        verticalLayout_3->addWidget(progressBar);
+
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -262,6 +315,9 @@ public:
         labelServerPort->setText(QCoreApplication::translate("MainWindow", "Server port", nullptr));
         btnConnect->setText(QCoreApplication::translate("MainWindow", "Connect to the server", nullptr));
         btnWriteData->setText(QCoreApplication::translate("MainWindow", "Test write data to server", nullptr));
+        enemyAvatar->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
+        avatarPlayer->setText(QCoreApplication::translate("MainWindow", "TextLabel", nullptr));
+        progressBar->setFormat(QCoreApplication::translate("MainWindow", "%p%", nullptr));
         toolBar->setWindowTitle(QCoreApplication::translate("MainWindow", "toolBar", nullptr));
     } // retranslateUi
 

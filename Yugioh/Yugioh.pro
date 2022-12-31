@@ -34,7 +34,8 @@ SOURCES += \
         sources/Hand.cpp \
         sources/Player.cpp \
         sources/CardMenu.cpp \
-        sources/MonsterZone.cpp \
+        sources/MonsterZone.cpp  \
+        sources/profilesettings.cpp \
         sources/Serializer.cpp
 
 HEADERS += \
@@ -64,6 +65,7 @@ HEADERS += \
     headers/ui_mainmenu.h \
     headers/ui_decksettings.h \
     headers/CardMenu.h \ 
+    sources/profilesettings.h \
     headers/MonsterZone.h \
     headers/BotPlayer.h \
     headers/Serializer.h
@@ -75,6 +77,7 @@ FORMS += \
     sources/GameSettings.ui \
     sources/mainmenu.ui \
     sources/DeckSettings.ui \
-    sources/mainwindow.ui
+    sources/mainwindow.ui \
+    sources/profilesettings.ui
 
 

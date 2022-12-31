@@ -1,4 +1,11 @@
 #include "headers/mainmenu.h"
+#include <iostream>
+
+#include <QApplication>
+#include "headers/CardMenu.h"
+#include"headers/mainmenu.h"
+#include "headers/profilesettings.h"
+#include "headers/BotPlayer.h"
 #include "headers/Serializer.h"
 #include <iostream>
 #include <QApplication>
