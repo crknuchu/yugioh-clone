@@ -76,7 +76,7 @@ signals:
     void okButtonClicked();
     void helpClicked();
 
-private slots:
+public slots:
 
     void onLeaveButtonClick();
 
