@@ -8,6 +8,7 @@
 #include "headers/EffectActivator.h"
 #include "headers/Serializer.h"
 #include <QMap>
+#include "headers/GameSettings.h"
 
 //TEST_CASE("Card","[class][getter][setter][constructor]")
 //{
@@ -956,13 +957,13 @@ TEST_CASE("CardMenu","[class]")
 
     SECTION("Test Cardmenu update() activate button")
     {
-        monster->cardMenu->setVisible(false);
+        monster->cardMenu->setVisible(true);
         QMap<QString,bool> flags;
         flags["activate"] = false;
         monster->cardMenu->update(flags);
 
         bool isButtonVisible = monster->cardMenu->activateButton->isVisible();
-        bool expected = true;
+        bool expected = false;
         REQUIRE(isButtonVisible == expected);
     }
 
@@ -1012,5 +1013,139 @@ TEST_CASE("CardMenu","[class]")
         bool isButtonVisible = monster->cardMenu->attackButton->isVisible();
         bool expected = false;
         REQUIRE(isButtonVisible == expected);
+    }
+}
+
+//gamesettings
+TEST_CASE("GameSettings","[class]")
+{
+    GameSettings *g = new GameSettings();
+    SECTION("test lifepoints getter and setter")
+    {
+        g->setLifePoints(1111);
+        int output = g->getLifePoints();
+        int expected = 1111;
+        REQUIRE(output==expected);
+    }
+
+    SECTION("test timepermove getter and setter")
+    {
+        g->setTimePerMove(5);
+        int output = g->getTimePerMove();
+        int expected = 5;
+        REQUIRE(output==expected);
+    }
+
+    SECTION("test numberofcards getter and setter")
+    {
+        g->setNumberOfCards(5);
+        int output = g->getNumberOfCards();
+        int expected = 5;
+        REQUIRE(output==expected);
+    }
+    SECTION("test setlifepointscurrentindexchanged")
+    {
+        g->onSetLifepointsCurrentIndexChanged(0);
+        int output = g->getLifePoints();
+        int expected = 2000;
+        REQUIRE(output==expected);
+    }
+    SECTION("test setlifepointscurrentindexchanged")
+    {
+        g->onSetLifepointsCurrentIndexChanged(1);
+        int output = g->getLifePoints();
+        int expected = 4000;
+        REQUIRE(output==expected);
+    }
+    SECTION("test setlifepointscurrentindexchanged")
+    {
+        g->onSetLifepointsCurrentIndexChanged(2);
+        int output = g->getLifePoints();
+        int expected = 8000;
+        REQUIRE(output==expected);
+    }
+    SECTION("test setlifepointscurrentindexchanged")
+    {
+        g->onSetLifepointsCurrentIndexChanged(3);
+        int output = g->getLifePoints();
+        int expected = 10000;
+        REQUIRE(output==expected);
+    }
+    SECTION("test setlifepointscurrentindexchanged")
+    {
+        g->onSetLifepointsCurrentIndexChanged(4);
+        int output = g->getLifePoints();
+        int expected = 16000;
+        REQUIRE(output==expected);
+    }
+    SECTION("test settimepermovecurrentindexchanged")
+    {
+        g->onSetTimePerMoveCurrentIndexChanged(1);
+        int output = g->getTimePerMove();
+        int expected = 5;
+        REQUIRE(output==expected);
+    }
+    SECTION("test settimepermovecurrentindexchanged")
+    {
+        g->onSetTimePerMoveCurrentIndexChanged(2);
+        int output = g->getTimePerMove();
+        int expected = 10;
+        REQUIRE(output==expected);
+    }
+    SECTION("test settimepermovecurrentindexchanged")
+    {
+        g->onSetTimePerMoveCurrentIndexChanged(3);
+        int output = g->getTimePerMove();
+        int expected = 20;
+        REQUIRE(output==expected);
+    }
+    SECTION("test settimepermovecurrentindexchanged")
+    {
+        g->onSetTimePerMoveCurrentIndexChanged(4);
+        int output = g->getTimePerMove();
+        int expected = 30;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+        g->onSetInitialNumberOfCardsCurrentIndexChanged(0);
+        int output = g->getNumberOfCards();
+        int expected = 5;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+        g->onSetInitialNumberOfCardsCurrentIndexChanged(1);
+        int output = g->getNumberOfCards();
+        int expected = 6;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+        g->onSetInitialNumberOfCardsCurrentIndexChanged(2);
+        int output = g->getNumberOfCards();
+        int expected = 7;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+        g->onSetInitialNumberOfCardsCurrentIndexChanged(3);
+        int output = g->getNumberOfCards();
+        int expected = 8;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+        g->onSetInitialNumberOfCardsCurrentIndexChanged(4);
+        int output = g->getNumberOfCards();
+        int expected = 9;
+        REQUIRE(output==expected);
+    }
+    SECTION("test onsetinitialnumberofcardscurrentindexchanged")
+    {
+        g->onSetInitialNumberOfCardsCurrentIndexChanged(5);
+        int output = g->getNumberOfCards();
+        int expected = 10;
+        REQUIRE(output==expected);
     }
 }

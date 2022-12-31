@@ -32,8 +32,7 @@ public:
 signals:
     void okButtonClicked();
 
-
-private slots:
+public slots:
     void onSetLifepointsCurrentIndexChanged(int index);
 
     void onSetTimePerMoveCurrentIndexChanged(int index);
