@@ -67,4 +67,9 @@ void TrapCard::setCardMenu(){
 void TrapCard::setPosition(SpellTrapPosition newPosition)
 {
     position = newPosition;
+}
+
+bool TrapCard::getActive() const
+{
+    return active;
 };

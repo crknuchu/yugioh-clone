@@ -26,6 +26,8 @@ public:
     void setCardMenu() override;
     void setPosition(SpellTrapPosition newPosition);
 
+    bool getActive() const;
+
 private:
     TrapType trapType;
     bool active;

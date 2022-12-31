@@ -29,6 +29,8 @@ public:
 
 
 
+    bool getActive() const;
+
 private:
     SpellType type;
     bool active;

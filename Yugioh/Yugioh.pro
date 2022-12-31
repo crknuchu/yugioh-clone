@@ -25,7 +25,7 @@ SOURCES += \
         sources/Spellcard.cpp \
         sources/Trapcard.cpp \
         sources/Zone.cpp \
-        sources/main.cpp \
+        #sources/main.cpp \
         sources/Game.cpp \
         sources/CardList.cpp \
         sources/Deck.cpp \
@@ -36,7 +36,9 @@ SOURCES += \
         sources/CardMenu.cpp \
         sources/MonsterZone.cpp  \
         sources/profilesettings.cpp \
-        sources/Serializer.cpp
+        sources/Serializer.cpp \
+        tests/tests/tests.cpp \
+        tests/tests/catch.cpp
 
 HEADERS += \
     headers/EffectRequirement.h \
@@ -68,7 +70,9 @@ HEADERS += \
     sources/profilesettings.h \
     headers/MonsterZone.h \
     headers/BotPlayer.h \
-    headers/Serializer.h
+    headers/Serializer.h \
+    tests/catch.hpp \
+
 
 RESOURCES += \
         resources.qrc

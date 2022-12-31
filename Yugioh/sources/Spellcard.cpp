@@ -83,4 +83,9 @@ void SpellCard::setCardMenu(){
 void SpellCard::setPosition(SpellTrapPosition newPosition)
 {
     position = newPosition;
+}
+
+bool SpellCard::getActive() const
+{
+    return active;
 };
