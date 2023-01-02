@@ -38,6 +38,13 @@ void Zone::setCoordinates(float x, float y) {
     m_y = y;
 }
 
+
+void Zone::setCoordinatesHW(float x, float y) {
+    m_width = x;
+    m_height = y;
+}
+
+
 #include <iostream>
 
 void Zone::mousePressEvent(QGraphicsSceneMouseEvent* event) {

@@ -998,7 +998,7 @@ TEST_CASE("Player", "[class][getter][setter][function")
         Deck d(niz);
         p.field.deck = d;
         int expected_size = 2;
-        //std::vector<Card *> output_vector = p.drawenCards(2);
+        std::vector<Card *> output_vector = p.drawenCards(2);
         //fix this
         int output_size_of_deck = p.m_hand.getHand().size();
         REQUIRE(expected_size == output_size_of_deck);
@@ -1270,7 +1270,7 @@ TEST_CASE("Zone", "[class][getters][setters][functions]")
     {
         Zone *z = new Zone(false);
 
-        z->setCoordinates(100, 100);
+        z->setCoordinatesHW(100, 100);
 
         float expected_width = 100;
         float expected_height = 100;

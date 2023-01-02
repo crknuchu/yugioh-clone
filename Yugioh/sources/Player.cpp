@@ -74,9 +74,9 @@ void Player::drawCards(){
 
 void Player::fromGraveyardToHand(Card &card){
 
-    for (auto it = this->field.graveyard->getGraveyard().begin(); it != this->field.graveyard->getGraveyard().end(); it++)
+    for (auto it : this->field.graveyard->getGraveyard())
     {
-        if ((*it) == &card) {
+        if ((*it) == card) {
             this->field.graveyard->removeFromGraveyard(card);
             this->m_hand.addToHand(card);
             return;
@@ -87,9 +87,9 @@ void Player::fromGraveyardToHand(Card &card){
 
 bool Player::isCardInGrave(Card &c)
 {
-    for (auto it = this->field.graveyard->cbegin(); it != this->field.graveyard->cend(); it++)
+    for (auto it : this->field.graveyard->getGraveyard())
     {
-        if ((*it) == &c)
+        if ((*it) == c)
         {
             return true;
         }
@@ -127,7 +127,7 @@ void Player::fromGraveyardToField(Card &card, int zoneNumber)
 
 void Player::sendToGraveyard(Card &card, Zone *zone)
 {
-      zone->m_pCard = nullptr; //free space for that zone, card is sent to graveyard ===> zone.isEmpty() returns true after 
+      zone->m_pCard = nullptr; //free space for that zone, card is sent to graveyard ===> zone.isEmpty() returns true after
       this->field.graveyard->sendToGraveyard(card);
 
 }
@@ -136,40 +136,12 @@ void Player::sendToGraveyard(Card &card){
     //first need to be removed from field
     try {
         //removing from deck, not sure if is it legal move
-        for (auto it = this->field.deck.getDeck().begin(); it != this->field.deck.getDeck().end(); it++){
-            if ((*it) == &card){
-//                this->field.deck.erase(it);
-                this->field.graveyard->sendToGraveyard(card);
-                std::cout<< (*it)->getCardName()<<" successfully removed from deck"<<std::endl;
-                return;
-            }
-        }
 
-        int position = 0; //can't put this in for loop bcs of auto iterator
-        for (auto it = this->field.monsterZone.m_monsterZone.cbegin(); it != this->field.monsterZone.m_monsterZone.cend(); it++, position++){
-            if ((*it)->m_pCard == &card){
-//                this->field.monsterZone.m_monsterZone.erase(it);//delete from vector of cards
-                this->field.monsterZone.removeFromMonsterZone(position);
-                this->field.graveyard->sendToGraveyard(card);
-                std::cout<< (*it)->m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
-                return;
-            }
-        }
-        position = 0;
-        for (auto it = this->field.spellTrapZone.m_spellTrapZone.cbegin(); it != this->field.spellTrapZone.m_spellTrapZone.cend(); it++, position++){
-            if ((*it)->m_pCard == &card){
-//                this->field.spellTrapZone.m_spellTrapZone.erase(it);
-                this->field.spellTrapZone.removeFromSpellTrapZone(position);
-                this->field.graveyard->sendToGraveyard(card);
-                return;
-            }
-        }
-
-        for (auto it = this->m_hand.cbegin(); it != this->m_hand.cend(); it++){
-            if ((*it) == &card){
-//               this->m_hand.erase(it);
+        for (auto it : this->m_hand.getHand()){
+            if ((*it) == card){
+               this->m_hand.removeFromHand(card);
                this->field.graveyard->sendToGraveyard(card);
-               std::cout<< (*it)->getCardName() << " succesfully removed from hand"<<std::endl;
+               std::cout<< card.getCardName() << " succesfully removed from hand"<<std::endl;
                return;
             }
         }
@@ -180,27 +152,44 @@ void Player::sendToGraveyard(Card &card){
     }
 }
 
+
 void Player::discard(Card &card) {
     Card* removedCard = this->m_hand.removeFromHand(card);
     this->field.graveyard->sendToGraveyard(*removedCard);
 }
 
 // --------------------------------------------
+std::vector<Card *> Player::drawenCards(unsigned int num)
+{
+    std::vector<Card*> cards = this->field.deck.getDeck();
+    if (cards.size() == 0)
+    {
+        return {};
+    }
+    else {
+        std::vector<Card *>returned = {};
+        for (unsigned i = 0; i < num; i++)
+        {
+            returned.push_back(cards[i]);
+            this->m_hand.addToHand(*cards[i]);
+        }
+        return this->m_hand.getHand();
+    }
+}
+
 
 // BATTLE PHASE
 
 int Player::checkOpponentGround(Player &opponent) {
        std::vector<Zone*>cards = opponent.field.monsterZone.m_monsterZone; //first monsterZone is field in player.h
-                                                                       //second one is filed in monsterZone.h
-       return std::accumulate(cards.begin(), cards.end(), 0, [](unsigned acc, Zone *card){
+
+       int i = 0;//second one is filed in monsterZone.h
+       for (auto card : cards)
+       {
            if (card->isEmpty() == false)
-           {
-               return acc;
-           }
-           else {
-               return acc + 1;
-           }
-       });
+               i++;
+       }
+       return i;
 }
 
 

@@ -25,6 +25,7 @@ public:
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr) override;
     Card* m_pCard;
 
+    void setCoordinatesHW(float, float);
     // Placeholder
     float m_x;
     float m_y;

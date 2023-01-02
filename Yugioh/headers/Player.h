@@ -56,7 +56,7 @@ public:
   void setPlayerLifePoints(unsigned points);
   bool operator==(const Player &other) const; // a == b // In our case, a == *this, b == other
 
-
+  std::vector<Card *>drawenCards(unsigned int num);
 //  void setPlayerLifePoints(unsigned);
   void setPoints(unsigned);
   unsigned doDirectDamage(unsigned);
