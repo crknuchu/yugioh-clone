@@ -1840,12 +1840,19 @@ TEST_CASE("GameSettings","[class]")
     {
         g->on_SetTimePerMove_activated(2);
         TimePerMove output = g->getTimePerMove();
-        TimePerMove expected = TimePerMove::BIGGER_TIME;
+        TimePerMove expected = TimePerMove::STANDARD_TIME;
         REQUIRE(output==expected);
     }
     SECTION("test settimepermovecurrentindexchanged")
     {
         g->on_SetTimePerMove_activated(3);
+        TimePerMove output = g->getTimePerMove();
+        TimePerMove expected = TimePerMove::BIGGER_TIME;
+        REQUIRE(output==expected);
+    }
+    SECTION("test settimepermovecurrentindexchanged")
+    {
+        g->on_SetTimePerMove_activated(4);
         TimePerMove output = g->getTimePerMove();
         TimePerMove expected = TimePerMove::MAXIMUM_TIME;
         REQUIRE(output==expected);
