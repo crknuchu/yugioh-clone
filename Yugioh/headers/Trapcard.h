@@ -23,9 +23,8 @@ public:
     std::string getTrapTypeString() const;
     SpellTrapPosition getTrapPosition() const;
     void activateTrap();
-    void setCardMenu() override;
     void setPosition(SpellTrapPosition newPosition);
-
+    void setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters) override;
     bool getActive() const;
 
 private:

@@ -63,18 +63,15 @@ void SpellCard::activateSpell()
     this->active = true;
 }
 
-void SpellCard::setCardMenu(){
+void SpellCard::setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters){
 
     QMap<QString, bool> flagMap {{"set",false},{"summon",false},{"reposition",false},{"activate",false},{"attack",false}};
-    EffectRequirement effectRequirement(*this);
-    bool cardActivationRequirement = effectRequirement.isActivatable(this->cardName);
-    if(cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1
-                                              || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)){
+
+    if(cardLocation == CardLocation::HAND && (GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE1 || GamePhaseExternVars::currentGamePhase == GamePhases::MAIN_PHASE2)){
         flagMap.insert("set",true);
-        if(cardActivationRequirement)
-            flagMap.insert("activate",true);
+        flagMap.insert("activate",true);
     }
-     if(cardLocation == CardLocation::FIELD && cardActivationRequirement){
+     if(cardLocation == CardLocation::FIELD){
          flagMap.insert("activate",true);
         }
      cardMenu->update(flagMap);

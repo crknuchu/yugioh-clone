@@ -24,10 +24,10 @@ public:
     std::string getSpellTypeString() const;
     SpellTrapPosition getSpellPosition() const;
     void activateSpell();
-    void setCardMenu() override;
+
     void setPosition(SpellTrapPosition newPosition);
 
-
+    void setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters) override;
 
     bool getActive() const;
 

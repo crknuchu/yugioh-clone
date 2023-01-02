@@ -60,7 +60,7 @@ public:
     MonsterCard( const std::string &cardName,int attackPoints, int defensePoints, int level, MonsterType type,
                  MonsterKind kind, MonsterAttribute attribute,bool active,MonsterPosition position,bool alreadyAttackedThisTurn,
                  CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath, bool isSummonedThisTurn = false);
-    virtual ~MonsterCard();
+    ~MonsterCard();
 
     MonsterCard* clone() override;
     bool shouldBeSentToGraveyard() override;
@@ -97,7 +97,7 @@ public:
     bool specialSummon(MonsterPosition position);
 
 
-    void setCardMenu() override;
+    void setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters) override;
 
     void setAlreadyAttackedThisTurn(bool didIAlreadyAttack);
 

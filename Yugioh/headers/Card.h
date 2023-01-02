@@ -91,7 +91,7 @@ public:
 
     //virtual void placeCardOnField();
 
-    virtual void setCardMenu() = 0;
+    virtual void setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters) = 0;
 
     bool operator==(const Card &card) const;
 
@@ -118,6 +118,8 @@ public:
 
     static const std::map<QString, MonsterPosition> monsterPositionQStringToEnum;
     static const std::map<QString, SpellTrapPosition> spellTrapPositionQStringToEnum;
+
+
 
 protected:
     // Constructor is protected in order to restrict call to it to Card's child classes.

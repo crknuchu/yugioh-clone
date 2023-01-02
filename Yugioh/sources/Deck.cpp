@@ -21,6 +21,7 @@ void Deck::setDeck(float x, float y, int playerNumber) {
                                           false, MonsterPosition::FACE_UP_DEFENSE, true, CardType::MONSTER_CARD,
                                           CardLocation::DECK, "placeholder",":/resources/pictures/card_back.jpg", false);
 
+
         placeholderCard->setPos(x,y);
         uiDeck.push_back(placeholderCard);
         playerNumber == 1 ? x += gap : x-=gap;

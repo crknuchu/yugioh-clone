@@ -1562,7 +1562,7 @@ void Game::onCardHoverLeave(Card &card)
 void Game::onCardSelect(Card *card)
 {
     std::cout << "Card name: " << card->getCardName() << std::endl;
-    card->setCardMenu();
+    card->setCardMenu(false,false);
 
     // We need to check if the opponent has any monsters. If he doesn't, we don't show Attack Directly button
     !GameExternVars::pOtherPlayer->field.monsterZone.isEmpty()
