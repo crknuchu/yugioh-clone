@@ -37,8 +37,8 @@ SOURCES += \
         sources/MonsterZone.cpp  \
         sources/profilesettings.cpp \
         sources/Serializer.cpp \
-        #tests/tests/tests.cpp \
-        #tests/tests/catch.cpp
+#        tests/tests/tests.cpp \
+#        tests/tests/catch.cpp
 
 HEADERS += \
     headers/EffectRequirement.h \
@@ -71,7 +71,7 @@ HEADERS += \
     headers/MonsterZone.h \
     headers/BotPlayer.h \
     headers/Serializer.h \
-    #tests/catch.hpp \
+#    tests/catch.hpp
 
 
 RESOURCES += \

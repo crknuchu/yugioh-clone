@@ -564,7 +564,7 @@ TEST_CASE("MonsterZone","[class][getter][setter][functions]")
         // Gap width is 20 by default and there are always 5 zones
         // We also add x at the end since that was the start coordinates for creation of monster zone
         Zone* zone = new Zone(x, y);
-        float gap = 20;
+        float gap = 40;
 
         float expected = 5 * (zone->getWidth() + gap) + x;
         float output = pMonsterZone->getWidth();
@@ -598,8 +598,9 @@ TEST_CASE("MonsterZone","[class][getter][setter][functions]")
 
         pMonsterZone->colorOccupiedZones();
 
-        QBrush expected = Qt::green;
-        QBrush outcome = zone->brush();
+        QColor expected = QColor(Qt::green);
+        expected.setAlphaF(0.5);
+        QColor outcome = zone->brush().color();
 
         REQUIRE(outcome == expected);
     }
@@ -621,8 +622,10 @@ TEST_CASE("MonsterZone","[class][getter][setter][functions]")
         pMonsterZone->colorFreeZones();
 
         int actualNumberOfRedZones = 0;
+        QColor expectedRedColor = QColor(Qt::red);
+        expectedRedColor.setAlphaF(0.5);
         for(Zone* zone : pMonsterZone->m_monsterZone)
-            if(zone->brush() == Qt::red)
+            if(zone->brush().color() == expectedRedColor)
                 actualNumberOfRedZones++;
 
         REQUIRE(actualNumberOfRedZones == expectedNumberOfRedZones);
@@ -647,8 +650,9 @@ TEST_CASE("MonsterZone","[class][getter][setter][functions]")
         pMonsterZone->refresh();
 
         int actualNumberOfZonesThatDontHaveColor = 0;
+        QColor expectedColor = QColor(0,0,200,30);
         for(Zone* zone : pMonsterZone->m_monsterZone)
-            if(zone->brush() == Qt::NoBrush)
+            if(zone->brush().color() == expectedColor)
                 actualNumberOfZonesThatDontHaveColor ++;
 
         REQUIRE(actualNumberOfZonesThatDontHaveColor == expectedNumberOfZonesThatDontHaveColor);
@@ -725,7 +729,7 @@ TEST_CASE("SpellTrapZone","[class][getter][setter][functions]")
         // Gap width is 20 by default and there are always 5 zones
         // We also add x at the end since that was the start coordinates for creation of monster zone
         Zone* zone = new Zone(x, y);
-        float gap = 20;
+        float gap = 40;
 
         float expected = 5 * (zone->getWidth() + gap) + x;
         float output = pSpellTrapZone->getWidth();
@@ -759,8 +763,9 @@ TEST_CASE("SpellTrapZone","[class][getter][setter][functions]")
 
         pSpellTrapZone->colorOccupiedZones();
 
-        QBrush expected = Qt::green;
-        QBrush outcome = zone->brush();
+        QColor expected = QColor(Qt::green);
+        expected.setAlphaF(0.5);
+        QColor outcome = zone->brush().color();
 
         REQUIRE(outcome == expected);
     }
@@ -782,8 +787,10 @@ TEST_CASE("SpellTrapZone","[class][getter][setter][functions]")
         pSpellTrapZone->colorFreeZones();
 
         int actualNumberOfRedZones = 0;
+        QColor expectedRedColor = QColor(Qt::red);
+        expectedRedColor.setAlphaF(0.5);
         for(Zone* zone : pSpellTrapZone->m_spellTrapZone)
-            if(zone->brush() == Qt::red)
+            if(zone->brush().color() == expectedRedColor)
                 actualNumberOfRedZones++;
 
         REQUIRE(actualNumberOfRedZones == expectedNumberOfRedZones);
@@ -809,7 +816,7 @@ TEST_CASE("SpellTrapZone","[class][getter][setter][functions]")
 
         int actualNumberOfZonesThatDontHaveColor = 0;
         for(Zone* zone : pSpellTrapZone->m_spellTrapZone)
-            if(zone->brush() == Qt::NoBrush)
+            if(zone->brush().color() == QColor(0,200,0,30))
                 actualNumberOfZonesThatDontHaveColor ++;
 
         REQUIRE(actualNumberOfZonesThatDontHaveColor == expectedNumberOfZonesThatDontHaveColor);
