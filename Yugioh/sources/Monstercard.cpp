@@ -297,7 +297,6 @@ void MonsterCard::setCardMenu(){
         flagMap.insert("attack",true);
     }
     cardMenu->update(flagMap);
-
 }
 
 void MonsterCard::setAlreadyAttackedThisTurn(bool didIAlreadyAttack)
