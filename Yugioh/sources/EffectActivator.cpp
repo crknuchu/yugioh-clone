@@ -315,8 +315,8 @@ void EffectActivator::activateDeSpell(bool isOpponentActivating)
 }
 
 void EffectActivator::activateDianKetoTheCureMaster(bool isOpponentActivating) {
-    Q_UNUSED(isOpponentActivating);
-    changeHealthPointsBy(1000, *GameExternVars::pCurrentPlayer);
+    if(!isOpponentActivating)
+        changeHealthPointsBy(1000, *GameExternVars::pCurrentPlayer);
 }
 
 void EffectActivator::activateFissure(bool isOpponentActivating)
@@ -351,34 +351,35 @@ void EffectActivator::activateFissure(bool isOpponentActivating)
 
 void EffectActivator::activateMonsterReborn(bool isOpponentActivating)
 {
-    //we want to reborn strongest monster
-    MonsterCard* strongestMonsterInEitherGraveyard = nullptr;
-    int whichGraveyard = 1;
-    for(Card* card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard()) {
-        if(card->getCardType() == CardType::MONSTER_CARD) {
-            MonsterCard* monsterInGraveyard = static_cast<MonsterCard*>(card);
-            if(!strongestMonsterInEitherGraveyard ||
-                    strongestMonsterInEitherGraveyard->getAttackPoints() < monsterInGraveyard->getAttackPoints())
-                strongestMonsterInEitherGraveyard = monsterInGraveyard;
-        }
-    }
-
-    for(Card* card : GameExternVars::pOtherPlayer->field.graveyard->getGraveyard()) {
-        if(card->getCardType() == CardType::MONSTER_CARD) {
-            MonsterCard* monsterInGraveyard = static_cast<MonsterCard*>(card);
-            if(!strongestMonsterInEitherGraveyard ||
-                    strongestMonsterInEitherGraveyard->getAttackPoints() < monsterInGraveyard->getAttackPoints()) {
-                strongestMonsterInEitherGraveyard = monsterInGraveyard;
-                whichGraveyard = 2;
+    if(!isOpponentActivating) {
+        //we want to reborn strongest monster
+        MonsterCard* strongestMonsterInEitherGraveyard = nullptr;
+        int whichGraveyard = 1;
+        for(Card* card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard()) {
+            if(card->getCardType() == CardType::MONSTER_CARD) {
+                MonsterCard* monsterInGraveyard = static_cast<MonsterCard*>(card);
+                if(!strongestMonsterInEitherGraveyard ||
+                        strongestMonsterInEitherGraveyard->getAttackPoints() < monsterInGraveyard->getAttackPoints())
+                    strongestMonsterInEitherGraveyard = monsterInGraveyard;
             }
         }
-    }
 
-    whichGraveyard == 1 ?
-                GameExternVars::pCurrentPlayer->field.graveyard->removeFromGraveyard(*strongestMonsterInEitherGraveyard)
-              : GameExternVars::pOtherPlayer->field.graveyard->removeFromGraveyard(*strongestMonsterInEitherGraveyard);
+        for(Card* card : GameExternVars::pOtherPlayer->field.graveyard->getGraveyard()) {
+            if(card->getCardType() == CardType::MONSTER_CARD) {
+                MonsterCard* monsterInGraveyard = static_cast<MonsterCard*>(card);
+                if(!strongestMonsterInEitherGraveyard ||
+                        strongestMonsterInEitherGraveyard->getAttackPoints() < monsterInGraveyard->getAttackPoints()) {
+                    strongestMonsterInEitherGraveyard = monsterInGraveyard;
+                    whichGraveyard = 2;
+                }
+            }
+        }
 
-    if(!isOpponentActivating) {
+        whichGraveyard == 1 ?
+                    GameExternVars::pCurrentPlayer->field.graveyard->removeFromGraveyard(*strongestMonsterInEitherGraveyard)
+                  : GameExternVars::pOtherPlayer->field.graveyard->removeFromGraveyard(*strongestMonsterInEitherGraveyard);
+
+
         GameExternVars::pCardToBePlacedOnField = strongestMonsterInEitherGraveyard;
         GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
     }
@@ -386,8 +387,8 @@ void EffectActivator::activateMonsterReborn(bool isOpponentActivating)
 
 void EffectActivator::activateOokazi(bool isOpponentActivating)
 {
-    Q_UNUSED(isOpponentActivating);
-    changeHealthPointsBy(-800, *GameExternVars::pOtherPlayer);
+    if(!isOpponentActivating)
+        changeHealthPointsBy(-800, *GameExternVars::pOtherPlayer);
 }
 
 void EffectActivator::activateRemoveTrap(bool isOpponentActivating)

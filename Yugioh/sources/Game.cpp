@@ -758,9 +758,8 @@ void Game::notifyServerThatDeserializationHasFinished()
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
     outDataStream.setVersion(QDataStream::Qt_5_15);
-
     outDataStream << QString::fromStdString("DESERIALIZATION_FINISHED");
-    sendDataToServer(buffer);
+    sendDataToServer(buffer);  
 }
 
 QByteArray Game::QInt32ToQByteArray(qint32 source)
@@ -811,12 +810,34 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
     Card* targetCard;
     for(Card* card : GameExternVars::pCurrentPlayer->m_hand.getHand()) {
         if(cardName.toStdString() == card->getCardName())
+        {
             targetCard = card;
+            GameExternVars::pCurrentPlayer->m_hand.removeFromHand(*targetCard);
+        }
+    }
+
+    for(Card* card : GameExternVars::pOtherPlayer->m_hand.getHand()) {
+        if(cardName.toStdString() == card->getCardName())
+        {
+            targetCard = card;
+            GameExternVars::pOtherPlayer->m_hand.removeFromHand(*targetCard);
+        }
     }
 
     for(Card* card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard()) {
         if(cardName.toStdString() == card->getCardName())
+        {
             targetCard = card;
+            GameExternVars::pCurrentPlayer->field.graveyard->removeFromGraveyard(*targetCard);
+        }
+    }
+
+    for(Card* card : GameExternVars::pOtherPlayer->field.graveyard->getGraveyard()) {
+        if(cardName.toStdString() == card->getCardName())
+        {
+            targetCard = card;
+            GameExternVars::pOtherPlayer->field.graveyard->removeFromGraveyard(*targetCard);
+        }
     }
 
     // Set the original pixmap
@@ -826,7 +847,6 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
     targetCard->setPixmap(originalPixmap);
 
     // Add the card to the scene
-    GameExternVars::pCurrentPlayer->m_hand.removeFromHand(*targetCard);
     if (cardType == "monster card")
     {
         MonsterCard *monsterCard = static_cast<MonsterCard *>(targetCard);
@@ -1031,10 +1051,6 @@ void Game::deserializeEffectActivated(QDataStream &deserializationStream)
             card->setPixmap(cardBackPixmap);
         }
     }
-
-
-
-
 
     // Notify the server that deserialization is finished
     notifyServerThatDeserializationHasFinished();
@@ -1610,7 +1626,7 @@ void Game::onActivateButtonClick(Card &card)
         // We connect every signal from EffectActivator to our slots in Game:
         connect(&effectActivator, &EffectActivator::lifePointsChanged, this, &Game::onLifePointsChange);
         connect(&effectActivator, &EffectActivator::gameEnded, this, &Game::onGameEnd);
-        effectActivator.activateEffect(cardName, true);
+        effectActivator.activateEffect(cardName, false);
 
         if(m_clientID == GameExternVars::currentTurnClientID)
         {
@@ -1677,8 +1693,8 @@ void Game::onChangeOfHeart(Player &current, Player &opponent) {
     {
         if (!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::MONSTER_CARD)
         {
-            opponent.field.graveyard->sendToGraveyard(*(zone->m_pCard));
-//            opponent.field.monsterZone.removeFromMonsterZone(zone);
+//            opponent.field.graveyard->sendToGraveyard(*(zone->m_pCard));
+            opponent.sendToGraveyard(*zone->m_pCard);
             bool flag = false;
             for (Zone *zone1 : current.field.monsterZone.m_monsterZone){
                 if (zone1->isEmpty() && flag == false)
@@ -1686,14 +1702,15 @@ void Game::onChangeOfHeart(Player &current, Player &opponent) {
                     current.field.monsterZone.placeInMonsterZone(zone->m_pCard, zone1);
                     flag = true;
                     GameExternVars::pCardToBeReturned = zone->m_pCard;
-                    zone->m_pCard = nullptr;
+//                    zone->m_pCard = nullptr;
                     return;
                 }
             }
         }
     }
-
 }
+
+
 void Game::onMonsterReborn(Player &p)
 {
 //    std::cout<<"POCETAK MONSTER REBORN KARTE "<<std::endl;

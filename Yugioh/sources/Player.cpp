@@ -137,6 +137,26 @@ void Player::sendToGraveyard(Card &card){
     try {
         //removing from deck, not sure if is it legal move
 
+        int position = 0; //can't put this in for loop bcs of auto iterator
+        for (auto it : this->field.monsterZone.m_monsterZone){
+            if ((*it).m_pCard == &card){
+                this->field.monsterZone.removeFromMonsterZone(position);
+                this->field.graveyard->sendToGraveyard(card);
+                std::cout << (*it).m_pCard->getCardName() <<" successfully removed from monsterZone"<<std::endl;
+                return;
+            }
+            position++;
+        }
+        position = 0;
+        for (auto it : this->field.spellTrapZone.m_spellTrapZone){
+            if ((*it).m_pCard == &card){
+                this->field.spellTrapZone.removeFromSpellTrapZone(position);
+                this->field.graveyard->sendToGraveyard(card);
+                return;
+            }
+            position++;
+        }
+
         for (auto it : this->m_hand.getHand()){
             if ((*it) == card){
                this->m_hand.removeFromHand(card);
@@ -145,7 +165,7 @@ void Player::sendToGraveyard(Card &card){
                return;
             }
         }
-   }
+    }
     catch(std::exception e){
        std::cerr<<card.getCardName()<<" can't be removed"<<std::endl;
 //        throw e;
