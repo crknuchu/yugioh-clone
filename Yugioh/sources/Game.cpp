@@ -1649,7 +1649,7 @@ void Game::onActivateButtonClick(Card &card)
 
         connect(&effectActivator, &EffectActivator::effectMonsterReborn, this, &Game::onMonsterReborn);
         connect(&effectActivator, &EffectActivator::effectChangeOfHeart, this, &Game::onChangeOfHeart);
-        
+
         if(card.shouldBeSentToGraveyard()) {//this needs to be implemented
             delay();
             card.getPlayerThatSetThisCard() == 1
