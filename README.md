@@ -23,6 +23,8 @@ Drustvena igra za dva igraca. Svaki igrac ima svoj spil karata. Na pocetku igre,
 6. Potrebno je uneti: localhost i 8090, redom u polja
 7. Kliknuti na test connection
 
+# Demo snimak
+https://youtu.be/JMgM-EryW2k
 
 <ul>
     <li><a href="https://gitlab.com/DarijaEremija">Darija Eremija 122/2018</a></li>
