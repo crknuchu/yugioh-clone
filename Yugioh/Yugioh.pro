@@ -1,6 +1,6 @@
 TEMPLATE = app
 CONFIG += console c++17
-
+QMAKE_CXXFLAGS += -O0 -g -ggdb -Wall -Wextra
 OBJECTS_DIR = build
 MOC_DIR = build
 RCC_DIR = build

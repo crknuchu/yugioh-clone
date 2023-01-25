@@ -295,7 +295,8 @@ void MonsterCard::setCardMenu(bool isMonsterZoneFull,bool OpponentHaveMonsters){
         else
             flagMap["reposition"] = true;
     }
-    if(cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE
+    bool possibleAttack = true;
+    if(possibleAttack == true && cardLocation == CardLocation::FIELD  && GamePhaseExternVars::currentGamePhase == GamePhases::BATTLE_PHASE
             && this->alreadyAttackedThisTurn == false && position == MonsterPosition::ATTACK){
             flagMap["attack"] = true;
     }

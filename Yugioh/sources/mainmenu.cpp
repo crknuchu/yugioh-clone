@@ -27,9 +27,6 @@ MainMenu::MainMenu(QWidget *parent) :
     palette.setBrush(QPalette::Window, bkgnd);
     this->setPalette(palette);
     music = new QMediaPlayer();
-    music->setMedia(QUrl("qrc:/resources/sounds/illusion.mp3")); // in qt5 is setMedia()
-    music->play();
-    musicActive = true;
 
 
     connect(ui->btnStart, &QPushButton::clicked, this, &MainMenu::onStartButtonClick);

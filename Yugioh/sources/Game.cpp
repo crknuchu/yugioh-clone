@@ -20,6 +20,7 @@
 #include <QMessageBox>
 #include <QTimer>
 #include <QDebug>
+#include <string>
 
 // Extern vars initialization:
 Player *GameExternVars::pCurrentPlayer = nullptr;
@@ -171,7 +172,7 @@ void Game::switchPlayers() {
     connect(this, &Game::deserializationFinished, &blockingLoop, &QEventLoop::quit);
     QByteArray buffer;
     QDataStream outDataStream(&buffer, QIODevice::WriteOnly);
-    outDataStream.setVersion(QDataStream::Qt_5_15);
+    outDataStream.setVersion(QDataStream::Qt_DefaultCompiledVersion);
     outDataStream << QString::fromStdString("NEW_TURN")
                   << GameExternVars::currentTurnClientID; // We tell the opposite player that his opponent (current player in this call) got a card
     sendDataToServer(buffer);
@@ -1225,11 +1226,13 @@ void Game::onGameStart(qint32 firstToPlay, qint32 clientID)
     GameExternVars::pCurrentPlayer->field.setField(flagBottomField, m_viewAndSceneWidth, m_windowHeight);
     GameExternVars::pCurrentPlayer->m_hand.setHandCoordinates(m_viewAndSceneWidth, m_windowHeight, flagBottomField);
     for(auto zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
+        zone->m_pCard = nullptr;
         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
         ui->graphicsView->scene()->addItem(zone);
     }
     for(auto zone : GameExternVars::pCurrentPlayer->field.spellTrapZone.m_spellTrapZone) {
+        zone->m_pCard = nullptr;
         connect(zone, &Zone::zoneRedAndClicked, this, &Game::onRedZoneClick);
         connect(zone, &Zone::zoneGreenAndClicked, this, &Game::onGreenZoneClick);
         ui->graphicsView->scene()->addItem(zone);
@@ -1581,13 +1584,33 @@ void Game::onCardSelect(Card *card)
     card->setCardMenu(false,false);
 
     // We need to check if the opponent has any monsters. If he doesn't, we don't show Attack Directly button
-    !GameExternVars::pOtherPlayer->field.monsterZone.isEmpty()
-         ? card->cardMenu->attackDirectlyButton->setVisible(false)
-         : card->cardMenu->attackDirectlyButton->setVisible(true);
+    bool directAttack = true;
+//    std::string name = GameExternVars::pOtherPlayer->getPlayerName();
+//    std::string name2 = GameExternVars::pCurrentPlayer->getPlayerName();
+    for (Zone *z : GameExternVars::pOtherPlayer->field.monsterZone)
+    {
+        if (z->m_pCard != nullptr)
+        {
+            directAttack = false;
+            break;
+        }
+    }
+    if (GameExternVars::pCurrentPlayer->firstMove == true)
+    {
+        card->cardMenu->attackDirectlyButton->setVisible(false);
+    }
+    else if (directAttack == false &&  GameExternVars::pCurrentPlayer->firstMove == true)
+    {
+        card->cardMenu->attackDirectlyButton->setVisible(false);
+    }
+    else {
+        card->cardMenu->attackDirectlyButton->setVisible(true);
+    }
 
     // We only want current client to be able to see card menus, and only on his own cards
     if(m_clientID == GameExternVars::currentTurnClientID && card->y() >= m_windowHeight / 2)
         card->cardMenu->isVisible() == false ? card->cardMenu->show() : card->cardMenu->hide();
+    GameExternVars::pCurrentPlayer->firstMove = false;
 }
 
 void Game::onActivateFromHand(Card &activatedCard) {

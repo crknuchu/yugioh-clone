@@ -62,7 +62,7 @@ private:
   int counter = 0;
   int resizeCount = 0;
   int m_viewAndSceneWidth;
-
+//  bool firstMove = true;
 
 
     // Private member functions:

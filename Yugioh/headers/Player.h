@@ -64,6 +64,7 @@ public:
   void setDeck(Deck &);
   Hand m_hand;
   Field field;
+  bool firstMove = true;
 
 signals:
   void cardAddedToScene(Card *);

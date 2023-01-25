@@ -129,7 +129,7 @@ bool MonsterZone::isEmpty() const
 {
     for(Zone* zone : m_monsterZone)
     {
-        if(!zone->isEmpty())
+        if(zone->m_pCard != nullptr)
             return false;
     }
     return true;
