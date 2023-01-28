@@ -1,8 +1,8 @@
 #ifndef GAMEPHASE_H
 #define GAMEPHASE_H
 
-#include <map>
 #include <QString>
+#include <map>
 
 enum class GamePhases {
   DRAW_PHASE,
@@ -14,9 +14,9 @@ enum class GamePhases {
 };
 
 namespace GamePhaseExternVars {
-    extern const std::map<GamePhases, QString> gamePhaseToQString;
-    extern const std::map<QString, GamePhases> QStringToGamePhase;
-    extern GamePhases currentGamePhase;
-}
+extern const std::map<GamePhases, QString> gamePhaseToQString;
+extern const std::map<QString, GamePhases> QStringToGamePhase;
+extern GamePhases currentGamePhase;
+} // namespace GamePhaseExternVars
 
 #endif // GAMEPHASE_H
