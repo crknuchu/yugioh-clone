@@ -41,6 +41,7 @@ void Serializer::loadFromJson(QString s)
 
             MonsterCard *monsterCard = new MonsterCard(name,atk,def,level,type,race,attribute,false, position,false,cardType,CardLocation::DECK,desc,imagePath,false);
             arrayOfCards.push_back(monsterCard);
+//            delete monsterCard;
         }
         else if(item.toObject()["type"].toString() == "Spell Card"){
 
@@ -55,6 +56,7 @@ void Serializer::loadFromJson(QString s)
 
             SpellCard *spellCard = new SpellCard(spellType,name,cardType,CardLocation::DECK, position,desc,imagePath,false);
             arrayOfCards.push_back(spellCard);
+//            delete spellCard;
         }
         else{
             cardType = CardType::TRAP_CARD;
@@ -68,6 +70,7 @@ void Serializer::loadFromJson(QString s)
 
             TrapCard *trapCard = new TrapCard(trapType,name,cardType,CardLocation::DECK, position, desc,imagePath,false,false);
             arrayOfCards.push_back(trapCard);
+//            delete trapCard;
         }
 
     }

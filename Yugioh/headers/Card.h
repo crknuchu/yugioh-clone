@@ -2,7 +2,7 @@
 #define CARD_H
 
 #include "CardMenu.h"
-#include "headers/GamePhase.h"
+#include "GamePhase.h"
 
 #include <string>
 #include <vector>

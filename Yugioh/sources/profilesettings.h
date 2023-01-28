@@ -1,7 +1,11 @@
 #ifndef PROFILESETTINGS_H
 #define PROFILESETTINGS_H
-
+#include <QPixmap>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsPixmapItem>QGraphicsItem>
+#include <iostream>
 #include <QWidget>
+#include <QObject>
 #include <QGraphicsView>
 namespace Ui {
 class profileSettings;
@@ -33,7 +37,7 @@ public:
     avatars getAvatar();
     sleeves getSleeve();
 private:
-    void setUpConnections();
+    void setUpConnectionsProfile();
     QGraphicsScene *scene;
 
     Ui::profileSettings *ui;

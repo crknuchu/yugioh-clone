@@ -1,7 +1,7 @@
 #ifndef TRAPCARD_H
 #define TRAPCARD_H
 
-#include "headers/Card.h"
+#include "Card.h"
 
 enum class TrapType
 {

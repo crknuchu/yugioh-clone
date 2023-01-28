@@ -8,8 +8,8 @@
 #include <QDir>
 #include <QScreen>
 #include <QMediaPlayer>
-//#include "headers/profilesettings.h"
-#include "sources/profilesettings.h"
+#include "headers/profilesettings.h"
+//#include "sources/profilesettings.h"
 
 MainMenu::MainMenu(QWidget *parent) :
     QMainWindow(parent),
@@ -57,6 +57,8 @@ void MainMenu::onStartButtonClick()
    player1->setPlayerLifePoints(this->getLifePointsJson());
    player2->setPlayerLifePoints(this->getLifePointsJson());
    m_pGame = new Game(*player1, *player2,this->getLifePointsJson(),this->getNumberOfCardsJson(),this->getTimePerMoveJson());
+   delete player1;
+   delete player2;
    m_pGame->showFullScreen();
 }
 

@@ -1,8 +1,8 @@
 #ifndef MONSTERCARD_H
 #define MONSTERCARD_H
 
-#include "headers/Card.h"
-#include "headers/GamePhase.h"
+#include "Card.h"
+#include "GamePhase.h"
 #include <map>
 
 enum class MonsterKind

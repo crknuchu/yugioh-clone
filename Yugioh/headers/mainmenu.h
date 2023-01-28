@@ -4,8 +4,8 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QMainWindow>
-#include "headers/Game.h"
-#include "headers/GameSettings.h"
+#include "Game.h"
+#include "GameSettings.h"
 #include "qmediaplayer.h"
 
 namespace Ui {

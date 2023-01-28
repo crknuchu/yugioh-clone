@@ -1,10 +1,6 @@
+#include <QPalette>
 #include "profilesettings.h"
 #include "ui_profilesettings.h"
-#include "QPixmap"
-#include "QGraphicsPixmapItem"
-#include "QGraphicsItem"
-#include "QGraphicsView"
-#include <iostream>
 avatars currentAvatar;
 sleeves currentSleeve;
 avatars finalAvatar;
@@ -16,7 +12,7 @@ profileSettings::profileSettings(QWidget *parent) :
     ui->setupUi(this);
 
 
-    setUpConnections();
+    setUpConnectionsProfile();
     ui->sleeveWindow->setBaseSize(400, 500);
     ui->cancel->setMaximumSize(50, 100);
     ui->save->setMaximumSize(50, 100);
@@ -67,7 +63,7 @@ profileSettings::profileSettings(QWidget *parent) :
     ui->avatarWindow->setMaximumWidth(200);
 }
 
-void profileSettings::setUpConnections(){
+void profileSettings::setUpConnectionsProfile(){
     connect(ui->nextAvatar, &QPushButton::clicked, this, &profileSettings::changeAvatar);
     connect(ui->lastAvatar, &QPushButton::clicked, this, &profileSettings::changeAvatar);
 

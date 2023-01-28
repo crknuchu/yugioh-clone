@@ -18,6 +18,8 @@ Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLoca
     setPixmap(pixmap);
     setAcceptHoverEvents(true);
     this->setZValue(-9);
+//    imagePath.clear();
+//    imagePath = nullptr;
 }
 
 Card::~Card()

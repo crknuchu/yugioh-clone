@@ -7,6 +7,7 @@ SpellTrapZone::~SpellTrapZone()
 {
     for(Zone* zone : m_spellTrapZone){
         delete zone;
+        zone = nullptr;
     }
 
     m_spellTrapZone.clear();

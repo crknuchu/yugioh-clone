@@ -1,8 +1,8 @@
+#define CATCH_CONFIG_RUNNER
 #include "headers/mainmenu.h"
 #include <iostream>
 
 #include <QApplication>
-#include"headers/mainmenu.h"
 #include <iostream>
 #include <QApplication>
 
