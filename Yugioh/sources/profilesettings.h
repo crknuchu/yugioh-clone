@@ -2,7 +2,7 @@
 #define PROFILESETTINGS_H
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
-#include <QGraphicsPixmapItem>QGraphicsItem>
+#include <QGraphicsPixmapItem>
 #include <iostream>
 #include <QWidget>
 #include <QObject>
