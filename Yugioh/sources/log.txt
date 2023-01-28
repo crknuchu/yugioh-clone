@@ -1,0 +1,3 @@
+/home/dusan/09-yugioh/Yugioh/sources/newGame.cpp:1:10: error: 'headers/Game.h' file not found [clang-diagnostic-error]
+#include "headers/Game.h"
+         ^~~~~~~~~~~~~~~~

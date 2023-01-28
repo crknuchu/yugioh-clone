@@ -46,8 +46,8 @@ void MainMenu::onStartButtonClick()
    Serializer s2;
    s1.loadFromJson(":/resources/yugi.json");
    s2.loadFromJson(":/resources/kaiba.json");
-   Player* player1 = new Player("Nikola");
-   Player* player2 = new Player("Milan");
+   auto* player1 = new Player("Nikola");
+   auto* player2 = new Player("Milan");
    std::vector<Card*> yugiCards1 = s1.getCards();
    std::vector<Card*> yugiCards2 = s2.getCards();
    Deck d1 = Deck(yugiCards1);
@@ -62,7 +62,7 @@ void MainMenu::onStartButtonClick()
    m_pGame->showFullScreen();
 }
 
-int MainMenu::getLifePointsJson(){
+auto MainMenu::getLifePointsJson() -> int{
     QString val;
     QFile file;
     file.setFileName(":/resources/deck_settings.json");
@@ -77,7 +77,7 @@ int MainMenu::getLifePointsJson(){
     return lifePoints;
 }
 
-int MainMenu::getNumberOfCardsJson(){
+auto MainMenu::getNumberOfCardsJson() -> int{
     QString val;
     QFile file;
     file.setFileName(":/resources/deck_settings.json");
@@ -91,7 +91,7 @@ int MainMenu::getNumberOfCardsJson(){
     return numberOfCards;
 }
 
-int MainMenu::getTimePerMoveJson(){
+auto MainMenu::getTimePerMoveJson() -> int{
     QString val;
     QFile file;
     file.setFileName(":/resources/deck_settings.json");
@@ -105,7 +105,7 @@ int MainMenu::getTimePerMoveJson(){
     return timePerMove;
 }
 
-QString MainMenu::getDeckJson(){
+auto MainMenu::getDeckJson() -> QString{
     QString val;
     QFile file;
     file.setFileName(":/resources/deck_settings.json");
@@ -126,7 +126,7 @@ void MainMenu::on_btnQuit_clicked()
 
 void MainMenu::on_btnProfileSettings_clicked(){
 
-    profileSettings *p = new profileSettings();
+    auto *p = new profileSettings();
     p->show();
 
     //need to update values after closing/saving

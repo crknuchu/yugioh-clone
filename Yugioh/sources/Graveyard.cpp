@@ -23,7 +23,7 @@ Graveyard::Graveyard(std::vector<Card*> &initialGraveyard)
         std::cout << x->getCardName() << " ";
     }
 }
-Graveyard::~Graveyard(){}
+Graveyard::~Graveyard()= default;
 
 void Graveyard::sendToGraveyard(Card &card) {
     m_cardList.push_back(&card);
@@ -31,23 +31,23 @@ void Graveyard::sendToGraveyard(Card &card) {
     card.move(this->m_x, this->m_y);
 }
 
-std::vector<Card*> Graveyard::getGraveyard() const{
+auto Graveyard::getGraveyard() const -> std::vector<Card*>{
     return m_cardList;
 }
 
-Card* Graveyard::removeFromGraveyard(Card &card)
+auto Graveyard::removeFromGraveyard(Card &card) -> Card*
 {
     auto it = std::find(m_cardList.begin(), m_cardList.end(), &card);
     m_cardList.erase(it);
     return &card;
 }
 
-QRectF Graveyard::boundingRect() const
+auto Graveyard::boundingRect() const -> QRectF
 {
-    return QRectF(m_x, m_y, m_width, m_height);
+    return {m_x, m_y, m_width, m_height};
 }
 
-QPainterPath Graveyard::shape() const
+auto Graveyard::shape() const -> QPainterPath
 {
     QRectF rect = boundingRect();
 

@@ -9,12 +9,12 @@ SpellCard::SpellCard(SpellType type, const std::string &cardName, CardType cardT
     ,position(position)
 {}
 
-SpellCard* SpellCard::clone() {
+auto SpellCard::clone() -> SpellCard* {
     return new SpellCard(this->type, this->cardName, this->cardType, this->cardLocation, this->position,
                          this->cardDescription, this->imagePath, this->active);
 }
 
-bool SpellCard::shouldBeSentToGraveyard()
+auto SpellCard::shouldBeSentToGraveyard() -> bool
 {
     if(type == SpellType::CONTINUOUS_SPELL)
         return false;
@@ -28,12 +28,12 @@ bool SpellCard::shouldBeSentToGraveyard()
     return true;
 }
 
-SpellType SpellCard::getSpellType() const
+auto SpellCard::getSpellType() const -> SpellType
 {
     return type;
 }
 
-std::string SpellCard::getSpellTypeString() const
+auto SpellCard::getSpellTypeString() const -> std::string
 {
         switch (type) {
         case SpellType::NORMAL_SPELL:
@@ -53,7 +53,7 @@ std::string SpellCard::getSpellTypeString() const
         }
 }
 
-SpellTrapPosition SpellCard::getSpellPosition() const
+auto SpellCard::getSpellPosition() const -> SpellTrapPosition
 {
     return position;
 }
@@ -86,7 +86,7 @@ void SpellCard::setPosition(SpellTrapPosition newPosition)
     position = newPosition;
 }
 
-bool SpellCard::getActive() const
+auto SpellCard::getActive() const -> bool
 {
     return active;
 };

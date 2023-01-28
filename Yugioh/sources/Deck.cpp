@@ -5,18 +5,18 @@
 #include <algorithm>
 #include <random>
 
-Deck::Deck(){}
+Deck::Deck()= default;
 Deck::Deck(std::vector<Card*> &deck)
     :CardList(deck){}
 
-std::vector<Card*> Deck::getDeck() const{
+auto Deck::getDeck() const -> std::vector<Card*>{
     return m_cardList;
 }
 
 void Deck::setDeck(float x, float y, int playerNumber) {
     float gap = 2;
     for(int i = 0; i < 5; i++) { //for now its hardcoded but needs to be deck.size / 4
-        MonsterCard* placeholderCard = new MonsterCard("placeholder", 0,0,1,MonsterType::AQUA,
+        auto* placeholderCard = new MonsterCard("placeholder", 0,0,1,MonsterType::AQUA,
                                           MonsterKind::NORMAL_MONSTER, MonsterAttribute::DARK,
                                           false, MonsterPosition::FACE_UP_DEFENSE, true, CardType::MONSTER_CARD,
                                           CardLocation::DECK, "placeholder",":/resources/pictures/card_back.jpg", false);
@@ -28,13 +28,13 @@ void Deck::setDeck(float x, float y, int playerNumber) {
     }
 }
 
-Card* Deck::draw(){
+auto Deck::draw() -> Card*{
     Card* drawnCard = m_cardList.front();
     m_cardList.erase(m_cardList.begin());
     return drawnCard;
 };
 
-std::vector<Card*> Deck::draw(int numberOfCards) {
+auto Deck::draw(int numberOfCards) -> std::vector<Card*> {
     std::vector<Card*> cards;
     for(int i = 0; i < numberOfCards; i++){
         cards.push_back(m_cardList.front());

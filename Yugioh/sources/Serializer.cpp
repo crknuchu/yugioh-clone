@@ -1,11 +1,9 @@
 #include "headers/Serializer.h"
 #include <iostream>
 Serializer::Serializer()
-{
+= default;
 
-}
-
-std::vector<Card*> Serializer::getCards()
+auto Serializer::getCards() -> std::vector<Card*>
 {
     return arrayOfCards;
 }
@@ -39,7 +37,7 @@ void Serializer::loadFromJson(QString s)
             // Placeholder
             MonsterPosition position = MonsterPosition::NONE;
 
-            MonsterCard *monsterCard = new MonsterCard(name,atk,def,level,type,race,attribute,false, position,false,cardType,CardLocation::DECK,desc,imagePath,false);
+            auto *monsterCard = new MonsterCard(name,atk,def,level,type,race,attribute,false, position,false,cardType,CardLocation::DECK,desc,imagePath,false);
             arrayOfCards.push_back(monsterCard);
 //            delete monsterCard;
         }
@@ -54,7 +52,7 @@ void Serializer::loadFromJson(QString s)
             // Placeholder
             SpellTrapPosition position = SpellTrapPosition::NONE;
 
-            SpellCard *spellCard = new SpellCard(spellType,name,cardType,CardLocation::DECK, position,desc,imagePath,false);
+            auto *spellCard = new SpellCard(spellType,name,cardType,CardLocation::DECK, position,desc,imagePath,false);
             arrayOfCards.push_back(spellCard);
 //            delete spellCard;
         }
@@ -68,7 +66,7 @@ void Serializer::loadFromJson(QString s)
             // Placeholder
             SpellTrapPosition position = SpellTrapPosition::NONE;
 
-            TrapCard *trapCard = new TrapCard(trapType,name,cardType,CardLocation::DECK, position, desc,imagePath,false,false);
+            auto *trapCard = new TrapCard(trapType,name,cardType,CardLocation::DECK, position, desc,imagePath,false,false);
             arrayOfCards.push_back(trapCard);
 //            delete trapCard;
         }

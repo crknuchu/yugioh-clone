@@ -11,7 +11,7 @@ EffectActivator::EffectActivator(Card &card)
     : m_card(&card)
 {}
 
-EffectActivator::~EffectActivator() {}
+EffectActivator::~EffectActivator() = default;
 
 
 const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> EffectActivator::effectMap = {
@@ -52,7 +52,7 @@ const std::map<std::string, EffectActivator::EFFECT_MEMBER_FUNCTION_POINTER> Eff
     {"Two-Pronged Attack",  &EffectActivator::activateTwoProngedAttack}
 };
 
-Card* EffectActivator::getCard() const {
+auto EffectActivator::getCard() const -> Card* {
     return m_card;
 }
 
@@ -129,7 +129,7 @@ void EffectActivator::activateYami(bool isOpponentActivating){
         if (zone->isEmpty())
             continue;
         
-        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        auto *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
         if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD)
         {
             if(m->getMonsterType() == MonsterType::SPELLCASTER || m->getMonsterType() == MonsterType::FIEND){
@@ -159,7 +159,7 @@ void EffectActivator::activateBookOfSecretArts(bool isOpponentActivating){
         if (zone->isEmpty())
             continue;
         
-        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        auto *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
         if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD && m->getMonsterType() == MonsterType::SPELLCASTER)
         {
 
@@ -208,7 +208,7 @@ void EffectActivator::activateSwordOfDarkDestruction(bool isOpponentActivating)
         if (zone->isEmpty())
             continue;
         
-        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        auto *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
         if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD && m->getAttribute() == MonsterAttribute::DARK)
         {
 
@@ -249,7 +249,7 @@ void EffectActivator::activateInvigoration(bool isOpponentActivating)
         if (zone->isEmpty())
             continue;
         
-        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        auto *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
         if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD && m->getAttribute() == MonsterAttribute::EARTH)
         {
 
@@ -333,7 +333,7 @@ void EffectActivator::activateFissure(bool isOpponentActivating)
         if (!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::MONSTER_CARD)
         {
 
-            MonsterCard *m = static_cast<MonsterCard *>(zone->m_pCard);
+            auto *m = static_cast<MonsterCard *>(zone->m_pCard);
 
             if (m->getAttackPoints() < lowestATK)
             {
@@ -357,7 +357,7 @@ void EffectActivator::activateMonsterReborn(bool isOpponentActivating)
         int whichGraveyard = 1;
         for(Card* card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard()) {
             if(card->getCardType() == CardType::MONSTER_CARD) {
-                MonsterCard* monsterInGraveyard = static_cast<MonsterCard*>(card);
+                auto* monsterInGraveyard = static_cast<MonsterCard*>(card);
                 if(!strongestMonsterInEitherGraveyard ||
                         strongestMonsterInEitherGraveyard->getAttackPoints() < monsterInGraveyard->getAttackPoints())
                     strongestMonsterInEitherGraveyard = monsterInGraveyard;
@@ -366,7 +366,7 @@ void EffectActivator::activateMonsterReborn(bool isOpponentActivating)
 
         for(Card* card : GameExternVars::pOtherPlayer->field.graveyard->getGraveyard()) {
             if(card->getCardType() == CardType::MONSTER_CARD) {
-                MonsterCard* monsterInGraveyard = static_cast<MonsterCard*>(card);
+                auto* monsterInGraveyard = static_cast<MonsterCard*>(card);
                 if(!strongestMonsterInEitherGraveyard ||
                         strongestMonsterInEitherGraveyard->getAttackPoints() < monsterInGraveyard->getAttackPoints()) {
                     strongestMonsterInEitherGraveyard = monsterInGraveyard;
@@ -538,7 +538,7 @@ void EffectActivator::revealCardsInHand(int numberOfCards, Player &targetPlayer)
     // emit displayCards(selectedCards);
 }
 
-bool EffectActivator::isCardOnField(Card &targetCard, Player &targetPlayer)
+auto EffectActivator::isCardOnField(Card &targetCard, Player &targetPlayer) -> bool
 {
     // TODO: MonsterZone, SpellTrapZone and other "zones" could have a method for searching if card is in them?
 
@@ -559,7 +559,7 @@ bool EffectActivator::isCardOnField(Card &targetCard, Player &targetPlayer)
 
 
 
-std::vector<Card *> EffectActivator::returnPlayerGraveyard(Player &targetPlayer)
+auto EffectActivator::returnPlayerGraveyard(Player &targetPlayer) -> std::vector<Card *>
 {
     return targetPlayer.field.graveyard->getGraveyard();
 }
@@ -586,7 +586,7 @@ void EffectActivator::decreaseDEF(MonsterCard &targetCard, int decreaseBy)
     targetCard.decreaseDefensePoints(decreaseBy);
 }
 
-std::vector<MonsterCard *> EffectActivator::findLowestATKMonsters(Player &targetPlayer)
+auto EffectActivator::findLowestATKMonsters(Player &targetPlayer) -> std::vector<MonsterCard *>
 {
     // TODO: A more functional way (copy_if) for this
 
@@ -623,13 +623,13 @@ std::vector<MonsterCard *> EffectActivator::findLowestATKMonsters(Player &target
 //    return lowestATKMonsters;
 }
 
-MonsterCard* EffectActivator::findHighestATKMonster(Player &targetPlayer)
+auto EffectActivator::findHighestATKMonster(Player &targetPlayer) -> MonsterCard*
 {
     MonsterCard* highestATKMonster = nullptr;
 
     for(Zone* zone : targetPlayer.field.monsterZone.m_monsterZone) {
         if(!zone->isEmpty()){
-            MonsterCard* monster = static_cast<MonsterCard*>(zone->m_pCard);
+            auto* monster = static_cast<MonsterCard*>(zone->m_pCard);
             if(!highestATKMonster || monster->getAttackPoints() > highestATKMonster->getAttackPoints())
                 highestATKMonster = monster;
         }
@@ -638,7 +638,7 @@ MonsterCard* EffectActivator::findHighestATKMonster(Player &targetPlayer)
     return highestATKMonster;
 }
 
-std::vector<MonsterCard *> EffectActivator::findFaceUpMonsters(Player &targetPlayer)
+auto EffectActivator::findFaceUpMonsters(Player &targetPlayer) -> std::vector<MonsterCard *>
 {
 //    MonsterZone monsterZone(targetPlayer.monsterZone); // Copy constructor vs =
 

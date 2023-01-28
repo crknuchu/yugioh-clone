@@ -1,0 +1,8 @@
+error: invalid argument '--std=c++17' not allowed with 'C' [clang-diagnostic-error]
+/home/dusan/09-yugioh/Yugioh/headers/newProfileSettings.h:4:10: error: 'QWidget' file not found [clang-diagnostic-error]
+#include <QWidget>
+         ^~~~~~~~~
+/home/dusan/09-yugioh/Yugioh/headers/newProfileSettings.h:16:5: warning: use '= delete' to prohibit calling of a special member function [modernize-use-equals-delete]
+    ~profileSettings();
+    ^
+                       = delete

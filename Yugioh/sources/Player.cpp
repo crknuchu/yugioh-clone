@@ -1,8 +1,10 @@
+#include <utility>
+
 #include "headers/Player.h"
 #include "headers/GamePhase.h"
-Player::Player(){}
+Player::Player()= default;
 
-Player::Player(std::string playerName, int points) : m_hand(Hand()), field(Field()), m_name(playerName), m_points(points){};
+Player::Player(std::string playerName, int points) : m_hand(Hand()), field(Field()), m_name(std::move(playerName)), m_points(points){};
 
 
 Player::Player(Player &p){
@@ -12,15 +14,15 @@ Player::Player(Player &p){
 
 }
 
-Player Player::operator=(Player &p){
+auto Player::operator=(Player &p) -> Player{
     return p;
 }
 
-std::string Player::getPlayerName() const{
+auto Player::getPlayerName() const -> std::string{
     return this->m_name;
 }
 
-unsigned Player::getPlayerLifePoints() const {
+auto Player::getPlayerLifePoints() const -> unsigned {
     return this->m_points;
 }
 
@@ -28,7 +30,7 @@ void Player::setPoints(unsigned points){
     this->m_points = points;
 }
 
-unsigned Player::doDirectDamage(unsigned points) {
+auto Player::doDirectDamage(unsigned points) -> unsigned {
     return this->m_points - points;
 }
 
@@ -85,7 +87,7 @@ void Player::fromGraveyardToHand(Card &card){
 
 }
 
-bool Player::isCardInGrave(Card &c)
+auto Player::isCardInGrave(Card &c) -> bool
 {
     for (auto it : this->field.graveyard->getGraveyard())
     {
@@ -179,7 +181,7 @@ void Player::discard(Card &card) {
 }
 
 // --------------------------------------------
-std::vector<Card *> Player::drawenCards(unsigned int num)
+auto Player::drawenCards(unsigned int num) -> std::vector<Card *>
 {
     std::vector<Card*> cards = this->field.deck.getDeck();
     if (cards.size() == 0)
@@ -200,7 +202,7 @@ std::vector<Card *> Player::drawenCards(unsigned int num)
 
 // BATTLE PHASE
 
-int Player::checkOpponentGround(Player &opponent) {
+auto Player::checkOpponentGround(Player &opponent) -> int {
        std::vector<Zone*>cards = opponent.field.monsterZone.m_monsterZone; //first monsterZone is field in player.h
 
        int i = 0;//second one is filed in monsterZone.h
@@ -215,11 +217,11 @@ int Player::checkOpponentGround(Player &opponent) {
 
 // --------------------------------------------
 // Operator overloads:
-bool Player::operator==(const Player &other) const {
+auto Player::operator==(const Player &other) const -> bool {
     return this->getPlayerName() == other.getPlayerName();
 }
 
-std::ostream &operator<<(std::ostream &out, Player &p){
+auto operator<<(std::ostream &out, Player &p) -> std::ostream &{
     return out << "Player name: " << p.getPlayerName() << ", points " << p.getPlayerLifePoints()<<std::endl;
 }
 

@@ -8,7 +8,7 @@ Hand::Hand()
 Hand::Hand(std::vector<Card*> &initialHand)
     :CardList(initialHand){}
 
-std::vector<Card*> Hand::getHand() const{
+auto Hand::getHand() const -> std::vector<Card*>{
     return this->m_cardList;
 }
 
@@ -32,7 +32,7 @@ void Hand::addToHand(Card &card) {
     m_cardList.push_back(&card);
 }
 
-Card* Hand::removeFromHand(Card &cardToBeRemoved) {
+auto Hand::removeFromHand(Card &cardToBeRemoved) -> Card* {
     std::cout << "Card to be removed: " << cardToBeRemoved << std::endl;
     float gap = 20;
     bool found = false;
@@ -66,6 +66,6 @@ void Hand::fixCardsPosition(std::vector<Card *> &cardsToBeFixed) {
         addToHand(*card);
 }
 
-float Hand::size() const {
+auto Hand::size() const -> float {
     return this->m_cardList.size();
 }
