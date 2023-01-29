@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.22.1)
 project(YUGIOG VERSION 1.0.0 LANGUAGES CXX)
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra --coverage")
+
 
 set(PROJECT_NAME Yugioh)
 set(CMAKE_CXX_STANDARD 17)
@@ -22,9 +26,13 @@ set(forms_path "${CMAKE_CURRENT_SOURCE_DIR}/sources")
 set(CMAKE_PREFIX_PATH "/home/dusan/Qt/6.4.1/gcc_64/lib/cmake")
 find_package(Qt6 COMPONENTS Core Widgets Multimedia REQUIRED)
 
-
+set(test_path "${CMAKE_CURRENT_SOURCE_DIR}/tests")
 
 set(source_headers
+
+"${test_path}/tests/tests.cpp"
+"${test_path}/tests/catch.cpp"
+"${test_path}/catch.hpp"
 "${source_path}/BotPlayer.cpp"
 "${source_path}/Card.cpp"
 "${source_path}/CardList.cpp"
@@ -40,7 +48,7 @@ set(source_headers
 "${source_path}/GameSettings.cpp"
 "${source_path}/Graveyard.cpp"
 "${source_path}/Hand.cpp"
-"${source_path}/main.cpp"
+# "${source_path}/main.cpp"
 "${source_path}/mainmenu.cpp"
 "${source_path}/Monstercard.cpp"
 "${source_path}/MonsterZone.cpp"
@@ -94,5 +102,10 @@ set(resources "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc")
 
 add_executable(${PROJECT_NAME} ${source_headers} ${forms} ${resources})
     
+if(CMAKE_COMPILER_IS_GNUCXX)
+    include(CodeCoverage)
+    SETUP_TARGET_FOR_COVERAGE_LCOV(NAME coverage EXECUTABLE ${PROJECT_NAME})
+endif()
+
 target_link_libraries(${PROJECT_NAME} Qt6::Core Qt6::Widgets Qt6::Multimedia)
 # target_link_libraries(${PROJECT_NAME}  yugioh_lib)
