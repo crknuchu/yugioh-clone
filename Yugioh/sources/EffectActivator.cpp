@@ -285,8 +285,8 @@ void EffectActivator::activateFissure(bool isOpponentActivating) {
   Q_UNUSED(isOpponentActivating);
   std::vector<Zone*> monsters = GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone;
   int lowestATK = 100000;
-  Card* destroyCard;
-  Zone* destroyZone;
+  Card* destroyCard = nullptr;
+  Zone* destroyZone = nullptr;
 
   for (Zone* zone : monsters) {
     if (!zone->isEmpty() && zone->m_pCard->getCardType() == CardType::MONSTER_CARD) {
@@ -300,8 +300,8 @@ void EffectActivator::activateFissure(bool isOpponentActivating) {
       }
     }
   }
-
-  GameExternVars::pOtherPlayer->sendToGraveyard(*destroyCard, destroyZone);
+  if (destroyCard != nullptr && destroyZone != nullptr)
+    GameExternVars::pOtherPlayer->sendToGraveyard(*destroyCard, destroyZone);
 }
 
 void EffectActivator::activateMonsterReborn(bool isOpponentActivating) {
@@ -330,12 +330,11 @@ void EffectActivator::activateMonsterReborn(bool isOpponentActivating) {
         }
       }
     }
-
-    whichGraveyard == 1 ? GameExternVars::pCurrentPlayer->field.graveyard->removeFromGraveyard(
-                              *strongestMonsterInEitherGraveyard)
-                        : GameExternVars::pOtherPlayer->field.graveyard->removeFromGraveyard(
-                              *strongestMonsterInEitherGraveyard);
-
+    if (strongestMonsterInEitherGraveyard != nullptr)
+        whichGraveyard == 1 ? GameExternVars::pCurrentPlayer->field.graveyard->removeFromGraveyard(
+                                  *strongestMonsterInEitherGraveyard)
+                            : GameExternVars::pOtherPlayer->field.graveyard->removeFromGraveyard(
+                                  *strongestMonsterInEitherGraveyard);
     GameExternVars::pCardToBePlacedOnField = strongestMonsterInEitherGraveyard;
     GameExternVars::pCurrentPlayer->field.monsterZone.colorFreeZones();
   }

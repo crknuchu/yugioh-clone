@@ -25,6 +25,8 @@ MainMenu::MainMenu(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainMenu) 
   this->setPalette(palette);
   music = new QMediaPlayer();
 
+
+  connect(ui->btnQuit, &QPushButton::clicked, this, &MainMenu::onBtnQuitClicked);
   connect(ui->btnStart, &QPushButton::clicked, this, &MainMenu::onStartButtonClick);
   connect(ui->btnProfileSettings_2, &QPushButton::clicked, this,
           &MainMenu::on_btnProfileSettings_clicked);
@@ -115,7 +117,7 @@ auto MainMenu::getDeckJson() -> QString {
   return deck;
 }
 
-void MainMenu::on_btnQuit_clicked() { close(); }
+void MainMenu::onBtnQuitClicked() { close(); }
 
 void MainMenu::on_btnProfileSettings_clicked() {
 

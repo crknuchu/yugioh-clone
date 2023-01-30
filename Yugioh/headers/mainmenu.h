@@ -24,7 +24,7 @@ public:
 private slots:
   void onStartButtonClick();
 
-  void on_btnQuit_clicked();
+  void onBtnQuitClicked();
 
   void on_btnProfileSettings_clicked();
 
