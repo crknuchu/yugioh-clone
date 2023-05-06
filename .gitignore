@@ -26,3 +26,12 @@ qrc_resources.cpp
 qrc_resources.o
 build
 Yugioh/build
+.ccls-cache
+Yugioh/.cache 
+Yugioh/.ccls-root
+Yugioh/CMakeCache.txt
+Yugioh/CMakeFiles
+Yugioh/CMakeLists.txt.user 
+Yugioh/Yugioh_autogen
+Yugioh/cmake_install.cmake
+compile_commands.json

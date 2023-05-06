@@ -2,8 +2,12 @@ cmake_minimum_required(VERSION 3.16)
 
 project(Yugioh VERSION 1.0 LANGUAGES CXX)
 
+# Use C++17
+set(CMAKE_CXX_STANDARD 17)
+
 # Set INCLUDE_CURRENT_DIR to ON so it can find the files easier:
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
 
 # Automatically solve qt's vtable and moc errors:
 set(CMAKE_AUTOMOC ON)
