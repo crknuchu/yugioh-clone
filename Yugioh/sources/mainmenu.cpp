@@ -39,8 +39,10 @@ MainMenu::MainMenu(QWidget *parent) :
 MainMenu::~MainMenu()
 {
     delete ui;
-    delete m_pGame;
-    delete m_pGameSettings;
+    if(m_pGame != nullptr)
+      delete m_pGame;
+    if(m_pGameSettings != nullptr)
+      delete m_pGameSettings;
 }
 
 void MainMenu::onStartButtonClick()

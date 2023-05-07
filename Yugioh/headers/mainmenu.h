@@ -41,8 +41,8 @@ private slots:
 
 private:
     Ui::MainMenu *ui;
-    Game *m_pGame;
-    GameSettings *m_pGameSettings;
+    Game *m_pGame = nullptr;
+    GameSettings *m_pGameSettings = nullptr;
     QMediaPlayer *music;
     bool musicActive=true;
 };
