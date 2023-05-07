@@ -6,7 +6,7 @@ project(Yugioh VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
 # Set the compile flags
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g")
 
 # Export the compile commands automatically
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
