@@ -5,9 +5,14 @@ project(Yugioh VERSION 1.0 LANGUAGES CXX)
 # Use C++17
 set(CMAKE_CXX_STANDARD 17)
 
+# Set the compile flags
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -g")
+
+# Export the compile commands automatically
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Set INCLUDE_CURRENT_DIR to ON so it can find the files easier:
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 
 # Automatically solve qt's vtable and moc errors:
 set(CMAKE_AUTOMOC ON)
