@@ -23,3 +23,6 @@ RUN git clone -b azrs/kubni https://gitlab.com/matf-bg-ac-rs/course-rs/projects-
 # Run cmake
 RUN cmake -DCMAKE_BUILD_TYPE=Release -S 09-yugioh/Yugioh -B 09-yugioh/build
 RUN cmake --build 09-yugioh/build
+
+# TODO: Xorg / Wayland
+# TODO: Containerize the server
