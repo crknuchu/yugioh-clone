@@ -18,11 +18,17 @@ RUN yes | pacman -S qt5-base qt5-multimedia
 RUN yes | pacman -S git
 
 # Clone the project repo (specifically the azrs/kubni branch)
+# TODO: COPY instead of git clone
 RUN git clone -b azrs/kubni https://gitlab.com/matf-bg-ac-rs/course-rs/projects-2022-2023/09-yugioh.git
 
 # Run cmake
 RUN cmake -DCMAKE_BUILD_TYPE=Release -S 09-yugioh/Yugioh -B 09-yugioh/build
 RUN cmake --build 09-yugioh/build
 
-# TODO: Xorg / Wayland
-# TODO: Containerize the server
+WORKDIR ./09-yugioh/build
+
+RUN make
+
+CMD ["./Yugioh"]
+
+# FIXME: Game starts but it doesn't connect to the server that is running
