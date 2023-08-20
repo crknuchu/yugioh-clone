@@ -9,4 +9,4 @@ void FieldZone::setFieldZone(float x, float y) {
     setPen(QPen(Qt::white, 2));
 }
 
-FieldZone::~FieldZone(){}
+FieldZone::~FieldZone()= default;

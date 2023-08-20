@@ -1,7 +1,7 @@
 #include "headers/SpellTrapZone.h"
 #include <iostream>
 
-SpellTrapZone::SpellTrapZone(){}
+SpellTrapZone::SpellTrapZone()= default;
 
 SpellTrapZone::~SpellTrapZone()
 {
@@ -24,7 +24,7 @@ void SpellTrapZone::setSpellTrapZone(float x , float y){
     m_width = x;
 }
 
-Card* SpellTrapZone::removeFromSpellTrapZone(Zone* targetedZone) {
+auto SpellTrapZone::removeFromSpellTrapZone(Zone* targetedZone) -> Card* {
     Card* card = targetedZone->m_pCard;
     targetedZone->m_pCard = nullptr;
     return card;
@@ -42,8 +42,8 @@ void SpellTrapZone::placeInSpellTrapZone(Card *card, Zone* zone){
         return;
     }
 
-    SpellCard* spellCard = dynamic_cast<SpellCard*>(card);
-    TrapCard* trapCard = dynamic_cast<TrapCard*>(card);
+    auto* spellCard = dynamic_cast<SpellCard*>(card);
+    auto* trapCard = dynamic_cast<TrapCard*>(card);
     if(spellCard) {
         zone->putInZone(spellCard);
     }
@@ -96,7 +96,7 @@ void SpellTrapZone::refresh() {
     }
 }
 
-bool SpellTrapZone::isFull() const {
+auto SpellTrapZone::isFull() const -> bool {
     for(Zone* zone : m_spellTrapZone) {
         if(zone->isEmpty())
             return false;
@@ -104,7 +104,7 @@ bool SpellTrapZone::isFull() const {
     return true;
 }
 
-float SpellTrapZone::getWidth() const
+auto SpellTrapZone::getWidth() const -> float
 {
     return m_width;
 }

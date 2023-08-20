@@ -4,7 +4,7 @@
 EffectRequirement::EffectRequirement(Card &card)
     :m_card(&card){};
 
-EffectRequirement::~EffectRequirement(){}
+EffectRequirement::~EffectRequirement()= default;
 
 const std::map<std::string, EffectRequirement::EFFECT_REQUIREMENT_MEMBER_FUNCTION_POINTER> EffectRequirement::effectReqMap = {
     //Spells
@@ -21,13 +21,13 @@ const std::map<std::string, EffectRequirement::EFFECT_REQUIREMENT_MEMBER_FUNCTIO
     {"Reinforcements", &EffectRequirement::reinforcementsReq}
 };
 
-bool EffectRequirement::isActivatable(const std::string &cardName)
+auto EffectRequirement::isActivatable(const std::string &cardName) -> bool
 {
     bool condition = true;
     try {
         auto effectReqFunctionPointer = effectReqMap.at(cardName);
 
-        condition = std::invoke(effectReqFunctionPointer, this);
+        condition = std::__invoke(effectReqFunctionPointer, this);
     } catch(std::out_of_range &e) {
         std::cout << "That card doesn't have a requirement." << std::endl;
     }
@@ -35,7 +35,7 @@ bool EffectRequirement::isActivatable(const std::string &cardName)
     return condition;
 }
 
-bool EffectRequirement::yamiReq(){
+auto EffectRequirement::yamiReq() -> bool{
     std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
 
     for (Zone *zone : monsters)
@@ -43,7 +43,7 @@ bool EffectRequirement::yamiReq(){
         if (zone->isEmpty())
             continue;
         
-        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        auto *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
         if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD)
         {
             if(m->getMonsterType() == MonsterType::SPELLCASTER)
@@ -60,7 +60,7 @@ bool EffectRequirement::yamiReq(){
     }
 }
 
-bool EffectRequirement::bookOfSecretArtsReq(){
+auto EffectRequirement::bookOfSecretArtsReq() -> bool{
     std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
 
     for (Zone *zone : monsters)
@@ -68,7 +68,7 @@ bool EffectRequirement::bookOfSecretArtsReq(){
         if (zone->isEmpty())
             continue;
         
-        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        auto *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
         if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD && m->getMonsterType() == MonsterType::SPELLCASTER)
             return true;
         else 
@@ -76,7 +76,7 @@ bool EffectRequirement::bookOfSecretArtsReq(){
     }
 }
 
-bool EffectRequirement::invigorationReq(){
+auto EffectRequirement::invigorationReq() -> bool{
     std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
 
     for (Zone *zone : monsters)
@@ -84,7 +84,7 @@ bool EffectRequirement::invigorationReq(){
         if (zone->isEmpty())
             continue;
         
-        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        auto *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
         if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD && m->getAttribute() == MonsterAttribute::EARTH)
             return true;
         else 
@@ -92,7 +92,7 @@ bool EffectRequirement::invigorationReq(){
     }
 }
 
-bool EffectRequirement::swordOfDarkDestructionReq(){
+auto EffectRequirement::swordOfDarkDestructionReq() -> bool{
     std::vector<Zone *>monsters = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone;
 
     for (Zone *zone : monsters)
@@ -100,7 +100,7 @@ bool EffectRequirement::swordOfDarkDestructionReq(){
         if (zone->isEmpty())
             continue;
         
-        MonsterCard *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
+        auto *m = dynamic_cast<MonsterCard *>(zone->m_pCard);
         if (!zone->isEmpty() && m->getCardType() == CardType::MONSTER_CARD && m->getAttribute() == MonsterAttribute::DARK)
             return true;
         else 
@@ -108,7 +108,7 @@ bool EffectRequirement::swordOfDarkDestructionReq(){
     }
 }
 
-bool EffectRequirement::fissureReq() {
+auto EffectRequirement::fissureReq() -> bool {
     bool opponentHasMonsters = false;
     if(!GameExternVars::pOtherPlayer->field.monsterZone.isEmpty())
             opponentHasMonsters = true;
@@ -116,7 +116,7 @@ bool EffectRequirement::fissureReq() {
     return opponentHasMonsters;
 }
 
-bool EffectRequirement::monsterRebornReq(){
+auto EffectRequirement::monsterRebornReq() -> bool{
 
     bool isAnyMonsterInGraveyard = false;
     for (Card *card : GameExternVars::pCurrentPlayer->field.graveyard->getGraveyard()) {
@@ -134,11 +134,11 @@ bool EffectRequirement::monsterRebornReq(){
     return isAnyMonsterInGraveyard;
 }
 
-bool EffectRequirement::haneHaneReq() {
+auto EffectRequirement::haneHaneReq() -> bool {
     return EffectRequirement::fissureReq();
 }
 
-bool EffectRequirement::reinforcementsReq() {
+auto EffectRequirement::reinforcementsReq() -> bool {
     bool currentPlayerHasMonsters = false;
     if(!GameExternVars::pCurrentPlayer->field.monsterZone.isEmpty())
             currentPlayerHasMonsters = true;
@@ -146,7 +146,7 @@ bool EffectRequirement::reinforcementsReq() {
     return currentPlayerHasMonsters;
 }
 
-bool EffectRequirement::changeofheartReq(){
+auto EffectRequirement::changeofheartReq() -> bool{
 
     bool flag1 = false;
     if (GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone.size() == 0)

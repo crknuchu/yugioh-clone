@@ -117,14 +117,14 @@ Game::Game(Player p1, Player p2, int lifePoints, int numberOfCards, int timePerM
 
 }
 
-Game::Game() {}
+Game::Game() = default;
 
 Game::~Game() {
     delete ui;
     delete scene;
 }
 
-int Game::getTimePerMove() const
+auto Game::getTimePerMove() const -> int
 {
     return timePerMove;
 }
@@ -134,7 +134,7 @@ void Game::setTimePerMove(int newTimePerMove)
     timePerMove = newTimePerMove;
 }
 
-int Game::getNumberOfCards() const
+auto Game::getNumberOfCards() const -> int
 {
     return numberOfCards;
 }
@@ -144,7 +144,7 @@ void Game::setNumberOfCards(int newNumberOfCards)
     numberOfCards = newNumberOfCards;
 }
 
-int Game::getLifePoints() const
+auto Game::getLifePoints() const -> int
 {
     return lifePoints;
 }
@@ -180,8 +180,8 @@ void Game::switchPlayers() {
 
 void Game::damageCalculation(Card *attackingMonster, Card *attackedMonster)
 {
-    MonsterCard* attacker = static_cast<MonsterCard*>(attackingMonster);
-    MonsterCard* defender = static_cast<MonsterCard*>(attackedMonster);
+    auto* attacker = static_cast<MonsterCard*>(attackingMonster);
+    auto* defender = static_cast<MonsterCard*>(attackedMonster);
 
     if(defender->getPosition() == MonsterPosition::ATTACK)
     {
@@ -431,7 +431,7 @@ void Game::damagePlayer(Player &targetPlayer, int howMuch)
         emit gameEndedAfterBattle(targetPlayer);
 }
 
-Card* Game::reconstructCard(QString cardName)
+auto Game::reconstructCard(QString cardName) -> Card*
 {
     for(Card *card : GameExternVars::yugiCards)
     {
@@ -442,7 +442,7 @@ Card* Game::reconstructCard(QString cardName)
     return nullptr;
 }
 
-qint32 Game::findZoneNumber(Card &targetCard, Player *pWhoOwnsIt)
+auto Game::findZoneNumber(Card &targetCard, Player *pWhoOwnsIt) -> qint32
 {
     qint32 zoneNumber = 1;
     std::vector<Zone *> targetPartOfField;
@@ -465,7 +465,7 @@ qint32 Game::findZoneNumber(Card &targetCard, Player *pWhoOwnsIt)
     return zoneNumber;
 }
 
-Zone *Game::findZone(qint32 zoneNumber, QString cardType, Player *pTargetPlayer)
+auto Game::findZone(qint32 zoneNumber, QString cardType, Player *pTargetPlayer) -> Zone *
 {
     std::vector<Zone *> partOfField;
     cardType == "monster card"
@@ -718,11 +718,11 @@ void Game::setupConnections() {
 
 }
 
-bool Game::eventFilter(QObject *obj, QEvent *event)
+auto Game::eventFilter(QObject *obj, QEvent *event) -> bool
 {
     if(event->type() == QEvent::Resize)
     {
-        QResizeEvent *resizeEvent = static_cast<QResizeEvent *>(event);
+        auto *resizeEvent = static_cast<QResizeEvent *>(event);
 
         // We need to emit the signal here so that we can scale the UI AFTER we catch it
         if (resizeEvent != nullptr)
@@ -736,7 +736,7 @@ bool Game::eventFilter(QObject *obj, QEvent *event)
 }
 
 // Networking:
-bool Game::sendDataToServer(QByteArray &data)
+auto Game::sendDataToServer(QByteArray &data) -> bool
 {
     if(m_pTcpSocket->state() == QAbstractSocket::ConnectedState)
     {
@@ -762,7 +762,7 @@ void Game::notifyServerThatDeserializationHasFinished()
     sendDataToServer(buffer);  
 }
 
-QByteArray Game::QInt32ToQByteArray(qint32 source)
+auto Game::QInt32ToQByteArray(qint32 source) -> QByteArray
 {
     QByteArray tmp;
     QDataStream stream(&tmp, QIODevice::ReadWrite);
@@ -849,7 +849,7 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
     // Add the card to the scene
     if (cardType == "monster card")
     {
-        MonsterCard *monsterCard = static_cast<MonsterCard *>(targetCard);
+        auto *monsterCard = static_cast<MonsterCard *>(targetCard);
 
         // Set the position
         MonsterPosition monsterPosition = monsterCard->monsterPositionQStringToEnum.at(positionQString);
@@ -867,7 +867,7 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
         SpellTrapPosition stPosition;
         if(cardType == "spell card")
         {
-            SpellCard *spellCard = static_cast<SpellCard *>(targetCard);
+            auto *spellCard = static_cast<SpellCard *>(targetCard);
             stPosition = spellCard->spellTrapPositionQStringToEnum.at(positionQString);
             spellCard->setPosition(stPosition);
 
@@ -877,7 +877,7 @@ void Game::deserializeFieldPlacement(QDataStream &deserializationStream)
         }
         else
         {
-            TrapCard *trapCard = static_cast<TrapCard *>(targetCard);
+            auto *trapCard = static_cast<TrapCard *>(targetCard);
             stPosition = trapCard->spellTrapPositionQStringToEnum.at(positionQString);
             trapCard->setPosition(stPosition);
             if(stPosition == SpellTrapPosition::SET)
@@ -1066,7 +1066,7 @@ void Game::deserializeReposition(QDataStream &deserializationStream)
     Card* targetCard = GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard;
 
     // We know that its a monster
-    MonsterCard *targetMonster = static_cast<MonsterCard *>(targetCard);
+    auto *targetMonster = static_cast<MonsterCard *>(targetCard);
 
     // Change its position
     targetMonster->changePosition();
@@ -1090,7 +1090,7 @@ void Game::deserializeReposition(QDataStream &deserializationStream)
             : targetCard = GameExternVars::pOtherPlayer->field.monsterZone.m_monsterZone[zoneNumber - 1]->m_pCard;
 
     // We know that its a monster
-    MonsterCard *targetMonster = static_cast<MonsterCard *>(targetCard);
+    auto *targetMonster = static_cast<MonsterCard *>(targetCard);
 
     // Change its position
     targetMonster->setPosition(MonsterPosition::ATTACK);
@@ -1124,21 +1124,21 @@ void Game::deserializeDestroyCard(QDataStream &deserializationStream)
     // If the card was set, we need to make it be face up (so it won't be face-down in the graveyard)
     if(cardType == QString::fromStdString("monster card"))
     {
-        MonsterCard *pMonsterCard = static_cast<MonsterCard *>(pDestroyedCard);
+        auto *pMonsterCard = static_cast<MonsterCard *>(pDestroyedCard);
         MonsterPosition position = pMonsterCard->getPosition();
         if(position == MonsterPosition::FACE_UP_DEFENSE || position == MonsterPosition::ATTACK)
             visuallyFlipMonster(pMonsterCard, 0);
     }
     else if(cardType == QString::fromStdString("spell card"))
     {
-        SpellCard *pSpellCard = static_cast<SpellCard *>(pDestroyedCard);
+        auto *pSpellCard = static_cast<SpellCard *>(pDestroyedCard);
         SpellTrapPosition position = pSpellCard->getSpellPosition();
         if(position == SpellTrapPosition::SET)
             visuallyFlipSpell(pSpellCard);
     }
     else
     {
-        TrapCard *pTrapCard = static_cast<TrapCard *>(pDestroyedCard);
+        auto *pTrapCard = static_cast<TrapCard *>(pDestroyedCard);
         SpellTrapPosition position = pTrapCard->getTrapPosition();
         if(position == SpellTrapPosition::SET)
             visuallyFlipTrap(pTrapCard);
@@ -1298,7 +1298,7 @@ void Game::onEndPhaseButtonClick()
 
     for(Zone* zone : GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
         if(!zone->isEmpty()) {
-            MonsterCard* monster = static_cast<MonsterCard*>(zone->m_pCard);
+            auto* monster = static_cast<MonsterCard*>(zone->m_pCard);
             monster->setAlreadyAttackedThisTurn(false);
             monster->setIsRepositionThisTurn(false);
             monster->setIsSummonedThisTurn(false);
@@ -1533,20 +1533,20 @@ void Game::onCardHoverEnter(Card &card)
     std::string atkDefIfMonster = "";
     if(card.getCardType() == CardType::MONSTER_CARD)
     {
-        MonsterCard *pMonsterCard = static_cast<MonsterCard *>(&card);
+        auto *pMonsterCard = static_cast<MonsterCard *>(&card);
         atkDefIfMonster += "ATK: " + std::to_string(pMonsterCard->getAttackPoints()) + "  /  DEF: " + std::to_string(pMonsterCard->getDefensePoints());
 
         cardPosition = MonsterCard::monsterPositionEnumToQString.at(pMonsterCard->getPosition());
     }
     else if(card.getCardType() == CardType::SPELL_CARD)
     {
-        SpellCard *pSpellCard = static_cast<SpellCard *>(&card);
+        auto *pSpellCard = static_cast<SpellCard *>(&card);
 
         cardPosition = SpellCard::spellTrapPositionEnumToQString.at(pSpellCard->getSpellPosition());
     }
     else
     {
-        TrapCard *pTrapCard = static_cast<TrapCard *>(&card);
+        auto *pTrapCard = static_cast<TrapCard *>(&card);
 
         cardPosition = TrapCard::spellTrapPositionEnumToQString.at(pTrapCard->getTrapPosition());
     }
@@ -1593,7 +1593,7 @@ void Game::onCardSelect(Card *card)
 void Game::onActivateFromHand(Card &activatedCard) {
     //its only spell card for now that can be activated from hand
     activatedCard.setIsActivated(true);
-    SpellCard* activatedSpellCard = static_cast<SpellCard*>(&activatedCard);
+    auto* activatedSpellCard = static_cast<SpellCard*>(&activatedCard);
     activatedSpellCard->setPosition(SpellTrapPosition::FACE_UP);
     GameExternVars::pCardToBePlacedOnField = activatedSpellCard;
 
@@ -1746,7 +1746,7 @@ void Game::onSummonButtonClick(Card &card) {
     std::cout << "Current summon target is: " << GameExternVars::pCardToBePlacedOnField->getCardName() << std::endl;
 
     // Set the monster's position explicitly to ATTACK (since thats the only one allowed when summoning)
-    MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+    auto *monsterCard = static_cast<MonsterCard *>(&card);
     monsterCard->setPosition(MonsterPosition::ATTACK);
     monsterCard->setIsSummonedThisTurn(true);
     MonsterCard::globalSummonedThisTurn = true;
@@ -1774,7 +1774,7 @@ void Game::onRepositionButtonClick(Card &card)
     std::cout << "Reposition button clicked for card " << card.getCardName() << std::endl;
 
     // We are sure that this card is a MonsterCard since only monsters can change their position to defense or attack
-    MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+    auto *monsterCard = static_cast<MonsterCard *>(&card);
 
     // Change the position
     monsterCard->changePosition();
@@ -1797,7 +1797,7 @@ void Game::onRepositionButtonClick(Card &card)
 
 void Game::onAttackDirectlyButtonClick(Card &card)
 {
-    MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+    auto *monsterCard = static_cast<MonsterCard *>(&card);
     damagePlayer(*GameExternVars::pOtherPlayer, monsterCard->getAttackPoints());
 
     card.cardMenu->setVisible(false);
@@ -1805,7 +1805,7 @@ void Game::onAttackDirectlyButtonClick(Card &card)
 
 void Game::onFlipButtonClick(Card &card)
 {
-    MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+    auto *monsterCard = static_cast<MonsterCard *>(&card);
     visuallyFlipMonster(monsterCard, 0);
     monsterCard->setPosition(MonsterPosition::ATTACK);
     monsterCard->setIsRepositionThisTurn(true);
@@ -1922,7 +1922,7 @@ void Game::onSetButtonClick(Card &card)
 
     if(card.getCardType() == CardType::MONSTER_CARD)
     {
-        MonsterCard *monsterCard = static_cast<MonsterCard *>(&card);
+        auto *monsterCard = static_cast<MonsterCard *>(&card);
 
         // Set its position to FACE_DOWN_DEFENSE
         monsterCard->setPosition(MonsterPosition::FACE_DOWN_DEFENSE);
@@ -1933,7 +1933,7 @@ void Game::onSetButtonClick(Card &card)
     }
     else if(card.getCardType() == CardType::SPELL_CARD)
     {
-       SpellCard *spellCard = static_cast<SpellCard *>(&card);
+       auto *spellCard = static_cast<SpellCard *>(&card);
 
        // Set its position to SET
        spellCard->setPosition(SpellTrapPosition::SET);
@@ -1942,7 +1942,7 @@ void Game::onSetButtonClick(Card &card)
     }
     else
     {
-        TrapCard *trapCard = static_cast<TrapCard *>(&card);
+        auto *trapCard = static_cast<TrapCard *>(&card);
         trapCard->setPosition(SpellTrapPosition::SET);
         GameExternVars::pCurrentPlayer->field.spellTrapZone.colorFreeZones();
     }
@@ -1964,7 +1964,7 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
         card->setCardLocation(CardLocation::FIELD);
 
         // Read the monster's position
-        MonsterCard *pMonsterCard = static_cast<MonsterCard *>(card);
+        auto *pMonsterCard = static_cast<MonsterCard *>(card);
         QString monsterPosition = pMonsterCard->monsterPositionEnumToQString.at(pMonsterCard->getPosition());
 
         // If the position is SET, we need to rotate the card and change the pixmap to card_back.jpg
@@ -2004,14 +2004,14 @@ void Game::onRedZoneClick(Zone *clickedRedZone)
         QString spellTrapPosition;
         if(card->getCardType() == CardType::SPELL_CARD)
         {
-            SpellCard *pSpellCard = static_cast<SpellCard *>(card);
+            auto *pSpellCard = static_cast<SpellCard *>(card);
             spellTrapPosition = pSpellCard->spellTrapPositionEnumToQString.at(pSpellCard->getSpellPosition());
             if(spellTrapPosition == QString::fromStdString("SET"))
                 visuallySetSpell(pSpellCard);
         }
         else
         {
-            TrapCard *pTrapCard = static_cast<TrapCard *>(card);
+            auto *pTrapCard = static_cast<TrapCard *>(card);
             spellTrapPosition = pTrapCard->spellTrapPositionEnumToQString.at(pTrapCard->getTrapPosition());
 
             if(spellTrapPosition == QString::fromStdString("SET"))

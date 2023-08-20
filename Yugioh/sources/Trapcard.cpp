@@ -9,12 +9,12 @@ TrapCard::TrapCard(TrapType type, const std::string &cardName, CardType cardType
     ,position(position)
 {}
 
-TrapCard* TrapCard::clone() {
+auto TrapCard::clone() -> TrapCard* {
     return new TrapCard(this->trapType, this->cardName, this->cardType, this->cardLocation, this->position,
                         this->cardDescription, this->imagePath, this->active);
 }
 
-bool TrapCard::shouldBeSentToGraveyard()
+auto TrapCard::shouldBeSentToGraveyard() -> bool
 {
     if(trapType == TrapType::CONTINUOUS_TRAP)
         return false;
@@ -22,12 +22,12 @@ bool TrapCard::shouldBeSentToGraveyard()
     return true;
 }
 
-TrapType TrapCard::getTrapType() const
+auto TrapCard::getTrapType() const -> TrapType
 {
     return trapType;
 }
 
-std::string TrapCard::getTrapTypeString() const
+auto TrapCard::getTrapTypeString() const -> std::string
 {
     switch (trapType) {
     case TrapType::NORMAL_TRAP:
@@ -41,7 +41,7 @@ std::string TrapCard::getTrapTypeString() const
     }
 }
 
-SpellTrapPosition TrapCard::getTrapPosition() const
+auto TrapCard::getTrapPosition() const -> SpellTrapPosition
 {
     return position;
 }
@@ -72,7 +72,7 @@ void TrapCard::setPosition(SpellTrapPosition newPosition)
     position = newPosition;
 }
 
-bool TrapCard::getActive() const
+auto TrapCard::getActive() const -> bool
 {
     return active;
 };

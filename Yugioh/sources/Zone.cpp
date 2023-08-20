@@ -13,7 +13,7 @@ Zone::Zone(float x, float y)
     setZValue(-10);
 }
 
-Zone::~Zone(){}
+Zone::~Zone()= default;
 
 void Zone::putInZone(Card *card)
 {
@@ -21,15 +21,15 @@ void Zone::putInZone(Card *card)
     card->move(this->m_x, this->m_y);
 }
 
-bool Zone::isEmpty() {
+auto Zone::isEmpty() -> bool {
     return m_pCard == nullptr;
 }
 
-float Zone::getWidth() const {
+auto Zone::getWidth() const -> float {
     return m_width;
 }
 
-float Zone::getHeight() const {
+auto Zone::getHeight() const -> float {
     return m_height;
 }
 
@@ -67,12 +67,12 @@ void Zone::mousePressEvent(QGraphicsSceneMouseEvent* event) {
     }
 }
 
-QRectF Zone::boundingRect() const
+auto Zone::boundingRect() const -> QRectF
 {
-    return QRectF(m_x, m_y, m_width, m_height);
+    return {m_x, m_y, m_width, m_height};
 }
 
-QPainterPath Zone::shape() const
+auto Zone::shape() const -> QPainterPath
 {
     QRectF rect = boundingRect();
 

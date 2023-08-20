@@ -4,11 +4,11 @@
 #include <iostream>
 #include "headers/CardMenu.h"
 Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLocation, const std::string &cardDescription,std::string imagePath)
-    :cardName(cardName)
+    :imagePath(imagePath)
+    ,cardName(cardName)
     ,cardType(cardType)
     ,cardLocation(cardLocation)
     ,cardDescription(cardDescription)
-    ,imagePath(imagePath)
 {
     QPixmap pixmap;
     pixmap.load(QString::fromStdString(imagePath));
@@ -21,8 +21,7 @@ Card::Card(const std::string &cardName, CardType cardType, CardLocation cardLoca
 }
 
 Card::~Card()
-{
-}
+= default;
 
 void Card::addToScene(QGraphicsScene *scene)
 {
@@ -76,17 +75,17 @@ const std::map<QString, SpellTrapPosition> Card::spellTrapPositionQStringToEnum{
 };
 
 
-const std::string &Card::getCardName() const
+auto Card::getCardName() const -> const std::string &
 {
     return cardName;
 }
 
-CardType Card::getCardType() const
+auto Card::getCardType() const -> CardType
 {
     return cardType;
 }
 
-std::string Card::getCardLocationString() const
+auto Card::getCardLocationString() const -> std::string
 {
     switch (cardLocation) {
     case CardLocation::HAND:
@@ -102,28 +101,28 @@ std::string Card::getCardLocationString() const
     }
 }
 
-bool Card::getIsActivated() const
+auto Card::getIsActivated() const -> bool
 {
     return this->isActivated;
 }
 
-int Card::getPlayerThatSetThisCard() const
+auto Card::getPlayerThatSetThisCard() const -> int
 {
     return playerThatSetThisCard;
 }
 
-bool Card::getIsSetThisTurn() const
+auto Card::getIsSetThisTurn() const -> bool
 {
     return this->isSetThisTurn;
 }
 
 
-CardLocation Card::getCardLocation() const
+auto Card::getCardLocation() const -> CardLocation
 {
     return cardLocation;
 }
 
-std::string Card::getCardTypeString() const
+auto Card::getCardTypeString() const -> std::string
 {
     switch (cardType) {
     case CardType::MONSTER_CARD:
@@ -158,14 +157,14 @@ void Card::setIsSetThisTurn(bool isSetThisTurn)
     this->isSetThisTurn = isSetThisTurn;
 }
 
-const std::string &Card::getCardDescription() const
+auto Card::getCardDescription() const -> const std::string &
 {
     return cardDescription;
 }
 
 
 
-bool Card::operator==(const Card &other) const
+auto Card::operator==(const Card &other) const -> bool
 {
     return this->getCardName() == other.getCardName();
 }
@@ -201,15 +200,15 @@ void Card::setName(std::string name){
     cardName = name;
 }
 
-float Card::getHeight(){
+auto Card::getHeight() -> float{
     return height;
 }
 
-float Card::getWidth(){
+auto Card::getWidth() -> float{
     return width;
 }
 
-std::ostream &operator<<(std::ostream &out, Card &c){
+auto operator<<(std::ostream &out, Card &c) -> std::ostream &{
     return out << "Card name: " << c.getCardName() << ", card type: " << c.getCardTypeString()
                << ",card location: " << c.getCardLocationString() << ",card description: "<< c.getCardDescription() << std::endl;
 }

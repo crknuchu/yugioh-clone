@@ -131,7 +131,7 @@ void GameSettings::saveGameSettingsJson(int lifePoints,int numberOfCards,int tim
 }
 
 
-LifePoints GameSettings::getLifePoints() const
+auto GameSettings::getLifePoints() const -> LifePoints
 {
     return lifePoints;
 }
@@ -141,7 +141,7 @@ void GameSettings::setLifePoints(LifePoints newLifePoints)
     lifePoints = newLifePoints;
 }
 
-NumberOfCards GameSettings::getNumberOfCards() const
+auto GameSettings::getNumberOfCards() const -> NumberOfCards
 {
     return numberOfCards;
 }
@@ -151,7 +151,7 @@ void GameSettings::setNumberOfCards(NumberOfCards newNumberOfCards)
     numberOfCards = newNumberOfCards;
 }
 
-TimePerMove GameSettings::getTimePerMove() const
+auto GameSettings::getTimePerMove() const -> TimePerMove
 {
     return timePerMove;
 }

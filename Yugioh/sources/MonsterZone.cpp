@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <iostream>
 
-MonsterZone::MonsterZone(){}
+MonsterZone::MonsterZone()= default;
 
 MonsterZone::~MonsterZone()
 {
@@ -26,8 +26,8 @@ void MonsterZone::setMonsterZone(float x, float y){
     m_width = x;
 }
 
-MonsterCard* MonsterZone::removeFromMonsterZone(Zone* targetedZone) {
-    MonsterCard* card = static_cast<MonsterCard*>(targetedZone->m_pCard);
+auto MonsterZone::removeFromMonsterZone(Zone* targetedZone) -> MonsterCard* {
+    auto* card = static_cast<MonsterCard*>(targetedZone->m_pCard);
     targetedZone->m_pCard = nullptr;
     return card;
 }
@@ -37,7 +37,7 @@ void MonsterZone::removeFromMonsterZone(int zoneNumber) {
     removeFromMonsterZone(zone);
 }
 
-Zone* MonsterZone::getZone(Card *card)
+auto MonsterZone::getZone(Card *card) -> Zone*
 {
     for(Zone* zone : m_monsterZone) {
         if(!zone->isEmpty() && zone->m_pCard == card)
@@ -55,7 +55,7 @@ void MonsterZone::placeInMonsterZone(Card *card, Zone* zone){
         return;
     }
 
-    MonsterCard* monsterCard = dynamic_cast<MonsterCard*>(card);
+    auto* monsterCard = dynamic_cast<MonsterCard*>(card);
     if(monsterCard) {
         zone->putInZone(monsterCard);
         monsterCard->setCardLocation(CardLocation::FIELD);
@@ -125,7 +125,7 @@ void MonsterZone::refresh() {
     }
 }
 
-bool MonsterZone::isEmpty() const
+auto MonsterZone::isEmpty() const -> bool
 {
     for(Zone* zone : m_monsterZone)
     {
@@ -135,7 +135,7 @@ bool MonsterZone::isEmpty() const
     return true;
 }
 
-bool MonsterZone::isFull() const {
+auto MonsterZone::isFull() const -> bool {
     for(Zone* zone : m_monsterZone) {
         if(zone->isEmpty())
             return false;
@@ -143,12 +143,12 @@ bool MonsterZone::isFull() const {
     return true;
 }
 
-float MonsterZone::getWidth() const
+auto MonsterZone::getWidth() const -> float
 {
     return m_width;
 }
 
-float MonsterZone::size() const {
+auto MonsterZone::size() const -> float {
     float size = 0;
     for(Zone* zone : m_monsterZone) {
         if(!zone->isEmpty())

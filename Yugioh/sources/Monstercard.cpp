@@ -19,37 +19,35 @@ MonsterCard::MonsterCard(const std::string &cardName, int attackPoints, int defe
 {}
 
 MonsterCard::~MonsterCard()
-{
+= default;
 
-}
-
-MonsterCard* MonsterCard::clone() {
+auto MonsterCard::clone() -> MonsterCard* {
     return new MonsterCard(this->cardName, this->attackPoints, this->defensePoints, this->level, this->type,
                            this->monsterKind, this->attribute, this->active, this->position, this->alreadyAttackedThisTurn,
                           this->cardType, this->cardLocation, this->cardDescription, this->imagePath);
 }
 
-bool MonsterCard::shouldBeSentToGraveyard()
+auto MonsterCard::shouldBeSentToGraveyard() -> bool
 {
     return false;
 }
 
-int MonsterCard::getAttackPoints() const
+auto MonsterCard::getAttackPoints() const -> int
 {
     return attackPoints;
 }
 
-int MonsterCard::getDefensePoints() const
+auto MonsterCard::getDefensePoints() const -> int
 {
     return defensePoints;
 }
 
-MonsterKind MonsterCard::getMonsterKind() const
+auto MonsterCard::getMonsterKind() const -> MonsterKind
 {
     return monsterKind;
 }
 
-std::string MonsterCard::getMonsterKindString() const
+auto MonsterCard::getMonsterKindString() const -> std::string
 {
     switch (monsterKind) {
     case MonsterKind::NORMAL_MONSTER:
@@ -74,13 +72,13 @@ std::string MonsterCard::getMonsterKindString() const
 }
 
 
-MonsterType MonsterCard::getMonsterType() const
+auto MonsterCard::getMonsterType() const -> MonsterType
 {
     return type;
 }
 
 
-std::string MonsterCard::getMonsterTypeString() const
+auto MonsterCard::getMonsterTypeString() const -> std::string
 {
     switch (type) {
     case MonsterType::AQUA:
@@ -127,12 +125,12 @@ std::string MonsterCard::getMonsterTypeString() const
 }
 
 
-MonsterAttribute MonsterCard::getAttribute() const
+auto MonsterCard::getAttribute() const -> MonsterAttribute
 {
     return attribute;
 }
 
-std::string MonsterCard::getAttributeString() const
+auto MonsterCard::getAttributeString() const -> std::string
 {
     switch (attribute) {
     case MonsterAttribute::DARK:
@@ -153,22 +151,22 @@ std::string MonsterCard::getAttributeString() const
         return "error:unknown attribute";
 }
 }
-int MonsterCard::getLevel() const
+auto MonsterCard::getLevel() const -> int
 {
     return level;
 }
 
-MonsterPosition MonsterCard::getPosition() const
+auto MonsterCard::getPosition() const -> MonsterPosition
 {
     return position;
 }
 
-bool MonsterCard::getIsSummonedThisTurn() const
+auto MonsterCard::getIsSummonedThisTurn() const -> bool
 {
     return this->isSummonedThisTurn;
 }
 
-bool MonsterCard::getIsRepositionedThisTurn() const
+auto MonsterCard::getIsRepositionedThisTurn() const -> bool
 {
     return this->isRepositionedThisTurn;
 }
@@ -261,7 +259,7 @@ void MonsterCard::multiplyDefensePoints(float multiplyBy)
 
 }
 
-bool MonsterCard::normalSummon(MonsterPosition monsterPos){
+auto MonsterCard::normalSummon(MonsterPosition monsterPos) -> bool{
     if (this->active == true or this->cardLocation != CardLocation :: HAND )
         return false; // unsuporeted actions
     this->active = true;
@@ -270,7 +268,7 @@ bool MonsterCard::normalSummon(MonsterPosition monsterPos){
 }
 
 
-bool MonsterCard::specialSummon(MonsterPosition monsterPos){
+auto MonsterCard::specialSummon(MonsterPosition monsterPos) -> bool{
     if ( this->cardLocation == CardLocation :: DECK )
         return false;
     active = true;

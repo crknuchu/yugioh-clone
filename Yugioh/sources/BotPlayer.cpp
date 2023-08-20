@@ -1,13 +1,13 @@
 #include "headers/BotPlayer.h"
 
-BotPlayer::BotPlayer(){}
+BotPlayer::BotPlayer()= default;
 
 BotPlayer::BotPlayer(std::string name, int points) : Player(name, points) {
     std::cout<<"Bot has been initialized"<<std::endl;
 }
 
 
-int BotPlayer::randomGenerator(const int limit) const {
+auto BotPlayer::randomGenerator(const int limit) const -> int {
   /*
    * Uniformly-distributed integer random number
    * generator that produces non-deterministic
@@ -28,6 +28,6 @@ int BotPlayer::randomGenerator(const int limit) const {
 }
 
 
-bool BotPlayer::decideToPlay(){
+auto BotPlayer::decideToPlay() -> bool{
     return BotPlayer::randomGenerator(2) % 2 == 0;
 }
