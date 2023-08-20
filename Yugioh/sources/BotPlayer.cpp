@@ -1,11 +1,10 @@
 #include "headers/BotPlayer.h"
 
-BotPlayer::BotPlayer()= default;
+BotPlayer::BotPlayer() = default;
 
 BotPlayer::BotPlayer(std::string name, int points) : Player(name, points) {
-    std::cout<<"Bot has been initialized"<<std::endl;
+  std::cout << "Bot has been initialized" << std::endl;
 }
-
 
 auto BotPlayer::randomGenerator(const int limit) const -> int {
   /*
@@ -27,7 +26,6 @@ auto BotPlayer::randomGenerator(const int limit) const -> int {
   return dis(gen);
 }
 
-
-auto BotPlayer::decideToPlay() -> bool{
-    return BotPlayer::randomGenerator(2) % 2 == 0;
+auto BotPlayer::decideToPlay() -> bool {
+  return BotPlayer::randomGenerator(2) % 2 == 0;
 }

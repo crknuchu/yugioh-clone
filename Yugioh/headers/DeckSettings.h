@@ -7,16 +7,15 @@ namespace Ui {
 class deckSettings;
 }
 
-class deckSettings : public QDialog
-{
-    Q_OBJECT
+class deckSettings : public QDialog {
+  Q_OBJECT
 
 public:
-    explicit deckSettings(QWidget *parent = nullptr);
-    ~deckSettings();
+  explicit deckSettings(QWidget *parent = nullptr);
+  ~deckSettings();
 
 private:
-    Ui::deckSettings *ui;
+  Ui::deckSettings *ui;
 };
 
 #endif // DECKSETTINGS_H

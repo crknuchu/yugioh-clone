@@ -15,30 +15,26 @@
 
 QT_BEGIN_NAMESPACE
 
-class Ui_deckSettings
-{
+class Ui_deckSettings {
 public:
+  void setupUi(QDialog *deckSettings) {
+    if (deckSettings->objectName().isEmpty())
+      deckSettings->setObjectName(QString::fromUtf8("deckSettings"));
+    deckSettings->resize(400, 300);
 
-    void setupUi(QDialog *deckSettings)
-    {
-        if (deckSettings->objectName().isEmpty())
-            deckSettings->setObjectName(QString::fromUtf8("deckSettings"));
-        deckSettings->resize(400, 300);
+    retranslateUi(deckSettings);
 
-        retranslateUi(deckSettings);
+    QMetaObject::connectSlotsByName(deckSettings);
+  } // setupUi
 
-        QMetaObject::connectSlotsByName(deckSettings);
-    } // setupUi
-
-    void retranslateUi(QDialog *deckSettings)
-    {
-        deckSettings->setWindowTitle(QCoreApplication::translate("deckSettings", "Dialog", nullptr));
-    } // retranslateUi
-
+  void retranslateUi(QDialog *deckSettings) {
+    deckSettings->setWindowTitle(
+        QCoreApplication::translate("deckSettings", "Dialog", nullptr));
+  } // retranslateUi
 };
 
 namespace Ui {
-    class deckSettings: public Ui_deckSettings {};
+class deckSettings : public Ui_deckSettings {};
 } // namespace Ui
 
 QT_END_NAMESPACE
