@@ -125,8 +125,10 @@ public:
 
     btnEndPhase = new QPushButton(layoutWidget);
     btnEndPhase->setObjectName(QString::fromUtf8("btnEndPhase"));
+    btnEndPhase->setEnabled(false);
 
     leftVerticalLayout->addWidget(btnEndPhase);
+
 
     verticalLayout = new QVBoxLayout();
     verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));

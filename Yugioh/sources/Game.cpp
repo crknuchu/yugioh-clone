@@ -1360,6 +1360,9 @@ void Game::onEndPhaseButtonClick() {
 
   GamePhaseExternVars::currentGamePhase = GamePhases::END_PHASE;
 
+  if(GameExternVars::pCurrentPlayer == nullptr || GameExternVars::pOtherPlayer == nullptr)
+      return;
+
   for (Zone *zone :
        GameExternVars::pCurrentPlayer->field.monsterZone.m_monsterZone) {
     if (!zone->isEmpty()) {
