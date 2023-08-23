@@ -1782,11 +1782,11 @@ void Game::onChangeOfHeart(Player &current, Player &opponent) {
         zone->m_pCard->getCardType() == CardType::MONSTER_CARD) {
       //            opponent.field.graveyard->sendToGraveyard(*(zone->m_pCard));
       opponent.sendToGraveyard(*zone->m_pCard);
-      bool flag = false;
+//      bool flag = false;
       for (Zone *zone1 : current.field.monsterZone.m_monsterZone) {
-        if (zone1->isEmpty() && flag == false) {
+        if (zone1->isEmpty()) {
           current.field.monsterZone.placeInMonsterZone(zone->m_pCard, zone1);
-          flag = true;
+//          flag = true;
           GameExternVars::pCardToBeReturned = zone->m_pCard;
           //                    zone->m_pCard = nullptr;
           return;

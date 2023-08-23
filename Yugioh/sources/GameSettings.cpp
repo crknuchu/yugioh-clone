@@ -37,6 +37,9 @@ GameSettings::GameSettings(QWidget *parent)
 
   connect(ui->help, &QPushButton::clicked, this,
           &GameSettings::onHelpButtonClick);
+
+  connect(ui->okButton, &QPushButton::clicked, this,
+          &GameSettings::onOkButton_clicked);
 }
 
 GameSettings::~GameSettings() { delete ui; }
@@ -129,7 +132,7 @@ void GameSettings::setTimePerMove(TimePerMove newTimePerMove) {
   timePerMove = newTimePerMove;
 }
 
-void GameSettings::on_okButton_clicked() {
+void GameSettings::onOkButton_clicked() {
   saveGameSettingsJson(getLifePointsEnumToInt[this->lifePoints],
                        getNumberOfCardsEnumToInt[this->numberOfCards],
                        getTimePerMoveEnumToInt[this->timePerMove],

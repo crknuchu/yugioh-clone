@@ -70,7 +70,7 @@ public slots:
 
   // void on_ChooseDeck_activated(int index);
 
-  void on_okButton_clicked();
+  void onOkButton_clicked();
 
   void on_SetLifepoints_activated(int index);
 

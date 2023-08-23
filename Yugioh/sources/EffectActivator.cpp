@@ -324,8 +324,8 @@ void EffectActivator::activateFissure(bool isOpponentActivating) {
       }
     }
   }
-
-  GameExternVars::pOtherPlayer->sendToGraveyard(*destroyCard, destroyZone);
+  if(destroyCard != nullptr && destroyZone != nullptr)
+    GameExternVars::pOtherPlayer->sendToGraveyard(*destroyCard, destroyZone);
 }
 
 void EffectActivator::activateMonsterReborn(bool isOpponentActivating) {
