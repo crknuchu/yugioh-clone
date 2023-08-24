@@ -4,7 +4,7 @@ project(Yugioh  VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra --coverage")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
@@ -13,8 +13,11 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt5 REQUIRED COMPONENTS Core Gui Multimedia Network Widgets)
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
 set(HeaderPath "${CMAKE_CURRENT_SOURCE_DIR}/headers")
 set(SourcePath "${CMAKE_CURRENT_SOURCE_DIR}/sources")
+set(TestPath "${CMAKE_CURRENT_SOURCE_DIR}/tests/tests")
 
 #headers
 set(Headers
@@ -46,6 +49,7 @@ set(Headers
     "${HeaderPath}/ui_mainwindow.h"
     "${HeaderPath}/Zone.h"
     "${SourcePath}/profilesettings.h"
+    
 )
 
 set(Sources
@@ -56,7 +60,6 @@ set(Sources
     "${SourcePath}/Deck.cpp"
     "${SourcePath}/DeckSettings.cpp"
     "${SourcePath}/EffectActivator.cpp"
-    "${SourcePath}/EffectRequirement.cpp"
     "${SourcePath}/Field.cpp"
     "${SourcePath}/FieldZone.cpp"
     "${SourcePath}/Game.cpp"
@@ -64,8 +67,9 @@ set(Sources
     "${SourcePath}/GameSettings.cpp"
     "${SourcePath}/Graveyard.cpp"
     "${SourcePath}/Hand.cpp"
+    # "${SourcePath}/main.cpp"
     "${SourcePath}/mainmenu.cpp"
-    "${SourcePath}/main.cpp"
+    "${SourcePath}/EffectRequirement.cpp"
     "${SourcePath}/Monstercard.cpp"
     "${SourcePath}/MonsterZone.cpp"
     "${SourcePath}/Player.cpp"
@@ -91,7 +95,24 @@ set(Resources
 
 add_executable(Yugioh ${Sources} ${Headers} ${Forms} ${Resources})
 
+add_executable(run_test ${Sources} ${Headers} ${Forms} ${Resources} "${TestPath}/catch.hpp" "${TestPath}/catch.cpp"
+"${TestPath}/tests.cpp")
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    include(CodeCoverage)
+    SETUP_TARGET_FOR_COVERAGE_LCOV(NAME coverage EXECUTABLE run_test)
+endif()
+
+
 target_link_libraries(Yugioh 
+    Qt::Widgets 
+    Qt::Core 
+    Qt::Network 
+    Qt::Multimedia 
+    Qt::Gui
+)
+
+target_link_libraries(run_test
     Qt::Widgets 
     Qt::Core 
     Qt::Network 
