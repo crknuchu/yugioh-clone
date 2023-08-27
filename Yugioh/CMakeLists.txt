@@ -2,11 +2,18 @@ cmake_minimum_required(VERSION 3.16)
 
 project(Yugioh VERSION 1.0 LANGUAGES CXX)
 
+# Use CodeCoverage.cmake module
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
+if(CMAKE_COMPILER_IS_GNUCXX)
+    include(CodeCoverage)
+    SETUP_TARGET_FOR_COVERAGE_LCOV(NAME coverage EXECUTABLE run_test)
+endif()
+
 # Use C++17
 set(CMAKE_CXX_STANDARD 17)
 
 # Set the compile flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -g --coverage")
 
 # Export the compile commands automatically
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -21,6 +28,7 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Multimedia Network Widgets)
 
 set(HeadersPath "${CMAKE_CURRENT_SOURCE_DIR}/headers")
 set(SourcesPath "${CMAKE_CURRENT_SOURCE_DIR}/sources")
+set(TestsPath "${CMAKE_CURRENT_SOURCE_DIR}/tests/tests")
 
 # Headers
 set(Headers
@@ -84,6 +92,35 @@ set(Sources
     "${SourcesPath}/profilesettings.cpp"
 )
 
+# run_test has its own main inside of the catch.cpp, so we can't use Sources that contain our own main.cpp because of ambiguous definition of main()
+set(SourcesWithoutMain
+    "${SourcesPath}/BotPlayer.cpp"
+    "${SourcesPath}/Card.cpp"
+    "${SourcesPath}/CardList.cpp"
+    "${SourcesPath}/CardMenu.cpp"
+    "${SourcesPath}/Deck.cpp"
+    "${SourcesPath}/DeckSettings.cpp"
+    "${SourcesPath}/EffectActivator.cpp"
+    "${SourcesPath}/EffectRequirement.cpp"
+    "${SourcesPath}/Field.cpp"
+    "${SourcesPath}/FieldZone.cpp"
+    "${SourcesPath}/Game.cpp"
+    "${SourcesPath}/GamePhase.cpp"
+    "${SourcesPath}/GameSettings.cpp"
+    "${SourcesPath}/Graveyard.cpp"
+    "${SourcesPath}/Hand.cpp"
+    "${SourcesPath}/MonsterZone.cpp"
+    "${SourcesPath}/Monstercard.cpp"
+    "${SourcesPath}/Player.cpp"
+    "${SourcesPath}/Serializer.cpp"
+    "${SourcesPath}/SpellTrapZone.cpp"
+    "${SourcesPath}/Spellcard.cpp"
+    "${SourcesPath}/Trapcard.cpp"
+    "${SourcesPath}/Zone.cpp"
+    "${SourcesPath}/mainmenu.cpp"
+    "${SourcesPath}/profilesettings.cpp"
+)
+
 # Forms
 set(Forms
     "${SourcesPath}/decksettings.ui"
@@ -99,9 +136,27 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS "${CMAKE_CURRENT_SOURCE_DIR}/forms")
 set(CMAKE_AUTORCC ON)
 set(Resources "${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc")
 
+
+# Tests
+set(Tests
+    "${TestsPath}/catch.hpp"
+    "${TestsPath}/catch.cpp"
+    "${TestsPath}/tests.cpp"
+)
+
+# Executables
 add_executable(Yugioh ${Sources} ${Headers} ${Forms} ${Resources})
+add_executable(run_test ${SourcesWithoutMain} ${Headers} ${Forms} ${Resources} ${Tests})
 
 target_link_libraries(Yugioh
+    Qt::Core
+    Qt::Gui
+    Qt::Multimedia
+    Qt::Network
+    Qt::Widgets
+)
+
+target_link_libraries(run_test
     Qt::Core
     Qt::Gui
     Qt::Multimedia
