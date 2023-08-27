@@ -986,7 +986,7 @@ void Game::deserializeFieldPlacement (QDataStream &deserializationStream)
     }
 
   // Set the original pixmap
-  QPixmap originalPixmap = new QPix;
+  QPixmap originalPixmap;
   originalPixmap.load (QString::fromStdString (targetCard->imagePath));
   originalPixmap = originalPixmap.scaled (
       QSize (targetCard->width, targetCard->height), Qt::KeepAspectRatio);
